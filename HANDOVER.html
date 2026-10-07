@@ -1,0 +1,596 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>GrowQR Website Handover</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Poppins:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+
+<style>
+  :root{
+    --ground:#FAF9F8; --surface:#FFFFFF; --surface-2:#F4F2F0;
+    --ink:#1A1A1A; --ink-2:#333333; --ink-3:#525252; --ink-4:#8A8A8A;
+    --rule:#E6E2DE; --rule-soft:#EFECE9;
+    --accent:#FF6A2F; --accent-text:#9C3A11; --accent-wash:#FFF5EE;
+    --danger:#B3261E; --danger-wash:#FDF0EF;
+    --shadow:0 1px 2px rgba(0,0,0,.04), 0 12px 32px -12px rgba(0,0,0,.08);
+    color-scheme:light;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; background:var(--ground); color:var(--ink-2);
+    font-family:"Poppins",system-ui,sans-serif; font-size:15px; line-height:1.65;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding:0 28px 120px;}
+
+  /* ── masthead ─────────────────────────────── */
+  header.mast{padding:72px 0 40px; border-bottom:1px solid var(--rule);}
+  .kicker{
+    font-family:"IBM Plex Mono",monospace; font-size:11px; letter-spacing:.16em;
+    text-transform:uppercase; color:var(--accent-text); margin:0 0 18px;
+  }
+  h1{
+    font-family:"Instrument Serif",Georgia,serif; font-weight:400;
+    font-size:clamp(40px,6.5vw,64px); line-height:1.04; letter-spacing:-.01em;
+    color:var(--ink); margin:0 0 20px; text-wrap:balance;
+  }
+  .standfirst{
+    max-width:60ch; font-size:16.5px; color:var(--ink-3); margin:0;
+  }
+  .stack{
+    margin-top:30px; display:flex; flex-wrap:wrap; gap:8px;
+  }
+  .chip{
+    font-family:"IBM Plex Mono",monospace; font-size:11.5px;
+    padding:5px 11px; border:1px solid var(--rule); border-radius:999px;
+    color:var(--ink-3); background:var(--surface);
+  }
+
+  /* ── layout ───────────────────────────────── */
+  .cols{display:grid; grid-template-columns:1fr; gap:0;}
+  @media(min-width:1000px){
+    .cols{grid-template-columns:196px 1fr; gap:56px; align-items:start;}
+    nav.toc{position:sticky; top:32px; padding-top:56px;}
+  }
+  nav.toc{display:none;}
+  @media(min-width:1000px){nav.toc{display:block;}}
+  nav.toc ol{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:2px;}
+  nav.toc a{
+    display:flex; gap:10px; padding:6px 0; text-decoration:none;
+    font-size:13.5px; color:var(--ink-3); border-bottom:1px solid transparent;
+  }
+  nav.toc a:hover{color:var(--accent-text);}
+  nav.toc a:focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:3px;}
+  nav.toc .n{
+    font-family:"IBM Plex Mono",monospace; font-size:11.5px;
+    color:var(--ink-4); padding-top:1.5px;
+  }
+
+  /* ── sections ─────────────────────────────── */
+  section{padding-top:56px;}
+  section h2{
+    font-family:"Instrument Serif",Georgia,serif; font-weight:400;
+    font-size:31px; line-height:1.2; color:var(--ink); margin:0 0 6px;
+    display:flex; align-items:baseline; gap:14px; text-wrap:balance;
+  }
+  section h2 .num{
+    font-family:"IBM Plex Mono",monospace; font-size:12px; color:var(--accent);
+    letter-spacing:.06em; flex-shrink:0;
+  }
+  .lede{color:var(--ink-3); margin:0 0 24px; max-width:64ch; font-size:14.5px;}
+  h3{
+    font-size:14px; font-weight:600; color:var(--ink); margin:30px 0 8px;
+    letter-spacing:.005em;
+  }
+  p{max-width:66ch; margin:0 0 14px;}
+  a{color:var(--accent-text);}
+
+  code{
+    font-family:"IBM Plex Mono",monospace; font-size:.875em;
+    background:var(--surface-2); color:var(--ink); padding:1.5px 5px;
+    border-radius:4px; border:1px solid var(--rule-soft);
+  }
+  pre{
+    font-family:"IBM Plex Mono",monospace; font-size:13px; line-height:1.7;
+    background:var(--surface); border:1px solid var(--rule); border-radius:10px;
+    padding:18px 20px; overflow-x:auto; margin:0 0 16px; color:var(--ink-2);
+  }
+  pre code{background:none; border:none; padding:0; font-size:inherit;}
+  .cmt{color:var(--ink-4);}
+
+  /* ── tables ───────────────────────────────── */
+  .tw{overflow-x:auto; margin:0 0 18px; border:1px solid var(--rule);
+      border-radius:10px; background:var(--surface); box-shadow:var(--shadow);}
+  table{border-collapse:collapse; width:100%; font-size:13.5px; min-width:520px;}
+  th{
+    text-align:left; font-weight:600; font-size:11px; letter-spacing:.1em;
+    text-transform:uppercase; color:var(--ink-4); padding:13px 18px;
+    border-bottom:1px solid var(--rule); white-space:nowrap;
+  }
+  td{padding:13px 18px; border-bottom:1px solid var(--rule-soft); color:var(--ink-2);
+     vertical-align:top;}
+  tr:last-child td{border-bottom:none;}
+  td code{font-size:12.5px;}
+  .mono{font-family:"IBM Plex Mono",monospace; font-variant-numeric:tabular-nums;
+        white-space:nowrap; font-size:12.5px;}
+
+  /* ── callouts ─────────────────────────────── */
+  .note{
+    border-left:2px solid var(--accent); background:var(--accent-wash);
+    padding:15px 20px; border-radius:0 8px 8px 0; margin:0 0 18px;
+  }
+  .note p{margin:0; max-width:64ch; font-size:14px; color:var(--ink-2);}
+  .warn{
+    border-left:2px solid var(--danger); background:var(--danger-wash);
+    padding:15px 20px; border-radius:0 8px 8px 0; margin:0 0 18px;
+  }
+  .warn p{margin:0; max-width:64ch; font-size:14px; color:var(--ink-2);}
+  .warn strong,.note strong{color:var(--ink);}
+
+  .gotcha{
+    border:1px solid var(--rule); border-radius:10px; background:var(--surface);
+    padding:18px 22px; margin:0 0 12px; box-shadow:var(--shadow);
+  }
+  .gotcha h4{
+    margin:0 0 6px; font-size:14.5px; font-weight:600; color:var(--ink);
+  }
+  .gotcha p{margin:0; font-size:14px; color:var(--ink-3); max-width:66ch;}
+
+  ul{margin:0 0 16px; padding-left:20px; max-width:66ch;}
+  li{margin-bottom:7px;}
+  li::marker{color:var(--ink-4);}
+
+  .pill{
+    font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.06em;
+    text-transform:uppercase; padding:3px 8px; border-radius:999px;
+    background:var(--danger-wash); color:var(--danger);
+    border:1px solid color-mix(in srgb,var(--danger) 25%,transparent);
+    white-space:nowrap;
+  }
+  .pill.ok{
+    background:var(--accent-wash); color:var(--accent-text);
+    border-color:color-mix(in srgb,var(--accent) 28%,transparent);
+  }
+
+  footer{
+    margin-top:72px; padding-top:24px; border-top:1px solid var(--rule);
+    font-size:13px; color:var(--ink-4); max-width:66ch;
+  }
+</style>
+<style>
+  /* ── status chips ─────────────────────────── */
+  .st{
+    font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.07em;
+    text-transform:uppercase; padding:3px 9px; border-radius:999px;
+    white-space:nowrap; font-weight:500;
+    background:var(--surface-2); color:var(--ink-3); border:1px solid var(--rule);
+  }
+  .st.live{background:var(--accent-wash); color:var(--accent-text);
+           border-color:color-mix(in srgb,var(--accent) 30%,transparent);}
+  .st.mvp{background:var(--surface-2); color:var(--ink-3);}
+  .st.off{background:var(--danger-wash); color:var(--danger);
+          border-color:color-mix(in srgb,var(--danger) 25%,transparent);}
+
+  section h2 .st{font-family:"IBM Plex Mono",monospace; margin-left:auto;}
+  section h2{flex-wrap:wrap;}
+
+  /* ── the per-feature fact block ───────────── */
+  .facts{
+    display:grid; grid-template-columns:max-content 1fr; gap:8px 20px;
+    background:var(--surface); border:1px solid var(--rule); border-radius:10px;
+    padding:18px 22px; margin:0 0 20px; box-shadow:var(--shadow);
+    font-size:13.5px; align-items:start;
+  }
+  .facts dt{
+    font-family:"IBM Plex Mono",monospace; font-size:10.5px; letter-spacing:.09em;
+    text-transform:uppercase; color:var(--ink-4); padding-top:3px;
+  }
+  .facts dd{margin:0; color:var(--ink-2);}
+  @media(max-width:620px){
+    .facts{grid-template-columns:1fr; gap:3px 0;}
+    .facts dd{margin-bottom:11px;}
+  }
+
+  /* numbered gotcha list */
+  ol.g{list-style:none; margin:0; padding:0; counter-reset:g;
+       display:flex; flex-direction:column; gap:11px;}
+  ol.g li{
+    counter-increment:g; position:relative; padding:16px 20px 16px 52px;
+    border:1px solid var(--rule); border-radius:10px; background:var(--surface);
+    box-shadow:var(--shadow); margin:0; font-size:14px; color:var(--ink-3);
+    max-width:none;
+  }
+  ol.g li::before{
+    content:counter(g,decimal-leading-zero); position:absolute; left:20px; top:16px;
+    font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--accent);
+  }
+  ol.g li b{color:var(--ink); font-weight:600;}
+  ol.g li::marker{content:none;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header class="mast">
+  <p class="kicker">Engineering handover</p>
+  <h1>GrowQR Website</h1>
+  <p class="standfirst">The marketing site, its admin dashboard, and everything wired behind them. Each feature below states what it does, where its data lives, and how you change it — because the answer is different for almost every one.</p>
+  <div class="stack">
+    <span class="chip">Next.js 15 · App Router</span>
+    <span class="chip">React 19</span>
+    <span class="chip">TypeScript</span>
+    <span class="chip">Tailwind</span>
+    <span class="chip">Supabase</span>
+    <span class="chip">Vercel · bom1</span>
+  </div>
+</header>
+
+<div class="cols">
+
+  <nav class="toc" aria-label="Contents">
+    <ol>
+      <li><a href="#s1"><span class="n">01</span> Start here</a></li>
+      <li><a href="#s2"><span class="n">02</span> Admin access</a></li>
+      <li><a href="#s3"><span class="n">03</span> Feature map</a></li>
+      <li><a href="#s4"><span class="n">04</span> Experts</a></li>
+      <li><a href="#s5"><span class="n">05</span> Events</a></li>
+      <li><a href="#s6"><span class="n">06</span> Internship</a></li>
+      <li><a href="#s7"><span class="n">07</span> Ambassador</a></li>
+      <li><a href="#s8"><span class="n">08</span> Lead forms</a></li>
+      <li><a href="#s9"><span class="n">09</span> CRM sync</a></li>
+      <li><a href="#s10"><span class="n">10</span> Bot &amp; demo calls</a></li>
+      <li><a href="#s11"><span class="n">11</span> Scheduled jobs</a></li>
+      <li><a href="#s12"><span class="n">12</span> Switches &amp; env</a></li>
+      <li><a href="#s13"><span class="n">13</span> Commands</a></li>
+      <li><a href="#s14"><span class="n">14</span> Gotchas</a></li>
+    </ol>
+  </nav>
+
+  <main>
+
+  <section id="s1">
+    <h2><span class="num">01</span> Start here</h2>
+    <p class="lede">One git-connected Vercel project. Pushing <code>main</code> is a live deploy.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Project</th><th>Host</th><th>Deploys via</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">newai</td><td class="mono">www.growqr.ai</td><td>Git &mdash; pushing <code>main</code> goes live</td></tr>
+      </tbody>
+    </table></div>
+    <div class="warn"><p><strong>The canonical host is www, not the apex.</strong> <code>SITE_URL</code> in <code>lib/seo.ts</code> must always equal the host actually serving the site. Apex canonicals previously broke Google Search Console indexing.</p></div>
+    <p>Branches: <code>main</code> is production, <code>dev</code> is integration. Functions are pinned to <code>bom1</code> to sit next to the <code>ap-south-1</code> database, so check round trips before blaming a slow query.</p>
+    <div class="note"><p><strong>Read section 03 first</strong>, then section 14. The feature map tells you where everything lives; the gotchas are the failures that happen silently.</p></div>
+    <p>Local setup needs Turnstile keys in <code>.env.local</code>. Without them every form returns 403 &mdash; see gotcha 4.</p>
+  </section>
+
+  <section id="s2">
+    <h2><span class="num">02</span> Admin access</h2>
+    <p class="lede">Not an email allowlist. Admin status lives in Supabase.</p>
+    <p>Authorization is <code>app_metadata.is_admin === true</code> on the Supabase user. That field can only be written with the service role key, so users can never grant themselves access, and it rides in the session JWT so the check costs no round trip.</p>
+    <div class="note"><p><strong>To add an admin:</strong> create the Supabase auth user, then set <code>app_metadata: { is_admin: true }</code> on them from the Supabase dashboard.</p></div>
+    <p><code>middleware.ts</code> matches only <code>/admin</code> and <code>/admin/:path*</code>, and it <strong>fails open</strong> if the Supabase env vars are missing. Every <code>/api/admin/*</code> route therefore re-checks <code>getAdminUser()</code> itself and fails closed. Do not add an admin API route without that check.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Route</th><th>Purpose</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">/admin</td><td>Dashboard overview</td></tr>
+        <tr><td class="mono">/admin/ambassador</td><td>Ambassador applications &middot; <code>/[id]</code> detail</td></tr>
+        <tr><td class="mono">/admin/events</td><td>Events CRUD &middot; <code>/new</code>, <code>/[id]</code></td></tr>
+        <tr><td class="mono">/admin/registrations/[eventId]</td><td>Attendees per event, CSV export</td></tr>
+        <tr><td class="mono">/admin/internship</td><td>Applications &middot; <code>/[id]</code> &middot; <code>/settings</code></td></tr>
+        <tr><td class="mono">/admin/logs</td><td>Audit log of admin actions</td></tr>
+      </tbody>
+    </table></div>
+    <p>Audit entries are written by <code>createAdminLog()</code> from the internship and ambassador routes. Event edits are <strong>not</strong> logged.</p>
+  </section>
+
+  <section id="s3">
+    <h2><span class="num">03</span> Feature map</h2>
+    <p class="lede">Where each feature's data lives, and whether an admin can touch it. This is the thing people get wrong first.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Feature</th><th>Status</th><th>Data home</th><th>Admin surface</th></tr></thead>
+      <tbody>
+        <tr><td>Experts</td><td><span class="st mvp">Live · MVP</span></td><td class="mono">experts-data.ts</td><td><strong>none</strong> &mdash; code + deploy</td></tr>
+        <tr><td>Expert availability</td><td><span class="st live">Live</span></td><td class="mono">expert_availability</td><td><strong>none</strong> &mdash; SQL only</td></tr>
+        <tr><td>Expert submissions</td><td><span class="st mvp">Live · MVP</span></td><td class="mono">expert_submissions</td><td><strong>none</strong> &mdash; no reader</td></tr>
+        <tr><td>Events</td><td><span class="st live">Live</span></td><td>Supabase</td><td>Full CRUD + export</td></tr>
+        <tr><td>Internship</td><td><span class="st mvp">Live · app APIs pending</span></td><td>5 tables</td><td>Full + settings page</td></tr>
+        <tr><td>Ambassador apply</td><td><span class="st mvp">Live · MVP</span></td><td class="mono">ambassador_applications</td><td>List, status, notes, export</td></tr>
+        <tr><td>Ambassador waitlist</td><td><span class="st mvp">Live · MVP</span></td><td class="mono">ambassador_waitlist</td><td><strong>none</strong> &mdash; no reader</td></tr>
+        <tr><td>Contact / Newsletter / Seeker / B2B</td><td><span class="st live">Live</span></td><td>4 tables</td><td>none</td></tr>
+        <tr><td>Chat bot (SalesIQ)</td><td><span class="st live">Live</span></td><td>Bundled snapshots</td><td>none</td></tr>
+        <tr><td>CRM sync (Zoho)</td><td><span class="st live">Live</span></td><td class="mono">crm_sync_*</td><td>none</td></tr>
+        <tr><td>Demo booking (Cal.com)</td><td><span class="st live">Live</span></td><td>3 tables</td><td>none</td></tr>
+        <tr><td>Marketing / solutions / agents</td><td><span class="st live">Live</span></td><td class="mono">lib/data.ts</td><td>none</td></tr>
+        <tr><td>Gallery</td><td><span class="st live">Live</span></td><td class="mono">gallery-data.ts</td><td>none &mdash; build script</td></tr>
+        <tr><td>Payments (Razorpay)</td><td><span class="st off">Disabled</span></td><td>&mdash;</td><td>&mdash;</td></tr>
+        <tr><td>User dashboard</td><td><span class="st off">Stub</span></td><td>&mdash;</td><td>&mdash;</td></tr>
+      </tbody>
+    </table></div>
+    <p><code>/dashboard</code> renders <code>null</code> and is <code>noindex</code>. The route exists so the link target is stable; the feature was never built.</p>
+    <p>Four Supabase storage buckets: <code>resumes</code>, <code>internship-resumes</code>, <code>event-assets</code>, <code>expert-media</code>. The upload routes are unauthenticated and write with the service-role key, so each carries its own bot gate and rate limit.</p>
+  </section>
+
+  <section id="s4">
+    <h2><span class="num">04</span> Experts <span class="st mvp">Live · MVP</span></h2>
+    <dl class="facts">
+      <dt>Data home</dt><dd>Profiles are hardcoded in <code>features/experts/data/experts-data.ts</code> (16 of them). Availability and submissions are in Supabase.</dd>
+      <dt>To change</dt><dd>Edit the file and deploy. <strong>There is no admin page for experts.</strong></dd>
+      <dt>Breaks if</dt><dd>The shared Google token is lost, or someone edits availability expecting a UI.</dd>
+    </dl>
+    <div class="tw"><table>
+      <thead><tr><th>What</th><th>Where</th><th>How to change it</th></tr></thead>
+      <tbody>
+        <tr><td>Expert profiles</td><td class="mono">experts-data.ts</td><td>Edit code, deploy</td></tr>
+        <tr><td>Booking availability</td><td class="mono">expert_availability</td><td>SQL / migration &mdash; see <code>0044</code></td></tr>
+        <tr><td>Public submissions</td><td class="mono">expert_submissions</td><td>Read the table in Supabase</td></tr>
+      </tbody>
+    </table></div>
+    <div class="warn"><p><strong>Expert submissions have no admin page &mdash; check them manually.</strong> A person filling in <code>/experts/submit</code> posts to <code>/api/expert-intake</code>, and the row lands in the Supabase table <code>public.expert_submissions</code> with <code>status = 'pending'</code>. Their uploaded photo goes to the <code>expert-media</code> storage bucket, and the row's <code>image_url</code> points at it.</p></div>
+    <p><strong>Where to look:</strong> Supabase dashboard &rarr; Table Editor &rarr; <code>expert_submissions</code>, newest first. Nothing in the product reads this table and no email is sent when a submission arrives, so it is unread until someone opens it. Approving one means copying the fields into <code>experts-data.ts</code> and deploying, since profiles are static (see above).</p>
+
+    <h3>Booking flow</h3>
+    <p>Availability is weekly rules expanded into slots by <code>features/experts/services/slots.ts</code>, minus Google free/busy and slots already taken. Booking creates a Google Calendar event with a Meet link, emails both sides, and queues 24h + 1h reminders at Resend.</p>
+    <div class="warn"><p><strong>Payments are wired but off.</strong> <code>PAYMENTS_ENABLED = false</code> in <code>app/api/experts/book/route.ts</code>. Bookings are free. All payment code and the invoice PDF templates are preserved &mdash; flip the flag to restore the pay-then-book flow.</p></div>
+    <p>2nd and 4th Saturdays are excluded as non-working days in <code>slots.ts</code>, in application code rather than in data. You will not find that in the availability table.</p>
+
+    <h3>The Google account behind Meet links</h3>
+    <p>The OAuth client lives in a Google Cloud console under <strong>sahil@growqr.ai</strong>. The stored token is for <strong>support@growqr.ai</strong>, and that token generates the Meet links and reads free/busy for every expert booking.</p>
+    <p>The token does not expire on its own, but it is <strong>not independently valid</strong>: <code>authedClient()</code> builds the client from <code>GOOGLE_OAUTH_CLIENT_ID</code> and <code>GOOGLE_OAUTH_CLIENT_SECRET</code> first, then attaches the refresh token, so every call re-authenticates against that Cloud project. If the project or its OAuth client is deleted, the token stops working immediately.</p>
+    <div class="warn"><p><strong>One shared connection, not one per expert.</strong> A single row with <code>expert_slug = null</code>. Completing the OAuth flow overwrites it, so whoever consents last owns every future Meet link. Losing it also stops internship interview scheduling.</p></div>
+    <p>To reconnect: set <code>GOOGLE_CONNECT_ENABLED=true</code> in Vercel, redeploy, sign in at <code>/api/google/connect</code> as an admin <strong>using support@growqr.ai</strong>, then unset it and redeploy. It stays unset in normal operation so the token cannot be overwritten by accident. <code>/experts/connect</code> is the branded success/failure page for that flow.</p>
+  </section>
+
+  <section id="s5">
+    <h2><span class="num">05</span> Events <span class="st live">Live</span></h2>
+    <dl class="facts">
+      <dt>Data home</dt><dd>Supabase &mdash; <code>events</code>, <code>event_registrations</code>, assets in the <code>event-assets</code> bucket.</dd>
+      <dt>To change</dt><dd>Entirely from <code>/admin/events</code>. No deploy needed.</dd>
+      <dt>Breaks if</dt><dd>Nothing structural. Note that event edits are not audit-logged.</dd>
+    </dl>
+    <p>The opposite of experts in every way. An admin can:</p>
+    <ul>
+      <li>Create and edit events (<code>/admin/events/new</code>, <code>/admin/events/[id]</code>)</li>
+      <li>Upload and crop poster images</li>
+      <li>Preview an event before publishing</li>
+      <li>Toggle active / inactive to publish and unpublish</li>
+      <li>View registrations per event and export CSV</li>
+    </ul>
+    <p>Registration enforces <code>registration_limit</code> and returns a <code>capacityReached</code> state rather than overbooking, then sends a confirmation email. Server actions live in <code>features/events/actions/admin/</code>, services in <code>features/events/services/</code>.</p>
+    <p>Event registrations do <strong>not</strong> sync to Zoho.</p>
+  </section>
+
+  <section id="s6">
+    <h2><span class="num">06</span> Internship <span class="st mvp">Live · app APIs pending</span></h2>
+    <dl class="facts">
+      <dt>Data home</dt><dd>Five tables: <code>internship_applications</code>, <code>_interviews</code>, <code>_appointments</code>, <code>_emails</code>, <code>_settings</code>.</dd>
+      <dt>To change</dt><dd>Fully from <code>/admin/internship</code>, including a settings page for the automation.</dd>
+      <dt>Breaks if</dt><dd>The interview service credentials are wrong, or a candidate's GrowQR account email does not match &mdash; see gotcha 3.</dd>
+      <dt>Not closed</dt><dd>Parts of the loop wait on APIs the app team has not shipped &mdash; see below.</dd>
+    </dl>
+    <p>The largest and most automated feature. Public entry is <code>/growqr-internship</code> and a four-step form at <code>/growqr-internship/apply</code> that prefills from the applicant's GrowQR profile link and uploads a resume.</p>
+
+    <h3>Nine statuses, and a guard</h3>
+    <p><code>new</code>, <code>screening</code>, <code>shortlisted</code>, <code>interview</code>, <code>selected</code>, <code>waitlist</code>, <code>offer</code>, <code>joined</code>, <code>rejected</code>.</p>
+    <p><code>lib/internship/status-flow.ts</code> defines a seven-step linear path. <strong><code>waitlist</code> and <code>rejected</code> sit deliberately off it</strong>, and <code>nextStatusOrNull()</code> only ever moves forward. So automation can never move a candidate onto or off a human hold, and never backwards. Only a person can reject, waitlist, or mark joined.</p>
+
+    <h3>Triage is not status</h3>
+    <p>On submit, <code>triageFor()</code> bands the applicant <code>auto_shortlist</code> / <code>on_hold</code> / <code>unscored</code> against their RQ score (default threshold 50, configurable). It is written <strong>once</strong> and never recomputed, so changing the threshold later does not re-band existing applicants.</p>
+
+    <h3>The AI interview</h3>
+    <p><code>lib/internship/growqr-interview-api.ts</code> talks to <code>api.growqr.ai</code> &mdash; the external interview service. An auto-shortlisted applicant is assigned a round on submit, if <code>GROWQR_INTERVIEW_API_KEY</code> and <code>GROWQR_INTERVIEW_ORG_ID</code> are both set. If they are not, the round is still created and tracked manually.</p>
+    <p>Results sync back <strong>three ways</strong>: the "Sync results" button, automatically whenever the detail page opens, and daily from <code>/api/cron/crm-sync</code> (which runs it before, and independent of, the CRM kill switch).</p>
+    <p>The service returns no hire/no-hire signal. Our verdict field is <code>hr_verdict</code>, named that way deliberately to avoid colliding with the service's candidate-coaching <code>recommendations</code>.</p>
+    <div class="warn"><p><strong>Auto-advance ships OFF.</strong> <code>auto_advance_enabled</code> defaults to false, so a passing score does not move anyone to Selected until someone switches it on in settings.</p></div>
+
+    <h3>Final round and the appointment letter</h3>
+    <p>Scheduling a final discussion creates a <strong>real Google Meet</strong> via the shared calendar connection, anchored to IST, falling back to a pasted link if no calendar is connected.</p>
+    <p>The appointment letter is a <strong>generated PDF</strong> (<code>@react-pdf/renderer</code>) attached to the email. Sending it stamps <code>issued_at</code> and advances status to <code>offer</code>. It deliberately contains <strong>no compensation figures</strong> &mdash; there is no such field anywhere in the table, form, or settings.</p>
+
+    <h3>What is still pending from the app side</h3>
+    <p>The website half of this pipeline is built and working. It is <strong>not a closed loop end to end</strong>, because several pieces depend on API surfaces the GrowQR app has not delivered yet. Worth knowing before anyone reports these as bugs on this repo.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Waiting on</th><th>Already built here</th><th>Consequence today</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>session_meta</code> on the results payload</td>
+          <td>Columns <code>difficulty</code>, <code>duration_minutes</code>, <code>external_session_id</code> exist (migration 0037)</td>
+          <td>All three are <strong>never populated</strong>. Nothing writes them because the service does not return them.</td>
+        </tr>
+        <tr>
+          <td><code>GET /review/{session_id}</code></td>
+          <td>The <code>external_session_id</code> column is stored separately for exactly this call</td>
+          <td>No client function exists. There is no way to open a candidate's full interview review from admin.</td>
+        </tr>
+        <tr>
+          <td>A hire / no-hire signal</td>
+          <td><code>hr_verdict</code> field and its UI rendering</td>
+          <td>The service returns only candidate <em>coaching</em> notes. Every verdict is entered by a human.</td>
+        </tr>
+        <tr>
+          <td>Assignment lifecycle endpoints</td>
+          <td><code>unassign()</code> and <code>verifyPendingAssignment()</code> are written and tested</td>
+          <td><strong>Zero callers.</strong> No way to cancel an assignment, and no delivery check &mdash; which is the guard against gotcha 3.</td>
+        </tr>
+      </tbody>
+    </table></div>
+    <p>The client currently implements assignment creation, bulk results, the two account-email lookups, and a pending-assignment probe. Everything else in the schema was built ahead of the service.</p>
+    <div class="note"><p><strong>The practical effect:</strong> a candidate can be assigned an AI interview and have a score sync back, and that much works. But nobody can cancel a mis-assigned interview, verify one was actually delivered, or read the full review &mdash; those need the app team first.</p></div>
+
+    <h3>Settings</h3>
+    <p><code>/admin/internship/settings</code> writes a singleton row: RQ threshold, auto-assign on/off, AI round type per role, auto-advance and its pass score, default interviewer, calendar id, appointment-letter defaults, and four candidate-email toggles. <code>getInternshipSettings()</code> never throws &mdash; a missing row or a down database degrades to defaults rather than failing the request.</p>
+  </section>
+
+  <section id="s7">
+    <h2><span class="num">07</span> Ambassador <span class="st mvp">Live · MVP</span></h2>
+    <dl class="facts">
+      <dt>Data home</dt><dd><strong>Two</strong> tables: <code>ambassador_applications</code> (the real form) and <code>ambassador_waitlist</code> (email capture when closed).</dd>
+      <dt>To change</dt><dd><code>APPLICATIONS_OPEN</code> in <code>components/pages/ambassadors/ambassadors-data.ts</code> &mdash; a hardcoded constant, not an env var. Cohort name and seat counts are hardcoded there too.</dd>
+      <dt>Breaks if</dt><dd>Supabase env vars are missing &mdash; this feature fails <strong>open</strong>. See gotcha 1.</dd>
+    </dl>
+    <p>When <code>APPLICATIONS_OPEN</code> is true, <code>/ambassadors/apply</code> shows the real four-step form which posts to <code>/api/send-ambassador</code>. When false it shows a waitlist email capture posting to <code>/api/ambassador-waitlist</code>. Different form, different route, different table.</p>
+    <p>The form captures UTM parameters, where <code>utm_medium</code> holds the referring ambassador's id. Resume upload uses its own separate Turnstile token, because a token is single-use at verification.</p>
+    <p>Admin at <code>/admin/ambassador</code>: search and filter, change status, edit internal notes, manually add an application, delete, and export CSV. Statuses are <code>pending</code>, <code>screening</code>, <code>interviewed</code>, <code>under_review</code>, <code>shortlisted</code>, <code>rejected</code>.</p>
+    <div class="warn"><p><strong>The waitlist has no admin page &mdash; check it manually.</strong> While <code>APPLICATIONS_OPEN</code> is false, every email captured goes to the Supabase table <code>public.ambassador_waitlist</code> (three columns: <code>id</code>, <code>email</code>, <code>created_at</code>). Nothing reads it and nothing is sent when the cohort reopens.</p>
+    <p><strong>Where to look:</strong> Supabase dashboard &rarr; Table Editor &rarr; <code>ambassador_waitlist</code>. Export it by hand when a new cohort opens, or those people never hear that applications are live again.</p></div>
+    <div class="note"><p>Two other things to know: applications never reach Zoho, and the CSV export contains <code>aadhaar_number</code> in plaintext alongside internal notes &mdash; treat that file accordingly.</p></div>
+    <p>These two routes are hand-rolled and do <strong>not</strong> use the shared form pipeline in section 08, which is why their failure posture differs.</p>
+  </section>
+
+  <section id="s8">
+    <h2><span class="num">08</span> Lead-capture forms <span class="st live">Live</span></h2>
+    <p class="lede">Four forms on one shared pipeline in <code>lib/forms/handler.ts</code>.</p>
+    <pre><code>rate limit → parse/validate → Turnstile → persist   <span class="cmt">← all fail CLOSED</span>
+    → emails → CRM sync                        <span class="cmt">← both fail OPEN</span></code></pre>
+    <p>A failed persist stops the request. A failed email or CRM write never does &mdash; it is logged, and the nightly sweep reconciles. Add new forms through route config, never by re-implementing the pipeline.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Form</th><th>Entry point</th><th>Table</th><th>Emails</th><th>Syncs to Zoho</th></tr></thead>
+      <tbody>
+        <tr><td>Contact</td><td class="mono">/contact</td><td class="mono">contact_messages</td><td>2 &mdash; team + user</td><td>Sales enquiries only</td></tr>
+        <tr><td>Newsletter</td><td>Site footer</td><td class="mono">newsletter_subscribers</td><td>1 &mdash; welcome</td><td><strong>No</strong> (deliberate)</td></tr>
+        <tr><td>Seeker waitlist</td><td>Modal, non-live regions</td><td class="mono">seeker_waitlist</td><td>1 &mdash; confirmation</td><td>Yes, as B2C</td></tr>
+        <tr><td>B2B lead</td><td>Enterprise modal</td><td class="mono">b2b_leads</td><td>2 &mdash; team + user</td><td>Yes, as B2B</td></tr>
+      </tbody>
+    </table></div>
+    <div class="note"><p><strong>Turnstile has no dev bypass, on purpose.</strong> An earlier version returned success when the secret was unset, which silently disabled bot protection on a misconfigured deploy. With no keys in <code>.env.local</code> the widget renders nothing, no token is produced, and every form returns 403.</p></div>
+    <p>Rate limiting is 5 requests per 10 minutes per form. It is an in-process map, not a shared store, so on serverless the real ceiling is higher than the number suggests. That is a documented trade-off, not a bug.</p>
+  </section>
+
+  <section id="s9">
+    <h2><span class="num">09</span> CRM sync <span class="st live">Live</span></h2>
+    <div class="note"><p><strong>There is a proper runbook already:</strong> <code>lib/crm/README.md</code>. It is the most complete document in the repo. Read it before changing anything in <code>lib/crm/</code>. This section is only the orientation.</p></div>
+    <p>A submission reaches Zoho <strong>both</strong> immediately and nightly. The inline path fires within seconds of the response; the daily cron is the durability layer that catches anything a cold shutdown stranded. They cannot collide: claiming a row is a conditional update, the sweep ignores rows younger than ten minutes, and Zoho upserts on email so a double-fire cannot duplicate a lead.</p>
+    <p>Rows move <code>pending → syncing → synced</code> or <code>failed</code>, giving up after five attempts. A reaper resets rows stuck in <code>syncing</code>. A second lane retries rows that synced but whose follow-up work (a Zoho Task or Note) did not complete.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Source</th><th>Syncs?</th><th>Becomes</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">b2b_leads</td><td>Yes</td><td>B2B Lead</td></tr>
+        <tr><td class="mono">contact_messages</td><td>Sales only</td><td>Lead</td></tr>
+        <tr><td class="mono">seeker_waitlist</td><td>Yes</td><td>B2C Lead</td></tr>
+        <tr><td class="mono">bot_leads</td><td>Yes</td><td>B2B Lead + Task + Notes</td></tr>
+        <tr><td class="mono">call_bookings</td><td>Yes</td><td><strong>Contact or Lead</strong> + Task + Note</td></tr>
+        <tr><td class="mono">newsletter_subscribers</td><td>No</td><td>&mdash; deliberate</td></tr>
+        <tr><td class="mono">ambassador_*</td><td>No</td><td>&mdash; no CRM columns at all</td></tr>
+        <tr><td class="mono">internship_applications</td><td>No</td><td>&mdash;</td></tr>
+      </tbody>
+    </table></div>
+    <p><code>call_bookings</code> is the only source that searches Contacts first. A converted lead becomes a Contact and disappears from the Leads search, so without that step a booking by an existing customer would create a duplicate.</p>
+    <h3>List views in Zoho</h3>
+    <p>Three custom views are load-bearing and should stay. Everything else was a one-off and has been cleared out &mdash; do not recreate that clutter.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Module</th><th>View</th><th>Why it stays</th></tr></thead>
+      <tbody>
+        <tr><td>Contacts</td><td>B2B</td><td>Mirrors the <code>Segment</code> value the sync writes</td></tr>
+        <tr><td>Contacts</td><td>B2C</td><td>Same, for the consumer side</td></tr>
+        <tr><td>Contacts</td><td>Ambassadors &ndash; Not Signed Up</td><td>Live follow-up workflow</td></tr>
+      </tbody>
+    </table></div>
+    <p>Leads deliberately has <strong>no</strong> custom views &mdash; the system set covers it. If you add one, name it after something the pipeline actually writes (<code>Segment</code>, <code>Lead_Source</code>, <code>Lead_Status</code>), so it stays meaningful once the person who made it has gone.</p>
+    <div class="note"><p><strong>Views cannot be deleted through the API.</strong> <code>DELETE</code> on <code>/crm/v8/settings/custom_views/{id}</code> returns <code>INVALID_REQUEST_METHOD</code> on every version, and it is not a scope problem. Read and edit work; removal is Zoho UI only, under <em>Manage Views</em>. A view marked default cannot be deleted until another view is made default.</p></div>
+    <p>Campaign segments are the ones that pile up. If you build a view for a single send, delete it once the send is done &mdash; but check no Zoho campaign still points at it first, because a campaign whose view is gone loses its recipient list.</p>
+
+    <div class="warn"><p><strong>Nothing in this repo ever creates a Deal.</strong> The B2C policy is enforced indirectly: the payload builder strips <code>Company</code> whenever the segment is B2C, and Zoho decides whether to create an Account purely from whether Company has a value. This depends on <code>Company</code> being <strong>non-required</strong> on the live Zoho Leads layout &mdash; a config dependency you cannot see from the code.</p></div>
+  </section>
+
+  <section id="s10">
+    <h2><span class="num">10</span> Chat bot &amp; demo calls <span class="st live">Live</span></h2>
+    <h3>SalesIQ bot</h3>
+    <p>The widget mounts globally in <code>app/layout.tsx</code>. Answers come from bundled snapshots (<code>lib/bot/kb-snapshot.json</code>, <code>faq-snapshot.json</code>) with an OpenAI fallback. The webhook has a hard five-second budget, which is why the knowledge base is a bundled file rather than a live fetch, and why CRM writes happen after the response rather than inline.</p>
+    <p>Requests are authenticated by either an RSA signature verified against <code>SALESIQ_PUBLIC_KEY</code>, or a legacy shared-secret header. Either proof is sufficient.</p>
+
+    <h3>Demo calls via Cal.com</h3>
+    <p>Clicking a demo CTA fires an attribution beacon to <code>/api/cal/intent</code>, then opens Cal with <code>source</code> and <code>intent</code> as hidden booking questions. Cal echoes them back in the webhook, which is the only way page context survives the hop off-site.</p>
+    <p>The webhook is HMAC-verified, deduplicated by a hash of the raw body, and ordering-guarded. It returns <strong>200 to anything durably recorded</strong> &mdash; only a bad signature (401) and an unavailable ledger (503) ask Cal to retry, because one malformed payload could otherwise become an endless retry loop.</p>
+    <div class="note"><p><strong>Cal mints a new booking id on reschedule.</strong> Confirmed live. The RPC migrates the existing row onto the new id rather than inserting a duplicate, which would otherwise double-count the booking and create a second Zoho Task.</p></div>
+    <p>Guests on a booking (Kanika on B2B, Ruchi on B2C) are <strong>prefilled defaults the booker can delete</strong>, not enforced attendees. Real co-hosts need a Cal Teams plan, and collective scheduling would intersect calendars and shrink available slots.</p>
+  </section>
+
+  <section id="s11">
+    <h2><span class="num">11</span> Scheduled jobs</h2>
+    <p class="lede">Two crons in <code>vercel.json</code>. Both require <code>CRON_SECRET</code> and refuse to run without it.</p>
+    <div class="tw"><table>
+      <thead><tr><th>Path</th><th>Schedule (UTC)</th><th>What it actually does</th></tr></thead>
+      <tbody>
+        <tr><td class="mono">/api/cron/crm-sync</td><td class="mono">0 2 * * *</td><td>Four jobs, in order: retry booking notifications, purge expired intents, sync interview results, then (only if enabled) drain the CRM queue and flush chat transcripts</td></tr>
+        <tr><td class="mono">/api/cron/expert-reminders</td><td class="mono">30 2 * * *</td><td>Top-up sweeper for the 24h + 1h session reminders</td></tr>
+      </tbody>
+    </table></div>
+    <p>The first three jobs in <code>crm-sync</code> run <strong>before and independent of</strong> <code>CRM_SYNC_ENABLED</code>, so turning off CRM does not stop interview syncing or intent cleanup.</p>
+    <div class="note"><p><strong>The reminder cron does not time delivery.</strong> Reminders are queued at Resend with a <code>scheduledAt</code> the moment a booking is created, which is why a once-daily run is enough. The cron only catches stages that failed to queue and bookings made beyond Resend's 30-day scheduling horizon.</p></div>
+    <p>Daily is a plan constraint, not a design choice &mdash; the Vercel Hobby plan caps crons at two, once per day. Nothing is lost by it; recovery is just slower.</p>
+  </section>
+
+  <section id="s12">
+    <h2><span class="num">12</span> Switches &amp; env</h2>
+    <div class="tw"><table>
+      <thead><tr><th>Variable</th><th>Effect when off or unset</th><th></th></tr></thead>
+      <tbody>
+        <tr><td class="mono">PAYMENTS_ENABLED</td><td>Expert bookings are free (code constant, not env)</td><td></td></tr>
+        <tr><td class="mono">CRM_SYNC_ENABLED</td><td>No writes to Zoho; rows queue as pending and drain after re-enable</td><td></td></tr>
+        <tr><td class="mono">BOT_AI_ENABLED</td><td>Bot answers from snapshots only, no OpenAI</td><td></td></tr>
+        <tr><td class="mono">GOOGLE_CONNECT_ENABLED</td><td>OAuth connect + callback return 404</td><td><span class="pill ok">safe default</span></td></tr>
+        <tr><td class="mono">APPLICATIONS_OPEN</td><td>Ambassador form becomes a waitlist capture (code constant)</td><td></td></tr>
+        <tr><td class="mono">TURNSTILE_SECRET_KEY</td><td>Every form 403s</td><td><span class="pill">required</span></td></tr>
+        <tr><td class="mono">CRON_SECRET</td><td>Both crons refuse to run</td><td><span class="pill">required</span></td></tr>
+        <tr><td class="mono">CAL_WEBHOOK_SECRET</td><td>Cal webhook 401s every delivery</td><td><span class="pill">required</span></td></tr>
+      </tbody>
+    </table></div>
+    <p><code>CRM_SYNC_ENABLED</code> is a strict string comparison against <code>"true"</code>. <code>"TRUE"</code> and <code>"1"</code> both disable it.</p>
+    <div class="note"><p><code>.env.example</code> documents every variable the code reads &mdash; the Zoho set, <code>CRM_SYNC_ENABLED</code>, <code>CAL_WEBHOOK_SECRET</code>, the GrowQR API bases and the <code>FORCE_*</code> local overrides included. <code>lib/crm/README.md</code> carries the longer explanation of the Zoho ones.</p></div>
+  </section>
+
+  <section id="s13">
+    <h2><span class="num">13</span> Commands</h2>
+    <pre><code>npm run dev            <span class="cmt"># local, port 3000</span>
+npm test               <span class="cmt"># vitest</span>
+npm run lint
+npm run build
+
+npm run kb:export      <span class="cmt"># after editing the SalesIQ Answer Hub</span>
+npm run faq:export     <span class="cmt"># after editing SalesIQ FAQs</span>
+npm run crm:drift      <span class="cmt"># BEFORE editing any Zoho picklist</span>
+npm run zoho:probe     <span class="cmt"># what the credential actually reaches</span>
+npm run emails:preview <span class="cmt"># every internship email, rendered</span>
+npm run letter:preview <span class="cmt"># appointment letter → PDF</span>
+npm run gallery:build  <span class="cmt"># rebuild /gallery from the photo archive</span></code></pre>
+    <div class="note"><p><code>scripts/generate-icon-bundle.mjs</code> has no npm alias. Re-run it after adding any new icon or the icon will not render. It is what removed the runtime Iconify fetches.</p></div>
+    <div class="warn"><p><strong>Two scripts hit live paid services.</strong> <code>npm run ai:smoke</code> costs OpenAI tokens. <code>npm run crm:smoke</code> writes a real Lead to production Zoho and bypasses the kill switch &mdash; delete the test record afterwards.</p></div>
+  </section>
+
+  <section id="s14">
+    <h2><span class="num">14</span> Gotchas</h2>
+    <p class="lede">Only what a new owner cannot simply fix. Everything else found during this handover has been fixed in the code.</p>
+
+    <h3>Blocked on someone else</h3>
+    <ol class="g">
+      <li><b>The interview account-email trap.</b> Assignments match the candidate's GrowQR <em>account</em> email, not the address on the application form. Get it wrong and the service returns success with a real assignment id, while the candidate never sees the interview. The guard against this &mdash; <code>verifyPendingAssignment()</code> &mdash; is written and tested but has no endpoint to call yet. <b>Needs the app team.</b></li>
+      <li><b>Zoho picklists accept invalid values silently.</b> The API stores an unrecognised value instead of rejecting it, and Zoho matches on display names, so renaming a picklist in their UI breaks writes with no error anywhere. Not fixable from this side. Run <code>npm run crm:drift</code> before any picklist edit &mdash; that is the whole mitigation.</li>
+      <li><b>Only two cron jobs, once a day.</b> A Vercel plan limit, not a design choice. Normal operation is unaffected because the real work runs inline, but every <em>recovery</em> path inherits a day of latency: a stranded CRM row, a chat transcript waiting on its lead, and a failed 1-hour session reminder whose recovery window is 15 minutes and so is effectively never swept up. Fixing it means a paid plan or an external scheduler.</li>
+      <li><b>Rate limiting is per-instance and in memory.</b> On serverless the real ceiling is higher than the configured limit, because each cold start gets its own counter. Fine at current volume; solving it properly needs a shared store such as Redis.</li>
+    </ol>
+
+    <h3>Missing pieces someone has to build</h3>
+    <ol class="g">
+      <li><b>Recording an interview outcome by hand is API-only.</b> The endpoints work and carry score, verdict, summary and reschedule, but nothing in the admin UI calls them. A human interview round cannot be scored from the dashboard.</li>
+      <li><b><code>internship_emails</code> is write-only.</b> Every send is logged and nothing ever reads the table, so there is no timeline on the candidate and no "already sent" warning before a resend.</li>
+    </ol>
+
+    <h3>Things that are simply true, and will surprise you</h3>
+    <ol class="g">
+      <li><b>Local setup needs Turnstile keys or every form returns 403.</b> There is deliberately no development bypass &mdash; an earlier version returned success when the secret was missing, which silently disabled bot protection on a misconfigured deploy. It looks like a broken form, not missing config.</li>
+      <li><b>Bot answers come from a bundled snapshot, not a live fetch.</b> Editing the SalesIQ Answer Hub changes nothing until someone runs <code>npm run kb:export</code> and deploys. Same for FAQs. Nothing warns you; the bot just keeps saying the old thing.</li>
+    </ol>
+  </section>
+
+  <footer>
+    Schema in <code>supabase/migrations/</code>. CRM runbook in <code>lib/crm/README.md</code>. Environment variables in <code>.env.example</code>, with the caveat in section 12.
+  </footer>
+
+  </main>
+</div>
+</div>
+</body>
+</html>

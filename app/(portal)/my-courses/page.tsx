@@ -1,0 +1,54 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { requireUser } from "@/lib/portal/guard";
+import * as courses from "@/lib/market/courses";
+import * as learning from "@/lib/market/learning";
+import { CourseFlash, CourseTracker, Cover } from "@/components/market/course-parts";
+import { PortalPage } from "@/components/portal/shell";
+
+export const metadata: Metadata = { title: "My courses | GrowQR" };
+export const dynamic = "force-dynamic";
+
+export default async function MyCoursesPage({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
+  const me = await requireUser("student");
+  const sp = await searchParams;
+  const rows = await learning.forUser(me.id);
+  const groups: Record<string, learning.MyCourse[]> = { "In progress": [], Enrolled: [], Completed: [] };
+  for (const r of rows) groups[r.status === "completed" ? "Completed" : r.status === "in_progress" ? "In progress" : "Enrolled"].push(r);
+  const counted = rows.filter((r) => r.status === "completed" && (r.tier === "certificate" || r.tier === "verified")).length;
+
+  return (
+    <PortalPage user={me} active="courses" title="My courses" subtitle="Track your progress. Completed courses with a certificate count toward your Skill Passport." wide="full">
+      <CourseFlash c={sp.c} e={sp.e} />
+      <dl className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        {[["Enrolled", rows.length, "courses"], ["In progress", groups["In progress"].length + groups.Enrolled.length, "to finish"], ["Completed", groups.Completed.length, "courses"], ["Counting toward matches", counted, "with certificate or verified"]].map(([k, v, s]) => (
+          <div key={String(k)} className="bg-white rounded-2xl border border-black/[0.08] shadow-card p-5"><dt className="text-[13px] text-ink-4">{k}</dt><dd className="text-[24px] font-bold text-ink">{v}</dd><dd className="text-[13px] text-ink-3">{s}</dd></div>
+        ))}
+      </dl>
+      {!rows.length ? (
+        <div className="bg-white rounded-2xl border border-black/[0.08] p-8 text-center">
+          <h2 className="text-[18px] font-semibold text-ink">You have not enrolled in a course yet</h2>
+          <p className="text-[14px] text-ink-3 mt-1 mb-4">Pick a course, tick off modules as you finish them on Vidaara, and add your certificate to raise your match scores.</p>
+          <Link href="/courses" className="inline-flex items-center min-h-[44px] px-5 rounded-lg bg-orange hover:bg-orange-dark text-white font-semibold text-[14px]">Browse {await courses.total()} courses</Link>
+        </div>
+      ) : null}
+      {Object.entries(groups).map(([label, list]) =>
+        list.length ? (
+          <section key={label} className="mb-8" aria-labelledby={`g-${label.replace(" ", "-")}`}>
+            <h2 id={`g-${label.replace(" ", "-")}`} className="text-[20px] font-bold text-ink mb-3">{label} ({list.length})</h2>
+            <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-4">
+              {list.map((e) => (
+                <article key={e.id} className="bg-white rounded-2xl border border-black/[0.08] shadow-card p-4">
+                  <Cover c={e} />
+                  <h3 className="text-[16px] font-semibold text-ink mt-3"><Link href={`/courses/${e.slug}`} className="hover:underline">{e.title}</Link></h3>
+                  <CourseTracker course={e} e={e} back="/my-courses" />
+                  <p className="mt-2 text-[14px]"><a className="underline text-orange-dark" href={courses.url(e.slug)} target="_blank" rel="noopener noreferrer">{e.status === "completed" ? "Revisit" : "Continue"} on Vidaara</a></p>
+                </article>
+              ))}
+            </div>
+          </section>
+        ) : null,
+      )}
+    </PortalPage>
+  );
+}

@@ -1,0 +1,135 @@
+import type { Metadata } from "next";
+import Link from "next/link";
+import { notFound } from "next/navigation";
+import { databaseConfigured } from "@/lib/portal/db";
+import * as passport from "@/lib/portal/passport/profile";
+import * as courses from "@/lib/market/courses";
+import * as jobs from "@/lib/market/jobs";
+import * as learning from "@/lib/market/learning";
+import { JobCard } from "@/components/market/job-card";
+import { CourseCard, CourseFlash, CourseTracker, Cover } from "@/components/market/course-parts";
+import { currentViewer, MarketShell } from "@/components/market/shell";
+import { courseAction } from "../actions";
+import { serializeJsonLd } from "@/lib/json-ld";
+import { SITE_URL } from "@/lib/seo";
+
+export const dynamic = "force-dynamic";
+const clean = (s: string) => s.toLowerCase().replace(/[^a-z0-9-]/g, "");
+
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  if (!databaseConfigured()) return { title: "Course | GrowQR" };
+  const c = await courses.bySlug(clean((await params).slug));
+  if (!c) return { title: "Course not found | GrowQR", robots: { index: false, follow: true } };
+  return {
+    title: `${c.title} Course | GrowQR`,
+    description: Array.from(`${c.brief} ${c.hours}, ${c.modules} modules, certificate and badge.`).slice(0, 155).join(""),
+    alternates: { canonical: `${SITE_URL}/courses/${c.slug}` },
+    robots: { index: true, follow: true },
+  };
+}
+
+export default async function CoursePage({ params, searchParams }: { params: Promise<{ slug: string }>; searchParams: Promise<Record<string, string | undefined>> }) {
+  const slug = clean((await params).slug);
+  const sp = await searchParams;
+  const me = await currentViewer();
+  if (!databaseConfigured()) notFound();
+  const course = slug ? await courses.bySlug(slug) : null;
+  if (!course) notFound();
+  const isStudent = me?.role === "student";
+  const profile = isStudent ? await passport.profile(me!.id) : null;
+  const enrol = profile ? await learning.find(me!.id, course.id) : null;
+  const self = `/courses/${course.slug}`;
+  const start = courses.url(course.slug);
+
+  // Internships whose required skills this course teaches.
+  const hay = (course.title + " " + course.learn.join(" ") + " " + course.brief).toLowerCase();
+  const matching = (await jobs.live())
+    .map((j) => ({ j, n: j.skills.filter((s) => Buffer.byteLength(s) >= 3 && hay.includes(s.toLowerCase())).length }))
+    .filter((x) => x.n > 0)
+    .sort((a, b) => b.n - a.n)
+    .slice(0, 3)
+    .map(({ j }) => ({ ...j, match: passport.match(j.skills, profile).score }));
+  const related = await courses.related(course, 3);
+
+  const jsonld = {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "Course", name: course.title, description: course.brief, url: `${SITE_URL}${self}`, educationalLevel: course.level_label, timeRequired: course.hours, inLanguage: "en", provider: { "@type": "Organization", name: "Vidaara", sameAs: "https://vidaara.org" } },
+      { "@type": "BreadcrumbList", itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Home", item: SITE_URL },
+        { "@type": "ListItem", position: 2, name: "Courses", item: `${SITE_URL}/courses` },
+        { "@type": "ListItem", position: 3, name: course.cat_name, item: `${SITE_URL}/courses?cat=${course.category}` },
+        { "@type": "ListItem", position: 4, name: course.title },
+      ] },
+    ],
+  };
+  const btn = "flex items-center justify-center min-h-[48px] rounded-lg font-semibold text-[15px] w-full";
+
+  return (
+    <MarketShell user={me} active="courses">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(jsonld) }} />
+      <nav aria-label="Breadcrumb" className="text-[13px] text-ink-3 mb-4"><Link href="/" className="underline">Home</Link> / <Link href="/courses" className="underline">Courses</Link> / <Link href={`/courses?cat=${course.category}`} className="underline">{course.cat_name}</Link></nav>
+      <Cover c={course} />
+      <h1 className="text-[26px] sm:text-[32px] font-bold text-ink tracking-tight leading-tight mt-4">{course.title}</h1>
+      <p className="text-[16px] text-ink-3 mt-1 max-w-3xl">{course.brief}</p>
+      <ul className="grid grid-cols-2 sm:grid-cols-5 gap-3 mt-5">
+        {[["Total time", course.hours], ["Modules", String(course.modules)], ["Pace", `${course.weeks} @ ${course.pace}`], ["Level", course.level_label], ["You earn", course.badge || "Certificate"]].map(([k, v]) => (
+          <li key={k} className="bg-white rounded-xl border border-black/[0.08] px-4 py-3"><span className="block text-[12px] text-ink-4">{k}</span><b className="text-[15px] text-ink">{v}</b></li>
+        ))}
+      </ul>
+
+      <div className="grid lg:grid-cols-[1fr_22rem] gap-6 mt-6 items-start">
+        <div className="space-y-6 min-w-0">
+          <article className="bg-white rounded-2xl border border-black/[0.08] shadow-card p-5 sm:p-7">
+            <h2 className="text-[20px] font-bold text-ink mb-3">What you will learn</h2>
+            <ul className="list-disc pl-5 space-y-1 text-[15px] text-ink-2">{course.learn.map((l) => <li key={l}>{l}</li>)}</ul>
+            {course.hands_on ? (<><h3 className="text-[16px] font-semibold text-ink mt-5 mb-1">Hands-on project</h3><p className="text-[15px] text-ink-2">{course.hands_on}</p></>) : null}
+            {course.outcome ? (<><h3 className="text-[16px] font-semibold text-ink mt-5 mb-1">After this course</h3><p className="text-[15px] text-ink-2">{course.outcome}</p></>) : null}
+          </article>
+          <article className="bg-white rounded-2xl border border-black/[0.08] shadow-card p-5 sm:p-7">
+            <h2 className="text-[20px] font-bold text-ink mb-3">Is it right for you?</h2>
+            {course.best_for ? (<><h3 className="text-[16px] font-semibold text-ink mb-1">Best for</h3><p className="text-[15px] text-ink-2">{course.best_for}</p></>) : null}
+            {course.prereq ? (<><h3 className="text-[16px] font-semibold text-ink mt-4 mb-1">Prerequisites</h3><p className="text-[15px] text-ink-2">{course.prereq}</p></>) : null}
+            {course.tag_list.length ? (<><h3 className="text-[16px] font-semibold text-ink mt-4 mb-2">Audience</h3><ul className="flex flex-wrap gap-2">{course.tag_list.map((t) => <li key={t} className="px-3 py-1.5 rounded-full bg-cream-3 text-[13px]">{t}</li>)}</ul></>) : null}
+            <h3 className="text-[16px] font-semibold text-ink mt-4 mb-1">Included in every course</h3>
+            <ul className="list-disc pl-5 space-y-1 text-[15px] text-ink-2"><li>Bite-sized lessons grouped into modules</li><li>Guided practice, short quizzes and one hands-on project</li><li>A certificate and a badge for your profile</li><li>Self-paced, lifetime access, mobile or desktop</li></ul>
+          </article>
+        </div>
+
+        <aside aria-label="Start this course" id="progress" className="bg-white rounded-2xl border border-black/[0.08] shadow-card p-5 space-y-3">
+          <h2 className="text-[18px] font-bold text-ink">Ready to start?</h2>
+          <p className="text-[14px] text-ink-3">Lessons run on the Vidaara learning platform and your certificate comes from Vidaara. GrowQR keeps your own progress record, and certified courses count toward your Skill Passport.</p>
+          <CourseFlash c={sp.c} e={sp.e} />
+          {profile && !enrol ? (
+            <>
+              <form action={courseAction}><input type="hidden" name="act" value="enrol" /><input type="hidden" name="slug" value={course.slug} /><input type="hidden" name="back" value={self} /><button type="submit" className={`${btn} bg-orange hover:bg-orange-dark text-white`}>Enrol and track progress</button></form>
+              <a className={`${btn} border border-black/[0.15] hover:bg-cream-2`} href={start} target="_blank" rel="noopener noreferrer">Open on Vidaara</a>
+            </>
+          ) : enrol ? (
+            <>
+              <a className={`${btn} bg-orange hover:bg-orange-dark text-white`} href={start} target="_blank" rel="noopener noreferrer">{enrol.status === "completed" ? "Revisit on Vidaara" : "Continue on Vidaara"}</a>
+              <CourseTracker course={course} e={enrol} back={self} />
+            </>
+          ) : me ? (
+            <a className={`${btn} bg-orange hover:bg-orange-dark text-white`} href={start} target="_blank" rel="noopener noreferrer">Start this course</a>
+          ) : (
+            <>
+              <Link className={`${btn} bg-orange hover:bg-orange-dark text-white`} href={`/login?next=${encodeURIComponent(self)}`}>Log in to enrol and track progress</Link>
+              <a className={`${btn} border border-black/[0.15] hover:bg-cream-2`} href={start} target="_blank" rel="noopener noreferrer">Open on Vidaara</a>
+            </>
+          )}
+          <ul className="text-[14px] text-ink-2 space-y-1"><li>{course.hours}, about {course.weeks}</li><li>{course.badge || "Certificate"}</li></ul>
+        </aside>
+      </div>
+
+      {matching.length ? (
+        <section className="mt-10" aria-labelledby="use-h"><h2 id="use-h" className="text-[20px] font-bold text-ink mb-4">Internships that use these skills</h2>
+          <ul className="grid gap-4 md:grid-cols-3">{matching.map((j) => <JobCard key={j.id} job={j} back={self} />)}</ul></section>
+      ) : null}
+      {related.length ? (
+        <section className="mt-10" aria-labelledby="rel-h"><h2 id="rel-h" className="text-[20px] font-bold text-ink mb-4">More in {course.cat_name}</h2>
+          <ul className="grid sm:grid-cols-3 gap-4">{related.map((r) => <CourseCard key={r.slug} course={r} />)}</ul></section>
+      ) : null}
+    </MarketShell>
+  );
+}
