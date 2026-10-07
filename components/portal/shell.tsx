@@ -1,8 +1,6 @@
-import Image from "next/image";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { PortalUser } from "@/lib/portal/session";
-import { LogoutButton } from "./forms";
 
 /** Page frame for signed-in portal pages: logo, a small menu, and a content column. */
 const NAV = [
@@ -23,19 +21,16 @@ export function PortalPage({ user, active, title, subtitle, children, wide = fal
   const ADMIN_NAV = [...STAFF_NAV, { key: "console", href: "/console", label: "Admin console" }] as const;
   const links = user.role === "student" ? NAV : user.role === "employer" ? EMPLOYER_NAV : user.role === "admin" ? ADMIN_NAV : user.role === "counselor" ? COUNSELOR_NAV : NAV.filter((n) => n.key === "account");
   return (
-    <div className="min-h-screen bg-cream-2">
+    <div className="min-h-[60vh] bg-cream-2">
+      {/* The site header (old qrscore look) comes from the layout; this strip is the signed-in person's own menu. */}
       <header className="bg-white border-b border-black/[0.08]">
-        <div className="mx-auto max-w-5xl px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
-          <Link href="/" aria-label="GrowQR home" className="shrink-0">
-            <Image src="/growqr-logo.png" alt="GrowQR" width={120} height={34} className="h-8 w-auto" priority />
-          </Link>
+        <div className="mx-auto max-w-7xl px-4 sm:px-6 min-h-12 flex items-center gap-4">
           <nav aria-label="Account" className="flex items-center gap-1 sm:gap-2 overflow-x-auto">
             {links.map((n) => (
-              <Link key={n.key} href={n.href} aria-current={active === n.key ? "page" : undefined} className={`min-h-[44px] inline-flex items-center px-3 rounded-lg text-[14px] font-medium whitespace-nowrap ${active === n.key ? "bg-orange-light text-orange-deep" : "text-ink-3 hover:bg-cream-2"}`}>
+              <Link key={n.key} href={n.href} aria-current={active === n.key ? "page" : undefined} className={`min-h-[44px] inline-flex items-center px-3 rounded-lg text-[14px] font-medium whitespace-nowrap ${active === n.key ? "bg-[#eef2ff] text-[#3730a3]" : "text-ink-3 hover:bg-cream-2"}`}>
                 {n.label}
               </Link>
             ))}
-            <LogoutButton className="min-h-[44px] px-3 rounded-lg text-[14px] font-medium text-ink-3 hover:bg-cream-2" />
           </nav>
         </div>
       </header>

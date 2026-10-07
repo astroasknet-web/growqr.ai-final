@@ -5,8 +5,8 @@ const M = "https://growqr.ai";
 const d = (p: string, s = "") => portalDecision(p, s, M);
 
 describe("portal-only host", () => {
-  it("sends the home page to the free resume score", () => {
-    expect(d("/")).toEqual({ action: "redirect", to: "/resume-score" });
+  it("shows the portal home page at /", () => {
+    expect(d("/")).toEqual({ action: "rewrite", to: "/qrs-home" });
   });
   it("serves every portal page and endpoint", () => {
     for (const p of ["/login", "/signup", "/account/mfa", "/v/ABC123", "/passport/share", "/console/analytics", "/crm/leads/4", "/file/abcdef", "/resume-score", "/go", "/api/t", "/api/cron/portal", "/api/health", "/.well-known/did.json", "/_next/static/x.js", "/internships/some-role", "/study-abroad/usa", "/universities/mit"]) {
