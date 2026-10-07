@@ -33,7 +33,7 @@ jobs:
         env:
           BUILD_STANDALONE: "1"
           # NEXT_PUBLIC_* values are baked into the browser code at build time, so they are supplied here, not on Hostinger.
-          # Repository secret BUILD_ENV holds them as plain `NAME=value` lines (see .env.example).
+          # Repository secret BUILD_ENV holds them as plain `NAME=value` lines (see migration/env.example).
           BUILD_ENV: ${{ secrets.BUILD_ENV }}
         run: |
           printf '%s\n' "$BUILD_ENV" > .env.production

@@ -23,13 +23,13 @@ platform. Built with the App Router, React 19, Tailwind, Supabase, and Razorpay.
 
 ```bash
 npm install
-cp .env.example .env.local   # then fill in real values
+cp migration/env.example .env.local   # then fill in real values
 npm run dev
 ```
 
 Open http://localhost:3000.
 
-See [`.env.example`](.env.example) for every variable the app needs. Without
+See [`migration/env.example`](migration/env.example) for every variable the app needs. Without
 Supabase keys the site still runs, but auth, events, and bookings won't work.
 
 ## Branches & deployment

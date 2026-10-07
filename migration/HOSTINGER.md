@@ -21,7 +21,7 @@ Why GitHub builds it: the build needs far more memory than a small Hostinger pla
    NEXT_PUBLIC_RAZORPAY_KEY_ID=<rzp key id>
    NEXT_PUBLIC_TURNSTILE_SITE_KEY=<turnstile site key>
    ```
-   Add any other `NEXT_PUBLIC_*` line from `.env.example` that you use.
+   Add any other `NEXT_PUBLIC_*` line from `migration/env.example` that you use.
 2. **Settings -> Actions -> General -> Workflow permissions:** "Read and write permissions".
 3. Push to `main` (or Actions -> "Build portal for Hostinger" -> Run workflow). It type-checks, runs the tests, builds, and force-pushes the result to the `deploy` branch (about 5 minutes, about 110 MB). Never edit `deploy` by hand.
 
@@ -58,7 +58,7 @@ If Hostinger insists on a build command, use `echo done`.
 | `CRON_SECRET` | a long random string (used by the scheduled job below) |
 | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `NEXT_PUBLIC_RAZORPAY_KEY_ID` | payments (test keys are fine) |
 | `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | bot check on signup/login (add `qrscore.mathstudy.in` to the widget's allowed hostnames) |
-| `PORTAL_ADMIN_EMAIL`, `CRM_VERIFY_*`, `LMS_WEBHOOK_SECRET`, `COURSES_BASE_URL` | optional, see `.env.example` |
+| `PORTAL_ADMIN_EMAIL`, `CRM_VERIFY_*`, `LMS_WEBHOOK_SECRET`, `COURSES_BASE_URL` | optional, see `migration/env.example` |
 
 Do **not** set `PORTAL_MFA_REQUIRE_STAFF=false` outside a laptop.
 

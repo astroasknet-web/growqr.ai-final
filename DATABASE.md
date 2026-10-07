@@ -28,7 +28,7 @@ Use the project that growqr.ai already runs on. Steps, in order:
    ```
    It copies only portal tables, parents before children, in one transaction (all or nothing). A target table that already has rows is skipped, never overwritten (`--truncate-target` empties the portal tables first, on purpose). Sessions and rate-limit counters are not copied, so everyone logs in once. Counters are moved past the largest copied id. Tested: 13,977 rows, 56 tables, zero count mismatches, next insert gets the next id.
 3. **Files.** In the target project create two **private** buckets, `resumes` and `vault`. Copy the objects across from the source project (Supabase dashboard, or `supabase storage cp`); the file names are the names stored in the tables, so nothing else changes. Skip this step when both apps already use the same project.
-4. **Environment.** `DATABASE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (storage), `PASSPORT_SIGNING_SEED` (the same seed the qrscore app used, or every issued passport stops verifying), and the rest of `.env.example`.
+4. **Environment.** `DATABASE_URL`, `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` (storage), `PASSPORT_SIGNING_SEED` (the same seed the qrscore app used, or every issued passport stops verifying), and the rest of `migration/env.example`.
 
 ### Connection string
 

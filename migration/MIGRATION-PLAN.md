@@ -38,7 +38,7 @@ Folders in `D:\GROWQR\GROWQR FINAL AFTER INTEGRATION`:
 
 - Code: `lib/portal/` (db, crypto, password, totp, security, session, mail, auth, guard), pages in `app/(portal)/` (login, login/mfa, signup, forgot-password, reset-password, verify-email, account, account/mfa), components in `components/portal/`.
 - Both apps can run on the same data at once. Sessions are separate (the PHP session cookie is not shared), so a person logs in once per app until cut-over.
-- Needs these settings on the Node host: `DATABASE_URL` (Supabase pooler string), `PORTAL_APP_URL`, optionally `RESEND_API_KEY` + `PORTAL_MAIL_FROM`, Turnstile keys (already used by the site). See `.env.example`.
+- Needs these settings on the Node host: `DATABASE_URL` (Supabase pooler string), `PORTAL_APP_URL`, optionally `RESEND_API_KEY` + `PORTAL_MAIL_FROM`, Turnstile keys (already used by the site). See `migration/env.example`.
 - Apply `supabase/migrations/20261008000001_portal_sessions.sql` once (the Supabase GitHub integration or the SQL editor).
 - Staff accounts: `DATABASE_URL=... npx tsx scripts/portal-create-user.ts email "Name" admin`.
 - The existing site admin (`/admin`, Supabase Auth) is untouched and separate.
