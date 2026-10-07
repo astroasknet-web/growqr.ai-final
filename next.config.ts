@@ -52,6 +52,10 @@ const nextConfig: NextConfig = {
   // Loaded by Node at run time instead of being bundled: unpdf (pdf.js) and pg use import.meta / native sockets that webpack should not rewrite.
   serverExternalPackages: ["unpdf", "pg"],
   outputFileTracingRoot: __dirname,
+  // BUILD_STANDALONE=1 (the GitHub Actions build for Hostinger) produces a self-contained server: node server.js. Vercel builds leave it unset.
+  ...(process.env.BUILD_STANDALONE === "1" ? { output: "standalone" as const } : {}),
+  // Files read at run time that the bundler cannot see: the portal migrations (PORTAL_AUTO_MIGRATE) and the data files the portal loads from disk.
+  outputFileTracingIncludes: { "/**": ["./supabase/migrations/2026*.sql", "./lib/abroad/data/study-abroad.json", "./lib/market/data/courses.json"] },
   devIndicators: false,
   // Tree-shake heavy barrel-export libraries so only the components actually
   // used land in the client bundle (shrinks the big shared chunk that was

@@ -1,8 +1,23 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isAdminUser } from "@/lib/auth/admin-allowlist";
+import { portalDecision } from "@/lib/site-mode";
 
 export async function middleware(request: NextRequest) {
+  const { pathname, search } = request.nextUrl;
+  const portalOnly = process.env.SITE_MODE === "portal";
+  const noindex = process.env.SITE_NOINDEX === "1";
+  // Portal-only host (e.g. qrscore.mathstudy.in): the marketing pages live on growqr.ai, so send visitors there.
+  if (portalOnly) {
+    const d = portalDecision(pathname, search, process.env.MARKETING_URL || "https://growqr.ai");
+    if (d.action === "redirect") return NextResponse.redirect(d.to.startsWith("/") ? new URL(d.to, request.url) : d.to, 307);
+  }
+  // Pages other than the marketing admin need nothing here beyond the optional "do not index" header used while the site is being tested.
+  if (pathname !== "/admin" && !pathname.startsWith("/admin/")) {
+    const res = NextResponse.next();
+    if (noindex) res.headers.set("X-Robots-Tag", "noindex, nofollow");
+    return res;
+  }
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
@@ -60,5 +75,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/admin", "/admin/:path*"],
+  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
 };
