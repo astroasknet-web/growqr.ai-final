@@ -109,3 +109,10 @@ It prints a one-time password; log in at `/login` and set up two-step login when
 ## 8. Going live later
 
 Remove `SITE_NOINDEX`, and check the Resend domain, the Razorpay live keys and the real `PASSPORT_SIGNING_SEED`. When you later fold the portal into growqr.ai itself, the domain changes: use the "re-issue passports" button in `/console/analytics?tab=system` and keep this host as a redirect.
+
+## 9. "The site still shows the old page / /api/health says database not configured"
+
+Open `https://qrscore.mathstudy.in/api/health`. The `settings` part lists which variables the running app can see (true or false, never the values). If `SITE_MODE` and `DATABASE_URL` are `false`, Hostinger is not passing the dashboard variables to the app. Try, in this order:
+
+1. Check they are saved on the **Node app's** Environment page (not on another site), then **Redeploy** (a restart alone may not pick them up).
+2. Fallback that does not depend on the dashboard: in hPanel -> File Manager, open the app's folder (the one containing `server.js`) and create a file named `.env.production` with one `NAME=value` per line (the same names as the table in section 2). The app reads it at start-up, before the first request. Real environment variables, when present, win over the file. Restart the app afterwards. If a redeploy wipes the folder, create the file again; keep a copy of it somewhere safe, because it holds secrets.
