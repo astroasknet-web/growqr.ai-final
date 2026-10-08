@@ -6,7 +6,7 @@
 export const PORTAL_PREFIXES = [
   "/login", "/signup", "/forgot-password", "/reset-password", "/verify-email", "/verify", "/v", "/account", "/passport", "/studio",
   "/internships", "/applications", "/employer", "/courses", "/my-courses", "/abroad", "/study-abroad", "/universities", "/counselor", "/console",
-  "/crm", "/file", "/resume-score", "/go", "/privacy-policy", "/refund-policy",
+  "/crm", "/file", "/resume-score", "/home-options", "/go", "/privacy-policy", "/refund-policy",
   "/api/t", "/api/studio", "/api/internships", "/api/courses", "/api/colleges", "/api/crm", "/api/lms-webhook", "/api/cron/portal", "/api/health", "/api/razorpay",
   "/.well-known", "/_next", "/favicon.ico", "/robots.txt", "/sitemap.xml", "/crm-file.js", "/growqr-logo.png",
 ];

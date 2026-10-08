@@ -119,7 +119,7 @@ export default function ExplodedStack() {
                   <p className="mt-5 max-w-[30em] text-[1.14rem] leading-relaxed text-ink-3">{L.d}</p>
                   {active === 4 && (
                     <div className="mt-7 flex flex-wrap gap-3">
-                      <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="cta-shine inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-[1.05rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)] transition hover:bg-orange-dark">Score my resume, free <span aria-hidden>→</span></a>
+                      <a href={SCORE_URL} className="cta-shine inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-[1.05rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)] transition hover:bg-orange-dark">Score my resume, free <span aria-hidden>→</span></a>
                       <WaitlistButton source="home-option-f-hero" className="inline-flex min-h-[56px] items-center rounded-full border border-black/15 bg-white/80 px-7 text-[1.02rem] font-semibold backdrop-blur transition hover:border-orange">Join the waitlist</WaitlistButton>
                     </div>
                   )}
@@ -129,7 +129,7 @@ export default function ExplodedStack() {
                   <h1 className="font-sans text-[clamp(2.8rem,5.6vw,5.2rem)] font-extrabold leading-[0.98] text-ink">The whole career journey,<br /><span className="bg-gradient-to-r from-orange via-[#FF8A4C] to-[#FFB020] bg-clip-text text-transparent">taken apart.</span></h1>
                   <p className="mt-6 max-w-[30em] text-[1.18rem] leading-relaxed text-ink-3">Five layers turn a plain resume into a verified, paid opportunity. Scroll to pull them apart.</p>
                   <div className="mt-8 flex flex-wrap gap-3">
-                    <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="cta-shine inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-[1.05rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)] transition hover:bg-orange-dark">Score my resume, free <span aria-hidden>→</span></a>
+                    <a href={SCORE_URL} className="cta-shine inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-[1.05rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)] transition hover:bg-orange-dark">Score my resume, free <span aria-hidden>→</span></a>
                     <WaitlistButton source="home-option-f-hero" className="inline-flex min-h-[56px] items-center rounded-full border border-black/15 bg-white/80 px-7 text-[1.02rem] font-semibold backdrop-blur transition hover:border-orange">Join the waitlist</WaitlistButton>
                   </div>
                 </div>
@@ -181,7 +181,7 @@ export default function ExplodedStack() {
           <h1 className="font-sans text-[clamp(2.6rem,11vw,4rem)] font-extrabold leading-[0.98] text-ink">The whole career journey,<br /><span className="bg-gradient-to-r from-orange via-[#FF8A4C] to-[#FFB020] bg-clip-text text-transparent">taken apart.</span></h1>
           <p className="mt-5 text-[1.08rem] leading-relaxed text-ink-3">Five layers turn a plain resume into a verified, paid opportunity.</p>
           <div className="mt-7 flex flex-wrap gap-3">
-            <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="cta-shine inline-flex items-center gap-2 rounded-full bg-orange px-7 py-4 text-[1.02rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)]">Score my resume, free <span aria-hidden>→</span></a>
+            <a href={SCORE_URL} className="cta-shine inline-flex items-center gap-2 rounded-full bg-orange px-7 py-4 text-[1.02rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)]">Score my resume, free <span aria-hidden>→</span></a>
             <WaitlistButton source="home-option-f-hero-m" className="inline-flex min-h-[56px] items-center rounded-full border border-black/15 bg-white/80 px-7 font-semibold">Join the waitlist</WaitlistButton>
           </div>
         </div>

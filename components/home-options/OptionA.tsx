@@ -63,7 +63,7 @@ export default function OptionA() {
                 Upload a resume and get a free score out of 100. Then our AI agents close the gaps, a verified Skill Passport proves the rest, and verified employers pay you to start.
               </p>
               <div data-rv style={{ ["--d" as string]: ".18s" }} className="mt-9 flex flex-wrap items-center gap-3">
-                <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="cta-shine group inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-[1.05rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)] transition hover:scale-[1.015] hover:bg-orange-dark">
+                <a href={SCORE_URL} className="cta-shine group inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-[1.05rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)] transition hover:scale-[1.015] hover:bg-orange-dark">
                   Score my resume, free <span aria-hidden className="transition group-hover:translate-x-0.5">→</span>
                 </a>
                 <WaitlistButton source="home-option-a-hero" className="inline-flex min-h-[56px] items-center rounded-full border border-black/15 bg-white/80 px-7 text-[1.02rem] font-semibold text-ink backdrop-blur transition hover:border-orange">Join the waitlist</WaitlistButton>
@@ -118,7 +118,7 @@ export default function OptionA() {
               <span id="hoa-board">Your score decides what <em>opens up</em></span>
             </Head>
             <div data-rv><InternshipBoard initial={72} /></div>
-            <p data-rv className="mt-6 text-center text-[0.9rem] text-ink-4">Sample listings from the QR Score platform. <a className="font-semibold text-orange-dark underline underline-offset-4" href={SCORE_URL} target="_blank" rel="noopener noreferrer">Browse all internships</a></p>
+            <p data-rv className="mt-6 text-center text-[0.9rem] text-ink-4">Sample listings from the QR Score platform. <a className="font-semibold text-orange-dark underline underline-offset-4" href={SCORE_URL}>Browse all internships</a></p>
           </div>
         </section>
 
@@ -137,7 +137,7 @@ export default function OptionA() {
                   </li>
                 ))}
               </ul>
-              <a data-rv href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="ho-btn ho-btn-ink">Start my passport</a>
+              <a data-rv href="/passport" className="ho-btn ho-btn-ink">Start my passport</a>
             </div>
             <div data-rv className="order-1 flex flex-col items-center gap-4 lg:order-2">
               <PassportCard className="!max-w-[520px]" />
@@ -156,7 +156,7 @@ export default function OptionA() {
               <ul data-rv className="mb-7 grid grid-cols-2 gap-x-6 gap-y-2 text-[0.95rem]">
                 {COUNTRIES.map((c) => (<li key={c.name} className="flex items-center justify-between border-b border-black/[0.07] py-1.5"><span className="font-semibold">{c.name}</span><span className="text-orange-dark">{c.count} universities</span></li>))}
               </ul>
-              <a data-rv href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="ho-btn ho-btn-ink">Explore universities</a>
+              <a data-rv href="/study-abroad" className="ho-btn ho-btn-ink">Explore universities</a>
             </div>
             <div data-rv><Globe /></div>
           </div>

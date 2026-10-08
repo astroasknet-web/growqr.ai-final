@@ -70,7 +70,7 @@ export default function OptionD() {
             <p data-rv className="mx-auto mt-4 max-w-[36em] text-[1.08rem] text-ink-3">No application fees. Employers screened before they post. The first month&apos;s stipend sits in escrow before you start.</p>
           </div>
           <div data-rv><InternshipMarquee /></div>
-          <p className="mt-8 text-center"><a className="font-semibold text-orange-dark underline underline-offset-4" href={SCORE_URL} target="_blank" rel="noopener noreferrer">Browse all internships</a></p>
+          <p className="mt-8 text-center"><a className="font-semibold text-orange-dark underline underline-offset-4" href={SCORE_URL}>Browse all internships</a></p>
         </section>
 
         <Squad />

@@ -38,7 +38,7 @@ export default function OptionF() {
               <span data-rv className={KICK}><span className="h-1.5 w-1.5 rounded-full bg-orange" />Skill Passport</span>
               <h2 data-rv id="hof-pass" className="mb-5 font-sans text-[clamp(2.1rem,4.4vw,3.4rem)] font-semibold leading-[1.06]">One scan. <span className="text-orange">Every claim checked.</span></h2>
               <p data-rv className="mb-7 max-w-[34em] text-[1.08rem] leading-relaxed text-ink-3">Education, experience, skills, projects and impact, each backed by evidence. Flip the card to see what an employer sees.</p>
-              <a data-rv href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="ho-btn ho-btn-ink">Start my passport</a>
+              <a data-rv href="/passport" className="ho-btn ho-btn-ink">Start my passport</a>
             </div>
             <div data-rv className="flex justify-center"><PassportCard className="!max-w-[520px]" /></div>
           </div>
@@ -59,7 +59,7 @@ export default function OptionF() {
             <div>
               <h2 data-rv id="hof-globe" className="mb-5 font-sans text-[clamp(2.1rem,4.6vw,3.6rem)] font-semibold leading-[1.06] text-white">58 universities. <span className="text-orange">Seven countries.</span></h2>
               <ul data-rv className="mb-7 grid grid-cols-2 gap-x-6 text-[0.95rem]">{COUNTRIES.map((c) => (<li key={c.name} className="flex justify-between border-b border-white/10 py-2"><span className="font-semibold">{c.name}</span><span className="text-[#FFB380]">{c.count}</span></li>))}</ul>
-              <a data-rv href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="ho-btn ho-btn-pri">Explore universities</a>
+              <a data-rv href="/study-abroad" className="ho-btn ho-btn-pri">Explore universities</a>
             </div>
             <div data-rv><Globe dark /></div>
           </div>

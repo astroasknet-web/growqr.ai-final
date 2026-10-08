@@ -11,24 +11,24 @@ export type NavLink = { label: string; desc?: string; href: string; icon: IconKe
 export const ANNOUNCE = { text: "New: verified-stipend internships, with the first month held in escrow.", cta: "Browse internships", href: SCORE_URL };
 
 export const PLATFORM: NavLink[] = [
-  { label: "QR Score", desc: "A free resume score out of 100 in seconds", href: RESUME_SCORE_URL, icon: "qr", external: true, badge: "Free" },
-  { label: "Skill Passport", desc: "Scored, proctored proof any employer can scan", href: SCORE_URL, icon: "passport", external: true },
+  { label: "QR Score", desc: "A free resume score out of 100 in seconds", href: "/resume-score", icon: "qr", badge: "Free" },
+  { label: "Skill Passport", desc: "Scored, proctored proof any employer can scan", href: "/passport", icon: "passport", },
   { label: "AI Agents", desc: "Specialised agents with human experts in the loop", href: "/agents", icon: "bot" },
-  { label: "Resume Studio", desc: "Rebuild your resume from a template, with live scoring", href: SCORE_URL, icon: "studio", external: true },
+  { label: "Resume Studio", desc: "Rebuild your resume from a template, with live scoring", href: "/studio", icon: "studio", },
 ];
 
 export const CAREERS_OPPS: NavLink[] = [
-  { label: "Internships", desc: "Verified employers, no application fees", href: SCORE_URL, icon: "briefcase", external: true, badge: "Verified" },
-  { label: "Micro-gigs", desc: "10 to 40 hour projects that pay", href: SCORE_URL, icon: "gig", external: true },
-  { label: "Application tracker", desc: "See every stage and employer response", href: SCORE_URL, icon: "tracker", external: true },
+  { label: "Internships", desc: "Verified employers, no application fees", href: "/internships", icon: "briefcase", badge: "Verified" },
+  { label: "Micro-gigs", desc: "10 to 40 hour projects that pay", href: "/internships", icon: "gig", },
+  { label: "Application tracker", desc: "See every stage and employer response", href: "/applications", icon: "tracker", },
   { label: "GrowQR Internship", desc: "Join the GrowQR team as an intern", href: "/growqr-internship", icon: "rocket" },
 ];
 export const CAREERS_LEARN: NavLink[] = [
-  { label: "Courses", desc: "116 courses across 18 fields", href: SCORE_URL, icon: "book", external: true },
-  { label: "Career paths", desc: "Data Analyst, Web Developer, AI Engineer", href: SCORE_URL, icon: "path", external: true },
+  { label: "Courses", desc: "116 courses across 18 fields", href: "/courses", icon: "book", },
+  { label: "Career paths", desc: "Data Analyst, Web Developer, AI Engineer", href: "/courses#paths", icon: "path", },
   { label: "E-books", desc: "Study guides on MathStudy.in", href: "https://mathstudy.in/", icon: "ebook", external: true },
 ];
-export const ABROAD = COUNTRIES.map((c) => ({ label: c.name, count: c.count, href: SCORE_URL }));
+export const ABROAD = COUNTRIES.map((c) => ({ label: c.name, count: c.count, href: `/study-abroad/${c.name.toLowerCase()}` }));
 
 export const PERSONA_COPY: Record<string, { icon: IconKey; desc: string }> = {
   students: { icon: "student", desc: "Show what fits, before graduation" },
@@ -47,7 +47,7 @@ export const PLANS = [
   { name: "Growth", price: "₹4,999/mo", note: "5 active roles" },
 ];
 export const EMPLOYER_LINKS: NavLink[] = [
-  { label: "Post a role", desc: "Reach screened, scored candidates", href: SCORE_URL, icon: "post", external: true },
+  { label: "Post a role", desc: "Reach screened, scored candidates", href: "/employer/post", icon: "post", },
   { label: "AI Recruiter", desc: "RQ-Rita screens and shortlists for you", href: "/solutions/recruiters", icon: "recruit" },
   { label: "Enterprise", desc: "Autonomous HR and workforce intelligence", href: "/enterprise", icon: "enterprise" },
   { label: "For colleges", desc: "Placement and outcome proof for institutes", href: "/solutions/institutes", icon: "institute" },
@@ -70,8 +70,8 @@ export const INDEX: Hit[] = [
   ...PLATFORM.map((l) => ({ label: l.label, sub: l.desc ?? "", href: l.href, external: l.external, group: "Platform", icon: l.icon })),
   ...CAREERS_OPPS.map((l) => ({ label: l.label, sub: l.desc ?? "", href: l.href, external: l.external, group: "Careers", icon: l.icon })),
   ...CAREERS_LEARN.map((l) => ({ label: l.label, sub: l.desc ?? "", href: l.href, external: l.external, group: "Learn", icon: l.icon })),
-  ...INTERNSHIPS.map((i) => ({ label: i.title, sub: `${i.company} · ${i.place} · ₹${i.stipend.toLocaleString("en-IN")}/mo`, href: SCORE_URL, external: true, group: "Internships", icon: "briefcase" as IconKey })),
-  ...COUNTRIES.map((c) => ({ label: `Study in ${c.name}`, sub: `${c.count} universities`, href: SCORE_URL, external: true, group: "Study abroad", icon: "globe" as IconKey })),
+  ...INTERNSHIPS.map((i) => ({ label: i.title, sub: `${i.company} · ${i.place} · ₹${i.stipend.toLocaleString("en-IN")}/mo`, href: "/internships", group: "Internships", icon: "briefcase" as IconKey })),
+  ...COUNTRIES.map((c) => ({ label: `Study in ${c.name}`, sub: `${c.count} universities`, href: `/study-abroad/${c.name.toLowerCase()}`, group: "Study abroad", icon: "globe" as IconKey })),
   ...AGENT_LIST.map((a) => ({ label: a.name, sub: a.role, href: "/agents", group: "Agents", icon: "bot" as IconKey })),
   ...EMPLOYER_LINKS.map((l) => ({ label: l.label, sub: l.desc ?? "", href: l.href, external: l.external, group: "Employers", icon: l.icon })),
   ...RESOURCES.map((l) => ({ label: l.label, sub: l.desc ?? "", href: l.href, group: "Resources", icon: l.icon })),

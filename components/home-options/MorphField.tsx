@@ -250,7 +250,7 @@ export default function MorphField() {
             </h1>
             <p className="mt-5 max-w-[30em] text-[clamp(1rem,1.5vw,1.2rem)] leading-relaxed text-ink-3">{S.p}</p>
             <div className={`pointer-events-auto mt-7 flex flex-wrap gap-3 transition-opacity duration-500 ${stage === 0 || stage === 4 ? "opacity-100" : "opacity-0"}`}>
-              <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="cta-shine group inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-[1.05rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)] transition hover:scale-[1.015] hover:bg-orange-dark" tabIndex={stage === 0 || stage === 4 ? 0 : -1}>Score my resume, free <span aria-hidden>→</span></a>
+              <a href={SCORE_URL} className="cta-shine group inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-[1.05rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)] transition hover:scale-[1.015] hover:bg-orange-dark" tabIndex={stage === 0 || stage === 4 ? 0 : -1}>Score my resume, free <span aria-hidden>→</span></a>
               <WaitlistButton source="home-option-d-hero" className="inline-flex min-h-[56px] items-center rounded-full border border-black/15 bg-white/80 px-7 text-[1.02rem] font-semibold backdrop-blur transition hover:border-orange">Join the waitlist</WaitlistButton>
             </div>
           </div>

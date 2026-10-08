@@ -237,7 +237,7 @@ export function ScoreDemo({ tone = "light" }: { tone?: "light" | "dark" }) {
             <strong>Nothing left to fix in this sample. Now see how your real resume scores.</strong>
           )}
         </p>
-        <a className="ho-btn ho-btn-pri" href={SCORE_URL} target="_blank" rel="noopener noreferrer">
+        <a className="ho-btn ho-btn-pri" href={SCORE_URL}>
           Score my real resume, free
         </a>
         <p className="mt-3 text-[0.8rem] text-current opacity-70">Illustrative demo. The real scorer reads your actual resume.</p>

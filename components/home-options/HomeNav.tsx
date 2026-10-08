@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { personas } from "@/lib/personas";
 import { useAuthFlag } from "@/lib/useAuthFlag";
+import { usePortalUser } from "@/lib/usePortalUser";
 import { useIsLive } from "@/components/layout/CurrencyProvider";
 import { useSeekerWaitlist } from "@/components/seeker/SeekerWaitlistModal";
 import { AgentAvatar } from "./ui";
@@ -83,7 +84,7 @@ function PlatformPanel({ close }: { close: () => void }) {
         <p className="mb-1 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[#FFB380]">Free · no sign-up</p>
         <p className="font-serif text-[1.7rem] leading-tight">Score my resume</p>
         <p className="mt-1 text-[0.82rem] text-white/70">PDF, Word or pasted text. A grade and three focus areas in seconds.</p>
-        <a href={RESUME_SCORE_URL} target="_blank" rel="noopener noreferrer" onClick={close} className="mt-4 inline-flex min-h-[44px] items-center gap-2 rounded-full bg-orange px-5 text-[0.88rem] font-bold text-white transition hover:bg-orange-dark">Try it free <ArrowRight className="h-4 w-4" aria-hidden /></a>
+        <a href={RESUME_SCORE_URL} onClick={close} className="mt-4 inline-flex min-h-[44px] items-center gap-2 rounded-full bg-orange px-5 text-[0.88rem] font-bold text-white transition hover:bg-orange-dark">Try it free <ArrowRight className="h-4 w-4" aria-hidden /></a>
       </Feature>
     </div>
   );
@@ -103,7 +104,7 @@ function CareersPanel({ close }: { close: () => void }) {
         <ul className="grid grid-cols-2 gap-1.5 px-1">
           {ABROAD.map((c) => (<li key={c.label}><a href={c.href} target="_blank" rel="noopener noreferrer" onClick={close} className="flex items-center justify-between rounded-xl border border-black/[0.07] px-3 py-2 text-[0.82rem] font-semibold transition hover:border-orange hover:bg-orange-lighter">{c.label}<span className="text-orange-dark">{c.count}</span></a></li>))}
         </ul>
-        <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" onClick={close} className="mt-3 inline-flex items-center gap-1 px-2.5 text-[0.84rem] font-semibold text-orange-dark">View all universities <ArrowRight className="h-3.5 w-3.5" aria-hidden /></a>
+        <a href={SCORE_URL} onClick={close} className="mt-3 inline-flex items-center gap-1 px-2.5 text-[0.84rem] font-semibold text-orange-dark">View all universities <ArrowRight className="h-3.5 w-3.5" aria-hidden /></a>
       </div>
       <Feature>
         <p className="mb-1 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[#FFB380]">Featured role</p>
@@ -111,7 +112,7 @@ function CareersPanel({ close }: { close: () => void }) {
         <p className="text-[0.8rem] text-white/60">{it.company} · {it.place} · {it.weeks} weeks</p>
         <p className="mt-3 font-serif text-[2rem] leading-none">₹{it.stipend.toLocaleString("en-IN")}<span className="font-sans text-[0.75rem] text-white/60">/mo</span></p>
         <p className="mt-2 flex items-center gap-1.5 text-[0.76rem] text-white/80"><ShieldCheck className="h-3.5 w-3.5 text-emerald-400" aria-hidden /> First month in escrow</p>
-        <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" onClick={close} className="mt-4 inline-flex min-h-[44px] items-center gap-2 rounded-full bg-white px-5 text-[0.86rem] font-bold text-ink transition hover:bg-orange hover:text-white">View &amp; apply <ArrowRight className="h-4 w-4" aria-hidden /></a>
+        <a href={SCORE_URL} onClick={close} className="mt-4 inline-flex min-h-[44px] items-center gap-2 rounded-full bg-white px-5 text-[0.86rem] font-bold text-ink transition hover:bg-orange hover:text-white">View &amp; apply <ArrowRight className="h-4 w-4" aria-hidden /></a>
       </Feature>
     </div>
   );
@@ -149,7 +150,7 @@ function EmployersPanel({ close }: { close: () => void }) {
         <ul className="grid gap-2 px-1">
           {PLANS.map((p) => (<li key={p.name} className="flex items-center justify-between rounded-2xl border border-black/[0.07] px-4 py-3"><span><span className="block text-[0.92rem] font-bold">{p.name}</span><span className="text-[0.78rem] text-ink-4">{p.note}</span></span><span className="font-serif text-[1.25rem] text-orange-dark">{p.price}</span></li>))}
         </ul>
-        <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" onClick={close} className="mt-3 inline-flex min-h-[44px] items-center gap-2 px-2.5 text-[0.88rem] font-bold text-orange-dark">Post your first role free <ArrowRight className="h-4 w-4" aria-hidden /></a>
+        <a href={SCORE_URL} onClick={close} className="mt-3 inline-flex min-h-[44px] items-center gap-2 px-2.5 text-[0.88rem] font-bold text-orange-dark">Post your first role free <ArrowRight className="h-4 w-4" aria-hidden /></a>
       </div>
     </div>
   );
@@ -257,6 +258,15 @@ export default function HomeNav() {
   }, []);
   useEffect(() => { document.body.style.overflow = drawer || pal ? "hidden" : ""; document.body.classList.toggle("ho-drawer", drawer || pal); return () => { document.body.style.overflow = ""; document.body.classList.remove("ho-drawer"); }; }, [drawer, pal]);
 
+  const portalUser = usePortalUser();
+
+
+  const accountHref = portalUser ? "/account" : "/login";
+
+
+  const accountLabel = portalUser || loggedIn ? "My account" : "Log in";
+
+
   const cta = loggedIn
     ? { label: "Dashboard", onClick: () => window.location.assign("https://app.growqr.ai/home") }
     : !isLive
@@ -291,7 +301,7 @@ export default function HomeNav() {
                 </li>
               ))}
               <li onMouseEnter={hide}>
-                <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="flex min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-[0.9rem] font-semibold text-ink-2 transition hover:bg-black/[0.04]">Internships <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[0.56rem] font-bold uppercase tracking-wider text-emerald-700">Live</span></a>
+                <a href={SCORE_URL} className="flex min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-[0.9rem] font-semibold text-ink-2 transition hover:bg-black/[0.04]">Internships <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[0.56rem] font-bold uppercase tracking-wider text-emerald-700">Live</span></a>
               </li>
             </ul>
 
@@ -300,7 +310,7 @@ export default function HomeNav() {
                 <Search className="h-4 w-4" aria-hidden /><span className="hidden 2xl:inline">Search</span><kbd className="ml-1 hidden items-center gap-0.5 rounded-md border border-black/10 bg-white px-1.5 py-0.5 text-[0.66rem] font-semibold 2xl:inline-flex"><Command className="h-2.5 w-2.5" aria-hidden />K</kbd>
               </button>
               <button type="button" onClick={() => setPal(true)} aria-label="Search" className="grid h-11 w-11 place-items-center rounded-full border border-black/10 bg-white/70 md:hidden"><Search className="h-[18px] w-[18px]" aria-hidden /></button>
-              <a href="https://app.growqr.ai/login" className="hidden min-h-[44px] items-center whitespace-nowrap rounded-full px-3 text-[0.9rem] font-semibold text-ink-2 transition hover:bg-black/[0.04] md:inline-flex">{loggedIn ? "My account" : "Log in"}</a>
+              <a href={accountHref} className="hidden min-h-[44px] items-center whitespace-nowrap rounded-full px-3 text-[0.9rem] font-semibold text-ink-2 transition hover:bg-black/[0.04] md:inline-flex">{accountLabel}</a>
               <button type="button" onClick={cta.onClick} className="cta-shine hidden min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-full bg-orange px-4 text-[0.88rem] font-bold text-white shadow-[0_10px_24px_-10px_rgba(255,106,47,0.7)] transition hover:bg-orange-dark sm:inline-flex">{cta.label}<ArrowRight className="h-4 w-4" aria-hidden /></button>
               <button type="button" aria-label={drawer ? "Close menu" : "Open menu"} aria-expanded={drawer} onClick={() => setDrawer((d) => !d)} className="grid h-11 w-11 place-items-center rounded-full border border-black/10 bg-white/70 lg:hidden">{drawer ? <X className="h-5 w-5" aria-hidden /> : <Menu className="h-5 w-5" aria-hidden />}</button>
             </div>
@@ -328,8 +338,8 @@ export default function HomeNav() {
           <motion.div className="fixed inset-0 z-[49] overflow-y-auto bg-cream pt-[132px] lg:hidden" initial={{ opacity: 0, y: -12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -12 }} transition={{ duration: 0.22 }}>
             <div className="px-5 pb-40 pt-6">
               <div className="mb-5 flex gap-2.5">
-                <a href={RESUME_SCORE_URL} target="_blank" rel="noopener noreferrer" onClick={close} className="flex min-h-[56px] flex-1 items-center justify-center gap-2 rounded-2xl bg-orange px-4 text-[0.95rem] font-bold text-white shadow-[0_12px_30px_-12px_rgba(255,106,47,0.7)]"><QrCode className="h-5 w-5" aria-hidden /> Score my resume</a>
-                <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" onClick={close} className="flex min-h-[56px] flex-1 items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-4 text-[0.95rem] font-bold text-ink"><Briefcase className="h-5 w-5 text-orange" aria-hidden /> Internships</a>
+                <a href={RESUME_SCORE_URL} onClick={close} className="flex min-h-[56px] flex-1 items-center justify-center gap-2 rounded-2xl bg-orange px-4 text-[0.95rem] font-bold text-white shadow-[0_12px_30px_-12px_rgba(255,106,47,0.7)]"><QrCode className="h-5 w-5" aria-hidden /> Score my resume</a>
+                <a href={SCORE_URL} onClick={close} className="flex min-h-[56px] flex-1 items-center justify-center gap-2 rounded-2xl border border-black/10 bg-white px-4 text-[0.95rem] font-bold text-ink"><Briefcase className="h-5 w-5 text-orange" aria-hidden /> Internships</a>
               </div>
               {MENUS.map((m) => (
                 <div key={m.id} className="border-b border-black/[0.08]">
@@ -352,7 +362,7 @@ export default function HomeNav() {
               ))}
             </div>
             <div className="fixed inset-x-0 bottom-0 z-10 flex gap-2.5 border-t border-black/[0.08] bg-white/95 px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur">
-              <a href="https://app.growqr.ai/login" className="flex min-h-[52px] flex-1 items-center justify-center rounded-2xl border border-black/10 text-[0.95rem] font-bold">{loggedIn ? "My account" : "Log in"}</a>
+              <a href={accountHref} className="flex min-h-[52px] flex-1 items-center justify-center rounded-2xl border border-black/10 text-[0.95rem] font-bold">{accountLabel}</a>
               <button type="button" onClick={() => { close(); cta.onClick(); }} className="flex min-h-[52px] flex-[1.4] items-center justify-center gap-2 rounded-2xl bg-ink text-[0.95rem] font-bold text-white">{cta.label}<ArrowRight className="h-4 w-4" aria-hidden /></button>
             </div>
           </motion.div>

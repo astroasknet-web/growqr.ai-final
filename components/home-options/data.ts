@@ -1,7 +1,7 @@
 /** Real content from qrscore.mathstudy.in + the site's own agent roster (lib/data.ts). */
 
-export const SCORE_URL = "https://qrscore.mathstudy.in/";
-export const RESUME_SCORE_URL = "https://qrscore.mathstudy.in/resume-score.php";
+export const SCORE_URL = "/internships";
+export const RESUME_SCORE_URL = "/resume-score";
 
 export const AGENT = {
   mira: { name: "RQ-Mira", role: "Resume Expert", image: "/agents/2.png", color: "#7F77DD" },

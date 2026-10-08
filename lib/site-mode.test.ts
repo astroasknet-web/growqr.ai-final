@@ -9,7 +9,7 @@ describe("portal-only host", () => {
     expect(d("/")).toEqual({ action: "next" });
   });
   it("serves every portal page and endpoint", () => {
-    for (const p of ["/login", "/signup", "/account/mfa", "/v/ABC123", "/passport/share", "/console/analytics", "/crm/leads/4", "/file/abcdef", "/resume-score", "/go", "/api/t", "/api/cron/portal", "/api/health", "/.well-known/did.json", "/_next/static/x.js", "/internships/some-role", "/study-abroad/usa", "/universities/mit"]) {
+    for (const p of ["/login", "/signup", "/account/mfa", "/v/ABC123", "/passport/share", "/console/analytics", "/crm/leads/4", "/file/abcdef", "/resume-score", "/go", "/api/t", "/api/cron/portal", "/api/health", "/.well-known/did.json", "/_next/static/x.js", "/internships/some-role", "/study-abroad/usa", "/universities/mit", "/home-options", "/home-options/a"]) {
       expect(d(p).action, p).toBe("next");
     }
   });

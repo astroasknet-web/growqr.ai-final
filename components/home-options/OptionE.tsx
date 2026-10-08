@@ -36,7 +36,7 @@ export default function OptionE() {
                 Every line on a resume is a claim. Scan it, and the verified layer underneath shows what is actually true: education checked, experience confirmed, skills proctored.
               </p>
               <div data-rv style={{ ["--d" as string]: ".18s" }} className="mt-9 flex flex-wrap gap-3">
-                <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="cta-shine group inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-[1.05rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)] transition hover:scale-[1.015] hover:bg-orange-dark">Score my resume, free <span aria-hidden>→</span></a>
+                <a href={SCORE_URL} className="cta-shine group inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-[1.05rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)] transition hover:scale-[1.015] hover:bg-orange-dark">Score my resume, free <span aria-hidden>→</span></a>
                 <WaitlistButton source="home-option-e-hero" className="inline-flex min-h-[56px] items-center rounded-full border border-black/15 bg-white/80 px-7 text-[1.02rem] font-semibold backdrop-blur transition hover:border-orange">Join the waitlist</WaitlistButton>
               </div>
             </div>
@@ -92,7 +92,7 @@ export default function OptionE() {
             <div>
               <h2 data-rv id="hoe-globe" className="mb-5 font-sans text-[clamp(2.1rem,4.4vw,3.4rem)] font-semibold leading-[1.06]">58 universities. <span className="text-orange">Seven countries.</span></h2>
               <ul data-rv className="mb-7 grid grid-cols-2 gap-x-6 text-[0.95rem]">{COUNTRIES.map((c) => (<li key={c.name} className="flex justify-between border-b border-black/[0.07] py-2"><span className="font-semibold">{c.name}</span><span className="text-orange-dark">{c.count}</span></li>))}</ul>
-              <a data-rv href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="ho-btn ho-btn-ink">Explore universities</a>
+              <a data-rv href="/study-abroad" className="ho-btn ho-btn-ink">Explore universities</a>
             </div>
             <div data-rv><Globe /></div>
           </div>

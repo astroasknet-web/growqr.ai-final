@@ -34,7 +34,7 @@ export default function OptionC() {
                 From a free resume score to a verified Skill Passport to your first paid internship, with AI agents and human experts guiding every step.
               </p>
               <div data-rv style={{ ["--d" as string]: ".18s" }} className="mt-9 flex flex-wrap gap-3">
-                <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="cta-shine group inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-[1.05rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)] transition hover:scale-[1.015] hover:bg-orange-dark">Score my resume, free <span aria-hidden>→</span></a>
+                <a href={SCORE_URL} className="cta-shine group inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-[1.05rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)] transition hover:scale-[1.015] hover:bg-orange-dark">Score my resume, free <span aria-hidden>→</span></a>
                 <WaitlistButton source="home-option-c-hero" className="inline-flex min-h-[56px] items-center rounded-full border border-black/15 bg-white/80 px-7 text-[1.02rem] font-semibold backdrop-blur transition hover:border-orange">Join the waitlist</WaitlistButton>
               </div>
               <dl data-rv style={{ ["--d" as string]: ".24s" }} className="mt-10 grid max-w-[460px] grid-cols-3 gap-4">
@@ -92,7 +92,7 @@ export default function OptionC() {
                 <div className="grid gap-3 sm:grid-cols-2">
                   {INTERNSHIPS.slice(0, 2).map((it) => (<InternshipCard key={it.id} it={it} score={100} />))}
                 </div>
-                <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="mt-4 inline-flex min-h-[44px] items-center font-semibold text-orange-dark shadow-[inset_0_-2px_#FF6A2F]">Browse all internships</a>
+                <a href={SCORE_URL} className="mt-4 inline-flex min-h-[44px] items-center font-semibold text-orange-dark shadow-[inset_0_-2px_#FF6A2F]">Browse all internships</a>
               </div>
               <div data-rv style={{ ["--d" as string]: ".08s" }} className="rounded-[32px] border border-black/10 bg-gradient-to-br from-orange-lighter to-white p-6 lg:col-span-3">
                 <p className="mb-1 text-[0.7rem] font-bold uppercase tracking-[0.16em] text-orange-dark">Study abroad</p>

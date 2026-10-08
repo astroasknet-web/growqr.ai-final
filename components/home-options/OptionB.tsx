@@ -33,7 +33,7 @@ export default function OptionB() {
             Resumes are claims. GrowQR turns them into a scored, proctored Skill Passport that any employer can verify in one scan, then matches you to verified, paid internships.
           </p>
           <div data-rv style={{ ["--d" as string]: ".18s" }} className="mt-9 flex flex-wrap justify-center gap-3">
-            <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="cta-shine group inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-[1.05rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)] transition hover:scale-[1.015] hover:bg-orange-dark">Score my resume, free <span aria-hidden>→</span></a>
+            <a href={SCORE_URL} className="cta-shine group inline-flex items-center gap-2 rounded-full bg-orange px-8 py-4 text-[1.05rem] font-bold text-white shadow-[0_14px_30px_-12px_rgba(255,106,47,0.55)] transition hover:scale-[1.015] hover:bg-orange-dark">Score my resume, free <span aria-hidden>→</span></a>
             <WaitlistButton source="home-option-b-hero" className="inline-flex min-h-[56px] items-center rounded-full border border-black/15 bg-white/80 px-7 text-[1.02rem] font-semibold backdrop-blur transition hover:border-orange">Join the waitlist</WaitlistButton>
           </div>
           <div data-rv style={{ ["--d" as string]: ".2s" }} className="mx-auto mt-12 max-w-[820px]">
@@ -71,7 +71,7 @@ export default function OptionB() {
               <ul data-rv className="mb-8 grid gap-2.5 text-[1rem] text-white/80">
                 {["Starter plan is free for 1 active role", "Bounty: ₹0 upfront, ₹10,000 per hire after 15 days", "Growth: ₹4,999 a month for 5 active roles"].map((t) => (<li key={t} className="flex gap-3"><span className="text-orange" aria-hidden>→</span>{t}</li>))}
               </ul>
-              <a data-rv href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="ho-btn ho-btn-pri">Post a role</a>
+              <a data-rv href="/employer/post" className="ho-btn ho-btn-pri">Post a role</a>
             </div>
             <div data-rv><ScanPhone /></div>
           </div>
@@ -85,7 +85,7 @@ export default function OptionB() {
             <p data-rv className="mx-auto mt-4 max-w-[36em] text-[1.08rem] text-ink-3">No application fees. Employers screened before they post. The first month&apos;s stipend sits in escrow before you start.</p>
           </div>
           <div data-rv><InternshipMarquee /></div>
-          <p className="mt-8 text-center"><a className="font-semibold text-orange-dark underline underline-offset-4" href={SCORE_URL} target="_blank" rel="noopener noreferrer">Browse all internships</a></p>
+          <p className="mt-8 text-center"><a className="font-semibold text-orange-dark underline underline-offset-4" href={SCORE_URL}>Browse all internships</a></p>
         </section>
 
         {/* GLOBE */}
@@ -99,7 +99,7 @@ export default function OptionB() {
               <ul data-rv className="mb-7 grid grid-cols-2 gap-x-6 text-[0.95rem]">
                 {COUNTRIES.map((c) => (<li key={c.name} className="flex justify-between border-b border-white/10 py-2"><span className="font-semibold">{c.name}</span><span className="text-[#FFB380]">{c.count}</span></li>))}
               </ul>
-              <a data-rv href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="ho-btn ho-btn-pri">Explore universities</a>
+              <a data-rv href="/study-abroad" className="ho-btn ho-btn-pri">Explore universities</a>
             </div>
             <div data-rv><Globe dark /></div>
           </div>

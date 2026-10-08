@@ -34,7 +34,7 @@ export function InternshipCard({ it, score }: { it: Internship; score: number })
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF6A2F" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5l8-3z" /><path d="M9 12l2 2 4-4" /></svg>
           First month in escrow
         </span>
-        {state === "open" && <a href={SCORE_URL} target="_blank" rel="noopener noreferrer" className="inline-flex min-h-[40px] shrink-0 items-center whitespace-nowrap rounded-full bg-ink px-4 text-[0.82rem] font-bold text-white transition hover:bg-orange">View &amp; apply</a>}
+        {state === "open" && <a href={SCORE_URL} className="inline-flex min-h-[40px] shrink-0 items-center whitespace-nowrap rounded-full bg-ink px-4 text-[0.82rem] font-bold text-white transition hover:bg-orange">View &amp; apply</a>}
         {state === "close" && <span className="rounded-full bg-amber-50 px-3 py-2 text-[0.76rem] font-bold text-amber-800">+{gap} pts to unlock</span>}
         {state === "locked" && <span className="rounded-full bg-black/[0.05] px-3 py-2 text-[0.76rem] font-bold text-ink-4">Build skills first</span>}
       </div>
