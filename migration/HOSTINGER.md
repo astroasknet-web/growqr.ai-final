@@ -57,7 +57,7 @@ If Hostinger insists on a build command, use `echo done`.
 | `RESEND_API_KEY`, `PORTAL_MAIL_FROM` | outgoing email (verify the sending domain in Resend) |
 | `CRON_SECRET` | a long random string (used by the scheduled job below) |
 | `RAZORPAY_KEY_ID`, `RAZORPAY_KEY_SECRET`, `RAZORPAY_WEBHOOK_SECRET`, `NEXT_PUBLIC_RAZORPAY_KEY_ID` | payments (test keys are fine) |
-| `TURNSTILE_SITE_KEY`, `TURNSTILE_SECRET_KEY` | bot check on signup/login (add `qrscore.mathstudy.in` to the widget's allowed hostnames) |
+| `TURNSTILE_SECRET_KEY` (runtime) and `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (put it in the GitHub `BUILD_ENV` secret, it is baked in at build) | bot check on signup/login. **Skip for testing**: with no site key the check is simply off |
 | `PORTAL_ADMIN_EMAIL`, `CRM_VERIFY_*`, `LMS_WEBHOOK_SECRET`, `COURSES_BASE_URL` | optional, see `migration/env.example` |
 
 Do **not** set `PORTAL_MFA_REQUIRE_STAFF=false` outside a laptop.
