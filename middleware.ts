@@ -10,7 +10,6 @@ export async function middleware(request: NextRequest) {
   // Portal-only host (e.g. qrscore.mathstudy.in): the marketing pages live on growqr.ai, so send visitors there.
   if (portalOnly) {
     const d = portalDecision(pathname, search, process.env.MARKETING_URL || "https://growqr.ai");
-    if (d.action === "rewrite") { const res = NextResponse.rewrite(new URL(d.to, request.url)); if (noindex) res.headers.set("X-Robots-Tag", "noindex, nofollow"); return res; }
     if (d.action === "redirect") return NextResponse.redirect(d.to.startsWith("/") ? new URL(d.to, request.url) : d.to, 307);
   }
   // Pages other than the marketing admin need nothing here beyond the optional "do not index" header used while the site is being tested.

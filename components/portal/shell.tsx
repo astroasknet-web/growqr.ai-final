@@ -22,12 +22,12 @@ export function PortalPage({ user, active, title, subtitle, children, wide = fal
   const links = user.role === "student" ? NAV : user.role === "employer" ? EMPLOYER_NAV : user.role === "admin" ? ADMIN_NAV : user.role === "counselor" ? COUNSELOR_NAV : NAV.filter((n) => n.key === "account");
   return (
     <div className="min-h-[60vh] bg-cream-2">
-      {/* The site header (old qrscore look) comes from the layout; this strip is the signed-in person's own menu. */}
+      {/* The main site navigation comes from the layout; this strip is the signed-in person's own menu. */}
       <header className="bg-white border-b border-black/[0.08]">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 min-h-12 flex items-center gap-4">
           <nav aria-label="Account" className="flex items-center gap-1 sm:gap-2 overflow-x-auto">
             {links.map((n) => (
-              <Link key={n.key} href={n.href} aria-current={active === n.key ? "page" : undefined} className={`min-h-[44px] inline-flex items-center px-3 rounded-lg text-[14px] font-medium whitespace-nowrap ${active === n.key ? "bg-[#eef2ff] text-[#3730a3]" : "text-ink-3 hover:bg-cream-2"}`}>
+              <Link key={n.key} href={n.href} aria-current={active === n.key ? "page" : undefined} className={`min-h-[44px] inline-flex items-center px-3 rounded-lg text-[14px] font-medium whitespace-nowrap ${active === n.key ? "bg-orange-light text-orange-deep" : "text-ink-3 hover:bg-cream-2"}`}>
                 {n.label}
               </Link>
             ))}

@@ -25,6 +25,7 @@ import { useHomeMode } from "@/components/layout/HomeMode";
 import { useIsIndia, useIsLive } from "@/components/layout/CurrencyProvider";
 import { useSeekerWaitlist } from "@/components/seeker/SeekerWaitlistModal";
 import { trackAppCta } from "@/lib/analytics";
+import { AppsDropdown, AppsMobile } from "@/components/layout/AppsMenu";
 
 const ease = [0.22, 1, 0.36, 1] as const;
 
@@ -280,6 +281,9 @@ export default function Navbar({ hideUseCases = false }: { hideUseCases?: boolea
             <div className="col-start-2" />
 
             <div className="col-start-3 justify-self-end flex items-center gap-2">
+
+              {/* ── Apps menu: every GrowQR application, site-wide ──────── */}
+              <AppsDropdown />
 
               {/* ── Use Cases dropdown ───────────────────────────────── */}
               {!hideUseCases && (
@@ -583,6 +587,9 @@ export default function Navbar({ hideUseCases = false }: { hideUseCases?: boolea
                   </div>
                 )}
               </div>
+
+              {/* Apps — accordion with every GrowQR application */}
+              <AppsMobile onNavigate={() => setMenuOpen(false)} />
 
               {/* Solutions — accordion, mirrors the desktop dropdown's persona
                   list/order, hidden on the same non-persona pages. */}

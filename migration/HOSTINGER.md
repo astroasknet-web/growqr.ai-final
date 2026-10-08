@@ -46,7 +46,7 @@ If Hostinger insists on a build command, use `echo done`.
 | Name | Value |
 |---|---|
 | `HOSTNAME` | `0.0.0.0` (the server must listen on all addresses; Hostinger supplies `PORT`) |
-| `SITE_MODE` | `portal` (marketing pages redirect to `MARKETING_URL`) |
+| `SITE_MODE` | `portal` while the database has no marketing tables: the home page and the Apps menu work as on growqr.ai, other marketing pages (events, experts, solutions...) open on `MARKETING_URL`. Remove it once this host shares growqr.ai's database |
 | `MARKETING_URL` | `https://growqr.ai` |
 | `SITE_NOINDEX` | `1` while testing (adds "do not index"); remove at go-live |
 | `PORTAL_APP_URL` | `https://qrscore.mathstudy.in` (no trailing path) |

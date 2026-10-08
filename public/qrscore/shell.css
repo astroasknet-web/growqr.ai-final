@@ -1,5 +1,0 @@
-/* Added for the Node version (copied as written, not scoped by the script): lets the old header/footer sit inside pages built another way without adding a box of their own. */
-.qrs-c { display: contents; }
-.qrs-skip { position: absolute; left: -999px; top: 8px; background: #0f172a; color: #fff; padding: 10px 14px; border-radius: 8px; z-index: 100; }
-.qrs-skip:focus { left: 8px; }
-.qrs .menu-cta form { display: contents; margin: 0; }

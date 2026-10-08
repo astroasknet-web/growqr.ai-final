@@ -8,7 +8,7 @@ import fs from "node:fs";
 import path from "node:path";
 
 const KEEP = new Set([
-  "qrscore", "studio", "badges", "custom-icons", "internship", "partner-logos", "sublogos", "shared",
+  "studio", "badges", "custom-icons", "internship", "partner-logos", "sublogos", "shared",
   "android-chrome-192x192.png", "android-chrome-512x512.png", "apple-touch-icon.png", "favicon-16x16.png", "favicon-32x32.png", "favicon.ico", "site.webmanifest",
   "crm-file.js", "growqr-logo.png", "growqr.png", "logo.png", "onlylogo.png", "emailogo.png", "og-image.png", "growqrcode.png", "passport-context.jsonld",
 ]);
