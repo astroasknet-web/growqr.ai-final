@@ -5,9 +5,9 @@ import { portalDecision } from "@/lib/site-mode";
 
 export async function middleware(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
-  const portalOnly = process.env.SITE_MODE === "portal";
+  const portalOnly = process.env.SITE_MODE === "portal-only";
   const noindex = process.env.SITE_NOINDEX === "1";
-  // Portal-only host (e.g. qrscore.mathstudy.in): the marketing pages live on growqr.ai, so send visitors there.
+  // Optional portal-only host: marketing pages are not served here, so send visitors to the main site.
   if (portalOnly) {
     const d = portalDecision(pathname, search, process.env.MARKETING_URL || "https://growqr.ai");
     if (d.action === "redirect") return NextResponse.redirect(d.to.startsWith("/") ? new URL(d.to, request.url) : d.to, 307);

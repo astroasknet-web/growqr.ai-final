@@ -1,7 +1,7 @@
 /**
- * Portal-only mode (SITE_MODE=portal), used when this codebase is deployed on its own subdomain (for example qrscore.mathstudy.in).
- * The marketing site (home page, events, experts, solutions, blog, ...) stays on growqr.ai, so on the portal host those paths send the
- * visitor there instead of serving a second copy. Pure functions, so they are unit-tested and safe to run in the edge middleware.
+ * Optional portal-only mode (SITE_MODE=portal-only), for a host that must serve ONLY the portal and send every other path to the main site.
+ * Not used by default: with SITE_MODE unset or "portal" the whole site (home, community, blog, events, experts, solutions and the portal apps)
+ * is served from this host, so every navigation link opens a page on the same host. Pure functions, unit-tested, safe for the edge middleware.
  */
 export const PORTAL_PREFIXES = [
   "/login", "/signup", "/forgot-password", "/reset-password", "/verify-email", "/verify", "/v", "/account", "/passport", "/studio",

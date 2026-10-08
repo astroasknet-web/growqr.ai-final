@@ -46,8 +46,8 @@ If Hostinger insists on a build command, use `echo done`.
 | Name | Value |
 |---|---|
 | `HOSTNAME` | `0.0.0.0` (the server must listen on all addresses; Hostinger supplies `PORT`) |
-| `SITE_MODE` | `portal` while the database has no marketing tables: the home page and the Apps menu work as on growqr.ai, other marketing pages (events, experts, solutions...) open on `MARKETING_URL`. Remove it once this host shares growqr.ai's database |
-| `MARKETING_URL` | `https://growqr.ai` |
+| `SITE_MODE` | leave it out (the whole site is served from this host). `portal-only` is an optional mode that sends non-portal pages to `MARKETING_URL` |
+| `MARKETING_URL` | only used with `SITE_MODE=portal-only` |
 | `SITE_NOINDEX` | `1` while testing (adds "do not index"); remove at go-live |
 | `PORTAL_APP_URL` | `https://qrscore.mathstudy.in` (no trailing path) |
 | `DATABASE_URL` | Supabase -> Project settings -> Database -> **Session pooler** (port 5432) or Direct connection string |
@@ -116,3 +116,18 @@ Open `https://qrscore.mathstudy.in/api/health`. The `settings` part lists which 
 
 1. Check they are saved on the **Node app's** Environment page (not on another site), then **Redeploy** (a restart alone may not pick them up).
 2. Fallback that does not depend on the dashboard: in hPanel -> File Manager, open the app's folder (the one containing `server.js`) and create a file named `.env.production` with one `NAME=value` per line (the same names as the table in section 2). The app reads it at start-up, before the first request. Real environment variables, when present, win over the file. Restart the app afterwards. If a redeploy wipes the folder, create the file again; keep a copy of it somewhere safe, because it holds secrets.
+
+
+## 10. Making the community, blog, events and experts pages show real content
+
+Those pages read the main site's data. On this host they work only when it has the same settings as growqr.ai (Vercel -> the growqr.ai project -> Settings -> Environment Variables). Copy these, using the same names:
+
+| Name | What it makes work |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | events, experts, community data (the growqr.ai Supabase project) |
+| `BLOGFORGE_API_URL`, `BLOGFORGE_API_KEY`, `NEXT_PUBLIC_BLOGFORGE_URL`, `NEXT_PUBLIC_BLOGFORGE_SITE_SLUG` | the blog engine. Without them /blog shows a few sample posts ("demo mode") |
+| `RESEND_API_KEY` | emails (event registration, expert booking) |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (build secret), `TURNSTILE_SECRET_KEY` | bot check on forms (add this host to the widget's allowed hostnames) |
+| `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_ZOHO_SALESIQ_WIDGET_CODE` | optional: analytics and the chat widget |
+
+Keep `DATABASE_URL` pointing at the project that holds the portal tables (it can be a different project from the one above while you demo). Note that file uploads (resume, documents) use the `NEXT_PUBLIC_SUPABASE_URL` project's Storage, so create the two **private** buckets `resumes` and `vault` there.

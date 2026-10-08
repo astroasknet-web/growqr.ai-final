@@ -4,7 +4,7 @@ import { portalDecision } from "./site-mode";
 const M = "https://growqr.ai";
 const d = (p: string, s = "") => portalDecision(p, s, M);
 
-describe("portal-only host", () => {
+describe("portal-only mode rules", () => {
   it("keeps the main site's home page at /", () => {
     expect(d("/")).toEqual({ action: "next" });
   });
