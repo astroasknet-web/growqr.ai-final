@@ -6,6 +6,8 @@ import QuestionGroups from "@/components/tests/QuestionGroups";
 import { Countdown, ListeningPlayer } from "@/components/tests/TestClient";
 import { cleanHtml } from "@/lib/market/lessons";
 import * as ielts from "@/lib/tests/ielts";
+import * as gre from "@/lib/tests/gre";
+import { GreTest } from "@/components/tests/GreTest";
 import { submitIelts } from "../../actions";
 import { SITE_URL } from "@/lib/seo";
 
@@ -20,6 +22,7 @@ export async function generateMetadata({ params }: { params: Promise<{ exam: str
   const p = await params;
   const kind = kindOf(p.exam);
   const n = Number(p.n);
+  if (p.exam === "gre-quant" && gre.validNumber(n)) return { title: `GRE Quant Practice Test ${n} | GrowQR`, description: `Timed GRE Quantitative Reasoning practice test ${n}: ${gre.QUESTIONS} questions, instant marking and an explanation for every question.`, alternates: { canonical: `${SITE_URL}/practice-tests/gre-quant/${n}` }, robots: { index: true, follow: true } };
   if (!kind || !ielts.validNumber(n)) return { title: "Practice test | GrowQR", robots: { index: false, follow: true } };
   return {
     title: `${LABEL[kind]} Practice Test ${n} | GrowQR`,
@@ -37,6 +40,10 @@ export default async function TestPage({ params, searchParams }: { params: Promi
   const sp = await searchParams;
   const kind = kindOf(p.exam);
   const n = Math.trunc(Number(p.n));
+  if (p.exam === "gre-quant") {
+    if (!gre.validNumber(n)) notFound();
+    return <GreTest user={await currentViewer()} n={n} a={sp.a} t={sp.t} />;
+  }
   const test = kind && ielts.validNumber(n) ? ielts.load(kind, n) : null;
   if (!kind || !test) notFound();
   const me = await currentViewer();

@@ -4,8 +4,8 @@ import { MarketShell } from "@/components/market/shell";
 import { SITE_URL } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Free IELTS Practice Tests Online | GrowQR",
-  description: "Timed IELTS Reading and Listening practice tests, marked instantly with an indicative band score and an explanation for every answer.",
+  title: "Free IELTS and GRE Practice Tests | GrowQR",
+  description: "Timed IELTS Reading, IELTS Listening and GRE Quant practice tests, marked instantly with a score and an explanation for every answer.",
   alternates: { canonical: `${SITE_URL}/practice-tests` },
   robots: { index: true, follow: true },
 };
@@ -13,6 +13,7 @@ export const metadata: Metadata = {
 const TESTS = [
   { href: "/practice-tests/ielts-reading", title: "IELTS Academic Reading", meta: "30 full tests · 40 questions · 60 minutes", text: "Three passages per test with matching headings, True/False/Not Given, multiple choice and completion questions." },
   { href: "/practice-tests/ielts-listening", title: "IELTS Listening", meta: "30 full tests · 40 questions · 40 minutes", text: "Four sections voiced by your browser, played once, with the same question types as the real exam." },
+  { href: "/practice-tests/gre-quant", title: "GRE Quantitative Reasoning", meta: "30 full tests · 27 questions · 47 minutes", text: "Each test covers all 26 syllabus topics, from number properties to data interpretation, with no repeated questions between tests." },
 ];
 
 export default function PracticeTestsPage() {
@@ -30,7 +31,7 @@ export default function PracticeTestsPage() {
           </li>
         ))}
       </ul>
-      <p className="text-[13px] text-ink-4 mt-6">Bands are indicative: the raw-score tables differ slightly between real test versions. IELTS is a registered trademark of its owners, and these are independent practice materials.</p>
+      <p className="text-[13px] text-ink-4 mt-6">IELTS bands and GRE scores are indicative estimates: the real conversions differ between test versions. IELTS and GRE are trademarks of their owners, and these are independent practice materials.</p>
     </MarketShell>
   );
 }

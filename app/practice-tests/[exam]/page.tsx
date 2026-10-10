@@ -5,6 +5,7 @@ import { currentViewer, MarketShell } from "@/components/market/shell";
 import { databaseConfigured } from "@/lib/portal/db";
 import * as attempts from "@/lib/tests/attempts";
 import * as ielts from "@/lib/tests/ielts";
+import { GreList } from "@/components/tests/GreTest";
 import { SITE_URL } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -15,7 +16,9 @@ const kindOf = (exam: string): ielts.Kind | null => {
 const LABEL = { reading: "IELTS Academic Reading", listening: "IELTS Listening" } as const;
 
 export async function generateMetadata({ params }: { params: Promise<{ exam: string }> }): Promise<Metadata> {
-  const kind = kindOf((await params).exam);
+  const exam = (await params).exam;
+  if (exam === "gre-quant") return { title: "GRE Quant Practice Tests (30 Free Tests) | GrowQR", description: "Thirty timed GRE Quantitative Reasoning practice tests covering all 26 topics, marked instantly with an explanation for every question.", alternates: { canonical: `${SITE_URL}/practice-tests/gre-quant` }, robots: { index: true, follow: true } };
+  const kind = kindOf(exam);
   if (!kind) return { title: "Practice tests | GrowQR", robots: { index: false, follow: true } };
   return {
     title: `${LABEL[kind]} Practice Tests (30 Free Tests) | GrowQR`,
@@ -27,9 +30,13 @@ export async function generateMetadata({ params }: { params: Promise<{ exam: str
 
 export default async function ExamListPage({ params }: { params: Promise<{ exam: string }> }) {
   const exam = (await params).exam;
+  const me = await currentViewer();
+  if (exam === "gre-quant") {
+    const bestG = me?.role === "student" && databaseConfigured() ? await attempts.bestByTest(me.id, exam) : new Map<number, attempts.Attempt>();
+    return <GreList user={me} best={bestG} />;
+  }
   const kind = kindOf(exam);
   if (!kind) notFound();
-  const me = await currentViewer();
   const best = me?.role === "student" && databaseConfigured() ? await attempts.bestByTest(me.id, exam) : new Map<number, attempts.Attempt>();
   const tests = ielts.list(kind);
   return (
