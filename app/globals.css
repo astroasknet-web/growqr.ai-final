@@ -794,6 +794,26 @@ p, .text-ink-3 {
     transform: translateY(-6px);
   }
 }
+/* ---- Accessibility panel (components/a11y/A11yPanel.tsx): applied via data-* attributes on <html> ---- */
+html[data-fontscale="1"] { font-size: 108%; }
+html[data-fontscale="2"] { font-size: 118%; }
+html[data-fontscale="3"] { font-size: 131%; }
+html[data-dyslexia="1"] body :where(p, li, h1, h2, h3, h4, a, td, th, label, span, legend) {
+  font-family: Verdana, "Trebuchet MS", sans-serif !important;
+  letter-spacing: 0.03em;
+  word-spacing: 0.1em;
+  line-height: 1.75;
+}
+html[data-contrast="1"] body { background: #fff !important; color: #000 !important; }
+html[data-contrast="1"] main :where(p, li, span, h1, h2, h3, h4, td, th, label, dd, dt, legend) { color: #000 !important; }
+html[data-contrast="1"] main a { text-decoration: underline !important; }
+html[data-contrast="1"] main :where(article, section, aside, li, input, select, textarea) { border-color: #000 !important; box-shadow: none !important; }
+html[data-reduce-motion="1"] *, html[data-reduce-motion="1"] *::before, html[data-reduce-motion="1"] *::after {
+  animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important;
+}
+.a11y-reading { background: #fff3c4; outline: 2px solid #f5b800; outline-offset: 2px; border-radius: 4px; }
+html[data-contrast="1"] .a11y-reading { background: #ffff00 !important; outline-color: #000; }
+
 .jr-float {
   animation: jr-float 6s ease-in-out infinite;
   will-change: transform;
