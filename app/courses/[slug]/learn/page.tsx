@@ -5,8 +5,13 @@ import { databaseConfigured } from "@/lib/portal/db";
 import * as courses from "@/lib/market/courses";
 import * as learning from "@/lib/market/learning";
 import * as lessons from "@/lib/market/lessons";
+import { learnCourse } from "@/lib/learn/activities";
+import { nextStep } from "@/lib/learn/next";
+import * as results from "@/lib/learn/results";
+import CourseLanding from "@/components/learn/CourseLanding";
 import { currentViewer, MarketShell } from "@/components/market/shell";
 import { courseAction } from "../../actions";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { SITE_URL } from "@/lib/seo";
 
 export const dynamic = "force-dynamic";
@@ -16,9 +21,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const slug = clean((await params).slug);
   const nc = lessons.nativeCourse(slug);
   if (!nc) return { title: "Course not found | GrowQR", robots: { index: false, follow: true } };
+  const lc = learnCourse(slug);
+  const title = lc?.landing ? `${lc.landing.hero.title} (Free Course) | GrowQR` : `${nc.title}: Lessons | GrowQR`;
+  const desc = lc?.landing ? lc.landing.hero.subtitle : `${nc.tagline} ${nc.modules.length} modules with quizzes and a capstone project.`;
   return {
-    title: `${nc.title}: Lessons | GrowQR`,
-    description: Array.from(`${nc.tagline} ${nc.modules.length} modules with quizzes and a capstone project.`).slice(0, 155).join(""),
+    title: title.length > 66 ? `${nc.title}: Free Course | GrowQR` : title,
+    description: Array.from(desc).slice(0, 155).join(""),
     alternates: { canonical: `${SITE_URL}/courses/${slug}/learn` },
     robots: { index: true, follow: true },
   };
@@ -31,9 +39,38 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
   const course = await courses.bySlug(slug);
   if (!course) notFound();
   const me = await currentViewer();
-  const enrol = me?.role === "student" ? await learning.find(me.id, course.id) : null;
+  const isStudent = me?.role === "student";
+  const enrol = isStudent ? await learning.find(me!.id, course.id) : null;
   const done = new Set(enrol?.done ?? []);
-  const next = nc.modules.findIndex((_, i) => !done.has(i));
+  const lc = learnCourse(slug);
+
+  if (lc?.landing) {
+    const summary = isStudent ? await results.summary(me!.id, slug) : null;
+    const next = nextStep(slug, nc, lc, done, summary?.passed ?? new Set(), Boolean(enrol && (enrol.progress > 0 || summary?.passed.size)));
+    const ld = {
+      "@context": "https://schema.org",
+      "@graph": [
+        { "@type": "Course", name: lc.landing.hero.title, description: lc.landing.hero.subtitle, url: `${SITE_URL}/courses/${slug}/learn`, educationalLevel: lc.landing.hero.level, timeRequired: `PT${nc.hours}H`, inLanguage: "en", isAccessibleForFree: true, provider: { "@type": "Organization", name: "GrowQR", sameAs: SITE_URL }, hasCourseInstance: { "@type": "CourseInstance", courseMode: "online", courseWorkload: `PT${nc.hours}H` } },
+        { "@type": "FAQPage", mainEntity: lc.landing.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
+        { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Courses", item: `${SITE_URL}/courses` }, { "@type": "ListItem", position: 2, name: nc.title, item: `${SITE_URL}/courses/${slug}` }, { "@type": "ListItem", position: 3, name: "Learn" }] },
+      ],
+    };
+    const sample = lc.activities.find((a) => a.id === "c1-parts") ?? lc.activities.find((a) => a.kind === "classify");
+    return (
+      <MarketShell user={me} active="courses">
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(ld) }} />
+        <nav aria-label="Breadcrumb" className="mb-4 text-[13px] text-ink-3"><Link href="/courses" className="underline">Courses</Link> / <Link href={`/courses/${slug}`} className="underline">{nc.title}</Link> / Learn</nav>
+        {isStudent && !enrol ? (
+          <form action={courseAction} className="mb-4"><input type="hidden" name="act" value="enrol" /><input type="hidden" name="slug" value={slug} /><input type="hidden" name="back" value={`/courses/${slug}/learn`} />
+            <button type="submit" className="min-h-[44px] rounded-lg border border-black/[0.18] bg-white px-4 text-[14px] font-medium text-ink hover:bg-cream-2">Enrol to track your progress</button></form>
+        ) : null}
+        <CourseLanding slug={slug} nc={nc} lc={lc} summary={summary} done={done} next={next} signedIn={Boolean(me)} isStudent={isStudent} enrolled={Boolean(enrol)} progress={enrol?.progress ?? 0} sampleHref={sample ? `/courses/${slug}/learn/${sample.module}/a/${sample.id}` : null} />
+      </MarketShell>
+    );
+  }
+
+  // Courses without interactive activities keep the simple module list.
+  const next = done.size === 0 ? 0 : nc.modules.findIndex((_, i) => !done.has(i));
   const nextKey = next < 0 ? (done.has(nc.modules.length) ? nc.modules[0].slug : "capstone") : nc.modules[next].slug;
   const btn = "inline-flex items-center justify-center min-h-[48px] px-6 rounded-lg font-semibold text-[15px]";
   const tick = (ok: boolean, n: string, label: string) => (
@@ -50,7 +87,7 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
       {enrol ? <p className="mt-3 text-[14px] text-ink-2"><b>{enrol.progress}% complete.</b> Pass each module quiz to tick it off.</p> : null}
       <div className="mt-4 flex flex-wrap gap-3">
         <Link href={`/courses/${slug}/learn/${nextKey}`} className={`${btn} bg-orange-deep hover:bg-ink text-white`}>{enrol && enrol.done.length ? "Continue learning" : "Start module 1"}</Link>
-        {me?.role === "student" && !enrol ? (
+        {isStudent && !enrol ? (
           <form action={courseAction}><input type="hidden" name="act" value="enrol" /><input type="hidden" name="slug" value={slug} /><input type="hidden" name="back" value={`/courses/${slug}/learn`} /><button type="submit" className={`${btn} border border-black/[0.15] hover:bg-cream-2`}>Enrol and track progress</button></form>
         ) : null}
         {!me ? <Link href={`/login?next=${encodeURIComponent(`/courses/${slug}/learn`)}`} className={`${btn} border border-black/[0.15] hover:bg-cream-2`}>Log in to save progress</Link> : null}

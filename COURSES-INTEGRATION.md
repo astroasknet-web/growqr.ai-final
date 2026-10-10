@@ -43,3 +43,7 @@ PORTAL_TEST_DATABASE_URL=postgres://postgres:postgres@127.0.0.1:5544/postgres DA
 - IELTS Writing / Speaking are not auto-marked (no invented scores).
 - Teacher and parent sign-up are open; consider admin approval for teachers before launch.
 - Site-wide footer and navbar colour contrast (axe) was already failing before this work and was left alone.
+
+## Interactive course framework
+
+The Digital Literacy course now has hands-on activities (document editor, spreadsheet, slide studio, sort-and-decide) with automatic checks, XP and badges. See `COURSE-FRAMEWORK.md` for how it works and how to build the next course. New migration: `20261012000001_activity_results.sql`. Optional AI helper: `LEARN_AI_ENABLED=true`.
