@@ -115,6 +115,11 @@ export async function forUser(userId: number): Promise<MyCourse[]> {
   return rows.map((r) => ({ ...hydrate(r), slug: String(r.slug), title: String(r.title), modules: Number(r.modules), hours: String(r.hours), badge: String(r.badge), icon: String(r.icon), level_label: String(r.level_label), cat_name: String(r.cat_name), c1: String(r.c1), c2: String(r.c2) }));
 }
 
+/** A course taught on GrowQR was finished by passing every graded quiz: record it as verified (by GrowQR) so it counts toward the Skill Passport. */
+export async function verifyNative(userId: number, courseId: number): Promise<void> {
+  await run("UPDATE course_enrolments SET verified = 1, verified_via = 'growqr', updated_at = NOW() WHERE user_id = $1 AND course_id = $2 AND status = 'completed' AND verified = 0", [userId, courseId]);
+}
+
 // ---- LMS webhook -----------------------------------------------------------------------------------------------------
 
 /** Record a completion confirmed by the LMS. Returns an error message, or null. */
@@ -175,6 +180,6 @@ async function courseCompleted(userId: number, title: string): Promise<void> {
   if (!u) return;
   await send(u, `Course completed: ${title}`, "Course completed. Well done", [
     `You completed ${title}.`,
-    "Add your Vidaara certificate link to your course record and it counts toward your Skill Passport, which raises your match score on roles that need these skills.",
+    "Completed courses count toward your Skill Passport, which raises your match score on roles that need these skills.",
   ], ["Open my courses", await appUrl("my-courses")], "course_completed");
 }

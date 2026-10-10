@@ -5,6 +5,7 @@ import { currentUser } from "@/lib/portal/guard";
 import { safeNext } from "@/lib/portal/security";
 import * as courses from "@/lib/market/courses";
 import * as learning from "@/lib/market/learning";
+import * as lessons from "@/lib/market/lessons";
 
 /** Enrol, leave, save progress or attach a certificate. Students only; the course is looked up here, never trusted from the form. */
 export async function courseAction(fd: FormData): Promise<void> {
@@ -21,6 +22,7 @@ export async function courseAction(fd: FormData): Promise<void> {
   let err = "";
   switch (act) {
     case "enrol":
+      if (!lessons.isNative(course.slug)) redirect(back); // lessons for the other courses are not on GrowQR yet
       await learning.enrol(me.id, course.id);
       msg = "enrolled";
       break;
@@ -29,6 +31,10 @@ export async function courseAction(fd: FormData): Promise<void> {
       msg = "left";
       break;
     case "save": {
+      if (lessons.isNative(course.slug)) {
+        msg = "locked"; // progress in these courses comes only from passing the module quizzes
+        break;
+      }
       await learning.enrol(me.id, course.id); // saving progress implies enrolment
       const r = await learning.setDone(me.id, course, fd.getAll("done"));
       msg = r === null ? "locked" : r.status === "completed" ? "completed" : "saved";

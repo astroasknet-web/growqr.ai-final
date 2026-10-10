@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { Course } from "@/lib/market/courses";
 import { checkpoints, type Enrolment } from "@/lib/market/learning";
 import { courseAction } from "@/app/courses/actions";
+import { nativeCourse, isNative } from "@/lib/market/lessons";
 
 const TIER_LABEL = { verified: "Verified", certificate: "Certificate linked", self: "Self-reported" } as const;
 const TIER_CLS = { verified: "bg-emerald-50 text-emerald-800", certificate: "bg-teal-50 text-teal-800", self: "bg-cream-3 text-ink-3" } as const;
@@ -28,6 +29,7 @@ export function CourseCard({ course }: { course: Course }) {
       <h3 className="text-[16px] font-semibold text-ink leading-snug mt-3"><Link href={`/courses/${course.slug}`} className="hover:underline underline-offset-2">{course.title}</Link></h3>
       <p className="text-[13px] text-ink-3 mt-1 line-clamp-3">{course.brief}</p>
       <p className="text-[12px] text-ink-4 mt-auto pt-3">{course.level_label} &middot; {course.modules} modules &middot; {course.badge || "Certificate"}</p>
+      <p className={`mt-2 text-[12px] font-semibold ${isNative(course.slug) ? "text-emerald-800" : "text-ink-3"}`}>{isNative(course.slug) ? "Lessons available now" : "Lessons coming soon"}</p>
     </li>
   );
 }
@@ -37,6 +39,25 @@ const inputCls = "w-full min-h-[44px] px-3 rounded-lg border border-black/[0.15]
 /** Progress tracker for one course: checkpoint form, certificate form and tier. */
 export function CourseTracker({ course, e, back }: { course: Pick<Course, "slug" | "title" | "modules">; e: Enrolment; back: string }) {
   const total = checkpoints(course);
+  const nc = nativeCourse(course.slug);
+  if (nc) {
+    // Taught on GrowQR: progress comes only from passing the module quizzes, so there is nothing to tick by hand and no certificate link to paste.
+    return (
+      <div id={`c-${course.slug}`} className="mt-3 rounded-xl bg-cream-2 p-3.5">
+        <div className="flex items-center justify-between gap-2"><b className="text-[14px] text-ink">{e.progress}% complete</b><TierPill tier={e.tier} /></div>
+        <div className="h-2 rounded-full bg-cream-3 overflow-hidden mt-2" role="img" aria-label={`${e.progress} percent complete`}><span className="block h-full bg-orange-deep rounded-full" style={{ width: `${e.progress}%` }} /></div>
+        <ul className="mt-3 space-y-0.5">
+          {Array.from({ length: total }, (_, i) => {
+            const label = i === total - 1 ? nc.capstone.title : nc.modules[i]?.title ?? `Module ${i + 1}`;
+            const href = `/courses/${course.slug}/learn/${i === total - 1 ? "capstone" : nc.modules[i]?.slug}`;
+            return <li key={i} className="flex items-start gap-2 min-h-[32px] text-[14px] text-ink-2"><span aria-hidden="true" className={e.done.includes(i) ? "text-emerald-700" : "text-ink-3"}>{e.done.includes(i) ? "\u2713" : "\u25CB"}</span><span><span className="sr-only">{e.done.includes(i) ? "Completed: " : "Not yet: "}</span><Link href={href} className="hover:underline">{label}</Link></span></li>;
+          })}
+        </ul>
+        {e.status === "completed" ? <p className="text-[13px] text-ink-3 mt-2">Complete. This counts toward your Skill Passport.</p> : null}
+        {!e.verified ? <form action={courseAction} className="mt-2"><input type="hidden" name="act" value="unenrol" /><input type="hidden" name="slug" value={course.slug} /><input type="hidden" name="back" value={back} /><button type="submit" className="text-[13px] underline text-ink-3 min-h-[44px]">Leave this course</button></form> : null}
+      </div>
+    );
+  }
   const locked = e.verified;
   const hidden = (act: string) => (
     <>
@@ -86,12 +107,12 @@ export function CourseTracker({ course, e, back }: { course: Pick<Course, "slug"
 }
 
 const MSG: Record<string, string> = {
-  enrolled: "You are enrolled. Tick each checkpoint as you finish it.",
+  enrolled: "You are enrolled. Pass each module quiz to complete it.",
   left: "You left this course.",
   saved: "Progress saved.",
-  completed: "Course complete! Add your Vidaara certificate link below so it counts toward your Skill Passport.",
+  completed: "Course complete! It now counts toward your Skill Passport.",
   cert_ok: "Certificate linked. This course now counts toward your Skill Passport.",
-  locked: "This course was verified by the LMS, so its progress is locked.",
+  locked: "Progress in this course comes from the module quizzes and cannot be edited by hand.",
 };
 
 /** One-line status message after a course action (read from ?c= and ?e=). */

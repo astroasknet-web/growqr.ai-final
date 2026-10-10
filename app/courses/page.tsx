@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { databaseConfigured } from "@/lib/portal/db";
 import * as courses from "@/lib/market/courses";
+import * as lessons from "@/lib/market/lessons";
 import { CourseCard } from "@/components/market/course-parts";
 import { currentViewer, MarketShell } from "@/components/market/shell";
 import { SITE_URL } from "@/lib/seo";
@@ -23,14 +24,15 @@ async function read(sp: SP) {
   const len = LENS[one(sp.len)] ? one(sp.len) : "";
   const sort = ["short", "long", "az"].includes(one(sp.sort)) ? one(sp.sort) : "";
   const page = Math.max(1, parseInt(one(sp.page), 10) || 1);
-  return { cats, q, cat, level, aud, len, sort, page };
+  const available = one(sp.available) === "1" ? "1" : "";
+  return { cats, q, cat, level, aud, len, sort, page, available };
 }
 
 export async function generateMetadata({ searchParams }: { searchParams: Promise<SP> }): Promise<Metadata> {
   if (!databaseConfigured()) return { title: "Courses | GrowQR" };
   const f = await read(await searchParams);
   const catName = f.cats.find((c) => c.key === f.cat)?.name ?? "";
-  const filtered = f.q || f.cat || f.level || f.aud || f.len || f.sort;
+  const filtered = f.q || f.cat || f.level || f.aud || f.len || f.sort || f.available;
   const base = catName ? `${catName} Courses | GrowQR` : "Online Courses to Get Internship-Ready | GrowQR";
   return {
     title: f.page > 1 ? `Page ${f.page}: ${base}` : base,
@@ -44,10 +46,10 @@ export default async function CoursesPage({ searchParams }: { searchParams: Prom
   const me = await currentViewer();
   if (!databaseConfigured()) return <MarketShell user={null} active="courses"><p>Courses are not available right now. Please try again shortly.</p></MarketShell>;
   const f = await read(await searchParams);
-  const res = await courses.search({ q: f.q, cat: f.cat, level: f.level, aud: f.aud, len: f.len, sort: f.sort, page: f.page });
+  const res = await courses.search({ q: f.q, cat: f.cat, level: f.level, aud: f.aud, len: f.len, sort: f.sort, page: f.page, only: f.available ? lessons.nativeSlugs() : undefined });
   const total = await courses.total();
   const catName = f.cats.find((c) => c.key === f.cat)?.name ?? "";
-  const params = { q: f.q, cat: f.cat, level: f.level, aud: f.aud, len: f.len, sort: f.sort };
+  const params = { q: f.q, cat: f.cat, level: f.level, aud: f.aud, len: f.len, sort: f.sort, available: f.available };
   const qs = (over: Partial<typeof params & { page: number }> = {}, drop: string[] = []): string => {
     const p = new URLSearchParams();
     for (const [k, v] of Object.entries({ ...params, ...over })) if (v !== "" && v !== undefined && v !== 1 && !drop.includes(k)) p.set(k, String(v));
@@ -60,6 +62,7 @@ export default async function CoursesPage({ searchParams }: { searchParams: Prom
   if (f.level) chips.push([LEVELS[f.level], qs({}, ["level"])]);
   if (f.aud) chips.push([`For ${f.aud.toLowerCase()}s`, qs({}, ["aud"])]);
   if (f.len) chips.push([LENS[f.len], qs({}, ["len"])]);
+  if (f.available) chips.push(["Lessons available now", qs({}, ["available"])]);
   const landing = chips.length === 0 && !f.sort && res.page === 1;
   const paths = landing ? await courses.paths() : [];
   const spot = landing ? await courses.featured(8) : [];
@@ -82,6 +85,8 @@ export default async function CoursesPage({ searchParams }: { searchParams: Prom
         <select id="clen" name="len" defaultValue={f.len} className={sel}><option value="">Any length</option>{Object.entries(LENS).map(([k, v]) => <option key={k} value={k}>{v}</option>)}</select>
         <button type="submit" className="min-h-[44px] px-5 rounded-lg bg-orange hover:bg-orange-dark text-white font-semibold text-[15px]">Search</button>
       </form>
+
+      <p className="mb-3"><Link href={qs({ available: f.available ? "" : "1" })} aria-current={f.available ? "true" : undefined} className={`min-h-[40px] inline-flex items-center px-3.5 rounded-full border text-[13px] font-medium ${f.available ? "bg-ink text-white border-ink" : "border-emerald-700 text-emerald-900 bg-emerald-50"}`}>Lessons available now on GrowQR</Link></p>
 
       <nav aria-label="Audience" className="flex flex-wrap gap-2 mb-5">
         {Object.entries(AUDS).map(([k, v]) => (

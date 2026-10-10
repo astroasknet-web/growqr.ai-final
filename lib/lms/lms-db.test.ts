@@ -115,6 +115,21 @@ describe.skipIf(!DB)("LMS on a real database", () => {
     expect(cell("IELTS Reading Practice Test 3", ids.s2)).toMatchObject({ state: "none", label: "Not started" });
   });
 
+  it("verifies a native course completion as GrowQR-verified and keeps hand-ticked progress out of that tier", async () => {
+    const course = (await CO.bySlug("html-css-academy"))!;
+    await L.enrol(ids.s2, course.id);
+    const all = Array.from({ length: L.checkpoints(course) }, (_, i) => i);
+    const done = await L.setDone(ids.s2, course, all);
+    expect(done).toMatchObject({ status: "completed", tier: "self" });
+    await L.verifyNative(ids.s2, course.id);
+    expect(await L.find(ids.s2, course.id)).toMatchObject({ status: "completed", verified: true, verified_via: "growqr", tier: "verified" });
+    // an unfinished enrolment is never verified
+    const other = (await CO.bySlug("data-science-python"))!;
+    await L.enrol(ids.s2, other.id);
+    await L.verifyNative(ids.s2, other.id);
+    expect((await L.find(ids.s2, other.id))?.verified).toBe(false);
+  });
+
   it("exports a CSV that cannot run formulas in a spreadsheet", async () => {
     const csv = C.toCsv(await C.gradebook(classId));
     expect(csv).toContain("\"'=cmd Student Two\"");

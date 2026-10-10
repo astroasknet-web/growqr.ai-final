@@ -76,7 +76,7 @@ export async function featured(limit = 6): Promise<Course[]> {
   return rows.slice(0, limit);
 }
 
-export interface CourseFilters { q?: string; cat?: string; level?: string; aud?: string; len?: string; sort?: string; page?: number }
+export interface CourseFilters { only?: string[]; q?: string; cat?: string; level?: string; aud?: string; len?: string; sort?: string; page?: number }
 export interface CoursePage { items: Course[]; total: number; pages: number; page: number }
 
 export async function search(f: CourseFilters): Promise<CoursePage> {
@@ -93,6 +93,7 @@ export async function search(f: CourseFilters): Promise<CoursePage> {
     where.push(`(c.title ILIKE ${like} OR c.brief ILIKE ${like} OR c.learn_json ILIKE ${like} OR c.badge ILIKE ${like} OR c.best_for ILIKE ${like})`);
     order = `CASE WHEN c.title ILIKE ${like} THEN 0 WHEN c.brief ILIKE ${like} THEN 1 ELSE 2 END, c.sort ASC`;
   }
+  if (f.only) where.push(`c.slug = ANY(${add(f.only)}::text[])`);
   if (f.cat) where.push(`c.category = ${add(f.cat)}`);
   if (f.level && LEVEL_GROUPS[f.level]) where.push(`c.level = ANY(${add(LEVEL_GROUPS[f.level][1])}::text[])`);
   if (f.aud) where.push(`${add(f.aud)} = ANY(string_to_array(c.tags, ','))`);

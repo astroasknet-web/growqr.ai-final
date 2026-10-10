@@ -36,6 +36,7 @@ export async function quizAction(fd: FormData): Promise<void> {
       if (e && !e.verified) {
         const r = await learning.setDone(me.id, course, [...e.done, at.index]);
         saved = r?.status === "completed" ? "completed" : "saved";
+        if (r?.status === "completed") await learning.verifyNative(me.id, course.id);
       }
     } else saved = "guest";
   }
