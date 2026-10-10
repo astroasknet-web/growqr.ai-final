@@ -21,8 +21,8 @@ const RESET_MINUTES = 60;
 export const MFA_PENDING_SECONDS = 300;
 
 /** Where each role lands after login. Their dashboards move into this app in later phases. */
-export function homeFor(_role: Role): string {
-  return "/account";
+export function homeFor(role: Role): string {
+  return role === "teacher" ? "/teacher" : role === "parent" ? "/parent" : "/account";
 }
 
 export function mfaRequiredFor(u: { role: Role }): boolean {
@@ -35,7 +35,7 @@ export function mfaRequiredFor(u: { role: Role }): boolean {
 export type Result<T> = ({ ok: true } & T) | { ok: false; error: string };
 
 export interface RegisterInput {
-  role: "student" | "employer";
+  role: "student" | "employer" | "teacher" | "parent";
   name: string;
   email: string;
   password: string;
@@ -61,7 +61,7 @@ export async function register(input: RegisterInput, ip: string): Promise<Result
       const id = r.rows[0].id;
       if (input.role === "student") {
         await c.query("INSERT INTO student_profiles (user_id, college) VALUES ($1,$2)", [id, input.college ?? ""]);
-      } else {
+      } else if (input.role === "employer") {
         await c.query("INSERT INTO companies (owner_user_id, name, domain, verified, color, created_at) VALUES ($1,$2,$3,0,$4,NOW())", [
           id, input.company ?? "", email.slice(email.lastIndexOf("@") + 1), PALETTE[id % PALETTE.length],
         ]);

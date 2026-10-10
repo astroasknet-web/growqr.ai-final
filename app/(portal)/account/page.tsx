@@ -9,7 +9,7 @@ import { ResendVerification } from "@/components/portal/forms";
 export const metadata: Metadata = { title: "My account | GrowQR" };
 export const dynamic = "force-dynamic";
 
-const ROLE_LABEL = { student: "Student", employer: "Employer", admin: "Administrator", counselor: "Staff" } as const;
+const ROLE_LABEL = { student: "Student", employer: "Employer", admin: "Administrator", counselor: "Staff", teacher: "Teacher", parent: "Parent" } as const;
 
 /**
  * Landing page for every signed-in role while the dashboards are moved over from the PHP app, one phase at a time.

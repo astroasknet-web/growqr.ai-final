@@ -81,8 +81,10 @@ export async function mfaLoginAction(_prev: FormState, fd: FormData): Promise<Fo
 // ---- sign up -------------------------------------------------------------------------------------------------------
 
 export async function signupAction(_prev: FormState, fd: FormData): Promise<FormState> {
-  const role = str(fd, "role") === "employer" ? "employer" : "student";
+  const asked = str(fd, "role");
+  const role = asked === "employer" || asked === "teacher" || asked === "parent" ? asked : "student";
   const isE = role === "employer";
+  const isStudent = role === "student";
   const v = { name: str(fd, "name", 120), email: str(fd, "email"), college: str(fd, "college", 160), company: str(fd, "company", 160), designation: str(fd, "designation", 160) };
   const password = String(fd.get("password") ?? "");
   const values = { ...v, role };
@@ -94,7 +96,7 @@ export async function signupAction(_prev: FormState, fd: FormData): Promise<Form
   else if (isE && FREE_MAIL.includes(v.email.slice(v.email.lastIndexOf("@") + 1).toLowerCase())) f.email = "Employers need a work email on a company domain. This helps us verify you.";
   const why = weakPassword(password, v.email, v.name);
   if (why) f.password = why;
-  if (!isE && Array.from(v.college).length < 2) f.college = "Enter your college or university.";
+  if (isStudent && Array.from(v.college).length < 2) f.college = "Enter your college or university.";
   if (isE) {
     if (Array.from(v.company).length < 2) f.company = "Enter your company name.";
     if (Array.from(v.designation).length < 2) f.designation = "Enter your role at the company.";
@@ -104,7 +106,7 @@ export async function signupAction(_prev: FormState, fd: FormData): Promise<Form
 
   const r = await auth.register({ role, name: v.name, email: v.email, password, college: v.college, company: v.company }, await clientIp());
   if (!r.ok) return { error: r.error, values };
-  if (!isE && str(fd, "college_state") !== "") await submitCollege(r.userId, await clientIp(), v.college, str(fd, "college_state"), "", false).catch(() => undefined); // an unlisted college goes to admin review
+  if (isStudent && str(fd, "college_state") !== "") await submitCollege(r.userId, await clientIp(), v.college, str(fd, "college_state"), "", false).catch(() => undefined); // an unlisted college goes to admin review
   await startSession(r.userId);
   await audit(r.userId, r.userId, "signup", role);
   redirect(`${auth.homeFor(role)}?welcome=1`);

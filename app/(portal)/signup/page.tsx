@@ -12,16 +12,17 @@ export default async function SignupPage({ searchParams }: { searchParams: Promi
   const sp = await searchParams;
   const me = await currentUser();
   if (me) redirect(homeFor(me.role));
-  const role = sp.role === "employer" ? "employer" : "student";
+  const role = sp.role === "employer" || sp.role === "teacher" || sp.role === "parent" ? sp.role : "student";
+  const T = { student: ["Create your free account", "Applying is free. We never charge placement fees."], employer: ["Hire on GrowQR", "Post roles and meet verified students."], teacher: ["Create your teacher account", "Run a class, set courses and practice tests, and read a gradebook."], parent: ["Create your parent account", "Follow your child's learning with their learner code."] }[role];
   return (
     <AuthShell
-      title={role === "employer" ? "Hire on GrowQR" : "Create your free account"}
+      title={T[0]}
       subtitle={
         <>
-          {role === "employer" ? "Post roles and meet verified students." : "Applying is free. We never charge placement fees."}
+          {T[1]}
           <br />
           <span className="text-[13px]">
-            {role === "employer" ? <>Looking for an internship? <LinkText href="/signup">Sign up as a student</LinkText></> : <>Hiring? <LinkText href="/signup?role=employer">Sign up as an employer</LinkText></>}
+            {role === "student" ? <>Hiring? <LinkText href="/signup?role=employer">Employer</LinkText> · Teaching? <LinkText href="/signup?role=teacher">Teacher</LinkText> · <LinkText href="/signup?role=parent">Parent</LinkText></> : <>Looking for an internship? <LinkText href="/signup">Sign up as a student</LinkText></>}
             {" · "}Already registered? <LinkText href="/login">Log in</LinkText>
           </span>
         </>

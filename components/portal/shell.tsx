@@ -1,6 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { PortalUser } from "@/lib/portal/session";
+import { LogoutButton } from "@/components/portal/forms";
 
 /** Page frame for signed-in portal pages: logo, a small menu, and a content column. */
 const NAV = [
@@ -10,6 +11,7 @@ const NAV = [
   { key: "internships", href: "/internships", label: "Internships" },
   { key: "applications", href: "/applications", label: "My applications" },
   { key: "courses", href: "/my-courses", label: "My courses" },
+  { key: "classes", href: "/my-classes", label: "My classes" },
   { key: "abroad", href: "/abroad", label: "Study abroad" },
   { key: "share", href: "/passport/share", label: "Share" },
 ] as const;
@@ -19,7 +21,9 @@ export function PortalPage({ user, active, title, subtitle, children, wide = fal
   const STAFF_NAV = [NAV[0], { key: "crm", href: "/crm", label: "Overseas CRM" }] as const;
   const COUNSELOR_NAV = [...STAFF_NAV, { key: "caseload", href: "/counselor", label: "My caseload" }] as const;
   const ADMIN_NAV = [...STAFF_NAV, { key: "console", href: "/console", label: "Admin console" }] as const;
-  const links = user.role === "student" ? NAV : user.role === "employer" ? EMPLOYER_NAV : user.role === "admin" ? ADMIN_NAV : user.role === "counselor" ? COUNSELOR_NAV : NAV.filter((n) => n.key === "account");
+  const TEACHER_NAV = [NAV[0], { key: "teacher", href: "/teacher", label: "My classes" }] as const;
+  const PARENT_NAV = [NAV[0], { key: "parent", href: "/parent", label: "My children" }] as const;
+  const links = user.role === "student" ? NAV : user.role === "teacher" ? TEACHER_NAV : user.role === "parent" ? PARENT_NAV : user.role === "employer" ? EMPLOYER_NAV : user.role === "admin" ? ADMIN_NAV : user.role === "counselor" ? COUNSELOR_NAV : NAV.filter((n) => n.key === "account");
   return (
     <div className="min-h-[60vh] bg-cream-2">
       {/* The main site navigation comes from the layout; this strip is the signed-in person's own menu. */}
@@ -32,6 +36,7 @@ export function PortalPage({ user, active, title, subtitle, children, wide = fal
               </Link>
             ))}
           </nav>
+          <div className="ml-auto shrink-0"><LogoutButton className="min-h-[44px] px-3 rounded-lg text-[14px] font-medium text-ink-3 hover:bg-cream-2" /></div>
         </div>
       </header>
       <main id="main" className={`mx-auto ${wide === "full" ? "max-w-7xl" : wide ? "max-w-5xl" : "max-w-3xl"} px-4 sm:px-6 py-8 sm:py-10`}>

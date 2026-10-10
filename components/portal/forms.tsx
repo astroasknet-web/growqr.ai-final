@@ -37,7 +37,7 @@ export function MfaLoginForm() {
   );
 }
 
-export function SignupForm({ role }: { role: "student" | "employer" }) {
+export function SignupForm({ role }: { role: "student" | "employer" | "teacher" | "parent" }) {
   const [s, action] = useActionState(signupAction, none);
   const isE = role === "employer";
   const f = s.fields ?? {};
@@ -54,9 +54,9 @@ export function SignupForm({ role }: { role: "student" | "employer" }) {
           <Field label="Company" name="company" autoComplete="organization" defaultValue={v.company} error={f.company} />
           <Field label="Your role at the company" name="designation" autoComplete="organization-title" defaultValue={v.designation} error={f.designation} />
         </>
-      ) : (
+      ) : role === "student" ? (
         <CollegeField defaultValue={v.college} error={f.college} states={COLLEGE_STATES} />
-      )}
+      ) : null}
       <PasswordField label="Create a password" autoComplete="new-password" error={f.password} hint="At least 8 characters. A short phrase of unrelated words works well." />
       <div className="mb-5">
         <label className="flex gap-3 items-start text-[14px] text-ink-3 min-h-[44px]">

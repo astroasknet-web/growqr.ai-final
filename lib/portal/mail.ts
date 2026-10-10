@@ -129,7 +129,11 @@ export async function welcomeEmail(user: Recipient, role: string, verifyToken: s
   const intro =
     role === "employer"
       ? "Your employer account is ready. Post your first role and our team will review it, usually within one business day."
-      : "Your student account is ready. Applying is free and always will be; we never charge placement fees.";
+      : role === "teacher"
+        ? "Your teacher account is ready. Create a class, share its join code with your students, and set them courses and practice tests."
+        : role === "parent"
+          ? "Your parent account is ready. Ask your child for their learner code (in their My classes page) to follow their progress."
+          : "Your student account is ready. Applying is free and always will be; we never charge placement fees.";
   if (verifyToken !== null) {
     await send(user, "Confirm your email to start on GrowQR", `Welcome, ${f}. Confirm your email`, [
       intro,

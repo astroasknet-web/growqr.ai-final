@@ -17,7 +17,7 @@ export const COOKIE = "gq_session";
 const LIFETIME_DAYS = 14;
 const IDLE_DAYS = 7;
 
-export type Role = "student" | "employer" | "admin" | "counselor";
+export type Role = "student" | "employer" | "admin" | "counselor" | "teacher" | "parent";
 
 export interface PortalUser {
   id: number;
