@@ -2,16 +2,19 @@
 # the `deploy` branch. Hostinger pulls that branch and runs `node server.js`. See migration/HOSTINGER.md.
 name: Build portal for Hostinger
 
+# main  -> branch `deploy`      (production build)
+# dev   -> branch `deploy-dev`  (preview/test build for the qrscore.mathstudy.in test site; never touches `deploy`)
+
 on:
   push:
-    branches: [main]
+    branches: [main, dev]
   workflow_dispatch:
 
 permissions:
   contents: write
 
 concurrency:
-  group: deploy-hostinger
+  group: deploy-hostinger-${{ github.ref_name }}
   cancel-in-progress: true
 
 jobs:
@@ -49,11 +52,13 @@ jobs:
           rm -f dist/.env dist/.env.* 
           echo "${GITHUB_SHA}" > dist/BUILD_SHA
       - name: Publish to the deploy branch
+        env:
+          TARGET: ${{ github.ref_name == 'main' && 'deploy' || 'deploy-dev' }}
         run: |
           cd dist
-          git init -q -b deploy
+          git init -q -b "$TARGET"
           git config user.name "github-actions"
           git config user.email "actions@users.noreply.github.com"
           git add -A
           git commit -q -m "Build of ${GITHUB_SHA}"
-          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" deploy
+          git push -f "https://x-access-token:${{ secrets.GITHUB_TOKEN }}@github.com/${GITHUB_REPOSITORY}.git" "$TARGET"

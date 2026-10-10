@@ -131,3 +131,7 @@ Those pages read the main site's data. On this host they work only when it has t
 | `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_ZOHO_SALESIQ_WIDGET_CODE` | optional: analytics and the chat widget |
 
 Keep `DATABASE_URL` pointing at the project that holds the portal tables (it can be a different project from the one above while you demo). Note that file uploads (resume, documents) use the `NEXT_PUBLIC_SUPABASE_URL` project's Storage, so create the two **private** buckets `resumes` and `vault` there.
+
+## Preview builds from `dev`
+
+Pushing to `dev` runs the same workflow but publishes to the branch **`deploy-dev`** (production `deploy` is never touched). For a test site, set the Hostinger app's **Branch** to `deploy-dev` instead of `deploy`. Never point Hostinger at `dev` or `main`: those hold source code, not a built server, so there is nothing for `node server.js` to run.
