@@ -3,6 +3,7 @@ import Link from "next/link";
 import { requireUser } from "@/lib/portal/guard";
 import * as courses from "@/lib/market/courses";
 import * as learning from "@/lib/market/learning";
+import * as lessons from "@/lib/market/lessons";
 import { CourseFlash, CourseTracker, Cover } from "@/components/market/course-parts";
 import { PortalPage } from "@/components/portal/shell";
 
@@ -42,7 +43,7 @@ export default async function MyCoursesPage({ searchParams }: { searchParams: Pr
                   <Cover c={e} />
                   <h3 className="text-[16px] font-semibold text-ink mt-3"><Link href={`/courses/${e.slug}`} className="hover:underline">{e.title}</Link></h3>
                   <CourseTracker course={e} e={e} back="/my-courses" />
-                  <p className="mt-2 text-[14px]"><a className="underline text-orange-dark" href={courses.url(e.slug)} target="_blank" rel="noopener noreferrer">{e.status === "completed" ? "Revisit" : "Continue"} on Vidaara</a></p>
+                  <p className="mt-2 text-[14px]">{lessons.isNative(e.slug) ? <Link className="underline text-orange-dark" href={`/courses/${e.slug}/learn`}>{e.status === "completed" ? "Revisit" : "Continue"} lessons</Link> : <a className="underline text-orange-dark" href={courses.url(e.slug)} target="_blank" rel="noopener noreferrer">{e.status === "completed" ? "Revisit" : "Continue"} on Vidaara</a>}</p>
                 </article>
               ))}
             </div>

@@ -3505,6 +3505,134 @@
    "handsOn": "Deliver a complete, deployed, documented blockchain project as your capstone.",
    "outcome": "Graduate as a job-ready professional blockchain developer.",
    "icon": "rocket"
+  },
+  {
+   "slug": "digital-literacy-master",
+   "title": "Digital Literacy Master Course",
+   "modules": 8,
+   "hours": "~80 hrs",
+   "badge": "Digital Literacy",
+   "cat": "foundational",
+   "level": "B",
+   "levelLabel": "Beginner",
+   "tags": [
+    "College",
+    "Fresher"
+   ],
+   "weeks": "~14 weeks",
+   "pace": "6 hrs/wk",
+   "prereq": "None. Starts from the very first click.",
+   "bestFor": "Anyone new to computers, the internet or office tools.",
+   "brief": "From Zero to Confident — Your Complete Digital Foundation",
+   "learn": [
+    "Computer Basics & Getting Started",
+    "Microsoft Word: Creating Documents",
+    "Microsoft Excel: Working with Spreadsheets",
+    "Microsoft PowerPoint: Building Presentations",
+    "Internet & Email: Browsing the Web",
+    "Digital Safety & Responsible Use",
+    "Cloud Tools & Digital Productivity",
+    "Introduction to Artificial Intelligence (AI)"
+   ],
+   "handsOn": "Final Capstone Project & Assessment",
+   "outcome": "Work confidently with files, the web, email, Office tools and online safety.",
+   "icon": "monitor"
+  },
+  {
+   "slug": "data-science-python",
+   "title": "Data Science using Python",
+   "modules": 11,
+   "hours": "~160 hrs",
+   "badge": "Data Scientist",
+   "cat": "data",
+   "level": "I",
+   "levelLabel": "Intermediate",
+   "tags": [
+    "College",
+    "Fresher"
+   ],
+   "weeks": "~14 weeks",
+   "pace": "6 hrs/wk",
+   "prereq": "Basic Python and school-level statistics.",
+   "bestFor": "Learners aiming at data science and machine learning roles.",
+   "brief": "From scientific Python to deployed, responsible machine learning — the complete data scientist's journey.",
+   "learn": [
+    "Scientific Python & Mathematical Foundations",
+    "Data Acquisition & Wrangling with pandas",
+    "Exploratory Data Analysis & Visualisation",
+    "Statistics & Probability for Data Science",
+    "Machine Learning Foundations",
+    "Advanced & Unsupervised Learning",
+    "Deep Learning",
+    "Natural Language Processing"
+   ],
+   "handsOn": "Capstone Project & Professional Assessment",
+   "outcome": "Run an end-to-end ML project and present it as a portfolio piece.",
+   "icon": "chartLine"
+  },
+  {
+   "slug": "data-analytics-python",
+   "title": "Data Analytics using Python",
+   "modules": 10,
+   "hours": "~120 hrs",
+   "badge": "Data Analyst",
+   "cat": "data",
+   "level": "B→I",
+   "levelLabel": "Beginner to Intermediate",
+   "tags": [
+    "College",
+    "Fresher"
+   ],
+   "weeks": "~12 weeks",
+   "pace": "6 hrs/wk",
+   "prereq": "Comfort with computers; no coding needed to start.",
+   "bestFor": "Career-starters targeting analyst roles.",
+   "brief": "From raw data to boardroom-ready insight — the complete analyst's workflow.",
+   "learn": [
+    "Python Foundations for Analytics",
+    "Data Collection & Ingestion",
+    "Data Wrangling with Pandas",
+    "Exploratory Data Analysis (EDA)",
+    "Data Visualisation",
+    "Statistics for Data Analytics",
+    "SQL for Analysts",
+    "Business Intelligence & Reporting"
+   ],
+   "handsOn": "Capstone Project & Professional Assessment",
+   "outcome": "Clean, analyse and present data with Python and build a capstone report.",
+   "icon": "chartBar"
+  },
+  {
+   "slug": "html-css-academy",
+   "title": "HTML & CSS Academy",
+   "modules": 32,
+   "hours": "~90 hrs",
+   "badge": "Web Designer",
+   "cat": "dev",
+   "level": "B→I",
+   "levelLabel": "Beginner to Professional",
+   "tags": [
+    "College",
+    "Fresher"
+   ],
+   "weeks": "~16 weeks",
+   "pace": "6 hrs/wk",
+   "prereq": "None.",
+   "bestFor": "Beginners who want to build real, responsive websites.",
+   "brief": "From your first tag to a real, responsive website",
+   "learn": [
+    "How the Web Works",
+    "Introduction to HTML",
+    "Elements & Tags",
+    "Attributes",
+    "Headings & Paragraphs",
+    "Lists",
+    "Links",
+    "Images"
+   ],
+   "handsOn": "Build & ship: a responsive personal site",
+   "outcome": "Build and ship a responsive multi-section website.",
+   "icon": "code"
   }
  ]
 }

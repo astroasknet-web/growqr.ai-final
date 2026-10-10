@@ -6,6 +6,7 @@ import * as passport from "@/lib/portal/passport/profile";
 import * as courses from "@/lib/market/courses";
 import * as jobs from "@/lib/market/jobs";
 import * as learning from "@/lib/market/learning";
+import * as lessons from "@/lib/market/lessons";
 import { JobCard } from "@/components/market/job-card";
 import { CourseCard, CourseFlash, CourseTracker, Cover } from "@/components/market/course-parts";
 import { currentViewer, MarketShell } from "@/components/market/shell";
@@ -39,7 +40,10 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
   const profile = isStudent ? await passport.profile(me!.id) : null;
   const enrol = profile ? await learning.find(me!.id, course.id) : null;
   const self = `/courses/${course.slug}`;
-  const start = courses.url(course.slug);
+  const native = lessons.isNative(course.slug);
+  const start = native ? `${self}/learn` : courses.url(course.slug);
+  const ext = native ? {} : { target: "_blank", rel: "noopener noreferrer" };
+  const where = native ? "here" : "on Vidaara";
 
   // Internships whose required skills this course teaches.
   const hay = (course.title + " " + course.learn.join(" ") + " " + course.brief).toLowerCase();
@@ -98,24 +102,24 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
 
         <aside aria-label="Start this course" id="progress" className="bg-white rounded-2xl border border-black/[0.08] shadow-card p-5 space-y-3">
           <h2 className="text-[18px] font-bold text-ink">Ready to start?</h2>
-          <p className="text-[14px] text-ink-3">Lessons run on the Vidaara learning platform and your certificate comes from Vidaara. GrowQR keeps your own progress record, and certified courses count toward your Skill Passport.</p>
+          <p className="text-[14px] text-ink-3">{native ? "Lessons, quizzes and the capstone run right here. Pass each module quiz to tick off your progress." : "Lessons run on the Vidaara learning platform and your certificate comes from Vidaara. GrowQR keeps your own progress record, and certified courses count toward your Skill Passport."}</p>
           <CourseFlash c={sp.c} e={sp.e} />
           {profile && !enrol ? (
             <>
               <form action={courseAction}><input type="hidden" name="act" value="enrol" /><input type="hidden" name="slug" value={course.slug} /><input type="hidden" name="back" value={self} /><button type="submit" className={`${btn} bg-orange hover:bg-orange-dark text-white`}>Enrol and track progress</button></form>
-              <a className={`${btn} border border-black/[0.15] hover:bg-cream-2`} href={start} target="_blank" rel="noopener noreferrer">Open on Vidaara</a>
+              <a className={`${btn} border border-black/[0.15] hover:bg-cream-2`} href={start} {...ext}>{native ? "Start the lessons" : "Open on Vidaara"}</a>
             </>
           ) : enrol ? (
             <>
-              <a className={`${btn} bg-orange hover:bg-orange-dark text-white`} href={start} target="_blank" rel="noopener noreferrer">{enrol.status === "completed" ? "Revisit on Vidaara" : "Continue on Vidaara"}</a>
+              <a className={`${btn} bg-orange hover:bg-orange-dark text-white`} href={start} {...ext}>{enrol.status === "completed" ? `Revisit ${where}` : `Continue ${where}`}</a>
               <CourseTracker course={course} e={enrol} back={self} />
             </>
           ) : me ? (
-            <a className={`${btn} bg-orange hover:bg-orange-dark text-white`} href={start} target="_blank" rel="noopener noreferrer">Start this course</a>
+            <a className={`${btn} bg-orange hover:bg-orange-dark text-white`} href={start} {...ext}>Start this course</a>
           ) : (
             <>
               <Link className={`${btn} bg-orange hover:bg-orange-dark text-white`} href={`/login?next=${encodeURIComponent(self)}`}>Log in to enrol and track progress</Link>
-              <a className={`${btn} border border-black/[0.15] hover:bg-cream-2`} href={start} target="_blank" rel="noopener noreferrer">Open on Vidaara</a>
+              <a className={`${btn} border border-black/[0.15] hover:bg-cream-2`} href={start} {...ext}>Open on Vidaara</a>
             </>
           )}
           <ul className="text-[14px] text-ink-2 space-y-1"><li>{course.hours}, about {course.weeks}</li><li>{course.badge || "Certificate"}</li></ul>
