@@ -1,0 +1,9 @@
+User-Agent: *
+Allow: /
+Disallow: /api/
+Disallow: /admin
+Disallow: /experts/connect
+Disallow: /experts/submit
+
+Host: https://www.growqr.ai
+Sitemap: https://www.growqr.ai/sitemap.xml

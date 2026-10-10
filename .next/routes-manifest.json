@@ -1,0 +1,1525 @@
+{
+  "version": 3,
+  "pages404": true,
+  "caseSensitive": false,
+  "basePath": "",
+  "redirects": [
+    {
+      "source": "/:path+/",
+      "destination": "/:path+",
+      "internal": true,
+      "statusCode": 308,
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))/$"
+    },
+    {
+      "source": "/internship.php",
+      "destination": "/internships/:s",
+      "has": [
+        {
+          "type": "query",
+          "key": "s",
+          "value": "(?<s>[a-z0-9-]+)"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?!/_next)/internship\\.php(?:/)?$"
+    },
+    {
+      "source": "/course.php",
+      "destination": "/courses/:s",
+      "has": [
+        {
+          "type": "query",
+          "key": "s",
+          "value": "(?<s>[a-z0-9-]+)"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?!/_next)/course\\.php(?:/)?$"
+    },
+    {
+      "source": "/university.php",
+      "destination": "/universities/:s",
+      "has": [
+        {
+          "type": "query",
+          "key": "s",
+          "value": "(?<s>[a-z0-9-]+)"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?!/_next)/university\\.php(?:/)?$"
+    },
+    {
+      "source": "/study-abroad-country.php",
+      "destination": "/study-abroad/:c",
+      "has": [
+        {
+          "type": "query",
+          "key": "c",
+          "value": "(?<c>[a-z]+)"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?!/_next)/study-abroad-country\\.php(?:/)?$"
+    },
+    {
+      "source": "/v.php",
+      "destination": "/v/:c",
+      "has": [
+        {
+          "type": "query",
+          "key": "c",
+          "value": "(?<c>[A-Za-z0-9]+)"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?!/_next)/v\\.php(?:/)?$"
+    },
+    {
+      "source": "/studio-edit.php",
+      "destination": "/studio/edit/:id",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "(?<id>[0-9]+)"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?!/_next)/studio-edit\\.php(?:/)?$"
+    },
+    {
+      "source": "/resume.php",
+      "destination": "/employer/resume/:id",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "(?<id>[0-9]+)"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?!/_next)/resume\\.php(?:/)?$"
+    },
+    {
+      "source": "/crm-lead.php",
+      "destination": "/crm/leads/:id",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "(?<id>[0-9]+)"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?!/_next)/crm-lead\\.php(?:/)?$"
+    },
+    {
+      "source": "/crm-doc.php",
+      "destination": "/crm/doc/:id",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "(?<id>[0-9]+)"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?!/_next)/crm-doc\\.php(?:/)?$"
+    },
+    {
+      "source": "/crm-file.php",
+      "destination": "/file/:t",
+      "has": [
+        {
+          "type": "query",
+          "key": "t",
+          "value": "(?<t>[a-f0-9]{32})"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?!/_next)/crm-file\\.php(?:/)?$"
+    },
+    {
+      "source": "/abroad-doc.php",
+      "destination": "/abroad/doc/:id",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "(?<id>[0-9]+)"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?!/_next)/abroad-doc\\.php(?:/)?$"
+    },
+    {
+      "source": "/counselor-student.php",
+      "destination": "/counselor/student/:id",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "(?<id>[0-9]+)"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?!/_next)/counselor-student\\.php(?:/)?$"
+    },
+    {
+      "source": "/counselor-mock.php",
+      "destination": "/counselor/mock/:id",
+      "has": [
+        {
+          "type": "query",
+          "key": "id",
+          "value": "(?<id>[0-9]+)"
+        }
+      ],
+      "statusCode": 308,
+      "regex": "^(?!/_next)/counselor-mock\\.php(?:/)?$"
+    },
+    {
+      "source": "/index.php",
+      "destination": "/",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/index\\.php(?:/)?$"
+    },
+    {
+      "source": "/login.php",
+      "destination": "/login",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/login\\.php(?:/)?$"
+    },
+    {
+      "source": "/login-mfa.php",
+      "destination": "/login/mfa",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/login-mfa\\.php(?:/)?$"
+    },
+    {
+      "source": "/signup.php",
+      "destination": "/signup",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/signup\\.php(?:/)?$"
+    },
+    {
+      "source": "/forgot-password.php",
+      "destination": "/forgot-password",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/forgot-password\\.php(?:/)?$"
+    },
+    {
+      "source": "/reset-password.php",
+      "destination": "/reset-password",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/reset-password\\.php(?:/)?$"
+    },
+    {
+      "source": "/verify-email.php",
+      "destination": "/verify-email",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/verify-email\\.php(?:/)?$"
+    },
+    {
+      "source": "/mfa-setup.php",
+      "destination": "/account/mfa",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/mfa-setup\\.php(?:/)?$"
+    },
+    {
+      "source": "/student-dashboard.php",
+      "destination": "/account",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/student-dashboard\\.php(?:/)?$"
+    },
+    {
+      "source": "/employer-dashboard.php",
+      "destination": "/employer",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/employer-dashboard\\.php(?:/)?$"
+    },
+    {
+      "source": "/employer-post.php",
+      "destination": "/employer/post",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/employer-post\\.php(?:/)?$"
+    },
+    {
+      "source": "/internships.php",
+      "destination": "/internships",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/internships\\.php(?:/)?$"
+    },
+    {
+      "source": "/my-courses.php",
+      "destination": "/my-courses",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/my-courses\\.php(?:/)?$"
+    },
+    {
+      "source": "/courses.php",
+      "destination": "/courses",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/courses\\.php(?:/)?$"
+    },
+    {
+      "source": "/study-abroad.php",
+      "destination": "/study-abroad",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/study-abroad\\.php(?:/)?$"
+    },
+    {
+      "source": "/abroad-dashboard.php",
+      "destination": "/abroad",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/abroad-dashboard\\.php(?:/)?$"
+    },
+    {
+      "source": "/abroad-profile.php",
+      "destination": "/abroad/profile",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/abroad-profile\\.php(?:/)?$"
+    },
+    {
+      "source": "/abroad-matches.php",
+      "destination": "/abroad/matches",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/abroad-matches\\.php(?:/)?$"
+    },
+    {
+      "source": "/abroad-documents.php",
+      "destination": "/abroad/documents",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/abroad-documents\\.php(?:/)?$"
+    },
+    {
+      "source": "/abroad-visa.php",
+      "destination": "/abroad/visa",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/abroad-visa\\.php(?:/)?$"
+    },
+    {
+      "source": "/abroad-funds.php",
+      "destination": "/abroad/funds",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/abroad-funds\\.php(?:/)?$"
+    },
+    {
+      "source": "/abroad-loans.php",
+      "destination": "/abroad/loans",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/abroad-loans\\.php(?:/)?$"
+    },
+    {
+      "source": "/abroad-interview.php",
+      "destination": "/abroad/interview",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/abroad-interview\\.php(?:/)?$"
+    },
+    {
+      "source": "/studio.php",
+      "destination": "/studio",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/studio\\.php(?:/)?$"
+    },
+    {
+      "source": "/studio-export.php",
+      "destination": "/studio/export",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/studio-export\\.php(?:/)?$"
+    },
+    {
+      "source": "/resume-score.php",
+      "destination": "/resume-score",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/resume-score\\.php(?:/)?$"
+    },
+    {
+      "source": "/score.php",
+      "destination": "/resume-score",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/score\\.php(?:/)?$"
+    },
+    {
+      "source": "/tracker.php",
+      "destination": "/resume-score",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/tracker\\.php(?:/)?$"
+    },
+    {
+      "source": "/qr.php",
+      "destination": "/passport/qr",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/qr\\.php(?:/)?$"
+    },
+    {
+      "source": "/passport.php",
+      "destination": "/passport",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/passport\\.php(?:/)?$"
+    },
+    {
+      "source": "/passport-share.php",
+      "destination": "/passport/share",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/passport-share\\.php(?:/)?$"
+    },
+    {
+      "source": "/verify.php",
+      "destination": "/verify",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/verify\\.php(?:/)?$"
+    },
+    {
+      "source": "/admin.php",
+      "destination": "/console",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/admin\\.php(?:/)?$"
+    },
+    {
+      "source": "/admin-colleges.php",
+      "destination": "/console/colleges",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/admin-colleges\\.php(?:/)?$"
+    },
+    {
+      "source": "/admin-studio.php",
+      "destination": "/console/studio",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/admin-studio\\.php(?:/)?$"
+    },
+    {
+      "source": "/admin-abroad.php",
+      "destination": "/console/abroad",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/admin-abroad\\.php(?:/)?$"
+    },
+    {
+      "source": "/admin-analytics.php",
+      "destination": "/console/analytics",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/admin-analytics\\.php(?:/)?$"
+    },
+    {
+      "source": "/counselor-dashboard.php",
+      "destination": "/counselor",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/counselor-dashboard\\.php(?:/)?$"
+    },
+    {
+      "source": "/crm.php",
+      "destination": "/crm",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/crm\\.php(?:/)?$"
+    },
+    {
+      "source": "/crm-leads.php",
+      "destination": "/crm/leads",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/crm-leads\\.php(?:/)?$"
+    },
+    {
+      "source": "/crm-reports.php",
+      "destination": "/crm/reports",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/crm-reports\\.php(?:/)?$"
+    },
+    {
+      "source": "/crm-team.php",
+      "destination": "/crm/team",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/crm-team\\.php(?:/)?$"
+    },
+    {
+      "source": "/use-cases/individuals",
+      "destination": "/solutions/professionals",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/use-cases/individuals(?:/)?$"
+    },
+    {
+      "source": "/use-cases/enterprise",
+      "destination": "/solutions/enterprises",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/use-cases/enterprise(?:/)?$"
+    },
+    {
+      "source": "/use-cases/:slug",
+      "destination": "/solutions/:slug",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/use-cases(?:/([^/]+?))(?:/)?$"
+    },
+    {
+      "source": "/solutions/individuals",
+      "destination": "/solutions/professionals",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/solutions/individuals(?:/)?$"
+    },
+    {
+      "source": "/solutions/enterprise",
+      "destination": "/solutions/enterprises",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/solutions/enterprise(?:/)?$"
+    },
+    {
+      "source": "/solutions/enterprise-legacy",
+      "destination": "/solutions/enterprises",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/solutions/enterprise-legacy(?:/)?$"
+    },
+    {
+      "source": "/enterprise/eva",
+      "destination": "/enterprise/capability-builder",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/enterprise/eva(?:/)?$"
+    },
+    {
+      "source": "/enterprise/finn",
+      "destination": "/enterprise/onboarding-co-pilot",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/enterprise/finn(?:/)?$"
+    },
+    {
+      "source": "/enterprise/maya",
+      "destination": "/enterprise/outsourcing-manager",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/enterprise/maya(?:/)?$"
+    },
+    {
+      "source": "/enterprise/rita",
+      "destination": "/enterprise/ai-recruiter",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/enterprise/rita(?:/)?$"
+    },
+    {
+      "source": "/enterprise/rohan",
+      "destination": "/enterprise/workforce-analyst",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/enterprise/rohan(?:/)?$"
+    },
+    {
+      "source": "/enterprise/theo",
+      "destination": "/enterprise/attrition-predictor",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/enterprise/theo(?:/)?$"
+    },
+    {
+      "source": "/version2",
+      "destination": "/",
+      "statusCode": 308,
+      "regex": "^(?!/_next)/version2(?:/)?$"
+    }
+  ],
+  "headers": [
+    {
+      "source": "/:path*",
+      "headers": [
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "Referrer-Policy",
+          "value": "strict-origin-when-cross-origin"
+        },
+        {
+          "key": "Permissions-Policy",
+          "value": "camera=(), microphone=(), geolocation=()"
+        },
+        {
+          "key": "Strict-Transport-Security",
+          "value": "max-age=63072000; includeSubDomains; preload"
+        },
+        {
+          "key": "Content-Security-Policy-Report-Only",
+          "value": "default-src 'self'; base-uri 'self'; object-src 'none'; frame-ancestors 'none'; form-action 'self'; script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.googletagmanager.com https://salesiq.zohopublic.in https://*.zoho.in https://*.zohostatic.com https://*.zohocdn.com; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: blob: https://randomuser.me https://images.unsplash.com https://nykbhgnrdcjekzshhvzi.supabase.co https://www.google-analytics.com https://*.zohopublic.in https://*.zoho.in https://*.zohostatic.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://nykbhgnrdcjekzshhvzi.supabase.co wss://nykbhgnrdcjekzshhvzi.supabase.co https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://challenges.cloudflare.com https://salesiq.zohopublic.in wss://salesiq.zohopublic.in https://*.zoho.in https://api.iconify.design; frame-src 'self' https://challenges.cloudflare.com https://salesiq.zohopublic.in https://*.zoho.in; worker-src 'self' blob:; manifest-src 'self'; media-src 'self' data:"
+        }
+      ],
+      "regex": "^(?:/((?:[^/]+?)(?:/(?:[^/]+?))*))?(?:/)?$"
+    }
+  ],
+  "rewrites": {
+    "beforeFiles": [],
+    "afterFiles": [],
+    "fallback": []
+  },
+  "dynamicRoutes": [
+    {
+      "page": "/abroad/doc/[id]",
+      "regex": "^/abroad/doc/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/abroad/doc/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/abroad/visa/ics/[id]",
+      "regex": "^/abroad/visa/ics/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/abroad/visa/ics/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/admin/ambassador/[id]",
+      "regex": "^/admin/ambassador/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/admin/ambassador/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/admin/events/[id]",
+      "regex": "^/admin/events/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/admin/events/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/admin/internship/[id]",
+      "regex": "^/admin/internship/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/admin/internship/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/admin/registrations/[eventId]",
+      "regex": "^/admin/registrations/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPeventId": "nxtPeventId"
+      },
+      "namedRegex": "^/admin/registrations/(?<nxtPeventId>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/api/admin/registrations/[eventId]/export",
+      "regex": "^/api/admin/registrations/([^/]+?)/export(?:/)?$",
+      "routeKeys": {
+        "nxtPeventId": "nxtPeventId"
+      },
+      "namedRegex": "^/api/admin/registrations/(?<nxtPeventId>[^/]+?)/export(?:/)?$"
+    },
+    {
+      "page": "/api/experts/[slug]/availability",
+      "regex": "^/api/experts/([^/]+?)/availability(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/api/experts/(?<nxtPslug>[^/]+?)/availability(?:/)?$"
+    },
+    {
+      "page": "/blog/[slug]",
+      "regex": "^/blog/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/blog/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/counselor/mock/[id]",
+      "regex": "^/counselor/mock/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/counselor/mock/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/counselor/student/[id]",
+      "regex": "^/counselor/student/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/counselor/student/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/courses/[slug]",
+      "regex": "^/courses/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/courses/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/courses/[slug]/learn",
+      "regex": "^/courses/([^/]+?)/learn(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/courses/(?<nxtPslug>[^/]+?)/learn(?:/)?$"
+    },
+    {
+      "page": "/courses/[slug]/learn/[step]",
+      "regex": "^/courses/([^/]+?)/learn/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug",
+        "nxtPstep": "nxtPstep"
+      },
+      "namedRegex": "^/courses/(?<nxtPslug>[^/]+?)/learn/(?<nxtPstep>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/crm/doc/[id]",
+      "regex": "^/crm/doc/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/crm/doc/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/crm/leads/[id]",
+      "regex": "^/crm/leads/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/crm/leads/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/employer/resume/[id]",
+      "regex": "^/employer/resume/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/employer/resume/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/events/[slug]",
+      "regex": "^/events/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/events/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/experts/[slug]",
+      "regex": "^/experts/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/experts/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/file/[token]",
+      "regex": "^/file/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPtoken": "nxtPtoken"
+      },
+      "namedRegex": "^/file/(?<nxtPtoken>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/file/[token]/doc/[id]",
+      "regex": "^/file/([^/]+?)/doc/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPtoken": "nxtPtoken",
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/file/(?<nxtPtoken>[^/]+?)/doc/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/home-options/[v]",
+      "regex": "^/home\\-options/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPv": "nxtPv"
+      },
+      "namedRegex": "^/home\\-options/(?<nxtPv>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/internships/[slug]",
+      "regex": "^/internships/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/internships/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/parent/child/[id]",
+      "regex": "^/parent/child/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/parent/child/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/practice-tests/[exam]",
+      "regex": "^/practice\\-tests/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPexam": "nxtPexam"
+      },
+      "namedRegex": "^/practice\\-tests/(?<nxtPexam>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/practice-tests/[exam]/[n]",
+      "regex": "^/practice\\-tests/([^/]+?)/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPexam": "nxtPexam",
+        "nxtPn": "nxtPn"
+      },
+      "namedRegex": "^/practice\\-tests/(?<nxtPexam>[^/]+?)/(?<nxtPn>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/studio/edit/[id]",
+      "regex": "^/studio/edit/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/studio/edit/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/study-abroad/[country]",
+      "regex": "^/study\\-abroad/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcountry": "nxtPcountry"
+      },
+      "namedRegex": "^/study\\-abroad/(?<nxtPcountry>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/teacher/class/[id]",
+      "regex": "^/teacher/class/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/teacher/class/(?<nxtPid>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/teacher/class/[id]/csv",
+      "regex": "^/teacher/class/([^/]+?)/csv(?:/)?$",
+      "routeKeys": {
+        "nxtPid": "nxtPid"
+      },
+      "namedRegex": "^/teacher/class/(?<nxtPid>[^/]+?)/csv(?:/)?$"
+    },
+    {
+      "page": "/universities/[slug]",
+      "regex": "^/universities/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPslug": "nxtPslug"
+      },
+      "namedRegex": "^/universities/(?<nxtPslug>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/v/[code]",
+      "regex": "^/v/([^/]+?)(?:/)?$",
+      "routeKeys": {
+        "nxtPcode": "nxtPcode"
+      },
+      "namedRegex": "^/v/(?<nxtPcode>[^/]+?)(?:/)?$"
+    },
+    {
+      "page": "/v/[code]/credential.json",
+      "regex": "^/v/([^/]+?)/credential\\.json(?:/)?$",
+      "routeKeys": {
+        "nxtPcode": "nxtPcode"
+      },
+      "namedRegex": "^/v/(?<nxtPcode>[^/]+?)/credential\\.json(?:/)?$"
+    },
+    {
+      "page": "/v/[code]/credential.jwt",
+      "regex": "^/v/([^/]+?)/credential\\.jwt(?:/)?$",
+      "routeKeys": {
+        "nxtPcode": "nxtPcode"
+      },
+      "namedRegex": "^/v/(?<nxtPcode>[^/]+?)/credential\\.jwt(?:/)?$"
+    }
+  ],
+  "staticRoutes": [
+    {
+      "page": "/",
+      "regex": "^/(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/(?:/)?$"
+    },
+    {
+      "page": "/_not-found",
+      "regex": "^/_not\\-found(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/_not\\-found(?:/)?$"
+    },
+    {
+      "page": "/.well-known/did.json",
+      "regex": "^/\\.well\\-known/did\\.json(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/\\.well\\-known/did\\.json(?:/)?$"
+    },
+    {
+      "page": "/.well-known/jwks.json",
+      "regex": "^/\\.well\\-known/jwks\\.json(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/\\.well\\-known/jwks\\.json(?:/)?$"
+    },
+    {
+      "page": "/about",
+      "regex": "^/about(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/about(?:/)?$"
+    },
+    {
+      "page": "/abroad",
+      "regex": "^/abroad(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/abroad(?:/)?$"
+    },
+    {
+      "page": "/abroad/documents",
+      "regex": "^/abroad/documents(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/abroad/documents(?:/)?$"
+    },
+    {
+      "page": "/abroad/export",
+      "regex": "^/abroad/export(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/abroad/export(?:/)?$"
+    },
+    {
+      "page": "/abroad/funds",
+      "regex": "^/abroad/funds(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/abroad/funds(?:/)?$"
+    },
+    {
+      "page": "/abroad/interview",
+      "regex": "^/abroad/interview(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/abroad/interview(?:/)?$"
+    },
+    {
+      "page": "/abroad/loans",
+      "regex": "^/abroad/loans(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/abroad/loans(?:/)?$"
+    },
+    {
+      "page": "/abroad/matches",
+      "regex": "^/abroad/matches(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/abroad/matches(?:/)?$"
+    },
+    {
+      "page": "/abroad/profile",
+      "regex": "^/abroad/profile(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/abroad/profile(?:/)?$"
+    },
+    {
+      "page": "/abroad/visa",
+      "regex": "^/abroad/visa(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/abroad/visa(?:/)?$"
+    },
+    {
+      "page": "/account",
+      "regex": "^/account(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/account(?:/)?$"
+    },
+    {
+      "page": "/account/mfa",
+      "regex": "^/account/mfa(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/account/mfa(?:/)?$"
+    },
+    {
+      "page": "/admin",
+      "regex": "^/admin(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin(?:/)?$"
+    },
+    {
+      "page": "/admin/ambassador",
+      "regex": "^/admin/ambassador(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/ambassador(?:/)?$"
+    },
+    {
+      "page": "/admin/events",
+      "regex": "^/admin/events(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/events(?:/)?$"
+    },
+    {
+      "page": "/admin/events/new",
+      "regex": "^/admin/events/new(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/events/new(?:/)?$"
+    },
+    {
+      "page": "/admin/internship",
+      "regex": "^/admin/internship(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/internship(?:/)?$"
+    },
+    {
+      "page": "/admin/internship/settings",
+      "regex": "^/admin/internship/settings(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/internship/settings(?:/)?$"
+    },
+    {
+      "page": "/admin/login",
+      "regex": "^/admin/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/login(?:/)?$"
+    },
+    {
+      "page": "/admin/logs",
+      "regex": "^/admin/logs(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/admin/logs(?:/)?$"
+    },
+    {
+      "page": "/agents",
+      "regex": "^/agents(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/agents(?:/)?$"
+    },
+    {
+      "page": "/ai-brand-builder",
+      "regex": "^/ai\\-brand\\-builder(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ai\\-brand\\-builder(?:/)?$"
+    },
+    {
+      "page": "/ai-interviewer",
+      "regex": "^/ai\\-interviewer(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ai\\-interviewer(?:/)?$"
+    },
+    {
+      "page": "/ai-learning-curator",
+      "regex": "^/ai\\-learning\\-curator(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ai\\-learning\\-curator(?:/)?$"
+    },
+    {
+      "page": "/ai-opportunity-finder",
+      "regex": "^/ai\\-opportunity\\-finder(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ai\\-opportunity\\-finder(?:/)?$"
+    },
+    {
+      "page": "/ai-resume-expert",
+      "regex": "^/ai\\-resume\\-expert(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ai\\-resume\\-expert(?:/)?$"
+    },
+    {
+      "page": "/ai-roleplay-coach",
+      "regex": "^/ai\\-roleplay\\-coach(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ai\\-roleplay\\-coach(?:/)?$"
+    },
+    {
+      "page": "/ai-skill-trainer",
+      "regex": "^/ai\\-skill\\-trainer(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ai\\-skill\\-trainer(?:/)?$"
+    },
+    {
+      "page": "/ambassadors",
+      "regex": "^/ambassadors(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ambassadors(?:/)?$"
+    },
+    {
+      "page": "/ambassadors/apply",
+      "regex": "^/ambassadors/apply(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/ambassadors/apply(?:/)?$"
+    },
+    {
+      "page": "/applications",
+      "regex": "^/applications(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/applications(?:/)?$"
+    },
+    {
+      "page": "/blog",
+      "regex": "^/blog(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/blog(?:/)?$"
+    },
+    {
+      "page": "/blog/rss.xml",
+      "regex": "^/blog/rss\\.xml(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/blog/rss\\.xml(?:/)?$"
+    },
+    {
+      "page": "/campaign/mail-1",
+      "regex": "^/campaign/mail\\-1(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/campaign/mail\\-1(?:/)?$"
+    },
+    {
+      "page": "/campaign/skills-that-travel",
+      "regex": "^/campaign/skills\\-that\\-travel(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/campaign/skills\\-that\\-travel(?:/)?$"
+    },
+    {
+      "page": "/community",
+      "regex": "^/community(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/community(?:/)?$"
+    },
+    {
+      "page": "/company",
+      "regex": "^/company(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/company(?:/)?$"
+    },
+    {
+      "page": "/console",
+      "regex": "^/console(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/console(?:/)?$"
+    },
+    {
+      "page": "/console/abroad",
+      "regex": "^/console/abroad(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/console/abroad(?:/)?$"
+    },
+    {
+      "page": "/console/analytics",
+      "regex": "^/console/analytics(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/console/analytics(?:/)?$"
+    },
+    {
+      "page": "/console/colleges",
+      "regex": "^/console/colleges(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/console/colleges(?:/)?$"
+    },
+    {
+      "page": "/console/studio",
+      "regex": "^/console/studio(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/console/studio(?:/)?$"
+    },
+    {
+      "page": "/contact",
+      "regex": "^/contact(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/contact(?:/)?$"
+    },
+    {
+      "page": "/counselor",
+      "regex": "^/counselor(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/counselor(?:/)?$"
+    },
+    {
+      "page": "/courses",
+      "regex": "^/courses(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/courses(?:/)?$"
+    },
+    {
+      "page": "/crm",
+      "regex": "^/crm(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/crm(?:/)?$"
+    },
+    {
+      "page": "/crm/denied",
+      "regex": "^/crm/denied(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/crm/denied(?:/)?$"
+    },
+    {
+      "page": "/crm/leads",
+      "regex": "^/crm/leads(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/crm/leads(?:/)?$"
+    },
+    {
+      "page": "/crm/reports",
+      "regex": "^/crm/reports(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/crm/reports(?:/)?$"
+    },
+    {
+      "page": "/crm/reports/csv",
+      "regex": "^/crm/reports/csv(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/crm/reports/csv(?:/)?$"
+    },
+    {
+      "page": "/crm/team",
+      "regex": "^/crm/team(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/crm/team(?:/)?$"
+    },
+    {
+      "page": "/data-deletion",
+      "regex": "^/data\\-deletion(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/data\\-deletion(?:/)?$"
+    },
+    {
+      "page": "/employer",
+      "regex": "^/employer(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/employer(?:/)?$"
+    },
+    {
+      "page": "/employer/post",
+      "regex": "^/employer/post(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/employer/post(?:/)?$"
+    },
+    {
+      "page": "/enterprise",
+      "regex": "^/enterprise(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/enterprise(?:/)?$"
+    },
+    {
+      "page": "/enterprise/ai-recruiter",
+      "regex": "^/enterprise/ai\\-recruiter(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/enterprise/ai\\-recruiter(?:/)?$"
+    },
+    {
+      "page": "/enterprise/attrition-predictor",
+      "regex": "^/enterprise/attrition\\-predictor(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/enterprise/attrition\\-predictor(?:/)?$"
+    },
+    {
+      "page": "/enterprise/brand-builder",
+      "regex": "^/enterprise/brand\\-builder(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/enterprise/brand\\-builder(?:/)?$"
+    },
+    {
+      "page": "/enterprise/capability-builder",
+      "regex": "^/enterprise/capability\\-builder(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/enterprise/capability\\-builder(?:/)?$"
+    },
+    {
+      "page": "/enterprise/interviewer",
+      "regex": "^/enterprise/interviewer(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/enterprise/interviewer(?:/)?$"
+    },
+    {
+      "page": "/enterprise/onboarding-co-pilot",
+      "regex": "^/enterprise/onboarding\\-co\\-pilot(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/enterprise/onboarding\\-co\\-pilot(?:/)?$"
+    },
+    {
+      "page": "/enterprise/opportunity-finder",
+      "regex": "^/enterprise/opportunity\\-finder(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/enterprise/opportunity\\-finder(?:/)?$"
+    },
+    {
+      "page": "/enterprise/outsourcing-manager",
+      "regex": "^/enterprise/outsourcing\\-manager(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/enterprise/outsourcing\\-manager(?:/)?$"
+    },
+    {
+      "page": "/enterprise/workforce-analyst",
+      "regex": "^/enterprise/workforce\\-analyst(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/enterprise/workforce\\-analyst(?:/)?$"
+    },
+    {
+      "page": "/events",
+      "regex": "^/events(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/events(?:/)?$"
+    },
+    {
+      "page": "/events/all",
+      "regex": "^/events/all(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/events/all(?:/)?$"
+    },
+    {
+      "page": "/experts",
+      "regex": "^/experts(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/experts(?:/)?$"
+    },
+    {
+      "page": "/experts/all",
+      "regex": "^/experts/all(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/experts/all(?:/)?$"
+    },
+    {
+      "page": "/experts/connect",
+      "regex": "^/experts/connect(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/experts/connect(?:/)?$"
+    },
+    {
+      "page": "/experts/submit",
+      "regex": "^/experts/submit(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/experts/submit(?:/)?$"
+    },
+    {
+      "page": "/forgot-password",
+      "regex": "^/forgot\\-password(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/forgot\\-password(?:/)?$"
+    },
+    {
+      "page": "/gallery",
+      "regex": "^/gallery(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/gallery(?:/)?$"
+    },
+    {
+      "page": "/go",
+      "regex": "^/go(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/go(?:/)?$"
+    },
+    {
+      "page": "/growqr-internship",
+      "regex": "^/growqr\\-internship(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/growqr\\-internship(?:/)?$"
+    },
+    {
+      "page": "/growqr-internship/apply",
+      "regex": "^/growqr\\-internship/apply(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/growqr\\-internship/apply(?:/)?$"
+    },
+    {
+      "page": "/home-options",
+      "regex": "^/home\\-options(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/home\\-options(?:/)?$"
+    },
+    {
+      "page": "/internships",
+      "regex": "^/internships(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/internships(?:/)?$"
+    },
+    {
+      "page": "/login",
+      "regex": "^/login(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login(?:/)?$"
+    },
+    {
+      "page": "/login/mfa",
+      "regex": "^/login/mfa(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/login/mfa(?:/)?$"
+    },
+    {
+      "page": "/my-classes",
+      "regex": "^/my\\-classes(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/my\\-classes(?:/)?$"
+    },
+    {
+      "page": "/my-courses",
+      "regex": "^/my\\-courses(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/my\\-courses(?:/)?$"
+    },
+    {
+      "page": "/parent",
+      "regex": "^/parent(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/parent(?:/)?$"
+    },
+    {
+      "page": "/passport",
+      "regex": "^/passport(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/passport(?:/)?$"
+    },
+    {
+      "page": "/passport/qr",
+      "regex": "^/passport/qr(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/passport/qr(?:/)?$"
+    },
+    {
+      "page": "/passport/share",
+      "regex": "^/passport/share(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/passport/share(?:/)?$"
+    },
+    {
+      "page": "/practice-tests",
+      "regex": "^/practice\\-tests(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/practice\\-tests(?:/)?$"
+    },
+    {
+      "page": "/privacy-policy",
+      "regex": "^/privacy\\-policy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/privacy\\-policy(?:/)?$"
+    },
+    {
+      "page": "/refund-policy",
+      "regex": "^/refund\\-policy(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/refund\\-policy(?:/)?$"
+    },
+    {
+      "page": "/reset-password",
+      "regex": "^/reset\\-password(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/reset\\-password(?:/)?$"
+    },
+    {
+      "page": "/resume-score",
+      "regex": "^/resume\\-score(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/resume\\-score(?:/)?$"
+    },
+    {
+      "page": "/robots.txt",
+      "regex": "^/robots\\.txt(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/robots\\.txt(?:/)?$"
+    },
+    {
+      "page": "/signup",
+      "regex": "^/signup(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/signup(?:/)?$"
+    },
+    {
+      "page": "/sitemap.xml",
+      "regex": "^/sitemap\\.xml(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/sitemap\\.xml(?:/)?$"
+    },
+    {
+      "page": "/solutions/coaches",
+      "regex": "^/solutions/coaches(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/solutions/coaches(?:/)?$"
+    },
+    {
+      "page": "/solutions/consultants",
+      "regex": "^/solutions/consultants(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/solutions/consultants(?:/)?$"
+    },
+    {
+      "page": "/solutions/enterprises",
+      "regex": "^/solutions/enterprises(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/solutions/enterprises(?:/)?$"
+    },
+    {
+      "page": "/solutions/freelancers",
+      "regex": "^/solutions/freelancers(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/solutions/freelancers(?:/)?$"
+    },
+    {
+      "page": "/solutions/institutes",
+      "regex": "^/solutions/institutes(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/solutions/institutes(?:/)?$"
+    },
+    {
+      "page": "/solutions/professionals",
+      "regex": "^/solutions/professionals(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/solutions/professionals(?:/)?$"
+    },
+    {
+      "page": "/solutions/recruiters",
+      "regex": "^/solutions/recruiters(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/solutions/recruiters(?:/)?$"
+    },
+    {
+      "page": "/solutions/startups",
+      "regex": "^/solutions/startups(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/solutions/startups(?:/)?$"
+    },
+    {
+      "page": "/solutions/students",
+      "regex": "^/solutions/students(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/solutions/students(?:/)?$"
+    },
+    {
+      "page": "/studio",
+      "regex": "^/studio(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/studio(?:/)?$"
+    },
+    {
+      "page": "/studio/export",
+      "regex": "^/studio/export(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/studio/export(?:/)?$"
+    },
+    {
+      "page": "/study-abroad",
+      "regex": "^/study\\-abroad(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/study\\-abroad(?:/)?$"
+    },
+    {
+      "page": "/teacher",
+      "regex": "^/teacher(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/teacher(?:/)?$"
+    },
+    {
+      "page": "/verify",
+      "regex": "^/verify(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/verify(?:/)?$"
+    },
+    {
+      "page": "/verify-email",
+      "regex": "^/verify\\-email(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/verify\\-email(?:/)?$"
+    },
+    {
+      "page": "/vision",
+      "regex": "^/vision(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/vision(?:/)?$"
+    }
+  ],
+  "dataRoutes": [],
+  "rsc": {
+    "header": "rsc",
+    "varyHeader": "rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch",
+    "prefetchHeader": "next-router-prefetch",
+    "didPostponeHeader": "x-nextjs-postponed",
+    "contentTypeHeader": "text/x-component",
+    "suffix": ".rsc",
+    "prefetchSuffix": ".prefetch.rsc",
+    "prefetchSegmentHeader": "next-router-segment-prefetch",
+    "prefetchSegmentSuffix": ".segment.rsc",
+    "prefetchSegmentDirSuffix": ".segments"
+  },
+  "rewriteHeaders": {
+    "pathHeader": "x-nextjs-rewritten-path",
+    "queryHeader": "x-nextjs-rewritten-query"
+  }
+}
