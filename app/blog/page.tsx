@@ -4,6 +4,8 @@ import BlogCard from "@/components/blog/BlogCard";
 import BlogAnalytics from "@/components/blog/BlogAnalytics";
 import { listBlogPosts } from "@/lib/blog/blogforge";
 import { canonicalUrl, OG_IMAGE } from "@/lib/seo";
+import { serializeJsonLd } from "@/lib/json-ld";
+import { indexJsonLd } from "@/lib/blog/seo";
 
 export const revalidate = 300;
 
@@ -11,10 +13,16 @@ const TITLE = "Blog | GrowQR";
 const DESCRIPTION =
   "Guides, insights and updates on skills, hiring and the RQ-Score from the GrowQR team.";
 
-export const metadata: Metadata = {
+// An empty blog (engine not configured yet, or no posts) is a thin page: keep it out of the index until there is something to read.
+export async function generateMetadata(): Promise<Metadata> {
+  const has = (await listBlogPosts({ limit: 1 })).length > 0;
+  return { ...metadata, robots: has ? { index: true, follow: true } : { index: false, follow: true } };
+}
+
+const metadata: Metadata = {
   title: TITLE,
   description: DESCRIPTION,
-  alternates: { canonical: canonicalUrl("/blog") },
+  alternates: { canonical: canonicalUrl("/blog"), types: { "application/rss+xml": canonicalUrl("/blog/rss.xml") } },
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
@@ -29,6 +37,7 @@ export default async function BlogIndexRoute() {
   return (
     <PageShell>
       <BlogAnalytics />
+      {posts.length > 0 ? <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(indexJsonLd(posts)) }} /> : null}
       <section className="mx-auto max-w-6xl px-5 py-16 sm:py-20 md:px-8">
         <header className="mx-auto mb-12 max-w-2xl text-center">
           <span className="mb-3 inline-block rounded-full bg-orange/10 px-4 py-1.5 text-[13px] font-semibold text-orange">

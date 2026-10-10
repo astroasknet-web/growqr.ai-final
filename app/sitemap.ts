@@ -4,6 +4,8 @@ import { listEventsForSitemap } from '@/features/events/services/events.service'
 import { SITE_URL } from '@/lib/seo';
 import { nativeCourse, nativeSlugs } from '@/lib/market/lessons';
 import { TOTAL_TESTS } from '@/lib/tests/ielts';
+import { listBlogPosts } from '@/lib/blog/blogforge';
+import { postUrl, toIso } from '@/lib/blog/seo';
 
 // Revalidate so newly published events appear in the sitemap without a redeploy.
 export const revalidate = 3600;
@@ -124,5 +126,20 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ]),
   ];
 
-  return [...basicRoutes, ...learnRoutes, ...aiToolRoutes, ...enterpriseAgentRoutes, ...solutionPages, ...expertRoutes, ...eventRoutes];
+  // ── Blog: the index plus every published, indexable post. lastmod is the post's real updated_at (the engine stores it);
+  // when the engine is unconfigured or down this is simply empty, so the sitemap never breaks. ──
+  let blogRoutes: MetadataRoute.Sitemap = [];
+  try {
+    const posts = await listBlogPosts({ limit: 1000 });
+    if (posts.length) {
+      blogRoutes = [
+        { url: `${baseUrl}/blog`, lastModified: toIso(posts[0].updated_at ?? posts[0].published_at) },
+        ...posts.filter((p) => !p.meta?.noindex).map((p) => ({ url: postUrl(p.slug), lastModified: toIso(p.updated_at ?? p.published_at) })),
+      ];
+    }
+  } catch {
+    blogRoutes = [];
+  }
+
+  return [...basicRoutes, ...learnRoutes, ...blogRoutes, ...aiToolRoutes, ...enterpriseAgentRoutes, ...solutionPages, ...expertRoutes, ...eventRoutes];
 }

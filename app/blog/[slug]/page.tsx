@@ -4,7 +4,10 @@ import Link from "next/link";
 import PageShell from "@/components/layout/PageShell";
 import BlogAnalytics from "@/components/blog/BlogAnalytics";
 import { getBlogPost, listBlogSlugs } from "@/lib/blog/blogforge";
-import { canonicalUrl, OG_IMAGE } from "@/lib/seo";
+import { OG_IMAGE } from "@/lib/seo";
+import { serializeJsonLd } from "@/lib/json-ld";
+import { cleanHtml } from "@/lib/market/lessons";
+import { postJsonLd, postUrl, relatedLearning } from "@/lib/blog/seo";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -25,20 +28,12 @@ function formatDate(iso: string): string {
     : d.toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" });
 }
 
-// The engine returns json_ld as a full <script> block; pull the JSON out so we
-// can emit a clean, single ld+json script.
-function extractJsonLd(scriptHtml: string | undefined | null): string | null {
-  if (!scriptHtml) return null;
-  const m = scriptHtml.match(/<script[^>]*>([\s\S]*?)<\/script>/i);
-  return m ? m[1].trim() : null;
-}
-
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const post = await getBlogPost(slug);
   if (!post) return {};
   const m = post.meta;
-  const url = m.canonical ?? canonicalUrl(`/blog/${post.slug}`);
+  const url = postUrl(post.slug); // always GrowQR's own URL, whatever base URL the engine is configured with
   const ogImg = m.og_image ?? post.cover_image ?? undefined;
   return {
     title: m.title ?? `${post.title} | GrowQR`,
@@ -50,6 +45,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       description: m.description ?? post.excerpt ?? undefined,
       url,
       type: "article",
+      publishedTime: post.published_at || undefined,
+      modifiedTime: post.updated_at || undefined,
       images: ogImg ? [{ url: ogImg }] : [OG_IMAGE],
     },
   };
@@ -60,14 +57,13 @@ export default async function BlogPostRoute({ params }: Props) {
   const post = await getBlogPost(slug);
   if (!post) notFound();
 
-  const jsonLd = extractJsonLd(post.json_ld);
+  const jsonLd = serializeJsonLd(postJsonLd(post));
+  const learn = relatedLearning(post);
 
   return (
     <PageShell>
       <BlogAnalytics />
-      {jsonLd && (
-        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
-      )}
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
 
       <article className="mx-auto max-w-3xl px-5 py-12 sm:py-16 md:px-8">
         <Link
@@ -90,6 +86,7 @@ export default async function BlogPostRoute({ params }: Props) {
             {post.author && <span>{post.author}</span>}
             {post.reading_minutes ? <span>· {post.reading_minutes} min read</span> : null}
             {post.published_at && <span>· {formatDate(post.published_at)}</span>}
+            {post.updated_at && formatDate(post.updated_at) !== formatDate(post.published_at) ? <span>· Updated {formatDate(post.updated_at)}</span> : null}
           </div>
         </header>
 
@@ -102,8 +99,17 @@ export default async function BlogPostRoute({ params }: Props) {
           />
         )}
 
-        {/* content is sanitized server-side by the engine before it is served. */}
-        <div className="bf-article" dangerouslySetInnerHTML={{ __html: post.content }} />
+        {/* The engine sanitizes before serving; cleanHtml is a second, independent pass in case the engine is ever misconfigured. */}
+        <div className="bf-article" dangerouslySetInnerHTML={{ __html: cleanHtml(post.content) }} />
+
+        <aside aria-labelledby="learn-h" className="mt-12 rounded-2xl border border-black/[0.08] bg-white p-6 shadow-sm">
+          <h2 id="learn-h" className="text-[18px] font-bold text-ink">Keep learning on GrowQR</h2>
+          <ul className="mt-3 space-y-2">
+            {learn.map((l) => (
+              <li key={l.href}><Link href={l.href} className="font-semibold text-ink underline underline-offset-2 hover:text-orange">{l.label}</Link><span className="text-ink-3"> · {l.why}</span></li>
+            ))}
+          </ul>
+        </aside>
       </article>
 
       <style>{`

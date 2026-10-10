@@ -29,6 +29,7 @@ export interface BlogPostSummary {
   reading_minutes: number | null;
   url: string;
   published_at: string;
+  updated_at?: string | null;
   meta?: BlogMeta;
 }
 
