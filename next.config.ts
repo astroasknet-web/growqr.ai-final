@@ -55,7 +55,7 @@ const nextConfig: NextConfig = {
   // BUILD_STANDALONE=1 (the GitHub Actions build for Hostinger) produces a self-contained server: node server.js. Vercel builds leave it unset.
   ...(process.env.BUILD_STANDALONE === "1" ? { output: "standalone" as const } : {}),
   // Files read at run time that the bundler cannot see: the portal migrations (PORTAL_AUTO_MIGRATE) and the data files the portal loads from disk.
-  outputFileTracingIncludes: { "/**": ["./supabase/migrations/2026*.sql", "./lib/abroad/data/study-abroad.json", "./lib/market/data/courses.json"] },
+  outputFileTracingIncludes: { "/**": ["./supabase/migrations/2026*.sql", "./lib/abroad/data/study-abroad.json", "./lib/market/data/courses.json", "./lib/tests/data/**/*.json"] },
   devIndicators: false,
   // Tree-shake heavy barrel-export libraries so only the components actually
   // used land in the client bundle (shrinks the big shared chunk that was
