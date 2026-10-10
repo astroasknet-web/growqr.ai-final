@@ -10,7 +10,7 @@ export const metadata: Metadata = { title: "My classes | GrowQR", robots: { inde
 export const dynamic = "force-dynamic";
 
 const field = "min-h-[44px] px-3 rounded-lg border border-black/[0.2] bg-white text-[15px]";
-const btn = "inline-flex items-center justify-center min-h-[44px] px-5 rounded-lg bg-orange hover:bg-orange-dark text-white font-semibold text-[14px]";
+const btn = "inline-flex items-center justify-center min-h-[44px] px-5 rounded-lg bg-orange-deep hover:bg-ink text-white font-semibold text-[14px]";
 
 export default async function TeacherHome({ searchParams }: { searchParams: Promise<Record<string, string | undefined>> }) {
   const me = await requireUser("teacher", "admin");
@@ -43,7 +43,7 @@ export default async function TeacherHome({ searchParams }: { searchParams: Prom
         )}
       </Card>
       {archived.length ? (
-        <Card title="Archived"><ul className="text-[14px] space-y-1">{archived.map((c) => <li key={c.id}><Link className="underline" href={`/teacher/class/${c.id}`}>{c.name}</Link> <span className="text-ink-4">({c.students} students)</span></li>)}</ul></Card>
+        <Card title="Archived"><ul className="text-[14px] space-y-1">{archived.map((c) => <li key={c.id}><Link className="underline" href={`/teacher/class/${c.id}`}>{c.name}</Link> <span className="text-ink-3">({c.students} students)</span></li>)}</ul></Card>
       ) : null}
     </PortalPage>
   );

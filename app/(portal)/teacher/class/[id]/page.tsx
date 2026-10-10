@@ -12,7 +12,7 @@ export const metadata: Metadata = { title: "Class | GrowQR", robots: { index: fa
 export const dynamic = "force-dynamic";
 
 const field = "min-h-[44px] px-3 rounded-lg border border-black/[0.2] bg-white text-[15px]";
-const btn = "inline-flex items-center justify-center min-h-[44px] px-5 rounded-lg bg-orange hover:bg-orange-dark text-white font-semibold text-[14px]";
+const btn = "inline-flex items-center justify-center min-h-[44px] px-5 rounded-lg bg-orange-deep hover:bg-ink text-white font-semibold text-[14px]";
 const ghost = "inline-flex items-center justify-center min-h-[44px] px-4 rounded-lg border border-black/[0.15] hover:bg-cream-2 text-[14px] font-medium text-ink";
 const STATE = { done: "bg-emerald-50 text-emerald-900", started: "bg-amber-50 text-amber-900", none: "bg-cream-2 text-ink-3" } as const;
 const OK: Record<string, string> = { created: "Class created. Share the join code with your students.", assigned: "Assignment added.", removed: "Assignment removed.", student_removed: "Student removed from the class.", restored: "Class restored." };
@@ -42,13 +42,13 @@ export default async function ClassPage({ params, searchParams }: { params: Prom
           <div className="overflow-x-auto">
             <table className="w-full text-[14px] min-w-[40rem]">
               <thead>
-                <tr className="text-left text-ink-4"><th scope="col" className="py-2 pr-3 font-medium">Student</th>
+                <tr className="text-left text-ink-3"><th scope="col" className="py-2 pr-3 font-medium">Student</th>
                   {g.assignments.map((a) => <th key={a.id} scope="col" className="py-2 pr-3 font-medium align-bottom"><Link className="text-ink hover:underline" href={classes.hrefFor(a)}>{a.title}</Link><span className="block text-[12px] font-normal">{a.due_date ? `Due ${a.due_date} · ` : ""}{doneCount(a.id)}/{g.students.length} done</span></th>)}</tr>
               </thead>
               <tbody>
                 {g.students.map((s) => (
                   <tr key={s.id} className="border-t border-black/[0.07]">
-                    <th scope="row" className="py-2 pr-3 text-left font-medium text-ink">{s.name}<span className="block text-[12px] font-normal text-ink-4">{s.email}</span></th>
+                    <th scope="row" className="py-2 pr-3 text-left font-medium text-ink">{s.name}<span className="block text-[12px] font-normal text-ink-3">{s.email}</span></th>
                     {g.assignments.map((a) => { const c = g.cells.get(classes.cellKey(a.id, s.id))!; return <td key={a.id} className="pr-3"><span className={`inline-block px-2 py-1 rounded-md text-[13px] ${STATE[c.state]}`}>{c.label}</span></td>; })}
                   </tr>
                 ))}
@@ -95,7 +95,7 @@ export default async function ClassPage({ params, searchParams }: { params: Prom
           <ul className="divide-y divide-black/[0.07]">
             {g.assignments.map((a) => (
               <li key={a.id} className="py-2.5 flex flex-wrap items-center justify-between gap-2">
-                <span className="text-[14px]"><b>{a.title}</b> <span className="text-ink-4">· {a.kind === "course" ? "course" : "practice test"}{a.due_date ? ` · due ${a.due_date}` : ""}</span>{a.note ? <span className="block text-ink-3">{a.note}</span> : null}</span>
+                <span className="text-[14px]"><b>{a.title}</b> <span className="text-ink-3">· {a.kind === "course" ? "course" : "practice test"}{a.due_date ? ` · due ${a.due_date}` : ""}</span>{a.note ? <span className="block text-ink-3">{a.note}</span> : null}</span>
                 <form action={classAction}>{hidden("unassign", { assignment_id: a.id })}<button type="submit" className={ghost}>Remove<span className="sr-only"> {a.title}</span></button></form>
               </li>
             ))}
@@ -107,7 +107,7 @@ export default async function ClassPage({ params, searchParams }: { params: Prom
         {!g.students.length ? <p className="text-[14px] text-ink-3">Waiting for students to join with the code.</p> : (
           <ul className="divide-y divide-black/[0.07]">
             {g.students.map((s) => (
-              <li key={s.id} className="py-2.5 flex flex-wrap items-center justify-between gap-2"><span className="text-[14px]"><b>{s.name}</b> <span className="text-ink-4">{s.email}</span></span>
+              <li key={s.id} className="py-2.5 flex flex-wrap items-center justify-between gap-2"><span className="text-[14px]"><b>{s.name}</b> <span className="text-ink-3">{s.email}</span></span>
                 <form action={classAction}>{hidden("remove_student", { student_id: s.id })}<button type="submit" className={ghost}>Remove<span className="sr-only"> {s.name}</span></button></form></li>
             ))}
           </ul>

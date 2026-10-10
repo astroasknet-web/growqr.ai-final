@@ -38,7 +38,7 @@ export default function OptionC() {
                 <WaitlistButton source="home-option-c-hero" className="inline-flex min-h-[56px] items-center rounded-full border border-black/15 bg-white/80 px-7 text-[1.02rem] font-semibold backdrop-blur transition hover:border-orange">Join the waitlist</WaitlistButton>
               </div>
               <dl data-rv style={{ ["--d" as string]: ".24s" }} className="mt-10 grid max-w-[460px] grid-cols-3 gap-4">
-                {[["₹0", "fees for students"], ["116", "courses"], ["58", "universities"]].map(([n, l]) => (<div key={l}><dt className="font-sans text-[1.9rem] font-extrabold leading-none">{n}</dt><dd className="text-[0.84rem] text-ink-4">{l}</dd></div>))}
+                {[["₹0", "fees for students"], ["120", "courses"], ["58", "universities"]].map(([n, l]) => (<div key={l}><dt className="font-sans text-[1.9rem] font-extrabold leading-none">{n}</dt><dd className="text-[0.84rem] text-ink-4">{l}</dd></div>))}
               </dl>
             </div>
 

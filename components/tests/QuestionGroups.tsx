@@ -12,7 +12,7 @@ function Choice({ q, items }: { q: Q; items: string[] }) {
       <legend className="sr-only">Answer for question {q.n}</legend>
       <div className="flex flex-wrap gap-2">
         {items.map((v) => (
-          <label key={v} className="inline-flex items-center gap-2 min-h-[44px] px-3 rounded-lg border border-black/[0.15] bg-white text-[14px] has-[:checked]:bg-orange has-[:checked]:text-white has-[:checked]:border-orange">
+          <label key={v} className="inline-flex items-center gap-2 min-h-[44px] px-3 rounded-lg border border-black/[0.15] bg-white text-[14px] has-[:checked]:bg-orange-deep has-[:checked]:text-white has-[:checked]:border-orange-deep">
             <input type="radio" name={`q${q.n}`} value={v} className="accent-orange" />{v}
           </label>
         ))}
@@ -25,7 +25,7 @@ function Select({ q, opts, kind }: { q: Q; opts: Opt[]; kind: string }) {
   return (
     <div className="mt-1">
       <label htmlFor={`q${q.n}`} className="sr-only">Answer for question {q.n}</label>
-      <select id={`q${q.n}`} name={`q${q.n}`} defaultValue="" className={field}>
+      <select id={`q${q.n}`} name={`q${q.n}`} defaultValue="" className={`${field} w-full sm:w-auto max-w-full`}>
         <option value="">Choose {kind}</option>
         {opts.map((o) => <option key={o.label} value={o.label}>{o.label}{kind === "heading" ? ` — ${o.text}` : ""}</option>)}
       </select>

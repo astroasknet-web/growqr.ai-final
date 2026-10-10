@@ -3,10 +3,12 @@ import type { PortalUser } from "@/lib/portal/session";
 import { MarketShell } from "@/components/market/shell";
 import { Countdown } from "@/components/tests/TestClient";
 import * as gre from "@/lib/tests/gre";
+import { testJsonLd } from "@/lib/tests/jsonld";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { submitGre } from "@/app/practice-tests/actions";
 
 const card = "bg-white rounded-2xl border border-black/[0.08] shadow-card p-5 sm:p-6";
-const btnPrimary = "inline-flex items-center justify-center min-h-[48px] px-6 rounded-lg bg-orange hover:bg-orange-dark text-white font-semibold text-[15px]";
+const btnPrimary = "inline-flex items-center justify-center min-h-[48px] px-6 rounded-lg bg-orange-deep hover:bg-ink text-white font-semibold text-[15px]";
 const btnGhost = "inline-flex items-center justify-center min-h-[48px] px-6 rounded-lg border border-black/[0.15] hover:bg-cream-2 font-semibold text-[15px]";
 const base = "/practice-tests/gre-quant";
 
@@ -21,7 +23,7 @@ export function GreList({ user, best }: { user: PortalUser | null; best: Map<num
           const b = best.get(n);
           return (
             <li key={n} className="bg-white rounded-2xl border border-black/[0.08] shadow-card p-4">
-              <p className="text-[12px] text-ink-4">Test {n}</p>
+              <p className="text-[12px] text-ink-3">Test {n}</p>
               <h2 className="text-[16px] font-semibold text-ink mt-0.5"><Link href={`${base}/${n}`} className="hover:underline">GRE Quant Practice Test {n}</Link></h2>
               <p className="text-[13px] text-ink-3 mt-1">{gre.QUESTIONS} questions · {gre.MINUTES} minutes</p>
               {b ? <p className="text-[13px] mt-2 font-semibold text-emerald-800">Best: {b.raw}/{b.total}{b.score != null ? ` · about ${b.score}` : ""}</p> : null}
@@ -44,9 +46,9 @@ export function GreTest({ user, n, a, t }: { user: PortalUser | null; n: number;
         {crumbs}
         <h1 className="text-[28px] sm:text-[34px] font-bold text-ink tracking-tight">GRE Quant Test {n}: your result</h1>
         <div id="result" role="status" className="mt-4 grid sm:grid-cols-3 gap-3">
-          <div className={card}><p className="text-[13px] text-ink-4">Score</p><p className="text-[32px] font-bold text-ink">{res.raw}<span className="text-[18px] text-ink-3"> / {res.total}</span></p></div>
-          <div className={card}><p className="text-[13px] text-ink-4">Estimated scaled score</p><p className="text-[32px] font-bold text-ink">{res.scaled}</p></div>
-          <div className={card}><p className="text-[13px] text-ink-4">Time taken</p><p className="text-[32px] font-bold text-ink">{Math.floor(secs / 60)}<span className="text-[18px] text-ink-3"> min</span></p></div>
+          <div className={card}><p className="text-[13px] text-ink-3">Score</p><p className="text-[32px] font-bold text-ink">{res.raw}<span className="text-[18px] text-ink-3"> / {res.total}</span></p></div>
+          <div className={card}><p className="text-[13px] text-ink-3">Estimated scaled score</p><p className="text-[32px] font-bold text-ink">{res.scaled}</p></div>
+          <div className={card}><p className="text-[13px] text-ink-3">Time taken</p><p className="text-[32px] font-bold text-ink">{Math.floor(secs / 60)}<span className="text-[18px] text-ink-3"> min</span></p></div>
         </div>
         <p className="text-[14px] text-ink-3 mt-3">{user?.role === "student" ? "This attempt is saved to your account. " : "Log in as a student to keep your results. "}The 130 to 170 figure is a straight-line estimate from your percentage. The real exam is adaptive and ETS does not publish its conversion, so use it as a rough guide only.</p>
         <h2 className="text-[20px] font-bold text-ink mt-6 mb-2">By topic</h2>
@@ -55,7 +57,7 @@ export function GreTest({ user, n, a, t }: { user: PortalUser | null; n: number;
         <ol className="space-y-3">
           {res.rows.map((r) => (
             <li key={r.id} className={`${card} ${r.right ? "" : "border-red-200"}`}>
-              <p className="text-[12px] text-ink-4">Question {r.position} · {r.topic}</p>
+              <p className="text-[12px] text-ink-3">Question {r.position} · {r.topic}</p>
               <p className="text-[16px] text-ink mt-1">{r.q}</p>
               <ul className="mt-2 space-y-1 text-[14px]">
                 {r.options.map((o, i) => (
@@ -80,8 +82,10 @@ export function GreTest({ user, n, a, t }: { user: PortalUser | null; n: number;
 
   const qs = gre.publicView(gre.mock(n));
   const formId = "test-form";
+  const ld = testJsonLd({ exam: gre.EXAM, examLabel: "GRE Quant", n, name: `GRE Quant Practice Test ${n}`, minutes: gre.MINUTES, questions: gre.QUESTIONS });
   return (
     <MarketShell user={user} active="courses">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(ld) }} />
       {crumbs}
       <h1 className="text-[26px] sm:text-[32px] font-bold text-ink tracking-tight">GRE Quant Practice Test {n}</h1>
       <p className="text-[15px] text-ink-3 mt-1">{gre.QUESTIONS} questions in {gre.MINUTES} minutes. The test submits itself when the timer ends. Questions can be left blank; there is no penalty for guessing.</p>
@@ -104,7 +108,7 @@ export function GreTest({ user, n, a, t }: { user: PortalUser | null; n: number;
             </li>
           ))}
         </ol>
-        <button type="submit" className="inline-flex items-center justify-center min-h-[52px] px-8 rounded-lg bg-orange hover:bg-orange-dark text-white font-semibold text-[16px]">Submit test and see my score</button>
+        <button type="submit" className="inline-flex items-center justify-center min-h-[52px] px-8 rounded-lg bg-orange-deep hover:bg-ink text-white font-semibold text-[16px]">Submit test and see my score</button>
       </form>
     </MarketShell>
   );

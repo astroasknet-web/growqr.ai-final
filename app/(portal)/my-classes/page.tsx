@@ -28,7 +28,7 @@ export default async function MyClasses({ searchParams }: { searchParams: Promis
         <form action={joinClassAction} className="flex flex-wrap items-end gap-3">
           <div><label htmlFor="code" className="block text-[14px] font-medium text-ink mb-1">Class code</label>
             <input id="code" name="code" required minLength={4} maxLength={10} autoComplete="off" autoCapitalize="characters" spellCheck={false} placeholder="K7M2QX" className={`${field} w-44 font-mono uppercase tracking-widest`} /></div>
-          <button type="submit" className="inline-flex items-center justify-center min-h-[44px] px-5 rounded-lg bg-orange hover:bg-orange-dark text-white font-semibold text-[14px]">Join class</button>
+          <button type="submit" className="inline-flex items-center justify-center min-h-[44px] px-5 rounded-lg bg-orange-deep hover:bg-ink text-white font-semibold text-[14px]">Join class</button>
         </form>
       </Card>
 
@@ -42,8 +42,8 @@ export default async function MyClasses({ searchParams }: { searchParams: Promis
                 return (
                   <li key={a.id} className="py-3 flex flex-wrap items-center justify-between gap-2">
                     <span className="text-[14px]"><Link className="font-semibold text-ink underline underline-offset-2" href={classes.hrefFor(a)}>{a.title}</Link>
-                      <span className="text-ink-4"> · {a.kind === "course" ? "course" : "practice test"}</span>
-                      {a.due_date ? <span className={late ? "text-red-800 font-semibold" : "text-ink-4"}> · due {a.due_date}{late ? " (overdue)" : ""}</span> : null}
+                      <span className="text-ink-3"> · {a.kind === "course" ? "course" : "practice test"}</span>
+                      {a.due_date ? <span className={late ? "text-red-800 font-semibold" : "text-ink-3"}> · due {a.due_date}{late ? " (overdue)" : ""}</span> : null}
                       {a.note ? <span className="block text-ink-3">{a.note}</span> : null}</span>
                     <span className={`px-2.5 py-1 rounded-md text-[13px] ${STATE[a.cell.state]}`}>{a.cell.label}</span>
                   </li>

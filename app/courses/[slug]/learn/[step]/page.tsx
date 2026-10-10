@@ -13,8 +13,9 @@ export const dynamic = "force-dynamic";
 const clean = (s: string) => s.toLowerCase().replace(/[^a-z0-9-]/g, "");
 const html = (s: string) => ({ __html: lessons.cleanHtml(s) });
 
-export async function generateMetadata({ params }: { params: Promise<{ slug: string; step: string }> }): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: { params: Promise<{ slug: string; step: string }>; searchParams: Promise<Record<string, string | undefined>> }): Promise<Metadata> {
   const p = await params;
+  const noindexResult = (await searchParams).a !== undefined;
   const slug = clean(p.slug);
   const nc = lessons.nativeCourse(slug);
   const at = nc ? lessons.stepFor(nc, clean(p.step)) : null;
@@ -25,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
     title: `${title} | ${nc.title}`.slice(0, 60) + " | GrowQR",
     description: Array.from(desc).slice(0, 155).join(""),
     alternates: { canonical: `${SITE_URL}/courses/${slug}/learn/${at.capstone ? "capstone" : at.module!.slug}` },
-    robots: { index: true, follow: true },
+    robots: noindexResult ? { index: false, follow: true } : { index: true, follow: true },
   };
 }
 
@@ -53,7 +54,17 @@ export default async function StepPage({ params, searchParams }: { params: Promi
   const picked = (sp.a ?? "").split(".").slice(0, 60).map((x) => (/^\d{1,2}$/.test(x) ? Number(x) : null));
   const result = quiz && sp.a ? lessons.gradeQuiz(quiz, picked) : null;
   const title = at.capstone ? nc.capstone.title : m!.title;
-  const jsonld = { "@context": "https://schema.org", "@type": "LearningResource", name: title, isPartOf: { "@type": "Course", name: nc.title, url: `${SITE_URL}/courses/${slug}` }, inLanguage: "en", learningResourceType: at.capstone ? "Project" : "Lesson" };
+  const jsonld = {
+    "@context": "https://schema.org",
+    "@graph": [
+      { "@type": "LearningResource", name: title, isPartOf: { "@type": "Course", name: nc.title, url: `${SITE_URL}/courses/${slug}` }, inLanguage: "en", learningResourceType: at.capstone ? "Project" : "Lesson" },
+      { "@type": "BreadcrumbList", itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Courses", item: `${SITE_URL}/courses` },
+        { "@type": "ListItem", position: 2, name: nc.title, item: `${SITE_URL}/courses/${slug}/learn` },
+        { "@type": "ListItem", position: 3, name: title },
+      ] },
+    ],
+  };
 
   return (
     <MarketShell user={me} active="courses">
@@ -62,7 +73,7 @@ export default async function StepPage({ params, searchParams }: { params: Promi
       <h1 className="text-[26px] sm:text-[32px] font-bold text-ink tracking-tight leading-tight">{title}</h1>
       <p className="text-[16px] text-ink-3 mt-1 max-w-3xl">{m ? m.outcome : nc.capstone.summary}</p>
 
-      <div className="mt-6 grid gap-6 max-w-4xl">
+      <div className="mt-6 grid grid-cols-[minmax(0,1fr)] gap-6 max-w-4xl">
         {m ? (
           <>
             {m.intro ? <article className={card}><div className={prose} dangerouslySetInnerHTML={html(m.intro)} /></article> : null}
@@ -129,14 +140,14 @@ export default async function StepPage({ params, searchParams }: { params: Promi
                   );
                 })}
               </ol>
-              <button type="submit" className={`${btn} bg-orange hover:bg-orange-dark text-white mt-6`}>{result ? "Submit again" : "Submit answers"}</button>
+              <button type="submit" className={`${btn} bg-orange-deep hover:bg-ink text-white mt-6`}>{result ? "Submit again" : "Submit answers"}</button>
             </form>
           </section>
         ) : null}
 
         <nav aria-label="Lesson navigation" className="flex flex-wrap justify-between gap-3">
           {prev ? <Link href={`/courses/${slug}/learn/${prev}`} className={`${btn} border border-black/[0.15] hover:bg-cream-2`}>&larr; Previous module</Link> : <Link href={`/courses/${slug}/learn`} className={`${btn} border border-black/[0.15] hover:bg-cream-2`}>All modules</Link>}
-          {next ? <Link href={`/courses/${slug}/learn/${next}`} className={`${btn} bg-orange hover:bg-orange-dark text-white`}>{next === "capstone" ? "Go to capstone" : "Next module"} &rarr;</Link> : <Link href={`/courses/${slug}`} className={`${btn} bg-orange hover:bg-orange-dark text-white`}>Back to course</Link>}
+          {next ? <Link href={`/courses/${slug}/learn/${next}`} className={`${btn} bg-orange-deep hover:bg-ink text-white`}>{next === "capstone" ? "Go to capstone" : "Next module"} &rarr;</Link> : <Link href={`/courses/${slug}`} className={`${btn} bg-orange-deep hover:bg-ink text-white`}>Back to course</Link>}
         </nav>
       </div>
     </MarketShell>

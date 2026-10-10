@@ -39,6 +39,7 @@ export function stepFor(c: NativeCourse, key: string): { index: number; module: 
 /** Strip anything executable from lesson HTML. The source is our own content, this is defence in depth. */
 export function cleanHtml(html: string): string {
   return html
+    .replace(/<(\/?)h4\b/gi, "<$1h3") // lessons sit under an h2: an h4 would skip a heading level
     .replace(/<\s*(script|iframe|object|embed|style|link|meta|base|form)\b[\s\S]*?(<\s*\/\s*\1\s*>|$)/gi, "")
     .replace(/<\s*(script|iframe|object|embed|style|link|meta|base|form)\b[^>]*>/gi, "")
     .replace(/\son[a-z]+\s*=\s*("[^"]*"|'[^']*'|[^\s>]+)/gi, "")

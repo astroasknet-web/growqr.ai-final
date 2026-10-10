@@ -49,7 +49,7 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
       <p className="text-[16px] text-ink-3 mt-1 max-w-3xl">{nc.summary || nc.tagline}</p>
       {enrol ? <p className="mt-3 text-[14px] text-ink-2"><b>{enrol.progress}% complete.</b> Pass each module quiz to tick it off.</p> : null}
       <div className="mt-4 flex flex-wrap gap-3">
-        <Link href={`/courses/${slug}/learn/${nextKey}`} className={`${btn} bg-orange hover:bg-orange-dark text-white`}>{enrol && enrol.done.length ? "Continue learning" : "Start module 1"}</Link>
+        <Link href={`/courses/${slug}/learn/${nextKey}`} className={`${btn} bg-orange-deep hover:bg-ink text-white`}>{enrol && enrol.done.length ? "Continue learning" : "Start module 1"}</Link>
         {me?.role === "student" && !enrol ? (
           <form action={courseAction}><input type="hidden" name="act" value="enrol" /><input type="hidden" name="slug" value={slug} /><input type="hidden" name="back" value={`/courses/${slug}/learn`} /><button type="submit" className={`${btn} border border-black/[0.15] hover:bg-cream-2`}>Enrol and track progress</button></form>
         ) : null}
@@ -64,7 +64,7 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
               <span className="min-w-0">
                 <b className="block text-[16px] text-ink group-hover:underline">{m.title}</b>
                 <span className="block text-[14px] text-ink-3 mt-0.5">{m.summary}</span>
-                <span className="block text-[12px] text-ink-4 mt-1">{m.hours} h &middot; {m.topics.length} lessons{m.quiz ? ` · ${m.quiz.questions.length}-question quiz` : ""}</span>
+                <span className="block text-[12px] text-ink-3 mt-1">{m.hours} h &middot; {m.topics.length} lessons{m.quiz ? ` · ${m.quiz.questions.length}-question quiz` : ""}</span>
               </span>
             </Link>
           </li>

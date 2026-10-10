@@ -25,13 +25,13 @@ export default function PracticeTestsPage() {
         {TESTS.map((t) => (
           <li key={t.href} className="bg-white rounded-2xl border border-black/[0.08] shadow-card p-5">
             <h2 className="text-[20px] font-bold text-ink"><Link href={t.href} className="hover:underline">{t.title}</Link></h2>
-            <p className="text-[13px] text-ink-4 mt-1">{t.meta}</p>
+            <p className="text-[13px] text-ink-3 mt-1">{t.meta}</p>
             <p className="text-[15px] text-ink-2 mt-2">{t.text}</p>
-            <Link href={t.href} className="inline-flex items-center min-h-[44px] mt-3 px-5 rounded-lg bg-orange hover:bg-orange-dark text-white font-semibold text-[14px]">Choose a test</Link>
+            <Link href={t.href} className="inline-flex items-center min-h-[44px] mt-3 px-5 rounded-lg bg-orange-deep hover:bg-ink text-white font-semibold text-[14px]">Choose a test</Link>
           </li>
         ))}
       </ul>
-      <p className="text-[13px] text-ink-4 mt-6">IELTS bands and GRE scores are indicative estimates: the real conversions differ between test versions. IELTS and GRE are trademarks of their owners, and these are independent practice materials.</p>
+      <p className="text-[13px] text-ink-3 mt-6">IELTS bands and GRE scores are indicative estimates: the real conversions differ between test versions. IELTS and GRE are trademarks of their owners, and these are independent practice materials.</p>
     </MarketShell>
   );
 }

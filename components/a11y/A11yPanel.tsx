@@ -150,7 +150,7 @@ export default function A11yPanel() {
     return () => document.removeEventListener("keydown", esc);
   }, [open]);
 
-  const btn = "min-h-[44px] px-3 rounded-lg border border-black/[0.15] bg-white text-[14px] font-medium text-ink hover:bg-cream-2 aria-pressed:bg-orange aria-pressed:text-white aria-pressed:border-orange";
+  const btn = "min-h-[44px] px-3 rounded-lg border border-black/[0.15] bg-white text-[14px] font-medium text-ink hover:bg-cream-2 aria-pressed:bg-orange-deep aria-pressed:text-white aria-pressed:border-orange-deep";
 
   return (
     <div id="a11y-root" className="print:hidden">
@@ -203,7 +203,7 @@ export default function A11yPanel() {
                     </select>
                   </div>
                 ) : voices.length === 0 ? (
-                  <p className="text-[12px] text-ink-4 mt-2">No English voice found on this device. Install one in your system settings.</p>
+                  <p className="text-[12px] text-ink-3 mt-2">No English voice found on this device. Install one in your system settings.</p>
                 ) : null}
               </>
             )}

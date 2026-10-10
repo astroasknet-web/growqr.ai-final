@@ -7,6 +7,8 @@ import { Countdown, ListeningPlayer } from "@/components/tests/TestClient";
 import { cleanHtml } from "@/lib/market/lessons";
 import * as ielts from "@/lib/tests/ielts";
 import * as gre from "@/lib/tests/gre";
+import { testJsonLd } from "@/lib/tests/jsonld";
+import { serializeJsonLd } from "@/lib/json-ld";
 import { GreTest } from "@/components/tests/GreTest";
 import { submitIelts } from "../../actions";
 import { SITE_URL } from "@/lib/seo";
@@ -18,8 +20,9 @@ const kindOf = (exam: string): ielts.Kind | null => {
   return exam.startsWith("ielts-") && ielts.isKind(k) ? k : null;
 };
 
-export async function generateMetadata({ params }: { params: Promise<{ exam: string; n: string }> }): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: { params: Promise<{ exam: string; n: string }>; searchParams: Promise<Record<string, string | undefined>> }): Promise<Metadata> {
   const p = await params;
+  if ((await searchParams).a !== undefined) return { title: "Your result | GrowQR", robots: { index: false, follow: false } };
   const kind = kindOf(p.exam);
   const n = Number(p.n);
   if (p.exam === "gre-quant" && gre.validNumber(n)) return { title: `GRE Quant Practice Test ${n} | GrowQR`, description: `Timed GRE Quantitative Reasoning practice test ${n}: ${gre.QUESTIONS} questions, instant marking and an explanation for every question.`, alternates: { canonical: `${SITE_URL}/practice-tests/gre-quant/${n}` }, robots: { index: true, follow: true } };
@@ -58,9 +61,9 @@ export default async function TestPage({ params, searchParams }: { params: Promi
         <nav aria-label="Breadcrumb" className="text-[13px] text-ink-3 mb-4"><Link href="/practice-tests" className="underline">Practice tests</Link> / <Link href={base} className="underline">{LABEL[kind]}</Link> / Test {n}</nav>
         <h1 className="text-[28px] sm:text-[34px] font-bold text-ink tracking-tight">{LABEL[kind]} Test {n}: your result</h1>
         <div id="result" role="status" className="mt-4 grid sm:grid-cols-3 gap-3">
-          <div className={card}><p className="text-[13px] text-ink-4">Raw score</p><p className="text-[32px] font-bold text-ink">{res.raw}<span className="text-[18px] text-ink-3"> / {res.total}</span></p></div>
-          <div className={card}><p className="text-[13px] text-ink-4">Indicative band</p><p className="text-[32px] font-bold text-ink">{res.band.toFixed(1)}</p></div>
-          <div className={card}><p className="text-[13px] text-ink-4">Time taken</p><p className="text-[32px] font-bold text-ink">{Math.floor(secs / 60)}<span className="text-[18px] text-ink-3"> min</span></p></div>
+          <div className={card}><p className="text-[13px] text-ink-3">Raw score</p><p className="text-[32px] font-bold text-ink">{res.raw}<span className="text-[18px] text-ink-3"> / {res.total}</span></p></div>
+          <div className={card}><p className="text-[13px] text-ink-3">Indicative band</p><p className="text-[32px] font-bold text-ink">{res.band.toFixed(1)}</p></div>
+          <div className={card}><p className="text-[13px] text-ink-3">Time taken</p><p className="text-[32px] font-bold text-ink">{Math.floor(secs / 60)}<span className="text-[18px] text-ink-3"> min</span></p></div>
         </div>
         <p className="text-[14px] text-ink-3 mt-3">{me?.role === "student" ? "This attempt is saved to your account." : "Log in as a student to keep your results."} The band is indicative, because raw-score tables differ slightly between real test versions.</p>
         <h2 className="text-[20px] font-bold text-ink mt-6 mb-2">{kind === "reading" ? "By passage" : "By section"}</h2>
@@ -75,14 +78,14 @@ export default async function TestPage({ params, searchParams }: { params: Promi
                   <td className="p-3 font-semibold">{r.n}</td>
                   <td className="p-3"><span className={r.right ? "text-emerald-800 font-semibold" : "text-red-800 font-semibold"}>{r.right ? "Correct" : r.your === null ? "No answer" : "Wrong"}</span>{r.your ? <span className="block text-ink-3">{r.your}</span> : null}</td>
                   <td className="p-3 text-ink-2">{r.correct}</td>
-                  <td className="p-3 text-ink-3">{r.explain}{r.location ? <span className="block text-[12px] text-ink-4 mt-0.5">{r.location}</span> : null}</td>
+                  <td className="p-3 text-ink-3">{r.explain}{r.location ? <span className="block text-[12px] text-ink-3 mt-0.5">{r.location}</span> : null}</td>
                 </tr>
               ))}
             </tbody>
           </table>
         </div>
         <div className="flex flex-wrap gap-3 mt-6">
-          <Link href={`${base}/${n}`} className="inline-flex items-center min-h-[48px] px-6 rounded-lg bg-orange hover:bg-orange-dark text-white font-semibold text-[15px]">Retake this test</Link>
+          <Link href={`${base}/${n}`} className="inline-flex items-center min-h-[48px] px-6 rounded-lg bg-orange-deep hover:bg-ink text-white font-semibold text-[15px]">Retake this test</Link>
           {n < ielts.TOTAL_TESTS ? <Link href={`${base}/${n + 1}`} className="inline-flex items-center min-h-[48px] px-6 rounded-lg border border-black/[0.15] hover:bg-cream-2 font-semibold text-[15px]">Next test</Link> : null}
           <Link href={base} className="inline-flex items-center min-h-[48px] px-6 rounded-lg border border-black/[0.15] hover:bg-cream-2 font-semibold text-[15px]">All tests</Link>
         </div>
@@ -93,10 +96,12 @@ export default async function TestPage({ params, searchParams }: { params: Promi
   // ---- runner ----
   const view = ielts.publicView(test);
   const formId = "test-form";
+  const ld = testJsonLd({ exam: `ielts-${kind}`, examLabel: LABEL[kind], n, name: test.title, minutes: ielts.MINUTES[kind], questions: ielts.QUESTIONS });
   const groups = ielts.groupsOf(view);
   const scripts = kind === "listening" ? ielts.scriptOf(test) : [];
   return (
     <MarketShell user={me} active="courses">
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(ld) }} />
       <nav aria-label="Breadcrumb" className="text-[13px] text-ink-3 mb-4"><Link href="/practice-tests" className="underline">Practice tests</Link> / <Link href={base} className="underline">{LABEL[kind]}</Link> / Test {n}</nav>
       <h1 className="text-[26px] sm:text-[32px] font-bold text-ink tracking-tight">{test.title}</h1>
       <p className="text-[15px] text-ink-3 mt-1">{ielts.QUESTIONS} questions in {ielts.MINUTES[kind]} minutes. The test submits itself when the timer ends. Spell answers exactly as the instructions ask.</p>
@@ -123,7 +128,7 @@ export default async function TestPage({ params, searchParams }: { params: Promi
                 <QuestionGroups groups={groups.filter((g) => g.section === s.n)} />
               </div>
             ))}
-        <button type="submit" className="inline-flex items-center justify-center min-h-[52px] px-8 rounded-lg bg-orange hover:bg-orange-dark text-white font-semibold text-[16px]">Submit test and see my score</button>
+        <button type="submit" className="inline-flex items-center justify-center min-h-[52px] px-8 rounded-lg bg-orange-deep hover:bg-ink text-white font-semibold text-[16px]">Submit test and see my score</button>
       </form>
     </MarketShell>
   );

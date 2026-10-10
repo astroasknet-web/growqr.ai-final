@@ -23,7 +23,7 @@ export default async function ParentHome({ searchParams }: { searchParams: Promi
         <form action={linkChildAction} className="flex flex-wrap items-end gap-3">
           <div><label htmlFor="code" className="block text-[14px] font-medium text-ink mb-1">Learner code</label>
             <input id="code" name="code" required minLength={8} maxLength={10} autoComplete="off" autoCapitalize="characters" spellCheck={false} className="min-h-[44px] px-3 rounded-lg border border-black/[0.2] bg-white text-[15px] w-44 font-mono uppercase tracking-widest" /></div>
-          <button type="submit" className="inline-flex items-center justify-center min-h-[44px] px-5 rounded-lg bg-orange hover:bg-orange-dark text-white font-semibold text-[14px]">Add child</button>
+          <button type="submit" className="inline-flex items-center justify-center min-h-[44px] px-5 rounded-lg bg-orange-deep hover:bg-ink text-white font-semibold text-[14px]">Add child</button>
         </form>
       </Card>
       <Card title={`Children (${kids.length})`}>

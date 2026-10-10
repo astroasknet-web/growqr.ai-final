@@ -24,7 +24,8 @@ export const CAREERS_OPPS: NavLink[] = [
   { label: "GrowQR Internship", desc: "Join the GrowQR team as an intern", href: "/growqr-internship", icon: "rocket" },
 ];
 export const CAREERS_LEARN: NavLink[] = [
-  { label: "Courses", desc: "116 courses across 18 fields", href: "/courses", icon: "book", },
+  { label: "Courses", desc: "120 courses across 18 fields", href: "/courses", icon: "book", },
+  { label: "Practice tests", desc: "IELTS and GRE, marked instantly", href: "/practice-tests", icon: "tracker", },
   { label: "Career paths", desc: "Data Analyst, Web Developer, AI Engineer", href: "/courses#paths", icon: "path", },
   { label: "E-books", desc: "Study guides on MathStudy.in", href: "https://mathstudy.in/", icon: "ebook", external: true },
 ];

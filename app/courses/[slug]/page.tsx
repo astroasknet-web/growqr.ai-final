@@ -106,19 +106,19 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
           <CourseFlash c={sp.c} e={sp.e} />
           {profile && !enrol ? (
             <>
-              <form action={courseAction}><input type="hidden" name="act" value="enrol" /><input type="hidden" name="slug" value={course.slug} /><input type="hidden" name="back" value={self} /><button type="submit" className={`${btn} bg-orange hover:bg-orange-dark text-white`}>Enrol and track progress</button></form>
+              <form action={courseAction}><input type="hidden" name="act" value="enrol" /><input type="hidden" name="slug" value={course.slug} /><input type="hidden" name="back" value={self} /><button type="submit" className={`${btn} bg-orange-deep hover:bg-ink text-white`}>Enrol and track progress</button></form>
               <a className={`${btn} border border-black/[0.15] hover:bg-cream-2`} href={start} {...ext}>{native ? "Start the lessons" : "Open on Vidaara"}</a>
             </>
           ) : enrol ? (
             <>
-              <a className={`${btn} bg-orange hover:bg-orange-dark text-white`} href={start} {...ext}>{enrol.status === "completed" ? `Revisit ${where}` : `Continue ${where}`}</a>
+              <a className={`${btn} bg-orange-deep hover:bg-ink text-white`} href={start} {...ext}>{enrol.status === "completed" ? `Revisit ${where}` : `Continue ${where}`}</a>
               <CourseTracker course={course} e={enrol} back={self} />
             </>
           ) : me ? (
-            <a className={`${btn} bg-orange hover:bg-orange-dark text-white`} href={start} {...ext}>Start this course</a>
+            <a className={`${btn} bg-orange-deep hover:bg-ink text-white`} href={start} {...ext}>Start this course</a>
           ) : (
             <>
-              <Link className={`${btn} bg-orange hover:bg-orange-dark text-white`} href={`/login?next=${encodeURIComponent(self)}`}>Log in to enrol and track progress</Link>
+              <Link className={`${btn} bg-orange-deep hover:bg-ink text-white`} href={`/login?next=${encodeURIComponent(self)}`}>Log in to enrol and track progress</Link>
               <a className={`${btn} border border-black/[0.15] hover:bg-cream-2`} href={start} {...ext}>Open on Vidaara</a>
             </>
           )}

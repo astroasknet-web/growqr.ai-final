@@ -2,6 +2,8 @@ import { MetadataRoute } from 'next';
 import { visibleExperts } from '@/features/experts/data/experts-data';
 import { listEventsForSitemap } from '@/features/events/services/events.service';
 import { SITE_URL } from '@/lib/seo';
+import { nativeCourse, nativeSlugs } from '@/lib/market/lessons';
+import { TOTAL_TESTS } from '@/lib/tests/ielts';
 
 // Revalidate so newly published events appear in the sitemap without a redeploy.
 export const revalidate = 3600;
@@ -106,5 +108,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     })),
   ];
 
-  return [...basicRoutes, ...aiToolRoutes, ...enterpriseAgentRoutes, ...solutionPages, ...expertRoutes, ...eventRoutes];
+  // Learning: the courses taught on GrowQR (lessons) and the practice tests. Result pages (?a=...) are never listed.
+  const learnRoutes: MetadataRoute.Sitemap = [
+    { url: `${baseUrl}/courses` },
+    ...nativeSlugs().flatMap((slug) => [
+      { url: `${baseUrl}/courses/${slug}` },
+      { url: `${baseUrl}/courses/${slug}/learn` },
+      ...nativeCourse(slug)!.modules.map((m) => ({ url: `${baseUrl}/courses/${slug}/learn/${m.slug}` })),
+      { url: `${baseUrl}/courses/${slug}/learn/capstone` },
+    ]),
+    { url: `${baseUrl}/practice-tests` },
+    ...['ielts-reading', 'ielts-listening', 'gre-quant'].flatMap((exam) => [
+      { url: `${baseUrl}/practice-tests/${exam}` },
+      ...Array.from({ length: TOTAL_TESTS }, (_, i) => ({ url: `${baseUrl}/practice-tests/${exam}/${i + 1}` })),
+    ]),
+  ];
+
+  return [...basicRoutes, ...learnRoutes, ...aiToolRoutes, ...enterpriseAgentRoutes, ...solutionPages, ...expertRoutes, ...eventRoutes];
 }

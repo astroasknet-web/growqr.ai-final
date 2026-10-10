@@ -44,7 +44,7 @@ export default function OptionB() {
         {/* STATS */}
         <div className="border-y border-black/[0.06] bg-white/70 backdrop-blur">
           <dl className="mx-auto grid max-w-[1180px] grid-cols-2 gap-6 px-6 py-8 md:grid-cols-4 md:px-14">
-            {[[0, "₹", "application fees, ever"], [116, "", "courses across 18 fields"], [58, "", "partner universities"], [7, "", "countries mapped"]].map(([n, p, l]) => (
+            {[[0, "₹", "application fees, ever"], [120, "", "courses across 18 fields"], [58, "", "partner universities"], [7, "", "countries mapped"]].map(([n, p, l]) => (
               <div key={String(l)} className="text-center"><dt className="font-sans text-[clamp(2rem,4vw,3rem)] font-extrabold leading-none"><Count to={n as number} prefix={p as string} /></dt><dd className="mt-1 text-[0.92rem] text-ink-4">{l}</dd></div>
             ))}
           </dl>

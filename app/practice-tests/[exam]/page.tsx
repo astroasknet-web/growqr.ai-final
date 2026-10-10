@@ -49,7 +49,7 @@ export default async function ExamListPage({ params }: { params: Promise<{ exam:
           const b = best.get(t.n);
           return (
             <li key={t.n} className="bg-white rounded-2xl border border-black/[0.08] shadow-card p-4">
-              <p className="text-[12px] text-ink-4">Test {t.n} · {t.level}</p>
+              <p className="text-[12px] text-ink-3">Test {t.n} · {t.level}</p>
               <h2 className="text-[16px] font-semibold text-ink leading-snug mt-0.5"><Link href={`/practice-tests/${exam}/${t.n}`} className="hover:underline">{t.title.replace(/^IELTS (Academic )?/, "")}</Link></h2>
               <p className="text-[13px] text-ink-3 mt-1 line-clamp-2">{t.topics.join(" · ")}</p>
               {b ? <p className="text-[13px] mt-2 font-semibold text-emerald-800">Best: {b.raw}/{b.total}{b.band != null ? ` · band ${b.band.toFixed(1)}` : ""}</p> : null}
