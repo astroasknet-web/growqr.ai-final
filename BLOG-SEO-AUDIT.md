@@ -28,7 +28,7 @@ Audited from the code in this repo on 2026-10-11 (no live Lighthouse or Search C
 
 ## Stages
 1. **Sharing and social previews** (this change): share bar top and end, 8 platforms plus native share and copy link, canonical-only URLs, GA4 click events, OG/X image alt and absolute URLs.
-2. **Blog home and article template**: H1 and intro, search page (noindex), featured + latest + categories, crawlable pagination, card images with dimensions, engine-post template brought up to the standard layout, Blog/Organization schema.
+2. **(done, local) Blog home and article template**: H1 and intro, search page (noindex), featured + latest + categories, crawlable pagination, card images with dimensions, engine-post template brought up to the standard layout, Blog/Organization schema.
 3. **Topic architecture and E-E-A-T**: category landing pages with intros, category sitemap, author pages, editorial and corrections policy, reviewer field.
 4. **Measurement checklist**: Search Console and Bing sitemap submission, rich-result and OG validators, Lighthouse before and after.
 
@@ -37,3 +37,11 @@ Audited from the code in this repo on 2026-10-11 (no live Lighthouse or Search C
 - Always the canonical article URL, no tracking parameters (`lib/blog/share.ts` rejects anything else).
 - Events: `share_whatsapp`, `share_facebook`, `share_x`, `share_linkedin`, `share_telegram`, `share_pinterest`, `share_reddit`, `share_email`, `share_native`, `copy_article_link`, with `article_id`, `article_category`, `share_method`, `placement`. They record the click only; platforms do not confirm a completed share. They go through the existing consent-gated `trackEvent`.
 - Floating toolbar: not built. The page already has a sticky sidebar and a share row at both ends of the article; a third control would crowd the reading area without a measured benefit.
+
+## Stage 2 notes (blog home, search, article template)
+- Indexation policy: `/blog` and `/blog?page=N` are indexable with self canonicals (page 1 = `/blog`); `?category=` is noindex and canonical to `/blog` until real category pages exist (stage 3); `/blog/search` is noindex, canonical `/blog`, and not in the sitemap; invalid or out-of-range `page` values return 404.
+- Home: H1 and intro, search, topic chips, featured post, latest grid (12 per page), crawlable numbered pagination with `rel=prev/next`, links to portal sections.
+- Cards: explicit image dimensions, lazy loading except the first card, whole-card link with one descriptive anchor.
+- Engine posts now use the wide two-column layout with a generated table of contents (unique heading ids added server-side), explore links, share bars and related posts. Standard posts also get "Keep reading".
+- Publisher in structured data now carries a logo.
+- Tested with a mock engine (16 posts across three categories): routes, status codes, robots/canonical per URL type, 320px overflow. Not tested against the real BlogForge engine, and no Lighthouse run.

@@ -6,6 +6,8 @@ import { postUrl } from "@/lib/blog/seo";
 import { SITE_URL } from "@/lib/seo";
 import { ReadingProgress } from "@/components/blog/PostRail";
 import type { LocalBlogPost } from "@/lib/blog/local";
+import type { BlogPostSummary } from "@/lib/blog/blogforge";
+import RelatedPosts from "@/components/blog/RelatedPosts";
 import { cleanHtml } from "@/lib/market/lessons";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { postJsonLd } from "@/lib/blog/seo";
@@ -28,7 +30,7 @@ const EXPLORE = [
 ];
 const focus = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-deep";
 
-export default function StandardPost({ post }: { post: LocalBlogPost }) {
+export default function StandardPost({ post, more = [] }: { post: LocalBlogPost; more?: BlogPostSummary[] }) {
   const x = post.extras;
   const [before, after] = post.content.split("<!--quiz-->");
   const h2s = [...post.content.matchAll(/<h2 id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/gi)].map((m) => ({ id: m[1], text: m[2].replace(/<[^>]+>/g, "") }));
@@ -92,6 +94,7 @@ export default function StandardPost({ post }: { post: LocalBlogPost }) {
             {x.related.map((s) => <li key={s.href} className="rounded-xl border border-black/[0.09] bg-white p-4"><Link href={s.href} className={`text-[16px] font-semibold text-ink underline underline-offset-2 hover:text-orange-deep ${focus}`}>{s.label}</Link><p className="mt-1 text-[14px] leading-snug text-ink-3">{s.note}</p></li>)}
           </ul>
         </section>
+        <RelatedPosts posts={more} />
         <p className="mt-8"><Link href="/blog" className={`text-[14px] font-semibold text-ink underline ${focus}`}>&larr; Back to the blog</Link></p>
       </article>
 
