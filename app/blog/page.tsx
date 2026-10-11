@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, permanentRedirect } from "next/navigation";
 import PageShell from "@/components/layout/PageShell";
 import BlogCard from "@/components/blog/BlogCard";
 import BlogAnalytics from "@/components/blog/BlogAnalytics";
@@ -25,13 +25,13 @@ const pageHref = (n: number): string => (n <= 1 ? "/blog" : `/blog?page=${n}`);
 /**
  * Indexation policy for the blog home:
  *  - /blog and /blog?page=N are indexable archive pages, each with its own canonical (page 1 is /blog).
- *  - ?category= filters are a view of the same posts, so they are noindex and canonical to /blog until real category pages exist.
+ *  - the old ?category= filter now redirects (308) to the topic page /blog/topic/<slug>, which has its own indexation rule (lib/blog/topics.ts).
  *  - an empty blog (engine not set up yet) stays out of the index.
  */
 export async function generateMetadata({ searchParams }: { searchParams: Search }): Promise<Metadata> {
   const sp = await searchParams;
   const page = parsePage(sp.page) ?? 1;
-  const filtered = sp.category !== undefined;
+  const filtered = false;
   const has = (await listBlogPosts({ limit: 1 })).length > 0;
   const title = page > 1 ? `GrowQR Blog: Guides and Study Help, Page ${page}` : TITLE;
   return {
@@ -46,16 +46,15 @@ export async function generateMetadata({ searchParams }: { searchParams: Search 
 
 export default async function BlogIndexRoute({ searchParams }: { searchParams: Search }) {
   const sp = await searchParams;
+  if (typeof sp.category === "string") permanentRedirect(/^[a-z0-9-]{1,60}$/.test(sp.category) ? `/blog/topic/${sp.category}` : "/blog");
   const pageNo = parsePage(sp.page);
   if (pageNo === null) notFound();
 
   const all = await listBlogPosts({ limit: 1000 });
   const cats = categoriesOf(all);
-  const catSlug = typeof sp.category === "string" ? sp.category : undefined;
-  const activeCat = catSlug ? cats.find((c) => c.slug === catSlug) : undefined;
-  const pool = activeCat ? all.filter((p) => p.category === activeCat.name) : all;
+  const pool = all;
 
-  const showFeatured = !activeCat && pageNo === 1 && pool.length > 3;
+  const showFeatured = pageNo === 1 && pool.length > 3;
   const rest = showFeatured ? pool.slice(1) : pool;
   const pg = paginate(rest, pageNo, PAGE_SIZE);
   if (pageNo > pg.pages) notFound();
@@ -86,9 +85,9 @@ export default async function BlogIndexRoute({ searchParams }: { searchParams: S
             {cats.length > 1 ? (
               <nav aria-label="Blog topics" className="mt-8">
                 <ul className="flex flex-wrap gap-2">
-                  <li><Link href="/blog" aria-current={!activeCat ? "true" : undefined} className={`inline-flex min-h-[44px] items-center rounded-full border px-4 text-[14px] font-semibold ${!activeCat ? "border-ink bg-ink text-white" : "border-black/[0.15] bg-white text-ink hover:bg-cream-2"} ${focus}`}>All topics</Link></li>
+                  <li><Link href="/blog" aria-current={true ? "true" : undefined} className={`inline-flex min-h-[44px] items-center rounded-full border px-4 text-[14px] font-semibold ${true ? "border-ink bg-ink text-white" : "border-black/[0.15] bg-white text-ink hover:bg-cream-2"} ${focus}`}>All topics</Link></li>
                   {cats.map((c) => (
-                    <li key={c.slug}><Link href={`/blog?category=${c.slug}`} aria-current={activeCat?.slug === c.slug ? "true" : undefined} className={`inline-flex min-h-[44px] items-center rounded-full border px-4 text-[14px] font-semibold ${activeCat?.slug === c.slug ? "border-ink bg-ink text-white" : "border-black/[0.15] bg-white text-ink hover:bg-cream-2"} ${focus}`}>{c.name} <span className="ml-1.5 text-[12px] opacity-70">{c.count}</span></Link></li>
+                    <li key={c.slug}><Link href={`/blog/topic/${c.slug}`} aria-current={false ? "true" : undefined} className={`inline-flex min-h-[44px] items-center rounded-full border px-4 text-[14px] font-semibold ${false ? "border-ink bg-ink text-white" : "border-black/[0.15] bg-white text-ink hover:bg-cream-2"} ${focus}`}>{c.name} <span className="ml-1.5 text-[12px] opacity-70">{c.count}</span></Link></li>
                   ))}
                 </ul>
               </nav>
@@ -115,8 +114,7 @@ export default async function BlogIndexRoute({ searchParams }: { searchParams: S
             ) : null}
 
             <section aria-labelledby="latest-h" className="mt-10">
-              <h2 id="latest-h" className="mb-4 text-[22px] font-bold text-ink">{activeCat ? activeCat.name : pageNo > 1 ? `All articles, page ${pg.page}` : "Latest articles"}</h2>
-              {activeCat ? <p className="mb-4 text-[14px] text-ink-3" role="status">{pool.length} {pool.length === 1 ? "article" : "articles"} in {activeCat.name}. <Link href="/blog" className="font-semibold underline">Clear filter</Link></p> : null}
+              <h2 id="latest-h" className="mb-4 text-[22px] font-bold text-ink">{pageNo > 1 ? `All articles, page ${pg.page}` : "Latest articles"}</h2>
               {pg.items.length ? (
                 <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
                   {pg.items.map((post, i) => <BlogCard key={post.slug} post={post} priority={!featured && pageNo === 1 && i === 0} />)}
@@ -124,7 +122,7 @@ export default async function BlogIndexRoute({ searchParams }: { searchParams: S
               ) : <p className="text-[15px] text-ink-3">No articles in this topic yet.</p>}
             </section>
 
-            {pg.pages > 1 && !activeCat ? (
+            {pg.pages > 1 ? (
               <nav aria-label="Blog pages" className="mt-10 flex flex-wrap items-center justify-center gap-2">
                 {pg.page > 1 ? <Link href={pageHref(pg.page - 1)} rel="prev" className={`inline-flex min-h-[44px] items-center rounded-lg border border-black/[0.15] bg-white px-4 text-[14px] font-semibold ${focus}`}>Previous</Link> : null}
                 {Array.from({ length: pg.pages }, (_, i) => i + 1).map((n) => (
@@ -138,7 +136,7 @@ export default async function BlogIndexRoute({ searchParams }: { searchParams: S
 
         <section aria-labelledby="explore-h" className="mt-16 rounded-3xl bg-cream-2 p-6 sm:p-8">
           <h2 id="explore-h" className="text-[22px] font-bold text-ink">Learn on GrowQR</h2>
-          <p className="mt-1 text-[15px] text-ink-3">Turn what you read into practice.</p>
+          <p className="mt-1 text-[15px] text-ink-3">Turn what you read into practice. See how we write and check articles in our <Link href="/editorial-policy" className="font-semibold text-ink underline">editorial policy</Link>.</p>
           <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
             {EXPLORE.map((e) => (
               <li key={e.href}><Link href={e.href} className={`block rounded-xl border border-black/[0.09] bg-white p-4 hover:border-orange-deep ${focus}`}><span className="block text-[16px] font-semibold text-ink">{e.label}</span><span className="block text-[13.5px] text-ink-3">{e.note}</span></Link></li>

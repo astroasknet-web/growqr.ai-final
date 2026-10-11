@@ -1,6 +1,7 @@
 import { SITE_URL } from "@/lib/seo";
 import type { BlogPost, BlogPostSummary } from "./blogforge";
 import type { LocalExtras } from "./local";
+import { authorFor } from "./authors";
 
 /**
  * SEO helpers for the blog. The engine can be configured with any base URL, so GrowQR builds its own canonical URL and structured data
@@ -36,7 +37,8 @@ export function postJsonLd(post: BlogPost, extras?: LocalExtras): object {
         ...(image ? { image: [image] } : {}),
         ...(published ? { datePublished: published } : {}),
         ...(modified ? { dateModified: modified } : {}),
-        author: { "@type": "Person", name: post.author || "GrowQR" },
+        author: { "@type": "Person", name: post.author || "GrowQR", ...(authorFor(post.author) ? { url: `${SITE_URL}/blog/author/${authorFor(post.author)!.slug}` } : {}) },
+        ...(extras?.reviewedBy ? { reviewedBy: { "@type": "Person", name: extras.reviewedBy.name } } : {}),
         publisher: PUBLISHER,
         ...(post.category ? { articleSection: post.category } : {}),
         ...(extras ? { keywords: extras.keywords, isAccessibleForFree: true, educationalUse: "practice", learningResourceType: "Quiz and study guide" } : {}),
