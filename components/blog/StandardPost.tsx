@@ -1,7 +1,7 @@
 import Link from "next/link";
 import PageShell from "@/components/layout/PageShell";
 import BlogQuiz from "@/components/blog/BlogQuiz";
-import { ReadingProgress, TocSpy } from "@/components/blog/PostRail";
+import { ReadingProgress } from "@/components/blog/PostRail";
 import type { LocalBlogPost } from "@/lib/blog/local";
 import { cleanHtml } from "@/lib/market/lessons";
 import { serializeJsonLd } from "@/lib/json-ld";
@@ -88,24 +88,34 @@ export default function StandardPost({ post }: { post: LocalBlogPost }) {
         <p className="mt-8"><Link href="/blog" className={`text-[14px] font-semibold text-ink underline ${focus}`}>&larr; Back to the blog</Link></p>
       </article>
 
-      <aside aria-label="Explore Vidaara" className="mt-12 lg:mt-0 lg:self-stretch">
-        <div className="space-y-3.5 rounded-2xl border border-black/[0.09] bg-white p-4 lg:sticky lg:top-28 lg:[@media(max-height:680px)]:static">
-          <div>
-            <p id="stoc-h" className="mb-2 hidden text-[12px] font-bold uppercase tracking-wide text-ink-3 lg:block">On this page</p>
-            <div className="hidden lg:block"><TocSpy items={toc} label="On this page" /></div>
-          </div>
-          <div className="rounded-xl bg-gradient-to-br from-orange-light to-[#fff3ea] p-4">
-            <p className="text-[12px] font-bold uppercase tracking-wide text-orange-deep">Free course</p>
-            <p className="mt-1 text-[15.5px] font-bold leading-snug text-ink">{x.cta.title}</p>
-            <Link href={x.cta.href} className={`mt-3 inline-flex min-h-[44px] w-full items-center justify-center rounded-lg bg-orange-deep px-4 text-[14.5px] font-semibold text-white hover:bg-ink ${focus}`}>{x.cta.label}</Link>
-          </div>
-          <nav aria-labelledby="explore-h">
-            <p id="explore-h" className="mb-2 text-[12px] font-bold uppercase tracking-wide text-ink-3">Explore the portal</p>
-            <ul className="grid grid-cols-2 gap-1.5">
-              {EXPLORE.map((e) => <li key={e.href}><Link href={e.href} title={e.note} className={`flex min-h-[44px] items-center rounded-lg border border-black/[0.09] px-2.5 text-[13px] font-semibold leading-tight text-ink hover:border-orange-deep hover:bg-cream-2 ${focus}`}>{e.label}</Link></li>)}
-            </ul>
-          </nav>
+      <aside aria-label="Explore Vidaara" className="mt-12 space-y-5 lg:sticky lg:top-28 lg:mt-0 lg:self-start lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
+        <nav aria-labelledby="stoc-h" className="hidden rounded-2xl border border-black/[0.09] bg-white p-5 lg:block">
+          <p id="stoc-h" className="text-[13px] font-bold uppercase tracking-wide text-ink-3">On this page</p>
+          <ol className="mt-3 space-y-1.5 border-l border-black/[0.1] text-[14.5px]">
+            {toc.map((t) => <li key={t.id}><a href={`#${t.id}`} className={`-ml-px block border-l-2 border-transparent py-0.5 pl-3 text-ink-2 hover:border-orange-deep hover:text-ink ${focus}`}>{t.text}</a></li>)}
+          </ol>
+        </nav>
+
+        <div className="rounded-2xl bg-gradient-to-br from-orange-light to-[#fff3ea] p-5">
+          <p className="text-[12px] font-bold uppercase tracking-wide text-orange-deep">Free course</p>
+          <p className="mt-1 text-[18px] font-bold leading-snug text-ink">{x.cta.title}</p>
+          <p className="mt-2 text-[14px] leading-relaxed text-ink-2">{x.cta.text}</p>
+          <Link href={x.cta.href} className={`mt-4 inline-flex min-h-[48px] w-full items-center justify-center rounded-xl bg-orange-deep px-5 text-[15px] font-semibold text-white hover:bg-ink ${focus}`}>{x.cta.label}</Link>
         </div>
+
+        <nav aria-labelledby="explore-h" className="rounded-2xl border border-black/[0.09] bg-white p-5">
+          <p id="explore-h" className="text-[13px] font-bold uppercase tracking-wide text-ink-3">Explore the portal</p>
+          <ul className="mt-3 divide-y divide-black/[0.07]">
+            {EXPLORE.map((e) => <li key={e.href}><Link href={e.href} className={`block rounded-md py-2.5 hover:bg-cream-2 ${focus}`}><span className="block text-[15px] font-semibold text-ink">{e.label}</span><span className="block text-[13px] leading-snug text-ink-3">{e.note}</span></Link></li>)}
+          </ul>
+        </nav>
+
+        <nav aria-labelledby="more-h" className="rounded-2xl border border-black/[0.09] bg-white p-5">
+          <p id="more-h" className="text-[13px] font-bold uppercase tracking-wide text-ink-3">Courses for this topic</p>
+          <ul className="mt-3 space-y-2">
+            {x.related.slice(0, 5).map((c) => <li key={c.href}><Link href={c.href} className={`text-[14.5px] font-semibold text-ink underline-offset-2 hover:text-orange-deep hover:underline ${focus}`}>{c.label}</Link></li>)}
+          </ul>
+        </nav>
       </aside>
     </div>
 
