@@ -1,7 +1,7 @@
 import type { LocalPost } from "../local";
 
 const L = "/courses/digital-literacy-master"; // internal links stay relative so they work on every host
-const ext = (href: string, label: string): string => `<a href="${href}" target="_blank" rel="noopener noreferrer">${label}</a>`;
+const course = (slug: string, label: string): string => `<a href="/courses/${slug}">${label}</a>`;
 
 const post: LocalPost = {
   slug: "digital-literacy-quiz-with-answers",
@@ -27,7 +27,7 @@ const post: LocalPost = {
 <p>Two things up front. It is a quick check, not a certificate. And it is free with no sign-up, so nobody is collecting your email for the privilege of marking your answers.</p>
 
 <h2 id="what-it-tests">What a digital literacy quiz should actually test</h2>
-<p>Most online tests ask vocabulary: what does RAM stand for, what is a CPU. You can memorise those in an evening and still be unable to format a letter. Digital literacy is the ability to find, judge, create and share information with digital tools, safely. Serious frameworks agree on that shape. The ${ext("https://iste.org/standards/students", "ISTE Standards for Students")} put "digital citizen" and "knowledge constructor" beside plain tool use, and India's ${ext("https://www.pmgdisha.in/", "PMGDISHA")} scheme exists because basic digital literacy is treated as a national skill gap, not a nice extra.</p>
+<p>Most online tests ask vocabulary: what does RAM stand for, what is a CPU. You can memorise those in an evening and still be unable to format a letter. Digital literacy is the ability to find, judge, create and share information with digital tools, safely. Serious frameworks agree on that shape: they put "digital citizen" and "knowledge constructor" beside plain tool use. If the basics are the gap, ${course("basic-computer-internet-literacy", "Basic Computer and Internet Literacy")} is the gentlest place to start.</p>
 <p>So this digital literacy quiz leans on situations. Which formula total is wrong. Which message is a scam. Which slide a classroom can actually read. The facts you need are small. The judgement is the point.</p>
 <p>The honest limit: multiple choice cannot test typing speed, patience with a slow laptop, or whether you can build a spreadsheet from a blank sheet. For that you have to do the work, which is why the practice links come after the answers.</p>
 
@@ -49,11 +49,11 @@ const post: LocalPost = {
 <p>Three slips are worth knowing before you retake any digital literacy quiz.</p>
 <h3 id="range">The range that stops one cell short</h3>
 <p>Question 5 looks too easy to get wrong. Five numbers, add them. The trap is the typed range. If the data sits in B2 to B6 and you write <code>=SUM(B2:B5)</code>, Excel does not complain. It hands back a tidy, confident total that is short by whatever sat in B6.</p>
-<p>The fix is a habit, not a trick. After you press Enter, click the formula cell and look at the coloured border: it should wrap every number you meant. Then select the column and compare the total with the figure in the status bar. Microsoft's own page on the ${ext("https://support.microsoft.com/en-us/office/sum-function-043e1c7d-7726-4e80-8f32-07b23e057f89", "SUM function")} shows the same range logic, and the ${ext("https://support.microsoft.com/en-us/office/if-function-69aed7c9-4e8a-4755-a9bc-aa8bbff73be2", "IF function")} page explains why a pass mark written as ">=40" includes a student who scored exactly 40.</p>
+<p>The fix is a habit, not a trick. After you press Enter, click the formula cell and look at the coloured border: it should wrap every number you meant. Then select the column and compare the total with the figure in the status bar. The ${course("basic-microsoft-excel", "Basic Microsoft Excel")} course drills the same range logic, and shows why a pass mark written as ">=40" includes a student who scored exactly 40.</p>
 
 <h3 id="padlock">The padlock is not a verdict</h3>
 <p>HTTPS means the connection between your browser and the site is encrypted. It says nothing about who runs the site. Scam pages get padlocks too, because certificates are cheap. Read the domain instead: a bank does not send you to an address with a free-mail name in it, or one with a stray digit such as paypa1.</p>
-<p>No real bank asks for your OTP by message. If one arrives, do not reply. In India you can report online fraud on the ${ext("https://cybercrime.gov.in/", "National Cyber Crime Reporting Portal")} or call 1930, and ${ext("https://www.cert-in.org.in/", "CERT-In")} publishes security advisories for the public.</p>
+<p>No real bank asks for your OTP by message. If one arrives, do not reply. The ${course("cyber-hygiene-families", "Cyber Hygiene and Digital Safety for Families")} course walks through spotting phishing, handling OTP requests and what to do after a scam, step by step.</p>
 
 <h3 id="headings">Headings that only look like headings</h3>
 <p>A line made big and bold looks right on screen, but Word treats it as ordinary text. Apply a real Heading style and you get a navigation pane, a contents page in one click, and a document a screen reader can move through. On a six-page assignment that is the difference between scrolling and jumping.</p>
@@ -90,7 +90,7 @@ const post: LocalPost = {
 <tr><td>3</td><td>Spreadsheets</td><td><a href="${L}/learn/ms-excel">Module 3</a>: total and average, then the budget</td><td>Your budget total is a formula, not a typed number</td></tr>
 <tr><td>4</td><td>Safety, then slides</td><td><a href="${L}/learn/digital-safety">Module 6</a>, then a five-slide deck</td><td>You can explain two scam signs without notes</td></tr>
 </tbody></table></div>
-<p>If you want the reasoning behind good passwords and two-step login, the ${ext("https://pages.nist.gov/800-63-3/sp800-63b.html", "NIST password guidance")} favours length over odd symbols and checking choices against known leaks. You can test whether an email address has appeared in a breach at ${ext("https://haveibeenpwned.com/", "Have I Been Pwned")}. For a teacher-friendly view of responsible online behaviour, ${ext("https://www.commonsense.org/education/digital-citizenship", "Common Sense Education")} has free lessons.</p>
+<p>If you want the reasoning behind good passwords and two-step login, the ${course("cyber-hygiene-families", "Cyber Hygiene course")} covers both, and ${course("cybersecurity-essentials", "Cybersecurity Essentials")} goes further once the basics are solid. For using AI tools without handing them private information, try ${course("ai-literacy-productivity", "AI Literacy and Everyday Productivity")}.</p>
 `,
   quiz: {
     title: "Digital literacy quiz: 15 questions",
@@ -126,16 +126,14 @@ const post: LocalPost = {
     href: `${L}/learn`,
     label: "Start the free course",
   },
-  sources: [
-    { label: "ISTE Standards for Students", href: "https://iste.org/standards/students", note: "The international framework for what students should be able to do with technology." },
-    { label: "PMGDISHA (Digital Saksharta Abhiyan)", href: "https://www.pmgdisha.in/", note: "India's programme for basic digital literacy." },
-    { label: "Microsoft: SUM function", href: "https://support.microsoft.com/en-us/office/sum-function-043e1c7d-7726-4e80-8f32-07b23e057f89", note: "How ranges work in a SUM formula." },
-    { label: "Microsoft: IF function", href: "https://support.microsoft.com/en-us/office/if-function-69aed7c9-4e8a-4755-a9bc-aa8bbff73be2", note: "How comparisons and results are written." },
-    { label: "NIST SP 800-63B", href: "https://pages.nist.gov/800-63-3/sp800-63b.html", note: "Current guidance on passwords and authentication." },
-    { label: "Have I Been Pwned", href: "https://haveibeenpwned.com/", note: "Check whether an email address appeared in a known data breach." },
-    { label: "CERT-In", href: "https://www.cert-in.org.in/", note: "India's national cyber security agency and its public advisories." },
-    { label: "National Cyber Crime Reporting Portal", href: "https://cybercrime.gov.in/", note: "Report online fraud in India (helpline 1930)." },
-    { label: "Common Sense Education: digital citizenship", href: "https://www.commonsense.org/education/digital-citizenship", note: "Free classroom lessons on responsible online behaviour." },
+  related: [
+    { label: "Digital Literacy Master Course", href: "/courses/digital-literacy-master", note: "The course this quiz is built on: 8 modules and 27 hands-on activities, from files and documents to safety and AI." },
+    { label: "Basic Computer & Internet Literacy", href: "/courses/basic-computer-internet-literacy", note: "Start here if you missed the questions on files, folders, browsers and the cloud." },
+    { label: "Basic Microsoft Excel", href: "/courses/basic-microsoft-excel", note: "Practice for the SUM, range and IF questions, then build your own sheets." },
+    { label: "Microsoft Word: Professional Documents", href: "/courses/microsoft-word", note: "Covers the document questions: headings, styles, lists and a clean layout." },
+    { label: "PowerPoint & Presentation Design", href: "/courses/powerpoint-presentation-design", note: "For the slide questions: one idea per slide, readable text and good structure." },
+    { label: "Cyber Hygiene & Digital Safety for Families", href: "/courses/cyber-hygiene-families", note: "Passwords, phishing, OTP scams and safe browsing, the area most people lose marks on." },
+    { label: "AI Literacy & Everyday Productivity", href: "/courses/ai-literacy-productivity", note: "Using AI tools sensibly and checking what they tell you." },
   ],
 };
 

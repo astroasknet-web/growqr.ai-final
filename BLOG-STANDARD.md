@@ -18,10 +18,10 @@ A post is an education resource, not an ad. The reference is `lib/blog/posts/dig
 | SEO title | 50 to 60 chars, focus keyword first |
 | Meta description | 120 to 155 chars, keyword, ends with a mild call to action |
 | Keyword | In H1, first 100 words, 2+ H2s, image alt; density 0.5 to 1.5% |
-| Structure | 4 to 8 H2s (FAQ and Sources count), H3s for sub-points, at least one table, 1,200 to 2,500 words |
+| Structure | 4 to 8 H2s (FAQ and Related courses count), H3s for sub-points, at least one table, 1,200 to 2,500 words |
 | Education | Interactive quiz (10+ questions, 4 options, explanation for every answer, answers spread across positions) |
 | FAQ | 4 to 6, each answer 2 to 4 sentences, direct |
-| Links | 3+ internal with descriptive anchors; 8 to 15 official outbound (`target="_blank" rel="noopener noreferrer"`); no competitor portals |
+| Links | 3+ internal links in the body with descriptive anchors; 4+ related courses (internal `/courses/...` links with a one-line note) shown in a "Related courses" section; no external links for now |
 | Author | Sachin Sharma only |
 | Cover | 1200x630, descriptive alt, doubles as the social card |
 
@@ -31,4 +31,4 @@ Open with a concrete moment, not a sweeping statement. Take a position, give rea
 
 ## What ships
 
-`StandardPost` renders breadcrumb, byline, cover, table of contents, body, quiz, FAQ, call to action and sources. JSON-LD emits BlogPosting, FAQPage and BreadcrumbList. The post appears in `/blog` and the sitemap automatically. Tables must be wrapped in `<div class="table-wrap" role="region" tabindex="0" aria-label="...">`.
+`StandardPost` renders breadcrumb, byline, cover, table of contents, body, quiz, FAQ, call to action and related courses. JSON-LD emits BlogPosting, FAQPage and BreadcrumbList. The post appears in `/blog` and the sitemap automatically. Tables must be wrapped in `<div class="table-wrap" role="region" tabindex="0" aria-label="...">`.

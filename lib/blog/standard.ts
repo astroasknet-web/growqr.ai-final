@@ -39,13 +39,11 @@ export function auditPost(p: LocalPost, opts: { siteHost?: string } = {}): Audit
   const hrefs = anchors.map((a) => ({ href: attr(a, "href") ?? "", a }));
   const internal = hrefs.filter((h) => h.href.startsWith("/") || h.href.includes(host));
   const outbound = hrefs.filter((h) => /^https:\/\//i.test(h.href) && !h.href.includes(host));
-  const badOut = outbound.filter((h) => !/target="_blank"/i.test(h.a) || !/rel="[^"]*noopener[^"]*noreferrer[^"]*"/i.test(h.a));
-  const uniqueOut = new Set([...outbound.map((h) => h.href), ...p.sources.map((s) => s.href)]);
   const lower = `${prose} ${p.quiz?.questions.map((q) => q.q + " " + q.explain).join(" ") ?? ""}`.toLowerCase();
   const banned = BANNED.filter((b) => lower.includes(b));
   const emDash = (prose.match(/—/g) ?? []).length;
   const tables = (p.content.match(/<table\b/gi) ?? []).length;
-  const h2Count = h2s.length + 2; // the page adds the FAQ and Sources headings
+  const h2Count = h2s.length + 2; // the page adds the FAQ and Related courses headings
   const ans = p.quiz ? p.quiz.questions.map((q) => q.answer) : [];
   const share = ans.length ? Math.max(0, ...[0, 1, 2, 3].map((i) => ans.filter((a) => a === i).length / ans.length)) : 0;
 
@@ -64,7 +62,7 @@ export function auditPost(p: LocalPost, opts: { siteHost?: string } = {}): Audit
   add("cover-size", "SEO", "Cover image is 1200 x 630 (works as the social card)", p.cover.width === 1200 && p.cover.height === 630, `${p.cover.width} x ${p.cover.height}`);
   add("slug", "SEO", "Slug is short, lowercase and contains the keyword", /^[a-z0-9-]{10,70}$/.test(p.slug) && p.slug.includes(kw.replace(/\s+/g, "-")), p.slug);
 
-  add("h2-count", "Structure", "4 to 8 H2 sections", h2Count >= 4 && h2Count <= 8, `${h2Count} (including FAQ and Sources)`);
+  add("h2-count", "Structure", "4 to 8 H2 sections", h2Count >= 4 && h2Count <= 8, `${h2Count} (including FAQ and Related courses)`);
   add("words", "Structure", "1,200 to 2,500 words of article text (quiz excluded)", total >= 1200 && total <= 2500, `${total} words`);
   add("table", "Structure", "At least one table", tables >= 1, `${tables}`);
   add("h3", "Structure", "H3s are used for sub-points under an H2", h3s >= 1, `${h3s}`);
@@ -73,11 +71,11 @@ export function auditPost(p: LocalPost, opts: { siteHost?: string } = {}): Audit
   add("author", "Structure", "Author is Sachin Sharma (no invented staff)", p.author === "Sachin Sharma", p.author);
   add("cta", "Structure", "Has a call to action to the course", p.cta.href.startsWith("/") && p.cta.label.length > 3, p.cta.label);
 
-  add("internal", "Links", "At least 3 internal links with descriptive anchors", internal.length >= 3 && anchors.every((a) => true), `${internal.length}`);
-  add("outbound", "Links", "8 to 15 unique outbound links to official sources", uniqueOut.size >= 8 && uniqueOut.size <= 15, `${uniqueOut.size}`);
-  add("rel", "Links", "Outbound links open in a new tab with rel=\"noopener noreferrer\"", badOut.length === 0, badOut.length ? badOut.map((b) => b.href).join(", ") : "all correct");
-  add("sources-note", "Links", "Every source has a label and a note", p.sources.every((s) => s.label.length > 3 && s.note.length > 10 && /^https:\/\//.test(s.href)), `${p.sources.length}`);
-  add("anchor-text", "Links", "No \"click here\" or \"read more\" anchors", !anchors.some((a) => false) && !/>\s*(click here|read more|here)\s*</i.test(p.content), "");
+  const relOk = p.related.length >= 4 && p.related.every((r) => r.href.startsWith("/courses/") && r.label.length > 3 && r.note.length > 10);
+  add("internal", "Links", "At least 3 internal links in the body with descriptive anchors", internal.length >= 3, `${internal.length}`);
+  add("related", "Links", "4 or more related courses, each an internal /courses link with a note", relOk, `${p.related.length}`);
+  add("no-outbound", "Links", "No external links (courses only for now)", outbound.length === 0, outbound.length ? outbound.map((h) => h.href).join(", ") : "none");
+  add("anchor-text", "Links", "No \"click here\" or \"read more\" anchors", !/>s*(click here|read more|here)s*</i.test(p.content), "");
 
   add("banned", "Writing", "No stock AI phrases", banned.length === 0, banned.length ? banned.join(", ") : "none");
   add("em-dash", "Writing", "Em dashes used sparingly (2 or fewer)", emDash <= 2, `${emDash}`);
@@ -92,5 +90,5 @@ export function auditPost(p: LocalPost, opts: { siteHost?: string } = {}): Audit
   add("quiz-marker", "Quiz", "The quiz marker is in the article body", !p.quiz || p.content.includes("<!--quiz-->"), "");
 
   const passed = checks.filter((c) => c.pass).length;
-  return { score: Math.round((passed / checks.length) * 100), passed, total: checks.length, ok: passed === checks.length, checks, stats: { words: total, keywordUses: kwCount, h2: h2Count, internalLinks: internal.length, outboundLinks: uniqueOut.size, quizQuestions: qs.length, faqs: p.faq.length } };
+  return { score: Math.round((passed / checks.length) * 100), passed, total: checks.length, ok: passed === checks.length, checks, stats: { words: total, keywordUses: kwCount, h2: h2Count, internalLinks: internal.length, relatedCourses: p.related.length, quizQuestions: qs.length, faqs: p.faq.length } };
 }

@@ -4,12 +4,12 @@ import digitalLiteracyQuiz from "./posts/digital-literacy-quiz-with-answers";
 /**
  * Posts that live in the repository (typed, reviewed and versioned with the code) next to the ones served by the blog engine.
  * A "standard post" has a focus keyword, an SEO title and description, a cover image with alt text, optional interactive quiz,
- * FAQs and sources. `lib/blog/standard.ts` audits every post against the house standard (see BLOG-STANDARD.md).
+ * FAQs and related courses. `lib/blog/standard.ts` audits every post against the house standard (see BLOG-STANDARD.md).
  */
 export interface QuizQuestion { q: string; options: string[]; answer: number; explain: string }
 export interface Quiz { title: string; intro: string; questions: QuizQuestion[] }
 export interface Faq { q: string; a: string }
-export interface Source { label: string; href: string; note: string }
+export interface RelatedCourse { label: string; href: string; note: string }
 export interface Cta { title: string; text: string; href: string; label: string }
 export interface LocalPost {
   slug: string;
@@ -32,10 +32,10 @@ export interface LocalPost {
   quiz?: Quiz;
   faq: Faq[];
   cta: Cta;
-  sources: Source[];
+  related: RelatedCourse[];
 }
 
-export interface LocalExtras { keywords: string; quiz?: Quiz; faq: Faq[]; cta: Cta; sources: Source[]; seoTitle: string; focusKeyword: string; cover: LocalPost["cover"] }
+export interface LocalExtras { keywords: string; quiz?: Quiz; faq: Faq[]; cta: Cta; related: RelatedCourse[]; seoTitle: string; focusKeyword: string; cover: LocalPost["cover"] }
 export type LocalBlogPost = BlogPost & { extras: LocalExtras };
 
 export const LOCAL_POSTS: LocalPost[] = [digitalLiteracyQuiz];
@@ -60,7 +60,7 @@ export function localPost(slug: string): LocalBlogPost | null {
   const i = LOCAL_POSTS.findIndex((p) => p.slug === slug);
   if (i < 0) return null;
   const p = LOCAL_POSTS[i];
-  return { ...summary(p, i), content: p.content, json_ld: "", meta: meta(p), extras: { keywords: [p.focusKeyword, ...p.secondaryKeywords].join(", "), quiz: p.quiz, faq: p.faq, cta: p.cta, sources: p.sources, seoTitle: p.seoTitle, focusKeyword: p.focusKeyword, cover: p.cover } };
+  return { ...summary(p, i), content: p.content, json_ld: "", meta: meta(p), extras: { keywords: [p.focusKeyword, ...p.secondaryKeywords].join(", "), quiz: p.quiz, faq: p.faq, cta: p.cta, related: p.related, seoTitle: p.seoTitle, focusKeyword: p.focusKeyword, cover: p.cover } };
 }
 
 export const isLocal = (post: BlogPost): post is LocalBlogPost => "extras" in post;

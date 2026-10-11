@@ -11,7 +11,7 @@ const only = process.argv[2];
 let failed = 0;
 for (const p of LOCAL_POSTS.filter((x) => !only || x.slug === only)) {
   const r = auditPost(p);
-  console.log(`\n${p.slug}: ${r.passed}/${r.total} checks (${r.score}%)  words=${r.stats.words} kw=${r.stats.keywordUses} outbound=${r.stats.outboundLinks}`);
+  console.log(`\n${p.slug}: ${r.passed}/${r.total} checks (${r.score}%)  words=${r.stats.words} kw=${r.stats.keywordUses} courses=${r.stats.relatedCourses}`);
   for (const c of r.checks) if (!c.pass) console.log(`  FAIL [${c.group}] ${c.label} -> ${c.detail}`);
   if (!r.ok) failed++;
 }

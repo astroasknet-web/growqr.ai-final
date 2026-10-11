@@ -20,7 +20,7 @@ export default function StandardPost({ post }: { post: LocalBlogPost }) {
   const x = post.extras;
   const [before, after] = post.content.split("<!--quiz-->");
   const h2s = [...post.content.matchAll(/<h2 id="([^"]+)"[^>]*>([\s\S]*?)<\/h2>/gi)].map((m) => ({ id: m[1], text: m[2].replace(/<[^>]+>/g, "") }));
-  const toc = [...h2s, { id: "faq", text: "Frequently asked questions" }, { id: "sources", text: "Sources and further reading" }];
+  const toc = [...h2s, { id: "faq", text: "Frequently asked questions" }, { id: "related", text: "Related courses" }];
   const updated = post.updated_at && fmt(post.updated_at) !== fmt(post.published_at) ? fmt(post.updated_at) : null;
 
   return (
@@ -68,10 +68,10 @@ export default function StandardPost({ post }: { post: LocalBlogPost }) {
           <Link href={x.cta.href} className={`mt-5 inline-flex min-h-[52px] items-center rounded-xl bg-orange-deep px-7 text-[16px] font-semibold text-white hover:bg-ink ${focus}`}>{x.cta.label}</Link>
         </aside>
 
-        <section id="sources" aria-labelledby="src-h" className="mt-12" style={{ scrollMarginTop: 110 }}>
-          <h2 id="src-h" className="text-[22px] font-bold text-ink">Sources and further reading</h2>
-          <ul className="mt-3 space-y-2 text-[15px] text-ink-2">
-            {x.sources.map((s) => <li key={s.href}><a href={s.href} target="_blank" rel="noopener noreferrer" className={`font-semibold text-ink underline underline-offset-2 hover:text-orange-deep ${focus}`}>{s.label}</a><span className="text-ink-3"> &middot; {s.note}</span></li>)}
+        <section id="related" aria-labelledby="src-h" className="mt-12" style={{ scrollMarginTop: 110 }}>
+          <h2 id="src-h" className="text-[22px] font-bold text-ink">Related courses</h2>
+          <ul className="mt-3 grid gap-3 sm:grid-cols-2">
+            {x.related.map((s) => <li key={s.href} className="rounded-xl border border-black/[0.09] bg-white p-4"><Link href={s.href} className={`text-[16px] font-semibold text-ink underline underline-offset-2 hover:text-orange-deep ${focus}`}>{s.label}</Link><p className="mt-1 text-[14px] leading-snug text-ink-3">{s.note}</p></li>)}
           </ul>
         </section>
         <p className="mt-8"><Link href="/blog" className={`text-[14px] font-semibold text-ink underline ${focus}`}>&larr; Back to the blog</Link></p>
