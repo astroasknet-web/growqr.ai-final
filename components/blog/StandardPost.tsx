@@ -14,6 +14,14 @@ const fmt = (iso: string): string => {
   const d = new Date(iso.includes("T") ? iso : iso.replace(" ", "T") + "Z");
   return Number.isNaN(d.getTime()) ? "" : d.toLocaleDateString("en-GB", { day: "numeric", month: "long", year: "numeric", timeZone: "UTC" });
 };
+const EXPLORE = [
+  { href: "/courses", label: "All courses", note: "Browse every course and learning path." },
+  { href: "/practice-tests", label: "Practice tests", note: "Timed tests with instant scoring." },
+  { href: "/resume-score", label: "Free resume score", note: "See how your resume reads to a recruiter." },
+  { href: "/internships", label: "Internships", note: "Verified opportunities for students." },
+  { href: "/ai-interviewer", label: "AI interview practice", note: "Rehearse answers and get feedback." },
+  { href: "/community", label: "Community", note: "Ask questions and learn with peers." },
+];
 const focus = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-deep";
 
 export default function StandardPost({ post }: { post: LocalBlogPost }) {
@@ -26,7 +34,8 @@ export default function StandardPost({ post }: { post: LocalBlogPost }) {
   return (
     <PageShell>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(postJsonLd(post, x)) }} />
-      <article className="mx-auto max-w-3xl px-5 py-10 sm:py-14 md:px-8">
+      <div className="mx-auto w-full max-w-[1280px] px-4 py-8 sm:px-6 sm:py-12 lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12 lg:px-10 xl:gap-16">
+      <article className="min-w-0">
         <nav aria-label="Breadcrumb" className="mb-5 text-[13px] text-ink-3"><Link href="/" className="underline">Home</Link> / <Link href="/blog" className="underline">Blog</Link> / {post.category}</nav>
         <header>
           {post.category ? <span className="mb-4 inline-block rounded-full bg-orange/10 px-3 py-1 text-[12px] font-semibold text-orange-deep">{post.category}</span> : null}
@@ -42,7 +51,7 @@ export default function StandardPost({ post }: { post: LocalBlogPost }) {
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={x.cover.src} alt={x.cover.alt} width={x.cover.width} height={x.cover.height} fetchPriority="high" decoding="async" className="mt-6 h-auto w-full rounded-2xl border border-black/[0.08]" />
 
-        <nav aria-labelledby="toc-h" className="mt-8 rounded-2xl border border-black/[0.09] bg-cream-2 p-5">
+        <nav aria-labelledby="toc-h" className="mt-8 rounded-2xl lg:hidden border border-black/[0.09] bg-cream-2 p-5">
           <p id="toc-h" className="text-[15px] font-bold uppercase tracking-wide text-ink-3">In this article</p>
           <ol className="mt-2 list-decimal space-y-1 pl-5 text-[15px] text-ink-2">
             {toc.map((t) => <li key={t.id}><a href={`#${t.id}`} className={`underline-offset-2 hover:underline ${focus}`}>{t.text}</a></li>)}
@@ -77,8 +86,39 @@ export default function StandardPost({ post }: { post: LocalBlogPost }) {
         <p className="mt-8"><Link href="/blog" className={`text-[14px] font-semibold text-ink underline ${focus}`}>&larr; Back to the blog</Link></p>
       </article>
 
+      <aside aria-label="Explore Vidaara" className="mt-12 space-y-5 lg:sticky lg:top-28 lg:mt-0 lg:self-start lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
+        <nav aria-labelledby="stoc-h" className="hidden rounded-2xl border border-black/[0.09] bg-white p-5 lg:block">
+          <p id="stoc-h" className="text-[13px] font-bold uppercase tracking-wide text-ink-3">On this page</p>
+          <ol className="mt-3 space-y-1.5 border-l border-black/[0.1] text-[14.5px]">
+            {toc.map((t) => <li key={t.id}><a href={`#${t.id}`} className={`-ml-px block border-l-2 border-transparent py-0.5 pl-3 text-ink-2 hover:border-orange-deep hover:text-ink ${focus}`}>{t.text}</a></li>)}
+          </ol>
+        </nav>
+
+        <div className="rounded-2xl bg-gradient-to-br from-orange-light to-[#fff3ea] p-5">
+          <p className="text-[12px] font-bold uppercase tracking-wide text-orange-deep">Free course</p>
+          <p className="mt-1 text-[18px] font-bold leading-snug text-ink">{x.cta.title}</p>
+          <p className="mt-2 text-[14px] leading-relaxed text-ink-2">{x.cta.text}</p>
+          <Link href={x.cta.href} className={`mt-4 inline-flex min-h-[48px] w-full items-center justify-center rounded-xl bg-orange-deep px-5 text-[15px] font-semibold text-white hover:bg-ink ${focus}`}>{x.cta.label}</Link>
+        </div>
+
+        <nav aria-labelledby="explore-h" className="rounded-2xl border border-black/[0.09] bg-white p-5">
+          <p id="explore-h" className="text-[13px] font-bold uppercase tracking-wide text-ink-3">Explore the portal</p>
+          <ul className="mt-3 divide-y divide-black/[0.07]">
+            {EXPLORE.map((e) => <li key={e.href}><Link href={e.href} className={`block rounded-md py-2.5 hover:bg-cream-2 ${focus}`}><span className="block text-[15px] font-semibold text-ink">{e.label}</span><span className="block text-[13px] leading-snug text-ink-3">{e.note}</span></Link></li>)}
+          </ul>
+        </nav>
+
+        <nav aria-labelledby="more-h" className="rounded-2xl border border-black/[0.09] bg-white p-5">
+          <p id="more-h" className="text-[13px] font-bold uppercase tracking-wide text-ink-3">Courses for this topic</p>
+          <ul className="mt-3 space-y-2">
+            {x.related.slice(0, 5).map((c) => <li key={c.href}><Link href={c.href} className={`text-[14.5px] font-semibold text-ink underline-offset-2 hover:text-orange-deep hover:underline ${focus}`}>{c.label}</Link></li>)}
+          </ul>
+        </nav>
+      </aside>
+    </div>
+
       <style>{`
-        .bf-article { color: #1f2430; font-size: 17px; line-height: 1.75; }
+        .bf-article { color: #1f2430; font-size: 17.5px; line-height: 1.8; }
         .bf-article > * + * { margin-top: 1.15rem; }
         .bf-article h2 { font-size: 26px; font-weight: 700; line-height: 1.25; margin-top: 2.6rem; color: #14213d; scroll-margin-top: 110px; }
         .bf-article h3 { font-size: 20px; font-weight: 700; line-height: 1.35; margin-top: 1.8rem; color: #14213d; scroll-margin-top: 110px; }
