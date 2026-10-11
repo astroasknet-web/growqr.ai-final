@@ -823,3 +823,11 @@ html[data-contrast="1"] .a11y-reading { background: #ffff00 !important; outline-
     animation: none !important;
   }
 }
+
+/* Blog reading pages: a slim, themed scrollbar (added by ReadingProgress, removed on leave) */
+html.blog-scroll { scrollbar-width: thin; scrollbar-color: #cfc7b8 transparent; scroll-padding-top: 110px; }
+html.blog-scroll::-webkit-scrollbar { width: 10px; }
+html.blog-scroll::-webkit-scrollbar-track { background: transparent; }
+html.blog-scroll::-webkit-scrollbar-thumb { background: #cfc7b8; border-radius: 999px; border: 3px solid #faf8f4; }
+html.blog-scroll::-webkit-scrollbar-thumb:hover { background: #b3a994; }
+@media (prefers-reduced-motion: no-preference) { html.blog-scroll { scroll-behavior: smooth; } }
