@@ -46,6 +46,7 @@ export const TOPICS: Topic[] = [
       "IELTS rewards a method as much as English ability: knowing how each task is marked, where time goes and which mistakes cost the most bands.",
       "These articles explain the format and the strategy for each skill, and link to timed practice tests you can take as often as you like.",
     ],
+    pillar: "ielts-reading-tips",
     learn: [
       { href: "/practice-tests/ielts-reading", label: "IELTS Reading practice tests", why: "30 timed tests, marked instantly" },
       { href: "/practice-tests/ielts-listening", label: "IELTS Listening practice tests", why: "Four sections, played once" },
@@ -59,7 +60,53 @@ export const TOPICS: Topic[] = [
       "GRE Quant tests reasoning under time pressure more than advanced mathematics. The topics are school-level; the difficulty is in the wording and the clock.",
       "These articles cover the topics and the way the questions are built, and connect to full practice tests.",
     ],
+    pillar: "gre-quant-preparation",
     learn: [{ href: "/practice-tests/gre-quant", label: "GRE Quant practice tests", why: "30 mocks covering all 26 topics" }],
+  },
+  {
+    slug: "data-science",
+    name: "Data Science",
+    description: "Data science with Python explained for beginners: study plans, the mistakes that stall learners, and quizzes to test yourself. Build a first project.",
+    intro: [
+      "Data science is the work of answering questions with data and building models that hold up on new data. Python is the usual tool, and the order you learn things in matters more than which course you pick.",
+      "These articles give you a realistic path, name the mistakes beginners repeat, and link to the course and exercises where you can build a project of your own.",
+    ],
+    pillar: "learn-data-science-with-python",
+    learn: [
+      { href: "/courses/data-science-python", label: "Data Science using Python", why: "11 modules ending in a capstone project" },
+      { href: "/courses/python-foundations", label: "Programming Foundations with Python", why: "Start here if you are new to code" },
+      { href: "/courses/statistics-for-analysts", label: "Statistics for Analysts & Data Science", why: "The maths behind the models" },
+    ],
+  },
+  {
+    slug: "data-analytics",
+    name: "Data Analytics",
+    description: "Data analytics for beginners: what analysts do, the tools to learn in order, first projects and quizzes. Start with spreadsheets and SQL.",
+    intro: [
+      "Analytics is the habit of turning a vague question into a clear answer that someone can act on. It starts with spreadsheets and SQL and grows into Python and dashboards.",
+      "The articles here explain the skills in the order to learn them, with small projects you can finish and checks you can take as you go.",
+    ],
+    pillar: "data-analytics-for-beginners",
+    learn: [
+      { href: "/courses/data-analytics-python", label: "Data Analytics using Python", why: "10 modules from pandas to reporting" },
+      { href: "/courses/sql-for-data-business", label: "SQL for Data & Business", why: "Query and summarise real data" },
+      { href: "/courses/business-analytics-power-bi", label: "Business Analytics with Power BI", why: "Dashboards managers can use" },
+    ],
+  },
+  {
+    slug: "web-development",
+    name: "Web Development",
+    description: "HTML and CSS for beginners, with code you can copy, layout fixes and quizzes. Build responsive pages and learn what to study next.",
+    intro: [
+      "Every website starts with HTML for structure and CSS for style. Get those two right and everything else, from JavaScript to frameworks, is easier to learn.",
+      "These guides build real pages step by step, show the layout problems everyone meets, and point to the course with a live editor.",
+    ],
+    pillar: "html-and-css-for-beginners",
+    learn: [
+      { href: "/courses/html-css-academy", label: "HTML & CSS Academy", why: "32 lessons with a live code playground" },
+      { href: "/courses/front-end-development", label: "Front-End Development", why: "Add JavaScript to your pages" },
+      { href: "/courses/git-github", label: "Git & GitHub for Developers", why: "Save and publish your work" },
+    ],
   },
 ];
 
