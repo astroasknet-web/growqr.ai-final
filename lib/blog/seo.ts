@@ -1,5 +1,6 @@
 import { SITE_URL } from "@/lib/seo";
 import type { BlogPost, BlogPostSummary } from "./blogforge";
+import type { LocalExtras } from "./local";
 
 /**
  * SEO helpers for the blog. The engine can be configured with any base URL, so GrowQR builds its own canonical URL and structured data
@@ -16,11 +17,12 @@ const iso = (s: string | null | undefined): string | undefined => {
 export const toIso = iso;
 
 /** BlogPosting + BreadcrumbList for one post. */
-export function postJsonLd(post: BlogPost): object {
+export function postJsonLd(post: BlogPost, extras?: LocalExtras): object {
   const url = postUrl(post.slug);
   const published = iso(post.published_at);
   const modified = iso(post.updated_at) ?? published;
-  const image = post.meta?.og_image ?? post.cover_image ?? undefined;
+  const rawImage = post.meta?.og_image ?? post.cover_image ?? undefined;
+  const image = rawImage && rawImage.startsWith("/") ? `${SITE_URL}${rawImage}` : rawImage;
   return {
     "@context": "https://schema.org",
     "@graph": [
@@ -36,8 +38,12 @@ export function postJsonLd(post: BlogPost): object {
         author: { "@type": "Person", name: post.author || "GrowQR" },
         publisher: { "@type": "Organization", name: "GrowQR", url: SITE_URL },
         ...(post.category ? { articleSection: post.category } : {}),
+        ...(extras ? { keywords: extras.keywords, isAccessibleForFree: true, educationalUse: "practice", learningResourceType: "Quiz and study guide" } : {}),
         inLanguage: "en",
       },
+      ...(extras && extras.faq.length
+        ? [{ "@type": "FAQPage", mainEntity: extras.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) }]
+        : []),
       {
         "@type": "BreadcrumbList",
         itemListElement: [
