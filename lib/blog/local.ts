@@ -1,5 +1,11 @@
 import type { BlogPost, BlogPostSummary } from "./blogforge";
 import digitalLiteracyQuiz from "./posts/digital-literacy-quiz-with-answers";
+import learnDataScience from "./posts/learn-data-science-with-python";
+import greQuant from "./posts/gre-quant-preparation";
+import ieltsListening from "./posts/ielts-listening-tips";
+import ieltsReading from "./posts/ielts-reading-tips";
+import htmlCss from "./posts/html-and-css-for-beginners";
+import dataAnalytics from "./posts/data-analytics-for-beginners";
 
 /**
  * Posts that live in the repository (typed, reviewed and versioned with the code) next to the ones served by the blog engine.
@@ -29,6 +35,8 @@ export interface LocalPost {
   updated: string;
   excerpt: string;
   cover: { src: string; alt: string; width: number; height: number };
+  /** Drives scripts/blog-cover.ts only: which artwork, the footer line and the two chips on the cover image. */
+  coverStyle?: { art: "docs" | "code" | "chart" | "web" | "audio" | "math"; footer: string; chips: [string, string] };
   /** Body HTML (no H1). Put `<!--quiz-->` where the interactive quiz goes. */
   content: string;
   quiz?: Quiz;
@@ -40,7 +48,7 @@ export interface LocalPost {
 export interface LocalExtras { reviewedBy?: { name: string; note: string }; keywords: string; quiz?: Quiz; faq: Faq[]; cta: Cta; related: RelatedCourse[]; seoTitle: string; focusKeyword: string; cover: LocalPost["cover"] }
 export type LocalBlogPost = BlogPost & { extras: LocalExtras };
 
-export const LOCAL_POSTS: LocalPost[] = [digitalLiteracyQuiz];
+export const LOCAL_POSTS: LocalPost[] = [digitalLiteracyQuiz, learnDataScience, dataAnalytics, htmlCss, ieltsReading, ieltsListening, greQuant];
 
 const text = (html: string): string => html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim();
 export const readingMinutes = (p: LocalPost): number => {

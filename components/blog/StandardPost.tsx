@@ -151,6 +151,8 @@ export default function StandardPost({ post, more = [] }: { post: LocalBlogPost;
         .bf-article th { background: #f5f3ee; text-align: left; font-weight: 700; color: #14213d; }
         .bf-article th, .bf-article td { padding: 0.65rem 0.85rem; border-bottom: 1px solid #ebe7de; vertical-align: top; }
         .bf-article tr:last-child td { border-bottom: 0; }
+        .bf-article pre { background: #0f1420; color: #e5e7eb; padding: 1rem 1.1rem; border-radius: 12px; overflow-x: auto; font-size: 14px; line-height: 1.6; }
+        .bf-article pre code { background: none; padding: 0; color: inherit; }
       `}</style>
     </PageShell>
   );

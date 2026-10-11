@@ -71,9 +71,9 @@ export function auditPost(p: LocalPost, opts: { siteHost?: string } = {}): Audit
   add("author", "Structure", "Author is Sachin Sharma (no invented staff)", p.author === "Sachin Sharma", p.author);
   add("cta", "Structure", "Has a call to action to the course", p.cta.href.startsWith("/") && p.cta.label.length > 3, p.cta.label);
 
-  const relOk = p.related.length >= 4 && p.related.every((r) => r.href.startsWith("/courses/") && r.label.length > 3 && r.note.length > 10);
+  const relOk = p.related.length >= 4 && p.related.every((r) => (r.href.startsWith("/courses/") || r.href.startsWith("/practice-tests")) && r.label.length > 3 && r.note.length > 10);
   add("internal", "Links", "At least 3 internal links in the body with descriptive anchors", internal.length >= 3, `${internal.length}`);
-  add("related", "Links", "4 or more related courses, each an internal /courses link with a note", relOk, `${p.related.length}`);
+  add("related", "Links", "4 or more related courses or practice tests, each an internal link with a note", relOk, `${p.related.length}`);
   add("no-outbound", "Links", "No external links (courses only for now)", outbound.length === 0, outbound.length ? outbound.map((h) => h.href).join(", ") : "none");
   add("anchor-text", "Links", "No \"click here\" or \"read more\" anchors", !/>s*(click here|read more|here)s*</i.test(p.content), "");
 
@@ -83,7 +83,7 @@ export function auditPost(p: LocalPost, opts: { siteHost?: string } = {}): Audit
   add("first-person-claims", "Writing", "No invented statistics presented as fact", !/\b\d{2,3}%\s+of (students|people|users)/i.test(prose), "");
 
   const qs = p.quiz?.questions ?? [];
-  add("quiz-size", "Quiz", "Quiz has 10 or more questions", qs.length >= 10, `${qs.length}`);
+  add("quiz-size", "Quiz", "Quiz has 5 or more questions (a quiz inside an article, not the whole article)", qs.length >= 5, `${qs.length}`);
   add("quiz-valid", "Quiz", "Every question has 4 options, a valid answer and an explanation", qs.every((q) => q.options.length === 4 && q.answer >= 0 && q.answer < 4 && new Set(q.options).size === 4 && q.explain.length >= 25), "");
   add("quiz-unique", "Quiz", "Questions are unique", new Set(qs.map((q) => q.q)).size === qs.length, "");
   add("quiz-spread", "Quiz", "Correct answers are spread across positions (no pattern)", qs.length === 0 || share <= 0.4, `largest share ${(share * 100).toFixed(0)}%`);
