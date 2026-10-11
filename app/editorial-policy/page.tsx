@@ -27,7 +27,7 @@ export default function EditorialPolicyRoute() {
   return (
     <PageShell>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(ld) }} />
-      <article className="mx-auto w-full max-w-3xl px-4 py-10 sm:px-6 sm:py-14">
+      <article className="mx-auto w-full max-w-3xl px-4 pb-10 pt-32 sm:px-6 sm:pb-14 md:pt-40">
         <nav aria-label="Breadcrumb" className="mb-6 text-[13px] text-ink-3"><Link href="/" className="underline">Home</Link> / <Link href="/blog" className="underline">Blog</Link> / <span aria-current="page">Editorial policy</span></nav>
         <h1 className="text-[32px] font-bold leading-tight tracking-tight text-ink sm:text-[42px]">Editorial policy</h1>
         <p className="mt-4 text-[17px] leading-relaxed text-ink-2">

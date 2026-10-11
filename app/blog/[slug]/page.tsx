@@ -88,7 +88,7 @@ export default async function BlogPostRoute({ params }: Props) {
       <BlogAnalytics />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
 
-      <div className="mx-auto w-full max-w-[1280px] px-4 py-8 sm:px-6 sm:py-12 lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12 lg:px-10 xl:gap-16">
+      <div className="mx-auto w-full max-w-[1280px] px-4 pb-8 pt-32 sm:px-6 sm:pb-12 md:pt-40 lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12 lg:px-10 xl:gap-16">
       <article id="post-article" className="min-w-0">
         <Link
           href="/blog"

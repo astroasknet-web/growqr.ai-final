@@ -26,7 +26,7 @@ export default async function BlogSearchRoute({ searchParams }: { searchParams: 
 
   return (
     <PageShell>
-      <div className="mx-auto w-full max-w-[1280px] px-4 py-10 sm:px-6 sm:py-14 lg:px-10">
+      <div className="mx-auto w-full max-w-[1280px] px-4 pb-10 pt-32 sm:px-6 sm:pb-14 md:pt-40 lg:px-10">
         <nav aria-label="Breadcrumb" className="mb-6 text-[13px] text-ink-3"><Link href="/" className="underline">Home</Link> / <Link href="/blog" className="underline">Blog</Link> / <span aria-current="page">Search</span></nav>
         <h1 className="text-[30px] font-bold leading-tight text-ink sm:text-[38px]">Search the blog</h1>
         <div className="mt-6 max-w-xl"><BlogSearchForm defaultValue={q} id="blog-q-results" /></div>
