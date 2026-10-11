@@ -3,6 +3,8 @@ import PageShell from "@/components/layout/PageShell";
 import BlogQuiz from "@/components/blog/BlogQuiz";
 import ShareBar from "@/components/blog/ShareBar";
 import { postUrl } from "@/lib/blog/seo";
+import { slugify } from "@/lib/blog/discovery";
+import { authorFor } from "@/lib/blog/authors";
 import { SITE_URL } from "@/lib/seo";
 import { ReadingProgress } from "@/components/blog/PostRail";
 import type { LocalBlogPost } from "@/lib/blog/local";
@@ -43,15 +45,16 @@ export default function StandardPost({ post, more = [] }: { post: LocalBlogPost;
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(postJsonLd(post, x)) }} />
       <div className="mx-auto w-full max-w-[1280px] px-4 py-8 sm:px-6 sm:py-12 lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12 lg:px-10 xl:gap-16">
       <article id="post-article" className="min-w-0">
-        <nav aria-label="Breadcrumb" className="mb-5 text-[13px] text-ink-3"><Link href="/" className="underline">Home</Link> / <Link href="/blog" className="underline">Blog</Link> / {post.category}</nav>
+        <nav aria-label="Breadcrumb" className="mb-5 text-[13px] text-ink-3"><Link href="/" className="underline">Home</Link> / <Link href="/blog" className="underline">Blog</Link> / {post.category ? <Link href={`/blog/topic/${slugify(post.category)}`} className="underline">{post.category}</Link> : null}</nav>
         <header>
-          {post.category ? <span className="mb-4 inline-block rounded-full bg-orange/10 px-3 py-1 text-[12px] font-semibold text-orange-deep">{post.category}</span> : null}
+          {post.category ? <Link href={`/blog/topic/${slugify(post.category)}`} className="mb-4 inline-block rounded-full bg-orange/10 px-3 py-1 text-[12px] font-semibold text-orange-deep hover:bg-orange/20">{post.category}</Link> : null}
           <h1 className="text-[30px] font-bold leading-tight tracking-tight text-ink sm:text-[40px]">{post.title}</h1>
           <p className="mt-4 flex flex-wrap items-center gap-x-2 text-[14px] text-ink-3">
-            <span>By <b className="text-ink-2">{post.author}</b></span><span aria-hidden="true">&middot;</span>
+            <span>By {authorFor(post.author) ? <Link href={`/blog/author/${authorFor(post.author)!.slug}`} rel="author" className="font-bold text-ink-2 underline underline-offset-2">{post.author}</Link> : <b className="text-ink-2">{post.author}</b>}</span><span aria-hidden="true">&middot;</span>
             <time dateTime={post.published_at.replace(" ", "T") + "Z"}>{fmt(post.published_at)}</time>
             {updated ? <><span aria-hidden="true">&middot;</span><span>Updated {updated}</span></> : null}
             <span aria-hidden="true">&middot;</span><span>{post.reading_minutes} min read</span>
+            {x.reviewedBy ? <><span aria-hidden="true">&middot;</span><span>Reviewed by {x.reviewedBy.name}</span></> : null}
           </p>
         </header>
 
@@ -95,7 +98,8 @@ export default function StandardPost({ post, more = [] }: { post: LocalBlogPost;
           </ul>
         </section>
         <RelatedPosts posts={more} />
-        <p className="mt-8"><Link href="/blog" className={`text-[14px] font-semibold text-ink underline ${focus}`}>&larr; Back to the blog</Link></p>
+        <p className="mt-8 text-[14px] text-ink-3">How we write and correct articles: <Link href="/editorial-policy" className="font-semibold text-ink underline">editorial policy</Link>.</p>
+        <p className="mt-4"><Link href="/blog" className={`text-[14px] font-semibold text-ink underline ${focus}`}>&larr; Back to the blog</Link></p>
       </article>
 
       <aside aria-label="Explore Vidaara" className="mt-12 space-y-5 lg:sticky lg:top-28 lg:mt-0 lg:self-start lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">

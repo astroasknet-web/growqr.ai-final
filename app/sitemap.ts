@@ -6,6 +6,9 @@ import { nativeCourse, nativeSlugs } from '@/lib/market/lessons';
 import { TOTAL_TESTS } from '@/lib/tests/ielts';
 import { listBlogPosts } from '@/lib/blog/blogforge';
 import { postUrl, toIso } from '@/lib/blog/seo';
+import { categoriesOf } from '@/lib/blog/discovery';
+import { isIndexableTopic, topicBySlug } from '@/lib/blog/topics';
+import { AUTHORS, authorSlug } from '@/lib/blog/authors';
 
 // Revalidate so newly published events appear in the sitemap without a redeploy.
 export const revalidate = 3600;
@@ -134,6 +137,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     if (posts.length) {
       blogRoutes = [
         { url: `${baseUrl}/blog`, lastModified: toIso(posts[0].updated_at ?? posts[0].published_at) },
+        { url: `${baseUrl}/editorial-policy`, lastModified: toIso(posts[0].updated_at ?? posts[0].published_at) },
+        ...categoriesOf(posts).filter((c) => isIndexableTopic(Boolean(topicBySlug(c.slug)), c.count)).map((c) => ({ url: `${baseUrl}/blog/topic/${c.slug}`, lastModified: toIso(posts.filter((p) => p.category && p.category === c.name).map((p) => p.updated_at ?? p.published_at).sort().pop()) })),
+        ...AUTHORS.filter((a) => posts.some((p) => p.author && authorSlug(p.author) === a.slug)).map((a) => ({ url: `${baseUrl}/blog/author/${a.slug}`, lastModified: toIso(posts.filter((p) => p.author && authorSlug(p.author) === a.slug).map((p) => p.updated_at ?? p.published_at).sort().pop()) })),
         ...posts.filter((p) => !p.meta?.noindex).map((p) => ({ url: postUrl(p.slug), lastModified: toIso(p.updated_at ?? p.published_at) })),
       ];
     }

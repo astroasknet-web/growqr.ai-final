@@ -4,6 +4,7 @@ import Link from "next/link";
 import PageShell from "@/components/layout/PageShell";
 import BlogAnalytics from "@/components/blog/BlogAnalytics";
 import { getBlogPost, listBlogPosts, listBlogSlugs } from "@/lib/blog/blogforge";
+import { authorFor } from "@/lib/blog/authors";
 import RelatedPosts from "@/components/blog/RelatedPosts";
 import { relatedPosts, withHeadingIds } from "@/lib/blog/discovery";
 import { EXPLORE } from "@/lib/blog/explore";
@@ -106,7 +107,7 @@ export default async function BlogPostRoute({ params }: Props) {
             {post.title}
           </h1>
           <div className="mt-4 flex flex-wrap items-center gap-x-2 text-[13px] text-ink-4">
-            {post.author && <span>{post.author}</span>}
+            {post.author && (authorFor(post.author) ? <Link href={`/blog/author/${authorFor(post.author)!.slug}`} rel="author" className="underline underline-offset-2">{post.author}</Link> : <span>{post.author}</span>)}
             {post.reading_minutes ? <span>· {post.reading_minutes} min read</span> : null}
             {post.published_at && <span>· {formatDate(post.published_at)}</span>}
             {post.updated_at && formatDate(post.updated_at) !== formatDate(post.published_at) ? <span>· Updated {formatDate(post.updated_at)}</span> : null}

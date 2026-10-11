@@ -29,7 +29,7 @@ Audited from the code in this repo on 2026-10-11 (no live Lighthouse or Search C
 ## Stages
 1. **Sharing and social previews** (this change): share bar top and end, 8 platforms plus native share and copy link, canonical-only URLs, GA4 click events, OG/X image alt and absolute URLs.
 2. **(done, local) Blog home and article template**: H1 and intro, search page (noindex), featured + latest + categories, crawlable pagination, card images with dimensions, engine-post template brought up to the standard layout, Blog/Organization schema.
-3. **Topic architecture and E-E-A-T**: category landing pages with intros, category sitemap, author pages, editorial and corrections policy, reviewer field.
+3. **(done, local) Topic architecture and E-E-A-T**: category landing pages with intros, category sitemap, author pages, editorial and corrections policy, reviewer field.
 4. **Measurement checklist**: Search Console and Bing sitemap submission, rich-result and OG validators, Lighthouse before and after.
 
 ## Share feature notes
@@ -45,3 +45,11 @@ Audited from the code in this repo on 2026-10-11 (no live Lighthouse or Search C
 - Engine posts now use the wide two-column layout with a generated table of contents (unique heading ids added server-side), explore links, share bars and related posts. Standard posts also get "Keep reading".
 - Publisher in structured data now carries a logo.
 - Tested with a mock engine (16 posts across three categories): routes, status codes, robots/canonical per URL type, 320px overflow. Not tested against the real BlogForge engine, and no Lighthouse run.
+
+## Stage 3 notes (topics, authors, editorial policy)
+- Topic pages `/blog/topic/<slug>`: curated intro, "Start here" article and matching courses live in `lib/blog/topics.ts`. A topic is indexable only when curated AND it has at least `MIN_POSTS_TO_INDEX` (3) posts; otherwise it is noindex,follow and left out of the sitemap. Today Digital Literacy has 1 post, so it is noindex until two more are published. The old `/blog?category=` URLs 308 to the topic page.
+- Author pages `/blog/author/<slug>` exist only for people listed in `lib/blog/authors.ts`; the profile states only true facts. `credentials` is empty on purpose: fill it with real qualifications (and `sameAs` with real profile URLs) before relying on E-E-A-T claims. Bylines link to the profile; Person schema carries the profile URL.
+- `/editorial-policy`: who writes, how articles are made and checked, AI-tool disclosure, updates and corrections (via /contact). The wording is a draft for the owner to confirm, especially the AI-use paragraph.
+- Reviewer: optional `reviewedBy` on standard posts, shown in the byline and in schema. Leave unset unless a real review happened.
+- `app/blog/not-found.tsx`: blog-specific 404 with search, topics and latest articles.
+- Sitemap now lists the editorial policy, author pages and indexable topics.

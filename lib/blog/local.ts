@@ -23,6 +23,8 @@ export interface LocalPost {
   secondaryKeywords: string[];
   category: string;
   author: string;
+  /** Only when a genuine review took place. Never set to fill the field. */
+  reviewedBy?: { name: string; note: string };
   published: string; // "YYYY-MM-DD HH:MM:SS" UTC
   updated: string;
   excerpt: string;
@@ -35,7 +37,7 @@ export interface LocalPost {
   related: RelatedCourse[];
 }
 
-export interface LocalExtras { keywords: string; quiz?: Quiz; faq: Faq[]; cta: Cta; related: RelatedCourse[]; seoTitle: string; focusKeyword: string; cover: LocalPost["cover"] }
+export interface LocalExtras { reviewedBy?: { name: string; note: string }; keywords: string; quiz?: Quiz; faq: Faq[]; cta: Cta; related: RelatedCourse[]; seoTitle: string; focusKeyword: string; cover: LocalPost["cover"] }
 export type LocalBlogPost = BlogPost & { extras: LocalExtras };
 
 export const LOCAL_POSTS: LocalPost[] = [digitalLiteracyQuiz];
@@ -60,7 +62,7 @@ export function localPost(slug: string): LocalBlogPost | null {
   const i = LOCAL_POSTS.findIndex((p) => p.slug === slug);
   if (i < 0) return null;
   const p = LOCAL_POSTS[i];
-  return { ...summary(p, i), content: p.content, json_ld: "", meta: meta(p), extras: { keywords: [p.focusKeyword, ...p.secondaryKeywords].join(", "), quiz: p.quiz, faq: p.faq, cta: p.cta, related: p.related, seoTitle: p.seoTitle, focusKeyword: p.focusKeyword, cover: p.cover } };
+  return { ...summary(p, i), content: p.content, json_ld: "", meta: meta(p), extras: { reviewedBy: p.reviewedBy, keywords: [p.focusKeyword, ...p.secondaryKeywords].join(", "), quiz: p.quiz, faq: p.faq, cta: p.cta, related: p.related, seoTitle: p.seoTitle, focusKeyword: p.focusKeyword, cover: p.cover } };
 }
 
 export const isLocal = (post: BlogPost): post is LocalBlogPost => "extras" in post;
