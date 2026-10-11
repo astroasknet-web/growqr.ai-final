@@ -104,7 +104,7 @@ function CareersPanel({ close }: { close: () => void }) {
         <ul className="grid grid-cols-2 gap-1.5 px-1">
           {ABROAD.map((c) => (<li key={c.label}><a href={c.href} target="_blank" rel="noopener noreferrer" onClick={close} className="flex items-center justify-between rounded-xl border border-black/[0.07] px-3 py-2 text-[0.82rem] font-semibold transition hover:border-orange hover:bg-orange-lighter">{c.label}<span className="text-orange-dark">{c.count}</span></a></li>))}
         </ul>
-        <a href={SCORE_URL} onClick={close} className="mt-3 inline-flex items-center gap-1 px-2.5 text-[0.84rem] font-semibold text-orange-dark">View all universities <ArrowRight className="h-3.5 w-3.5" aria-hidden /></a>
+        <a href="/study-abroad" onClick={close} className="mt-3 inline-flex items-center gap-1 px-2.5 text-[0.84rem] font-semibold text-orange-dark">View all universities <ArrowRight className="h-3.5 w-3.5" aria-hidden /></a>
       </div>
       <Feature>
         <p className="mb-1 text-[0.62rem] font-bold uppercase tracking-[0.16em] text-[#FFB380]">Featured role</p>
