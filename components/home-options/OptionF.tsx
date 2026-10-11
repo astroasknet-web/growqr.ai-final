@@ -1,3 +1,5 @@
+import FoundationSection from "@/components/home/FoundationSection";
+import PersonalizedRoadmaps from "@/components/home/PersonalizedRoadmaps";
 import Squad from "@/components/home/Squad";
 import GlobalNetwork from "@/components/home/GlobalNetwork";
 import ForceLive from "./ForceLive";
@@ -65,6 +67,9 @@ export default function OptionF() {
           </div>
         </section>
 
+        {/* FROM THE LIVE SITE: the two sections selected for every option */}
+        <FoundationSection />
+        <PersonalizedRoadmaps />
         <Squad />
         <ForceLive><GlobalNetwork /></ForceLive>
         <Pricing />
