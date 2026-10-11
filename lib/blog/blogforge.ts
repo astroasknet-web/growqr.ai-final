@@ -10,6 +10,8 @@ import "server-only";
 // the blog pages show a "coming soon" state instead of crashing. Setting the two
 // env vars lights it up — no code change.
 
+import { localPost, localSummaries } from "./local";
+
 export interface BlogMeta {
   title: string | null;
   description: string | null;
@@ -67,6 +69,19 @@ async function req<T>(path: string): Promise<T | null> {
 export async function listBlogPosts(
   opts: { category?: string; limit?: number; offset?: number } = {},
 ): Promise<BlogPostSummary[]> {
+  // Posts that live in the repository come first (newest first), then whatever the engine serves. A repository post wins over an
+  // engine post with the same slug.
+  const local = localSummaries({ category: opts.category }).sort((a, b) => b.published_at.localeCompare(a.published_at));
+  const engine = await listFromEngine({ category: opts.category, limit: 1000 }); // pagination is applied once, after the merge
+  const seen = new Set(local.map((p) => p.slug));
+  const all = [...local, ...engine.filter((p) => !seen.has(p.slug))];
+  const start = opts.offset ?? 0;
+  return opts.limit != null ? all.slice(start, start + opts.limit) : all.slice(start);
+}
+
+async function listFromEngine(
+  opts: { category?: string; limit?: number; offset?: number } = {},
+): Promise<BlogPostSummary[]> {
   const q = new URLSearchParams();
   if (opts.category) q.set("category", opts.category);
   if (opts.limit != null) q.set("limit", String(opts.limit));
@@ -78,6 +93,8 @@ export async function listBlogPosts(
 }
 
 export async function getBlogPost(slug: string): Promise<BlogPost | null> {
+  const local = localPost(slug);
+  if (local) return local;
   const data = await req<{ post: BlogPost }>("/api/posts/" + encodeURIComponent(slug));
   return data?.post ?? null;
 }

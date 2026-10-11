@@ -28,7 +28,8 @@
     "emails:preview": "tsx scripts/build-email-preview.ts",
     "emails:preview:experts": "tsx scripts/build-expert-email-preview.ts",
     "missed:send": "tsx scripts/send-missed-session.ts",
-    "letter:preview": "tsx scripts/build-letter-preview.ts"
+    "letter:preview": "tsx scripts/build-letter-preview.ts",
+    "blog:audit": "tsx scripts/blog-audit.ts"
   },
   "dependencies": {
     "@iconify/react": "^6.0.2",

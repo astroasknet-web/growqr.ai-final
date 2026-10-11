@@ -8,6 +8,8 @@ import { OG_IMAGE } from "@/lib/seo";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { cleanHtml } from "@/lib/market/lessons";
 import { postJsonLd, postUrl, relatedLearning } from "@/lib/blog/seo";
+import { isLocal } from "@/lib/blog/local";
+import StandardPost from "@/components/blog/StandardPost";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -35,6 +37,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const m = post.meta;
   const url = postUrl(post.slug); // always GrowQR's own URL, whatever base URL the engine is configured with
   const ogImg = m.og_image ?? post.cover_image ?? undefined;
+  if (isLocal(post)) {
+    const c = post.extras.cover;
+    return {
+      title: { absolute: post.extras.seoTitle },
+      description: m.description ?? undefined,
+      keywords: post.extras.keywords,
+      authors: [{ name: post.author ?? "GrowQR" }],
+      alternates: { canonical: url },
+      openGraph: { title: post.extras.seoTitle, description: m.description ?? undefined, url, type: "article", publishedTime: post.published_at, modifiedTime: post.updated_at ?? undefined, authors: [post.author ?? "GrowQR"], section: post.category ?? undefined, images: [{ url: c.src, width: c.width, height: c.height, alt: c.alt }] },
+      twitter: { card: "summary_large_image", title: post.extras.seoTitle, description: m.description ?? undefined, images: [c.src] },
+    };
+  }
   return {
     title: m.title ?? `${post.title} | GrowQR`,
     description: m.description ?? post.excerpt ?? undefined,
@@ -56,6 +70,7 @@ export default async function BlogPostRoute({ params }: Props) {
   const { slug } = await params;
   const post = await getBlogPost(slug);
   if (!post) notFound();
+  if (isLocal(post)) return <StandardPost post={post} />;
 
   const jsonLd = serializeJsonLd(postJsonLd(post));
   const learn = relatedLearning(post);
