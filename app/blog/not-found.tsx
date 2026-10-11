@@ -10,7 +10,7 @@ export default async function BlogNotFound() {
   const cats = categoriesOf(all);
   return (
     <PageShell>
-      <div className="mx-auto w-full max-w-3xl px-4 py-14 sm:px-6 sm:py-20">
+      <div className="mx-auto w-full max-w-3xl px-4 pb-14 pt-32 sm:px-6 sm:pb-20 md:pt-40">
         <p className="text-[13px] font-bold uppercase tracking-wide text-ink-3">404</p>
         <h1 className="mt-2 text-[32px] font-bold leading-tight text-ink sm:text-[40px]">We couldn&rsquo;t find that article</h1>
         <p className="mt-3 text-[17px] text-ink-2">It may have moved or been renamed. Search the blog, or pick up from one of these.</p>

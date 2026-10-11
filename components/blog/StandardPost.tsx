@@ -43,7 +43,7 @@ export default function StandardPost({ post, more = [] }: { post: LocalBlogPost;
     <PageShell>
       <ReadingProgress targetId="post-article" />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(postJsonLd(post, x)) }} />
-      <div className="mx-auto w-full max-w-[1280px] px-4 py-8 sm:px-6 sm:py-12 lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12 lg:px-10 xl:gap-16">
+      <div className="mx-auto w-full max-w-[1280px] px-4 pb-8 pt-32 sm:px-6 sm:pb-12 md:pt-40 lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12 lg:px-10 xl:gap-16">
       <article id="post-article" className="min-w-0">
         <nav aria-label="Breadcrumb" className="mb-5 text-[13px] text-ink-3"><Link href="/" className="underline">Home</Link> / <Link href="/blog" className="underline">Blog</Link> / {post.category ? <Link href={`/blog/topic/${slugify(post.category)}`} className="underline">{post.category}</Link> : null}</nav>
         <header>
