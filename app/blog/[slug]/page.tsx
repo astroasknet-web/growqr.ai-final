@@ -4,11 +4,12 @@ import Link from "next/link";
 import PageShell from "@/components/layout/PageShell";
 import BlogAnalytics from "@/components/blog/BlogAnalytics";
 import { getBlogPost, listBlogSlugs } from "@/lib/blog/blogforge";
-import { OG_IMAGE } from "@/lib/seo";
+import { OG_IMAGE, SITE_URL } from "@/lib/seo";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { cleanHtml } from "@/lib/market/lessons";
 import { postJsonLd, postUrl, relatedLearning } from "@/lib/blog/seo";
 import { isLocal } from "@/lib/blog/local";
+import ShareBar from "@/components/blog/ShareBar";
 import StandardPost from "@/components/blog/StandardPost";
 
 interface Props {
@@ -45,8 +46,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       keywords: post.extras.keywords,
       authors: [{ name: post.author ?? "GrowQR" }],
       alternates: { canonical: url },
-      openGraph: { title: post.extras.seoTitle, description: m.description ?? undefined, url, type: "article", publishedTime: post.published_at, modifiedTime: post.updated_at ?? undefined, authors: [post.author ?? "GrowQR"], section: post.category ?? undefined, images: [{ url: c.src, width: c.width, height: c.height, alt: c.alt }] },
-      twitter: { card: "summary_large_image", title: post.extras.seoTitle, description: m.description ?? undefined, images: [c.src] },
+      openGraph: { title: post.extras.seoTitle, description: m.description ?? undefined, url, type: "article", publishedTime: post.published_at, modifiedTime: post.updated_at ?? undefined, authors: [post.author ?? "GrowQR"], section: post.category ?? undefined, images: [{ url: c.src.startsWith("/") ? `${SITE_URL}${c.src}` : c.src, width: c.width, height: c.height, alt: c.alt }] },
+      twitter: { card: "summary_large_image", title: post.extras.seoTitle, description: m.description ?? undefined, images: [{ url: c.src.startsWith("/") ? `${SITE_URL}${c.src}` : c.src, alt: c.alt }] },
     };
   }
   return {
@@ -105,6 +106,8 @@ export default async function BlogPostRoute({ params }: Props) {
           </div>
         </header>
 
+        <ShareBar placement="top" title={post.title} url={postUrl(post.slug)} description={post.excerpt ?? undefined} image={post.cover_image ? (post.cover_image.startsWith("/") ? `${SITE_URL}${post.cover_image}` : post.cover_image) : null} hashtag={post.category ?? undefined} articleId={post.slug} category={post.category ?? undefined} />
+
         {post.cover_image && (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -116,6 +119,8 @@ export default async function BlogPostRoute({ params }: Props) {
 
         {/* The engine sanitizes before serving; cleanHtml is a second, independent pass in case the engine is ever misconfigured. */}
         <div className="bf-article" dangerouslySetInnerHTML={{ __html: cleanHtml(post.content) }} />
+
+        <div className="mt-10"><ShareBar placement="end" title={post.title} url={postUrl(post.slug)} description={post.excerpt ?? undefined} image={post.cover_image ? (post.cover_image.startsWith("/") ? `${SITE_URL}${post.cover_image}` : post.cover_image) : null} hashtag={post.category ?? undefined} articleId={post.slug} category={post.category ?? undefined} /></div>
 
         <aside aria-labelledby="learn-h" className="mt-12 rounded-2xl border border-black/[0.08] bg-white p-6 shadow-sm">
           <h2 id="learn-h" className="text-[18px] font-bold text-ink">Keep learning on GrowQR</h2>
