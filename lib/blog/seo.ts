@@ -7,6 +7,7 @@ import type { LocalExtras } from "./local";
  * from the post fields instead of trusting the engine's `canonical` / `json_ld`: a wrong engine setting can then never point Google at
  * the wrong host.
  */
+const PUBLISHER = { "@type": "Organization", name: "GrowQR", url: SITE_URL, logo: { "@type": "ImageObject", url: `${SITE_URL}/growqr-logo.png` } };
 export const postUrl = (slug: string): string => `${SITE_URL}/blog/${encodeURIComponent(slug)}`;
 
 const iso = (s: string | null | undefined): string | undefined => {
@@ -36,7 +37,7 @@ export function postJsonLd(post: BlogPost, extras?: LocalExtras): object {
         ...(published ? { datePublished: published } : {}),
         ...(modified ? { dateModified: modified } : {}),
         author: { "@type": "Person", name: post.author || "GrowQR" },
-        publisher: { "@type": "Organization", name: "GrowQR", url: SITE_URL },
+        publisher: PUBLISHER,
         ...(post.category ? { articleSection: post.category } : {}),
         ...(extras ? { keywords: extras.keywords, isAccessibleForFree: true, educationalUse: "practice", learningResourceType: "Quiz and study guide" } : {}),
         inLanguage: "en",
@@ -61,7 +62,7 @@ export function indexJsonLd(posts: BlogPostSummary[]): object {
   return {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "Blog", name: "GrowQR Blog", url: `${SITE_URL}/blog`, publisher: { "@type": "Organization", name: "GrowQR", url: SITE_URL } },
+      { "@type": "Blog", name: "GrowQR Blog", url: `${SITE_URL}/blog`, publisher: PUBLISHER },
       { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Home", item: SITE_URL }, { "@type": "ListItem", position: 2, name: "Blog", item: `${SITE_URL}/blog` }] },
       { "@type": "ItemList", itemListElement: posts.map((p, i) => ({ "@type": "ListItem", position: i + 1, url: postUrl(p.slug), name: p.title })) },
     ],

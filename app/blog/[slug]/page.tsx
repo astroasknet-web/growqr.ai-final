@@ -3,7 +3,10 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import PageShell from "@/components/layout/PageShell";
 import BlogAnalytics from "@/components/blog/BlogAnalytics";
-import { getBlogPost, listBlogSlugs } from "@/lib/blog/blogforge";
+import { getBlogPost, listBlogPosts, listBlogSlugs } from "@/lib/blog/blogforge";
+import RelatedPosts from "@/components/blog/RelatedPosts";
+import { relatedPosts, withHeadingIds } from "@/lib/blog/discovery";
+import { EXPLORE } from "@/lib/blog/explore";
 import { OG_IMAGE, SITE_URL } from "@/lib/seo";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { cleanHtml } from "@/lib/market/lessons";
@@ -71,17 +74,21 @@ export default async function BlogPostRoute({ params }: Props) {
   const { slug } = await params;
   const post = await getBlogPost(slug);
   if (!post) notFound();
-  if (isLocal(post)) return <StandardPost post={post} />;
+  const more = relatedPosts(post, await listBlogPosts({ limit: 1000 }), 3);
+  if (isLocal(post)) return <StandardPost post={post} more={more} />;
 
   const jsonLd = serializeJsonLd(postJsonLd(post));
   const learn = relatedLearning(post);
+  const body = withHeadingIds(cleanHtml(post.content));
+  const focus = "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-deep";
 
   return (
     <PageShell>
       <BlogAnalytics />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
 
-      <article className="mx-auto max-w-3xl px-5 py-12 sm:py-16 md:px-8">
+      <div className="mx-auto w-full max-w-[1280px] px-4 py-8 sm:px-6 sm:py-12 lg:grid lg:grid-cols-[minmax(0,1fr)_340px] lg:gap-12 lg:px-10 xl:gap-16">
+      <article id="post-article" className="min-w-0">
         <Link
           href="/blog"
           className="mb-8 inline-flex items-center gap-1.5 text-[14px] font-medium text-ink-4 transition-colors hover:text-orange"
@@ -113,12 +120,16 @@ export default async function BlogPostRoute({ params }: Props) {
           <img
             src={post.cover_image}
             alt={post.title}
-            className="mb-8 w-full rounded-2xl border border-black/[0.06] object-cover"
+            width={1200}
+            height={630}
+            fetchPriority="high"
+            decoding="async"
+            className="mb-8 aspect-[1200/630] w-full rounded-2xl border border-black/[0.06] object-cover"
           />
         )}
 
         {/* The engine sanitizes before serving; cleanHtml is a second, independent pass in case the engine is ever misconfigured. */}
-        <div className="bf-article" dangerouslySetInnerHTML={{ __html: cleanHtml(post.content) }} />
+        <div className="bf-article" dangerouslySetInnerHTML={{ __html: body.html }} />
 
         <div className="mt-10"><ShareBar placement="end" title={post.title} url={postUrl(post.slug)} description={post.excerpt ?? undefined} image={post.cover_image ? (post.cover_image.startsWith("/") ? `${SITE_URL}${post.cover_image}` : post.cover_image) : null} hashtag={post.category ?? undefined} articleId={post.slug} category={post.category ?? undefined} /></div>
 
@@ -130,7 +141,29 @@ export default async function BlogPostRoute({ params }: Props) {
             ))}
           </ul>
         </aside>
+
+        <RelatedPosts posts={more} />
       </article>
+
+      <aside aria-label="Explore GrowQR" className="mt-12 space-y-5 lg:mt-0 lg:self-stretch">
+        <div className="space-y-5 lg:sticky lg:top-28">
+          {body.toc.length > 1 ? (
+            <nav aria-labelledby="toc-h" className="rounded-2xl border border-black/[0.09] bg-white p-5">
+              <p id="toc-h" className="text-[13px] font-bold uppercase tracking-wide text-ink-3">In this article</p>
+              <ol className="mt-3 space-y-1.5 border-l border-black/[0.1] text-[14.5px]">
+                {body.toc.map((t) => <li key={t.id}><a href={`#${t.id}`} className={`-ml-px block border-l-2 border-transparent py-0.5 pl-3 text-ink-2 hover:border-orange-deep hover:text-ink ${focus}`}>{t.text}</a></li>)}
+              </ol>
+            </nav>
+          ) : null}
+          <nav aria-labelledby="explore-h" className="rounded-2xl border border-black/[0.09] bg-white p-5">
+            <p id="explore-h" className="text-[13px] font-bold uppercase tracking-wide text-ink-3">Explore the portal</p>
+            <ul className="mt-3 divide-y divide-black/[0.07]">
+              {EXPLORE.map((e) => <li key={e.href}><Link href={e.href} className={`block rounded-md py-2.5 hover:bg-cream-2 ${focus}`}><span className="block text-[15px] font-semibold text-ink">{e.label}</span><span className="block text-[13px] leading-snug text-ink-3">{e.note}</span></Link></li>)}
+            </ul>
+          </nav>
+        </div>
+      </aside>
+      </div>
 
       <style>{`
         .bf-article { color: var(--bf-ink, #1f2430); font-size: 17px; line-height: 1.75; }
