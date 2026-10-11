@@ -1,6 +1,9 @@
 import Link from "next/link";
 import PageShell from "@/components/layout/PageShell";
 import BlogQuiz from "@/components/blog/BlogQuiz";
+import ShareBar from "@/components/blog/ShareBar";
+import { postUrl } from "@/lib/blog/seo";
+import { SITE_URL } from "@/lib/seo";
 import { ReadingProgress } from "@/components/blog/PostRail";
 import type { LocalBlogPost } from "@/lib/blog/local";
 import { cleanHtml } from "@/lib/market/lessons";
@@ -50,6 +53,8 @@ export default function StandardPost({ post }: { post: LocalBlogPost }) {
           </p>
         </header>
 
+        <ShareBar placement="top" title={post.title} url={postUrl(post.slug)} description={post.excerpt ?? undefined} image={x.cover.src.startsWith("/") ? `${SITE_URL}${x.cover.src}` : x.cover.src} hashtag={post.category ?? undefined} articleId={post.slug} category={post.category ?? undefined} />
+
         {/* eslint-disable-next-line @next/next/no-img-element */}
         <img src={x.cover.src} alt={x.cover.alt} width={x.cover.width} height={x.cover.height} fetchPriority="high" decoding="async" className="mt-6 h-auto w-full rounded-2xl border border-black/[0.08]" />
 
@@ -63,6 +68,8 @@ export default function StandardPost({ post }: { post: LocalBlogPost }) {
         <div className="bf-article mt-8" dangerouslySetInnerHTML={{ __html: cleanHtml(before) }} />
         {x.quiz ? <BlogQuiz quiz={x.quiz} /> : null}
         {after ? <div className="bf-article" dangerouslySetInnerHTML={{ __html: cleanHtml(after) }} /> : null}
+
+        <div className="mt-12"><ShareBar placement="end" title={post.title} url={postUrl(post.slug)} description={post.excerpt ?? undefined} image={x.cover.src.startsWith("/") ? `${SITE_URL}${x.cover.src}` : x.cover.src} hashtag={post.category ?? undefined} articleId={post.slug} category={post.category ?? undefined} /></div>
 
         <section id="faq" aria-labelledby="faq-h" className="mt-12" style={{ scrollMarginTop: 110 }}>
           <h2 id="faq-h" className="text-[26px] font-bold text-ink">Frequently asked questions</h2>

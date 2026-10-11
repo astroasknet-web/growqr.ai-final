@@ -249,3 +249,9 @@ export function trackSectionView(sectionName: string): void {
 export function trackFormError(formName: string, errorType: string): void {
   trackEvent("form_error", { form_name: formName, error_type: errorType });
 }
+
+/** A reader clicked a share control on a blog post. This records the click, not a completed share: the platforms do not report that. */
+export type ShareMethod = "whatsapp" | "facebook" | "x" | "linkedin" | "telegram" | "pinterest" | "reddit" | "email" | "native" | "copy";
+export function trackShare(method: ShareMethod, params: { article: string; category?: string; placement: "top" | "end" }): void {
+  trackEvent(method === "copy" ? "copy_article_link" : `share_${method}`, { article_id: params.article, article_category: params.category ?? "", share_method: method, placement: params.placement });
+}
