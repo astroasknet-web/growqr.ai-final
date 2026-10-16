@@ -1,4 +1,5 @@
 import digitalLiteracy from "./data/digital-literacy.activities.json";
+import bbaFinancialAccounting from "./data/bba-financial-accounting.activities.json";
 import { cloneSheet, emptySheet } from "./sheet/engine";
 import { emptyDeck, sanitizeDeck } from "./slides";
 import { sanitizeDoc } from "./doc";
@@ -10,6 +11,7 @@ import type { Activity, ActivityState, Badge, LearnCourse } from "./types";
  */
 const COURSES: Record<string, LearnCourse> = {
   "digital-literacy-master": digitalLiteracy as unknown as LearnCourse,
+  "bba-financial-accounting": bbaFinancialAccounting as unknown as LearnCourse,
 };
 
 export const learnCourse = (slug: string): LearnCourse | null => (Object.prototype.hasOwnProperty.call(COURSES, slug) ? COURSES[slug] : null);

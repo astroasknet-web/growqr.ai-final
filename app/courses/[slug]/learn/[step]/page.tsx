@@ -9,7 +9,9 @@ import { activitiesFor, requiredFor } from "@/lib/learn/activities";
 import * as results from "@/lib/learn/results";
 import { currentViewer, MarketShell } from "@/components/market/shell";
 import { quizAction } from "../actions";
-import { SITE_URL } from "@/lib/seo";
+import { OG_IMAGE, SITE_URL } from "@/lib/seo";
+import { moduleTitle } from "@/lib/learn/course-seo";
+import { ExpandAll, HashOpen } from "@/components/learn/LessonTools";
 
 export const dynamic = "force-dynamic";
 const clean = (s: string) => s.toLowerCase().replace(/[^a-z0-9-]/g, "");
@@ -24,11 +26,16 @@ export async function generateMetadata({ params, searchParams }: { params: Promi
   if (!nc || !at) return { title: "Lesson not found | GrowQR", robots: { index: false, follow: true } };
   const title = at.capstone ? nc.capstone.title : at.module!.title;
   const desc = at.capstone ? nc.capstone.summary : at.module!.summary;
+  const full = moduleTitle(at.capstone ? title : at.module!.seoTitle ?? title, nc.landing?.shortTitle ?? nc.title); // short keyword title, never cut mid-word
+  const url = `${SITE_URL}/courses/${slug}/learn/${at.capstone ? "capstone" : at.module!.slug}`;
+  const description = Array.from(desc).slice(0, 155).join("");
   return {
-    title: `${title} | ${nc.title}`.slice(0, 60) + " | GrowQR",
-    description: Array.from(desc).slice(0, 155).join(""),
-    alternates: { canonical: `${SITE_URL}/courses/${slug}/learn/${at.capstone ? "capstone" : at.module!.slug}` },
+    title: full,
+    description,
+    alternates: { canonical: url },
     robots: noindexResult ? { index: false, follow: true } : { index: true, follow: true },
+    openGraph: { type: "article", url, siteName: "GrowQR", title: full, description, images: [OG_IMAGE] },
+    twitter: { card: "summary_large_image", title: full, description, images: [OG_IMAGE.url] },
   };
 }
 
@@ -69,7 +76,13 @@ export default async function StepPage({ params, searchParams }: { params: Promi
   const jsonld = {
     "@context": "https://schema.org",
     "@graph": [
-      { "@type": "LearningResource", name: title, isPartOf: { "@type": "Course", name: nc.title, url: `${SITE_URL}/courses/${slug}` }, inLanguage: "en", learningResourceType: at.capstone ? "Project" : "Lesson", isAccessibleForFree: true },
+      {
+        "@type": "LearningResource", name: title, isPartOf: { "@type": "Course", name: nc.title, url: `${SITE_URL}/courses/${slug}` }, inLanguage: nc.landing ? "en-IN" : "en", learningResourceType: at.capstone ? "Project" : "Lesson", isAccessibleForFree: true,
+        ...(nc.landing ? {
+          url: `${SITE_URL}/courses/${slug}/learn/${key}`, description: at.capstone ? nc.capstone.summary : m!.summary, educationalLevel: nc.level, dateModified: nc.landing.updated,
+          author: { "@type": "Person", name: nc.landing.author.name }, ...(m ? { timeRequired: `PT${Math.max(1, Math.round(m.hours))}H`, teaches: m.topics.map((t) => t.title) } : {}),
+        } : {}),
+      },
       { "@type": "BreadcrumbList", itemListElement: [
         { "@type": "ListItem", position: 1, name: "Courses", item: `${SITE_URL}/courses` },
         { "@type": "ListItem", position: 2, name: nc.title, item: `${SITE_URL}/courses/${slug}/learn` },
@@ -82,6 +95,7 @@ export default async function StepPage({ params, searchParams }: { params: Promi
   return (
     <MarketShell user={me} active="courses">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonld).replace(/</g, "\\u003c") }} />
+      <HashOpen />
       <nav aria-label="Breadcrumb" className="mb-4 text-[13px] text-ink-3"><Link href="/courses" className="underline">Courses</Link> / <Link href={`/courses/${slug}/learn`} className="underline">{nc.title}</Link> / {at.capstone ? "Capstone" : `Module ${at.index + 1}`}</nav>
 
       <header>
@@ -110,7 +124,10 @@ export default async function StepPage({ params, searchParams }: { params: Promi
       <div className="mt-8 grid max-w-4xl grid-cols-[minmax(0,1fr)] gap-6">
         {m ? (
           <section id="lessons" aria-labelledby="lessons-h" className="scroll-mt-28">
-            <h2 id="lessons-h" className="mb-3 text-[22px] font-bold text-ink">Learn</h2>
+            <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
+              <h2 id="lessons-h" className="text-[22px] font-bold text-ink">Learn</h2>
+              {m.topics.length > 2 ? <ExpandAll target="lessons" /> : null}
+            </div>
             {m.intro ? (
               <details open className={`${card} mb-3`}>
                 <summary className="cursor-pointer text-[17px] font-semibold text-ink">Why this matters</summary>
@@ -119,7 +136,7 @@ export default async function StepPage({ params, searchParams }: { params: Promi
             ) : null}
             <div className="space-y-3">
               {m.topics.map((t, i) => (
-                <details key={t.slug} id={t.slug} className={card} open={i === 0}>
+                <details key={t.slug} id={t.slug} className={`${card} scroll-mt-28`} open={i === 0}>
                   <summary className="cursor-pointer text-[17px] font-semibold text-ink"><span className="mr-2 text-ink-3">{i + 1}.</span>{t.title}</summary>
                   <div className={`${prose} mt-3`} dangerouslySetInnerHTML={html(t.html)} />
                   {t.keyPoints.length ? (<div className="mt-4 rounded-xl bg-cream-2 p-4"><h3 className="text-[14px] font-semibold uppercase tracking-wide text-ink-3">Remember</h3><ul className="mt-1 list-disc space-y-1 pl-5 text-[15px] text-ink-2">{t.keyPoints.map((k) => <li key={k}>{k}</li>)}</ul></div>) : null}

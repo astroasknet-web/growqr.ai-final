@@ -85,3 +85,27 @@ Feedback rules: a failed check says **what is wrong, not the answer**. `hint` ap
 - Spreadsheet: one sheet per activity, no cross-sheet references; sorting does not rewrite formulas that point at moved rows (the status line says so).
 - Slides export is a self-contained HTML slideshow (and print-to-PDF), not .pptx.
 - Automated checks judge structure and content, not taste.
+
+---
+
+## University programme courses (BBA, BCA, MCA, MBA, B.Tech): the standard pipeline
+
+The Digital Literacy course is hand-built. Courses for university programmes follow one repeatable pipeline so each new subject is data, not code. The reference is **Financial Accounting for BBA** (`/courses/bba-financial-accounting`).
+
+| Step | What | Where |
+|---|---|---|
+| 1. Author | Write the subject as a Vidaara *standard course* JSON (units, lessons, worked examples with machine-checkable numbers, case studies, question bank, glossary, FAQs, lab, SEO block). The authoring tool re-computes every number and fails the build if one is wrong. | `F:\COURSES\COLLLGE LEVEL COURSE\BBA\courses\` (`COURSE_SCHEMA.md`, `AUDIT_GUIDE.md`, `_tools\course_tools.js`) |
+| 2. Convert | `node scripts/build-course-pages.mjs <course.json> [slug]` writes the lesson player file, copies the source to `content/course-sources/`, and upserts the catalogue entry in `courses.json`. | `scripts/build-course-pages.mjs`, `scripts/lib/course-html.mjs` |
+| 3. Register | Add the slug to `NATIVE` in `lib/market/lessons.ts` (first time only). The catalogue loads into Postgres when the server starts. | `lib/market/lessons.ts` |
+| 4. Practice | Author spreadsheet and sort-and-decide activities (optional but recommended): `scripts/author/<slug>-activities.mjs` writes `lib/learn/data/<slug>.activities.json`; register it in `lib/learn/activities.ts`; copy `lib/learn/bba-financial-accounting.activities.test.ts` and write a model answer for each activity. | `lib/learn/` |
+| 5. Test | `npx vitest run lib/learn lib/market` (the course-pages tests check slugs, safe HTML, quiz keys, SEO limits and JSON-LD). | `lib/learn/course-pages.test.ts` |
+
+What a programme course gets for free (from the `landing` block in its lesson file):
+
+- A landing page with curriculum, learning outcomes, a **university syllabus alignment table** (with links to the official syllabus), key terms, FAQ, sources and author.
+- SEO: keyword title (at most 62 characters), 120-155 character description, canonical, Open Graph and Twitter cards, and schema.org `Course` + `CourseInstance` + `Offer` (free) + `FAQPage` + `DefinedTermSet` + `BreadcrumbList`. Lesson pages carry `LearningResource` with author, time and topics.
+- Short keyword URLs: `/courses/<programme>-<subject>/learn/<unit-slug>#<lesson-slug>` (set `slug`, `seo_title` per unit in the source).
+- Lesson components (callouts, formula boxes, tables, journal and trial-balance tables, accessible SVG diagrams) styled in `app/globals.css` under "Course lesson components" (prefix `cw-`), mobile-first, with a high-contrast mode.
+- "Expand all lessons" and deep links that open the right lesson (`components/learn/LessonTools.tsx`).
+
+Rules to keep the standard: one H1 per page, every diagram has a text alternative, all text is escaped by the renderer, quiz answers are spread across A to D by the authoring tool, and nothing is published until the audit report passes.

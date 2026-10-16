@@ -168,7 +168,7 @@ export function QrArt({ seed = 7, fg = "#1A1A1A", bg = "#fff", label = "Sample G
 /* ------------------------------------------------------------------ */
 const ITEMS = [
   { key: "cgpa", label: "Degree & CGPA", w: 15, on: true, gap: ["Degree and CGPA are missing", "Add them first. Recruiters scan education in seconds.", "https://app.growqr.ai/signup"] },
-  { key: "skills", label: "Skills section", w: 15, on: true, gap: ["No skills section", "List tools you can prove. GrowQR links 120 courses to close skill gaps.", SCORE_URL] },
+  { key: "skills", label: "Skills section", w: 15, on: true, gap: ["No skills section", "List tools you can prove. GrowQR links 121 courses to close skill gaps.", SCORE_URL] },
   { key: "intern", label: "Internship", w: 20, on: false, gap: ["No internship or work experience", "The biggest single gap. GrowQR matches you to verified, paid roles with the first month in escrow.", SCORE_URL] },
   { key: "projects", label: "2+ projects", w: 15, on: false, gap: ["Fewer than two projects", "Build two small ones. A 10 to 40 hour micro-gig counts, and it pays.", SCORE_URL] },
   { key: "certs", label: "Certifications", w: 10, on: false, gap: ["No certifications", "Finish a GrowQR course and the certificate lands on your passport.", SCORE_URL] },

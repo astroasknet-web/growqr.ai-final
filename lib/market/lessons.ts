@@ -2,6 +2,7 @@ import dl from "./data/lessons/digital-literacy.json";
 import ds from "./data/lessons/data-science-python.json";
 import da from "./data/lessons/data-analytics-python.json";
 import hc from "./data/lessons/html-css.json";
+import bbaFa from "./data/lessons/bba-financial-accounting.json";
 
 /**
  * Native lessons: the courses GrowQR teaches itself (ported from Vidaara by scripts/build-lessons.mjs). A catalogue course with an entry
@@ -12,10 +13,23 @@ export interface Quiz { pass: number; questions: Array<{ text: string; options: 
 export interface Topic { title: string; slug: string; html: string; keyPoints: string[] }
 export interface LessonModule {
   num: number; slug: string; title: string; hours: number; level: string; summary: string; outcome: string; intro: string;
-  topics: Topic[]; practical: { title: string; intro: string; steps: string[] } | null; quiz: Quiz | null; track?: string;
+  seoTitle?: string; topics: Topic[]; practical: { title: string; intro: string; steps: string[] } | null; quiz: Quiz | null; track?: string;
 }
 export interface Capstone { slug: string; title: string; summary: string; intro: string; steps: string[]; projectTitle: string; quiz: Quiz | null }
-export interface NativeCourse { key: string; title: string; tagline: string; level: string; hours: number; summary: string; modules: LessonModule[]; capstone: Capstone }
+/** Optional marketing and SEO content for a course landing page (university programmes use it; the older courses do not). */
+export interface Landing {
+  outcomes: Array<{ id: string; text: string }>;
+  audience: string[]; prerequisites: string[];
+  alignment: Array<{ university: string; code: string; title: string; semester: number; scheme: string; source: string }>;
+  alignmentNote: string;
+  faqs: Array<{ q: string; a: string }>;
+  glossary: Array<{ term: string; definition: string }>;
+  references: Array<{ name: string; url: string; use: string }>; textbooks: string[];
+  shortTitle: string; author: { name: string; publisher: string }; updated: string; version: string; status: string;
+  seo: { title: string; description: string; keywords: string[]; focus: string };
+  stats: { lessons: number; examples: number; quizQuestions: number; numericals: number; glossary: number };
+}
+export interface NativeCourse { key: string; title: string; tagline: string; level: string; hours: number; summary: string; modules: LessonModule[]; capstone: Capstone; landing?: Landing }
 
 /** Catalogue slug -> lesson file. */
 const NATIVE: Record<string, NativeCourse> = {
@@ -23,6 +37,7 @@ const NATIVE: Record<string, NativeCourse> = {
   "data-science-python": ds as unknown as NativeCourse,
   "data-analytics-python": da as unknown as NativeCourse,
   "html-css-academy": hc as unknown as NativeCourse,
+  "bba-financial-accounting": bbaFa as unknown as NativeCourse,
 };
 
 export const isNative = (slug: string): boolean => Object.prototype.hasOwnProperty.call(NATIVE, slug);

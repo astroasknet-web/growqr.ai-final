@@ -104,6 +104,11 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
                 <span className="block text-[12px] text-ink-3 mt-1">{m.hours} h &middot; {m.topics.length} lessons{m.quiz ? ` · ${m.quiz.questions.length}-question quiz` : ""}</span>
               </span>
             </Link>
+            {nc.landing ? (
+              <ul className="mt-3 flex flex-wrap gap-2 pl-12" aria-label={`Lessons in ${m.title}`}>
+                {m.topics.map((t) => (<li key={t.slug}><Link href={`/courses/${slug}/learn/${m.slug}#${t.slug}`} className="inline-block rounded-full bg-cream-3 px-3 py-1 text-[12.5px] text-ink-2 hover:bg-orange-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-orange-deep">{t.title}</Link></li>))}
+              </ul>
+            ) : null}
           </li>
         ))}
         <li className="bg-white rounded-2xl border border-black/[0.08] shadow-card p-4 sm:p-5">

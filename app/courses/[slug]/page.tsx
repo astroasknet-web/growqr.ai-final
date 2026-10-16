@@ -13,6 +13,8 @@ import { currentViewer, MarketShell } from "@/components/market/shell";
 import { courseAction } from "../actions";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { SITE_URL } from "@/lib/seo";
+import { landingJsonLd, landingMetadata } from "@/lib/learn/course-seo";
+import { UniversityCourseSections } from "@/components/learn/UniversityCourseSections";
 
 export const dynamic = "force-dynamic";
 const clean = (s: string) => s.toLowerCase().replace(/[^a-z0-9-]/g, "");
@@ -21,6 +23,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!databaseConfigured()) return { title: "Course | GrowQR" };
   const c = await courses.bySlug(clean((await params).slug));
   if (!c) return { title: "Course not found | GrowQR", robots: { index: false, follow: true } };
+  const rich = lessons.nativeCourse(c.slug);
+  const landing = rich ? landingMetadata(rich, c.slug) : null;
+  if (landing) return landing; // university programme courses carry their own SEO block
   return {
     title: `${c.title} Course | GrowQR`,
     description: Array.from(`${c.brief} ${c.hours}, ${c.modules} modules, certificate and badge.`).slice(0, 155).join(""),
@@ -53,7 +58,8 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
     .map(({ j }) => ({ ...j, match: passport.match(j.skills, profile).score }));
   const related = await courses.related(course, 3);
 
-  const jsonld = {
+  const rich = lessons.nativeCourse(course.slug);
+  const jsonld = rich?.landing ? landingJsonLd(rich, course.slug, course) : {
     "@context": "https://schema.org",
     "@graph": [
       { "@type": "Course", name: course.title, description: course.brief, url: `${SITE_URL}${self}`, educationalLevel: course.level_label, timeRequired: course.hours, inLanguage: "en", provider: { "@type": "Organization", name: "GrowQR", sameAs: SITE_URL } },
@@ -96,6 +102,7 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
             <h3 className="text-[16px] font-semibold text-ink mt-4 mb-1">Included in every course</h3>
             <ul className="list-disc pl-5 space-y-1 text-[15px] text-ink-2"><li>Bite-sized lessons grouped into modules</li><li>Guided practice, short quizzes and one hands-on project</li><li>A certificate and a badge for your profile</li><li>Self-paced, lifetime access, mobile or desktop</li></ul>
           </article>
+          {rich?.landing ? <UniversityCourseSections nc={rich} slug={course.slug} /> : null}
         </div>
 
         <aside aria-label="Start this course" id="progress" className="bg-white rounded-2xl border border-black/[0.08] shadow-card p-5 space-y-3">

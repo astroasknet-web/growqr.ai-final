@@ -89,6 +89,11 @@
    "name": "Blockchain & Web3",
    "c1": "#3730A3",
    "c2": "#6366F1"
+  },
+  "university": {
+   "name": "University Programmes (BBA, BCA, MCA, MBA)",
+   "c1": "#1E3A8A",
+   "c2": "#93C5FD"
   }
  },
  "courses": [
@@ -3633,6 +3638,36 @@
    "handsOn": "Build & ship: a responsive personal site",
    "outcome": "Build and ship a responsive multi-section website.",
    "icon": "code"
+  },
+  {
+   "slug": "bba-financial-accounting",
+   "title": "Financial Accounting for BBA",
+   "modules": 6,
+   "hours": "~70 hrs",
+   "badge": "BBA Financial Accounting",
+   "cat": "university",
+   "level": "B",
+   "levelLabel": "Beginner",
+   "tags": [
+    "College",
+    "Fresher"
+   ],
+   "weeks": "~12 weeks",
+   "pace": "6 hrs/wk",
+   "prereq": "Class 10 arithmetic: percentages, simple interest, ratios",
+   "bestFor": "BBA, BBM, BMS and B.Com students in Year 1 who need to pass the university paper with confidence",
+   "brief": "From the first journal entry to reading a balance sheet, for BBA students in India",
+   "learn": [
+    "Accounting Fundamentals and the Framework",
+    "Recording Transactions, Trial Balance and Verification",
+    "Depreciation, Inventory and Year-End Adjustments",
+    "Final Accounts of a Sole Proprietor and of a Non-Profit Organisation",
+    "Special Accounting Areas: Bills of Exchange, Consignment and Joint Venture",
+    "Financial Statement Analysis, Corporate Reporting and Computerised Accounting"
+   ],
+   "handsOn": "Software lab, practice numericals and a 48-question final assessment",
+   "outcome": "Explain the purpose of accounting, its users, the main concepts and conventions, and the Indian accounting-standards framework (AS and Ind AS).",
+   "icon": "calculator"
   }
  ]
 }

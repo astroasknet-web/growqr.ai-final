@@ -87,6 +87,6 @@ export function relatedLearning(post: Pick<BlogPostSummary, "title" | "category"
   const hay = `${post.title} ${post.category ?? ""} ${post.excerpt ?? ""}`;
   const out: LearnLink[] = [];
   for (const r of RULES) if (r.re.test(hay)) for (const l of r.links) if (!out.some((o) => o.href === l.href)) out.push(l);
-  if (!out.length) return [{ href: "/courses", label: "Browse all courses", why: "120 self-paced courses with certificates" }, { href: "/practice-tests", label: "Free practice tests", why: "IELTS and GRE, marked instantly" }];
+  if (!out.length) return [{ href: "/courses", label: "Browse all courses", why: "121 self-paced courses with certificates" }, { href: "/practice-tests", label: "Free practice tests", why: "IELTS and GRE, marked instantly" }];
   return out.slice(0, 3);
 }
