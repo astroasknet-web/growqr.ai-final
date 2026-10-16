@@ -109,3 +109,25 @@ What a programme course gets for free (from the `landing` block in its lesson fi
 - "Expand all lessons" and deep links that open the right lesson (`components/learn/LessonTools.tsx`).
 
 Rules to keep the standard: one H1 per page, every diagram has a text alternative, all text is escaped by the renderer, quiz answers are spread across A to D by the authoring tool, and nothing is published until the audit report passes.
+
+## Interactive lessons (widgets)
+
+Every converted university course gets the same interactive layer, driven by data. Nothing is hand-coded per course.
+
+**Automatic for every lesson:** a "Check what you just learned" quick check (the lesson's first three MCQs, instant feedback with explanations, 10 XP per first-try answer) and a "Mark complete" button (25 XP). A floating XP and level chip (local to the visitor's browser) tracks progress.
+
+**Optional per lesson:** list specs under `lesson.widgets` in the course JSON. Types (shapes in `lib/learn/widgets/types.ts`):
+
+| type | what the student does | typical use |
+|------|----------------------|-------------|
+| `journal` | picks the debit and credit accounts for each transaction; a live ledger and running trial balance build up | any double-entry lesson |
+| `equation` | predicts what each transaction does to total assets, then watches A = L + C bars move | accounting equation, balance sheet effects |
+| `explorer` | drags sliders; formulas (safe parser, no eval) update results and an optional line chart | depreciation, ratios, GST, interest, EMI |
+| `flashcards` | flips term cards and sorts them into known and again | glossary terms for the lesson |
+| `quiz` | answers a custom quick check (replaces the automatic one) | lessons needing harder questions |
+
+**How it works:** `scripts/lib/widget-html.mjs` writes `<div data-cw-widget data-spec="base64">` with a readable static fallback (scripts off, search engines). `components/learn/widgets/WidgetHost.tsx` mounts the live widget over it. A spec that fails `validateSpec` keeps the fallback, so a content slip never breaks a lesson.
+
+**Authoring a course:** copy `scripts/author/bba-financial-accounting-widgets.mjs`, change the specs, run it, then run `scripts/build-course-pages.mjs` on the same file. `lib/learn/widgets/course-widgets.test.ts` fails the build if any widget in any course is invalid (unbalanced journal, move that breaks A = L + C, non-finite formula, duplicate id, missing quick check).
+
+**Progress is motivation only.** XP and ticks live in the visitor's localStorage. Real completion still comes from the server-graded module quizzes and activities.

@@ -2,7 +2,6 @@ import { describe, expect, it } from "vitest";
 import catalogue from "../market/data/courses.json";
 import { cleanHtml, gradeQuiz, nativeCourse, nativeSlugs } from "../market/lessons";
 import { fitTitle, formatDate, landingJsonLd, landingMetadata, moduleTitle } from "./course-seo";
-// @ts-expect-error plain ESM script helpers, no type declarations
 import { DIAGRAMS, esc, lessonHtml, renderBlock } from "../../scripts/lib/course-html.mjs";
 
 const slugs = nativeSlugs().filter((s) => nativeCourse(s)?.landing);

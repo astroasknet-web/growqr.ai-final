@@ -29,7 +29,7 @@ const nc = buildNativeCourse(c, slug);
 mkdirSync(path.join(root, "lib/market/data/lessons"), { recursive: true });
 writeFileSync(path.join(root, "lib/market/data/lessons", `${slug}.json`), JSON.stringify(nc));
 mkdirSync(path.join(root, "content/course-sources"), { recursive: true });
-copyFileSync(src, path.join(root, "content/course-sources", `${c.course.id}.json`));
+{ const dest = path.join(root, "content/course-sources", `${c.course.id}.json`); if (path.resolve(src) !== path.resolve(dest)) copyFileSync(src, dest); }
 
 // Catalogue entry.
 const catFile = path.join(root, "lib/market/data/courses.json");

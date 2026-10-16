@@ -423,7 +423,44 @@
             "Mixing up accrual with cash basis. Accrual follows the event; cash follows the money.",
             "Saying Ind AS apply to all companies. They apply only to those meeting the notified thresholds."
           ],
-          "exam_tip": "When asked to 'explain with example', give the concept in one line and a rupee example in the next. Examiners award the example."
+          "exam_tip": "When asked to 'explain with example', give the concept in one line and a rupee example in the next. Examiners award the example.",
+          "widgets": [
+            {
+              "type": "flashcards",
+              "id": "terms-concepts",
+              "title": "Key terms: concepts and standards",
+              "cards": [
+                {
+                  "front": "Accounting period",
+                  "back": "The span for which accounts are prepared, usually 12 months; in India commonly 1 April to 31 March."
+                },
+                {
+                  "front": "Accrual",
+                  "back": "Recording income and expenses when earned or incurred, not when cash is received or paid."
+                },
+                {
+                  "front": "GAAP",
+                  "back": "Generally accepted accounting principles, the shared rules of accounting."
+                },
+                {
+                  "front": "Ind AS",
+                  "back": "Indian Accounting Standards, converged with IFRS and applicable to companies meeting notified thresholds."
+                },
+                {
+                  "front": "Asset",
+                  "back": "A resource owned by the business from which future benefit is expected."
+                },
+                {
+                  "front": "Liability",
+                  "back": "An obligation of the business to pay money or give value to outsiders."
+                },
+                {
+                  "front": "Contingent liability",
+                  "back": "A possible obligation that depends on a future event, such as a discounted bill being dishonoured."
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "L1.3",
@@ -565,7 +602,99 @@
             "Recording the full sale price as profit. Profit is selling price less cost.",
             "Forgetting that drawings and expenses reduce capital."
           ],
-          "exam_tip": "In a transaction table, always write the new total of both sides after each line. If they differ, you have an error to find before moving on."
+          "exam_tip": "In a transaction table, always write the new total of both sides after each line. If they differ, you have an error to find before moving on.",
+          "widgets": [
+            {
+              "type": "equation",
+              "id": "equation-lab-rohan",
+              "title": "Watch the accounting equation hold, transaction by transaction",
+              "items": [
+                {
+                  "key": "cash",
+                  "label": "Cash",
+                  "side": "A"
+                },
+                {
+                  "key": "furn",
+                  "label": "Furniture",
+                  "side": "A"
+                },
+                {
+                  "key": "stock",
+                  "label": "Stock",
+                  "side": "A"
+                },
+                {
+                  "key": "cred",
+                  "label": "Creditors",
+                  "side": "L"
+                },
+                {
+                  "key": "cap",
+                  "label": "Capital",
+                  "side": "C"
+                }
+              ],
+              "start": {
+                "cash": 0,
+                "furn": 0,
+                "stock": 0,
+                "cred": 0,
+                "cap": 0
+              },
+              "moves": [
+                {
+                  "text": "Rohan brings 5,00,000 in cash to start the stationery shop.",
+                  "delta": {
+                    "cash": 500000,
+                    "cap": 500000
+                  },
+                  "why": "Cash comes in, and the owner's claim on the business grows by the same amount."
+                },
+                {
+                  "text": "He buys furniture for 80,000 and pays cash.",
+                  "delta": {
+                    "furn": 80000,
+                    "cash": -80000
+                  },
+                  "why": "One asset swaps for another, so total assets do not move."
+                },
+                {
+                  "text": "He buys goods worth 1,50,000 on credit from Sharma Traders.",
+                  "delta": {
+                    "stock": 150000,
+                    "cred": 150000
+                  },
+                  "why": "Assets and a liability both rise by 1,50,000. Nothing has been paid yet."
+                },
+                {
+                  "text": "He sells goods that cost 60,000 for 90,000 cash.",
+                  "delta": {
+                    "cash": 90000,
+                    "stock": -60000,
+                    "cap": 30000
+                  },
+                  "why": "Cash rises by 90,000 and stock falls by 60,000, so assets gain 30,000. That profit belongs to the owner, so capital rises by 30,000."
+                },
+                {
+                  "text": "He pays shop rent of 20,000 in cash.",
+                  "delta": {
+                    "cash": -20000,
+                    "cap": -20000
+                  },
+                  "why": "An expense uses up cash and reduces what the owner is entitled to, so assets and capital both fall."
+                },
+                {
+                  "text": "He pays Sharma Traders 1,00,000.",
+                  "delta": {
+                    "cash": -100000,
+                    "cred": -100000
+                  },
+                  "why": "Cash and the amount owed both fall by 1,00,000."
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "L1.4",
@@ -1230,7 +1359,122 @@
             "Skipping the narration. A journal entry without a reason cannot be audited.",
             "Posting to the wrong side because the 'To' and 'By' words were confused."
           ],
-          "exam_tip": "Always journalise first, even if the question says 'prepare ledger accounts'. Examiners give marks for the journal as the working."
+          "exam_tip": "Always journalise first, even if the question says 'prepare ledger accounts'. Examiners give marks for the journal as the working.",
+          "widgets": [
+            {
+              "type": "journal",
+              "id": "journal-rohan",
+              "title": "Journalise Rohan's first six transactions",
+              "intro": "Pick the account to debit and the account to credit for each transaction. Your ledger and trial balance build up as you post.",
+              "accounts": [
+                "Cash",
+                "Capital",
+                "Furniture",
+                "Purchases",
+                "Sharma Traders",
+                "Sales",
+                "Rent"
+              ],
+              "txns": [
+                {
+                  "text": "Rohan brings 5,00,000 in cash as capital.",
+                  "dr": [
+                    [
+                      "Cash",
+                      500000
+                    ]
+                  ],
+                  "cr": [
+                    [
+                      "Capital",
+                      500000
+                    ]
+                  ],
+                  "why": "Cash is an asset that increased, so debit it. Capital is what the business owes the owner and it increased, so credit it."
+                },
+                {
+                  "text": "Bought furniture for 80,000 and paid cash.",
+                  "dr": [
+                    [
+                      "Furniture",
+                      80000
+                    ]
+                  ],
+                  "cr": [
+                    [
+                      "Cash",
+                      80000
+                    ]
+                  ],
+                  "why": "Furniture (an asset) comes in, so debit it. Cash (an asset) goes out, so credit it."
+                },
+                {
+                  "text": "Bought goods for 1,50,000 on credit from Sharma Traders.",
+                  "dr": [
+                    [
+                      "Purchases",
+                      150000
+                    ]
+                  ],
+                  "cr": [
+                    [
+                      "Sharma Traders",
+                      150000
+                    ]
+                  ],
+                  "why": "Purchases is an expense-type account that increased, so debit it. Sharma Traders is now owed money, a liability that increased, so credit it."
+                },
+                {
+                  "text": "Sold goods for 90,000 cash.",
+                  "dr": [
+                    [
+                      "Cash",
+                      90000
+                    ]
+                  ],
+                  "cr": [
+                    [
+                      "Sales",
+                      90000
+                    ]
+                  ],
+                  "why": "Cash comes in, so debit it. Sales is income, and income increases with a credit."
+                },
+                {
+                  "text": "Paid shop rent of 20,000 in cash.",
+                  "dr": [
+                    [
+                      "Rent",
+                      20000
+                    ]
+                  ],
+                  "cr": [
+                    [
+                      "Cash",
+                      20000
+                    ]
+                  ],
+                  "why": "Rent is an expense, and expenses increase with a debit. Cash goes out, so credit it."
+                },
+                {
+                  "text": "Paid Sharma Traders 1,00,000 in cash.",
+                  "dr": [
+                    [
+                      "Sharma Traders",
+                      100000
+                    ]
+                  ],
+                  "cr": [
+                    [
+                      "Cash",
+                      100000
+                    ]
+                  ],
+                  "why": "The amount owed to Sharma Traders falls, and liabilities decrease with a debit. Cash goes out, so credit it."
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "L2.2",
@@ -1529,7 +1773,44 @@
             "Putting a creditor's balance on the debit side because the word 'payment' appears in the question.",
             "Forgetting to include opening balances."
           ],
-          "exam_tip": "Show a heading with the date, 'Trial balance as at 30 April 2026'. It is the standard presentation and costs nothing."
+          "exam_tip": "Show a heading with the date, 'Trial balance as at 30 April 2026'. It is the standard presentation and costs nothing.",
+          "widgets": [
+            {
+              "type": "flashcards",
+              "id": "terms-ledger",
+              "title": "Key terms: ledger and trial balance",
+              "cards": [
+                {
+                  "front": "Journal",
+                  "back": "The book of original entry where transactions are first recorded in date order."
+                },
+                {
+                  "front": "Ledger",
+                  "back": "The book of accounts in which journal entries are classified under account heads."
+                },
+                {
+                  "front": "Double entry",
+                  "back": "Recording each transaction as equal debits and credits in two accounts."
+                },
+                {
+                  "front": "Trial balance",
+                  "back": "A list of ledger balances used to check that total debits equal total credits."
+                },
+                {
+                  "front": "Suspense account",
+                  "back": "A temporary account to hold the difference in the trial balance until errors are found."
+                },
+                {
+                  "front": "Debtor",
+                  "back": "A person who owes money to the business."
+                },
+                {
+                  "front": "Creditor",
+                  "back": "A person to whom the business owes money."
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "L2.4",
@@ -2342,7 +2623,120 @@
             "Forgetting to deduct residual value under SLM.",
             "Charging a full year's depreciation on an asset bought a month before year end."
           ],
-          "exam_tip": "Present depreciation as a small table: year, opening value, depreciation, closing value. It makes checking easy and earns method marks even if one number slips."
+          "exam_tip": "Present depreciation as a small table: year, opening value, depreciation, closing value. It makes checking easy and earns method marks even if one number slips.",
+          "widgets": [
+            {
+              "type": "explorer",
+              "id": "explorer-depreciation",
+              "title": "Straight-line against written-down value",
+              "intro": "Change the machine's cost, scrap value, life or the WDV rate and watch how the two methods write the asset down.",
+              "inputs": [
+                {
+                  "id": "cost",
+                  "label": "Cost of the machine",
+                  "min": 100000,
+                  "max": 1000000,
+                  "step": 10000,
+                  "value": 500000,
+                  "unit": "rs"
+                },
+                {
+                  "id": "scrap",
+                  "label": "Scrap value",
+                  "min": 0,
+                  "max": 100000,
+                  "step": 5000,
+                  "value": 50000,
+                  "unit": "rs"
+                },
+                {
+                  "id": "life",
+                  "label": "Useful life",
+                  "min": 2,
+                  "max": 10,
+                  "step": 1,
+                  "value": 5,
+                  "unit": "yrs"
+                },
+                {
+                  "id": "rate",
+                  "label": "WDV rate",
+                  "min": 5,
+                  "max": 40,
+                  "step": 1,
+                  "value": 20,
+                  "unit": "pct"
+                }
+              ],
+              "outputs": [
+                {
+                  "label": "SLM charge every year",
+                  "expr": "(cost - scrap) / life",
+                  "unit": "rs",
+                  "hint": "Same amount each year"
+                },
+                {
+                  "label": "WDV charge in year 1",
+                  "expr": "cost * rate / 100",
+                  "unit": "rs",
+                  "hint": "The heaviest year"
+                },
+                {
+                  "label": "WDV charge in year 2",
+                  "expr": "cost * (1 - rate / 100) * rate / 100",
+                  "unit": "rs",
+                  "hint": "Lighter, because the base has shrunk"
+                }
+              ],
+              "chart": {
+                "xmax": "life",
+                "xlabel": "Year",
+                "series": [
+                  {
+                    "label": "Book value, SLM",
+                    "expr": "cost - (cost - scrap) / life * k",
+                    "color": "orange"
+                  },
+                  {
+                    "label": "Book value, WDV",
+                    "expr": "cost * pow(1 - rate / 100, k)",
+                    "color": "blue"
+                  }
+                ]
+              }
+            },
+            {
+              "type": "flashcards",
+              "id": "terms-depreciation",
+              "title": "Key terms: depreciation",
+              "cards": [
+                {
+                  "front": "Depreciation",
+                  "back": "Systematic allocation of the cost of an asset over its useful life."
+                },
+                {
+                  "front": "Accumulated depreciation",
+                  "back": "Total depreciation charged on an asset since it was acquired."
+                },
+                {
+                  "front": "Book value",
+                  "back": "Cost of an asset less accumulated depreciation."
+                },
+                {
+                  "front": "Residual value",
+                  "back": "Estimated value of an asset at the end of its useful life."
+                },
+                {
+                  "front": "Useful life",
+                  "back": "The period over which an asset is expected to be used."
+                },
+                {
+                  "front": "Written-down value",
+                  "back": "Cost less accumulated depreciation; the book value on which WDV depreciation is charged."
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "L3.3",
@@ -3070,7 +3464,44 @@
             "Setting outstanding expenses against the expense on the asset side. It is a liability.",
             "Deducting drawings from profit in the profit and loss account instead of from capital."
           ],
-          "exam_tip": "Always cross-check: the balance sheet total of assets must equal the total of capital plus liabilities. If it does not, the error is in one of the adjustments or in the profit figure."
+          "exam_tip": "Always cross-check: the balance sheet total of assets must equal the total of capital plus liabilities. If it does not, the error is in one of the adjustments or in the profit figure.",
+          "widgets": [
+            {
+              "type": "flashcards",
+              "id": "terms-balance-sheet",
+              "title": "Key terms: the balance sheet",
+              "cards": [
+                {
+                  "front": "Balance sheet",
+                  "back": "A statement of assets, liabilities and capital on a given date."
+                },
+                {
+                  "front": "Current asset",
+                  "back": "An asset expected to be converted into cash within a year or the operating cycle."
+                },
+                {
+                  "front": "Prepaid expense",
+                  "back": "An expense paid in advance that relates to a future period."
+                },
+                {
+                  "front": "Provision",
+                  "back": "An amount set aside for an expected liability or loss whose exact amount is uncertain."
+                },
+                {
+                  "front": "Drawings",
+                  "back": "Cash or goods taken out of the business by the owner for personal use."
+                },
+                {
+                  "front": "Final accounts",
+                  "back": "Trading account, profit and loss account and balance sheet."
+                },
+                {
+                  "front": "Gross profit",
+                  "back": "Net sales less cost of goods sold."
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "L4.3",
@@ -3949,7 +4380,36 @@
             "Calculating discount on the discount-adjusted amount instead of the face value.",
             "Forgetting the days of grace."
           ],
-          "exam_tip": "Draw a small timeline: date of drawing, date of acceptance, date of discounting, due date. It prevents mistakes in the period for discount."
+          "exam_tip": "Draw a small timeline: date of drawing, date of acceptance, date of discounting, due date. It prevents mistakes in the period for discount.",
+          "widgets": [
+            {
+              "type": "flashcards",
+              "id": "terms-bills",
+              "title": "Key terms: bills of exchange",
+              "cards": [
+                {
+                  "front": "Bill of exchange",
+                  "back": "A written, unconditional order from the drawer to the drawee to pay a certain sum on a fixed date to the payee."
+                },
+                {
+                  "front": "Drawer",
+                  "back": "The person who writes a bill of exchange."
+                },
+                {
+                  "front": "Drawee",
+                  "back": "The person who is ordered to pay a bill of exchange."
+                },
+                {
+                  "front": "Discount allowed",
+                  "back": "A reduction given to customers who pay early; an expense."
+                },
+                {
+                  "front": "Discount received",
+                  "back": "A reduction obtained from suppliers for early payment; an income."
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "L5.2",
@@ -4134,7 +4594,32 @@
             "Including godown rent in the value of closing stock.",
             "Treating goods sent on consignment as a sale to the consignee."
           ],
-          "exam_tip": "Compute stock last. First write the consignment debits and credits except the closing stock, and see what the profit would be before stock; then include stock."
+          "exam_tip": "Compute stock last. First write the consignment debits and credits except the closing stock, and see what the profit would be before stock; then include stock.",
+          "widgets": [
+            {
+              "type": "flashcards",
+              "id": "terms-consignment",
+              "title": "Key terms: consignment",
+              "cards": [
+                {
+                  "front": "Consignment",
+                  "back": "Sending goods to an agent for sale while the sender keeps ownership."
+                },
+                {
+                  "front": "Account sales",
+                  "back": "A statement sent by a consignee to the consignor showing goods sold, expenses, commission and the balance due."
+                },
+                {
+                  "front": "Closing stock",
+                  "back": "Unsold goods at the end of the period."
+                },
+                {
+                  "front": "Net realisable value",
+                  "back": "Estimated selling price less the cost of completion and selling."
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "L5.3",
@@ -4835,7 +5320,64 @@
             "Using total sales instead of credit sales for debtors turnover when credit sales are given.",
             "Quoting a ratio without saying what it means."
           ],
-          "exam_tip": "Write the formula, then the substitution, then the answer with its unit (times, days, % or ratio). Marks are given for each of the three."
+          "exam_tip": "Write the formula, then the substitution, then the answer with its unit (times, days, % or ratio). Marks are given for each of the three.",
+          "widgets": [
+            {
+              "type": "explorer",
+              "id": "explorer-liquidity",
+              "title": "How liquidity ratios react",
+              "intro": "Move the sliders to see why a business stuffed with unsold stock can look safe on the current ratio and weak on the quick ratio.",
+              "inputs": [
+                {
+                  "id": "ca",
+                  "label": "Current assets",
+                  "min": 100000,
+                  "max": 2000000,
+                  "step": 10000,
+                  "value": 600000,
+                  "unit": "rs"
+                },
+                {
+                  "id": "inv",
+                  "label": "of which stock",
+                  "min": 0,
+                  "max": 1000000,
+                  "step": 10000,
+                  "value": 250000,
+                  "unit": "rs"
+                },
+                {
+                  "id": "cl",
+                  "label": "Current liabilities",
+                  "min": 100000,
+                  "max": 1000000,
+                  "step": 10000,
+                  "value": 300000,
+                  "unit": "rs"
+                }
+              ],
+              "outputs": [
+                {
+                  "label": "Current ratio",
+                  "expr": "ca / cl",
+                  "unit": "x",
+                  "hint": "Textbook rule of thumb: about 2 times"
+                },
+                {
+                  "label": "Quick ratio",
+                  "expr": "(ca - inv) / cl",
+                  "unit": "x",
+                  "hint": "Textbook rule of thumb: about 1 time"
+                },
+                {
+                  "label": "Working capital",
+                  "expr": "ca - cl",
+                  "unit": "rs",
+                  "hint": "What is left after short-term dues"
+                }
+              ]
+            }
+          ]
         },
         {
           "id": "L6.3",
@@ -5316,7 +5858,60 @@
             "Adding input GST to purchases and then also claiming credit.",
             "Treating GST payable as an expense in the profit and loss account."
           ],
-          "exam_tip": "Show Output GST, Input GST and Net payable in three lines. A clean layout wins marks even if the base amount is slightly off."
+          "exam_tip": "Show Output GST, Input GST and Net payable in three lines. A clean layout wins marks even if the base amount is slightly off.",
+          "widgets": [
+            {
+              "type": "explorer",
+              "id": "explorer-gst",
+              "title": "What GST does to an invoice",
+              "intro": "Set the price before tax and the GST rate on the invoice. Intrastate, the tax splits equally into CGST and SGST.",
+              "inputs": [
+                {
+                  "id": "price",
+                  "label": "Price before tax",
+                  "min": 1000,
+                  "max": 200000,
+                  "step": 500,
+                  "value": 100000,
+                  "unit": "rs"
+                },
+                {
+                  "id": "rate",
+                  "label": "GST rate",
+                  "min": 0,
+                  "max": 28,
+                  "step": 1,
+                  "value": 18,
+                  "unit": "pct"
+                }
+              ],
+              "outputs": [
+                {
+                  "label": "Total GST",
+                  "expr": "price * rate / 100",
+                  "unit": "rs"
+                },
+                {
+                  "label": "CGST (half)",
+                  "expr": "price * rate / 200",
+                  "unit": "rs",
+                  "hint": "Goes to the Centre"
+                },
+                {
+                  "label": "SGST (half)",
+                  "expr": "price * rate / 200",
+                  "unit": "rs",
+                  "hint": "Goes to the State"
+                },
+                {
+                  "label": "Invoice total",
+                  "expr": "price * (1 + rate / 100)",
+                  "unit": "rs",
+                  "hint": "What the buyer pays"
+                }
+              ]
+            }
+          ]
         }
       ],
       "case_study": {

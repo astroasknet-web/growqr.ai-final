@@ -12,6 +12,7 @@ import { quizAction } from "../actions";
 import { OG_IMAGE, SITE_URL } from "@/lib/seo";
 import { moduleTitle } from "@/lib/learn/course-seo";
 import { ExpandAll, HashOpen } from "@/components/learn/LessonTools";
+import { WidgetHost } from "@/components/learn/widgets/WidgetHost";
 
 export const dynamic = "force-dynamic";
 const clean = (s: string) => s.toLowerCase().replace(/[^a-z0-9-]/g, "");
@@ -96,6 +97,7 @@ export default async function StepPage({ params, searchParams }: { params: Promi
     <MarketShell user={me} active="courses">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonld).replace(/</g, "\\u003c") }} />
       <HashOpen />
+      <WidgetHost slug={slug} scope={String(at.index)} />
       <nav aria-label="Breadcrumb" className="mb-4 text-[13px] text-ink-3"><Link href="/courses" className="underline">Courses</Link> / <Link href={`/courses/${slug}/learn`} className="underline">{nc.title}</Link> / {at.capstone ? "Capstone" : `Module ${at.index + 1}`}</nav>
 
       <header>

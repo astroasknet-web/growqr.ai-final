@@ -6,6 +6,7 @@
 export const esc = (s) => String(s ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 export const fmt = (n) => (n < 0 ? "-" : "") + Math.abs(n).toLocaleString("en-IN");
 export const slugify = (s) => String(s).toLowerCase().replace(/&/g, " and ").replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "").slice(0, 72);
+import { lessonWidgets, widgetHtml } from "./widget-html.mjs";
 const rs = (n) => "₹" + fmt(n); // rupee sign + Indian grouping
 
 /* ------------------------------------------------------------------------------------------------------------------ diagrams */
@@ -192,9 +193,12 @@ export function lessonHtml(lesson) {
   for (const d of DIAGRAMS[lesson.id] ?? []) parts.push(d());
   for (const b of lesson.blocks) parts.push(renderBlock(b));
   for (const we of lesson.worked_examples ?? []) parts.push(renderExample(we));
+  const widgets = lessonWidgets(lesson); // interactive activities; see scripts/lib/widget-html.mjs
+  for (const w of widgets) if (w.type !== "complete") parts.push(widgetHtml(w));
   if (lesson.common_mistakes?.length) parts.push(`<div class="cw-mistakes"><h3>Common mistakes</h3><ul>${lesson.common_mistakes.map((m) => `<li>${esc(m)}</li>`).join("")}</ul></div>`);
   if (lesson.exam_tip) parts.push(`<aside class="cw-callout cw-exam"><span class="cw-label">Exam tip</span><p>${esc(lesson.exam_tip)}</p></aside>`);
   for (const s of lesson.practice?.short ?? []) parts.push(`<details class="cw-qa"><summary>Try it yourself: ${esc(s.q)}</summary><p><b>Model answer.</b> ${esc(s.model_answer)}</p></details>`);
+  for (const w of widgets) if (w.type === "complete") parts.push(widgetHtml(w));
   return parts.join("\n");
 }
 

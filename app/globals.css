@@ -904,3 +904,15 @@ html[data-contrast="1"] main .cw-table thead th, html[data-contrast="1"] main .c
   .cw-example .cw-tablewrap { margin-left: 12px; margin-right: 12px; }
   .cw-formula .cw-eq { font-size: 15.5px; }
 }
+
+/* Interactive lesson widgets (components/learn/widgets) */
+@keyframes cw-shake { 0%,100% { transform: translateX(0); } 20% { transform: translateX(-6px); } 40% { transform: translateX(6px); } 60% { transform: translateX(-4px); } 80% { transform: translateX(4px); } }
+@keyframes cw-pop { 0% { transform: scale(0.92); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes cw-rise { 0% { transform: translateY(8px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+.cw-shake { animation: cw-shake 0.35s ease; }
+.cw-pop { animation: cw-pop 0.25s ease-out; }
+.cw-rise { animation: cw-rise 0.25s ease-out; }
+.cw-bar { transition: height 0.7s cubic-bezier(0.2, 0.8, 0.2, 1); }
+.cw-range { accent-color: var(--orange-deep); min-height: 28px; cursor: pointer; }
+[data-cw-widget] { display: block; }
+@media (prefers-reduced-motion: reduce) { .cw-shake, .cw-pop, .cw-rise { animation: none; } .cw-bar { transition: none; } }
