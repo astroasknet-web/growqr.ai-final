@@ -6,6 +6,7 @@ import * as apps from "@/lib/market/applications";
 import * as jobs from "@/lib/market/jobs";
 import * as saved from "@/lib/market/saved";
 import * as listing from "@/lib/market/listing";
+import * as external from "@/lib/market/external";
 import { JobCard } from "@/components/market/job-card";
 import { currentViewer, MarketShell } from "@/components/market/shell";
 import { SearchBox } from "@/components/market/search-box";
@@ -47,6 +48,9 @@ export default async function InternshipsPage({ searchParams }: { searchParams: 
   const pageUrl = (n: number) => (n === 1 ? here : here + (here.includes("?") ? "&" : "?") + "page=" + n);
   const count = (fn: (j: jobs.Job) => boolean) => all.filter(fn).length;
   const s = L.search;
+  // Link-out listings from the web: first page only, and only when no structured filter is on (they have no stipend, mode or match data to filter by).
+  const showWeb = f.page === 1 && !f.cat && !f.loc.length && !f.mode.length && !f.min && !f.weeks && !f.verified && !f.ppo && !f.fresh && !f.short && !f.saved;
+  const web = showWeb ? await external.live({ q: f.q, limit: 12 }) : [];
 
   const filterForm = (idp: string) => (
     <form method="get" action="/internships" className="mt-2">
@@ -169,6 +173,23 @@ export default async function InternshipsPage({ searchParams }: { searchParams: 
           ) : null}
         </section>
       </div>
+
+      {web.length ? (
+        <section aria-labelledby="web-h" className="mt-10">
+          <h2 id="web-h" className="text-[22px] font-bold text-ink tracking-tight">More internships from the web</h2>
+          <p className="text-[14px] text-ink-3 mt-1 mb-4 max-w-2xl">These are listed by other sites and employers, not by GrowQR. We have not checked the company or the stipend, and you apply on their site. Never pay to apply. Listings supplied by <a className="underline" href="https://www.adzuna.in" target="_blank" rel="noopener noreferrer">Adzuna</a>.</p>
+          <ul className="grid gap-3">
+            {web.map((w) => (
+              <li key={w.id} className="bg-white rounded-2xl border border-black/[0.08] p-4">
+                <h3 className="text-[16px] font-semibold text-ink">{w.title}</h3>
+                <p className="text-[14px] text-ink-2 mt-0.5">{w.company}{w.location ? " · " + w.location : ""}{w.stipend ? " · " + w.stipend + " (as advertised)" : ""}</p>
+                <p className="text-[14px] text-ink-3 mt-2">{w.summary.length > 200 ? w.summary.slice(0, 197) + "..." : w.summary}</p>
+                <a href={w.url} target="_blank" rel="noopener noreferrer nofollow sponsored" className="mt-3 inline-flex items-center min-h-[44px] px-4 rounded-lg border border-black/[0.15] text-[14px] font-medium hover:bg-cream-2">View on the original site<span className="sr-only"> for {w.title} at {w.company} (opens in a new tab)</span></a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ) : null}
     </MarketShell>
   );
 }
