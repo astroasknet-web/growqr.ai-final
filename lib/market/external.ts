@@ -109,6 +109,7 @@ export interface SyncResult {
   ok: boolean;
   added: number;
   skipped: number;
+  received?: number; // how many raw results Adzuna returned, so "0 saved" can be told apart from "Adzuna sent nothing"
   error?: string;
 }
 
@@ -118,6 +119,7 @@ export async function syncAdzuna(pages = 2): Promise<SyncResult> {
   const seen = new Set<string>();
   let added = 0;
   let skipped = 0;
+  let received = 0;
   for (const what of ["internship", "intern"]) {
     for (let p = 1; p <= Math.min(5, Math.max(1, pages)); p++) {
       const qs = new URLSearchParams({
@@ -137,6 +139,7 @@ export async function syncAdzuna(pages = 2): Promise<SyncResult> {
       } catch (e) {
         return { ok: false, added, skipped, error: `Adzuna request failed (${e instanceof Error ? e.name : "error"})` };
       }
+      received += results.length;
       if (!results.length) break;
       for (const j of results) {
         const c = toCandidate(j);
@@ -158,19 +161,21 @@ export async function syncAdzuna(pages = 2): Promise<SyncResult> {
   await run("DELETE FROM external_internships WHERE expires_at < NOW() - INTERVAL '7 days'").catch((e) =>
     log.warn("cleanup failed:", e instanceof Error ? e.message : e),
   );
-  return { ok: true, added, skipped };
+  return { ok: true, added, skipped, received };
 }
 
 let lastAttempt = 0;
+let lastResult: SyncResult | null = null;
 
 /**
  * Run the sync at most about once a day, for schedulers that fire often (the 10-minute portal cron on Hostinger).
  * Skips when the newest row was fetched under `hours` ago, and never tries more than once an hour per process, so an empty or
  * failing feed cannot hammer the Adzuna API.
  */
-export async function syncIfStale(hours = 20): Promise<SyncResult & { skipped_reason?: string }> {
+export async function syncIfStale(hours = 20): Promise<SyncResult & { skipped_reason?: string; last_result?: SyncResult | null }> {
   if (!adzunaConfigured()) return { ok: false, added: 0, skipped: 0, skipped_reason: "keys not set" };
-  if (Date.now() - lastAttempt < 3_600_000) return { ok: true, added: 0, skipped: 0, skipped_reason: "tried within the last hour" };
+  // Repeat the earlier attempt's outcome so a rate-limited call still shows why nothing was saved.
+  if (Date.now() - lastAttempt < 3_600_000) return { ok: true, added: 0, skipped: 0, skipped_reason: "tried within the last hour", last_result: lastResult };
   try {
     const rows = await all<{ last: string | null }>("SELECT MAX(fetched_at) AS last FROM external_internships");
     const last = rows[0]?.last ? Date.parse(String(rows[0].last).replace(" ", "T") + "Z") : 0;
@@ -180,7 +185,8 @@ export async function syncIfStale(hours = 20): Promise<SyncResult & { skipped_re
     return { ok: false, added: 0, skipped: 0, error: "table missing: run the migration" };
   }
   lastAttempt = Date.now();
-  return syncAdzuna();
+  lastResult = await syncAdzuna();
+  return lastResult;
 }
 
 type Row = Record<string, unknown>;
