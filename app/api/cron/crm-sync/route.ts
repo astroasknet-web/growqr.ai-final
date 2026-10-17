@@ -10,7 +10,7 @@ import { retryPendingBookingNotifications } from "@/lib/cal/notify";
 import { purgeExpiredBookingIntents } from "@/lib/cal/purge";
 import { flushIdleTranscripts } from "@/lib/bot/transcript";
 import { syncInterviewResults } from "@/lib/internship/sync-results";
-import { adzunaConfigured, syncAdzuna } from "@/lib/market/external";
+import { adzunaConfigured, syncIfStale } from "@/lib/market/external";
 
 const log = createLogger("cron/crm-sync");
 
@@ -76,7 +76,7 @@ export async function GET(req: NextRequest) {
   // Adzuna India feed for the "More internships from the web" section. Same rules as the lanes above: independent of the CRM kill
   // switch, best-effort, and a no-op until ADZUNA_APP_ID / ADZUNA_APP_KEY are set.
   if (adzunaConfigured()) {
-    const feed = await syncAdzuna().catch((error) => {
+    const feed = await syncIfStale().catch((error) => {
       log.error("external internships sync failed:", error instanceof Error ? error.message : error);
       return null;
     });

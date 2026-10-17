@@ -9,7 +9,7 @@ vi.mock("../portal/db", () => ({
   all: vi.fn(async () => []),
 }));
 
-import { adzunaConfigured, live, safeUrl, stipendText, stripHtml, syncAdzuna, toCandidate } from "./external";
+import { adzunaConfigured, live, safeUrl, stipendText, stripHtml, syncAdzuna, syncIfStale, toCandidate } from "./external";
 
 const now = new Date("2026-10-17T00:00:00Z");
 
@@ -88,6 +88,35 @@ describe("syncAdzuna", () => {
     const bad = await syncAdzuna(1);
     expect(bad.ok).toBe(false);
     expect(JSON.stringify(bad)).not.toContain("test-secret-key");
+  });
+
+  it("syncIfStale skips fresh data, reports a missing table, and rate-limits retries", async () => {
+    process.env.ADZUNA_APP_ID = "test-id";
+    process.env.ADZUNA_APP_KEY = "test-secret-key";
+    const db = await import("../portal/db");
+    const fetchMock = vi.fn(async () => new Response(JSON.stringify({ results: [] }), { status: 200 }));
+    vi.stubGlobal("fetch", fetchMock);
+
+    vi.mocked(db.all).mockRejectedValueOnce(new Error("relation does not exist"));
+    const missing = await syncIfStale();
+    expect(missing.ok).toBe(false);
+    expect(missing.error).toMatch(/migration/);
+    expect(fetchMock).not.toHaveBeenCalled();
+
+    vi.mocked(db.all).mockResolvedValueOnce([{ last: new Date(Date.now() - 3_600_000).toISOString().replace("T", " ").slice(0, 19) }]);
+    const fresh = await syncIfStale();
+    expect(fresh.skipped_reason).toBe("fresh");
+    expect(fetchMock).not.toHaveBeenCalled();
+
+    vi.mocked(db.all).mockResolvedValueOnce([{ last: null }]);
+    const first = await syncIfStale();
+    expect(first.ok).toBe(true);
+    expect(fetchMock).toHaveBeenCalled(); // empty table: runs the sync
+
+    const calls = fetchMock.mock.calls.length;
+    const again = await syncIfStale();
+    expect(again.skipped_reason).toBe("tried within the last hour");
+    expect(fetchMock.mock.calls.length).toBe(calls); // an empty feed cannot be re-polled every 10 minutes
   });
 
   it("live() returns an empty list instead of throwing when the table is missing", async () => {

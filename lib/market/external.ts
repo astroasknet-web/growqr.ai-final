@@ -161,6 +161,28 @@ export async function syncAdzuna(pages = 2): Promise<SyncResult> {
   return { ok: true, added, skipped };
 }
 
+let lastAttempt = 0;
+
+/**
+ * Run the sync at most about once a day, for schedulers that fire often (the 10-minute portal cron on Hostinger).
+ * Skips when the newest row was fetched under `hours` ago, and never tries more than once an hour per process, so an empty or
+ * failing feed cannot hammer the Adzuna API.
+ */
+export async function syncIfStale(hours = 20): Promise<SyncResult & { skipped_reason?: string }> {
+  if (!adzunaConfigured()) return { ok: false, added: 0, skipped: 0, skipped_reason: "keys not set" };
+  if (Date.now() - lastAttempt < 3_600_000) return { ok: true, added: 0, skipped: 0, skipped_reason: "tried within the last hour" };
+  try {
+    const rows = await all<{ last: string | null }>("SELECT MAX(fetched_at) AS last FROM external_internships");
+    const last = rows[0]?.last ? Date.parse(String(rows[0].last).replace(" ", "T") + "Z") : 0;
+    if (last && Date.now() - last < hours * 3_600_000) return { ok: true, added: 0, skipped: 0, skipped_reason: "fresh" };
+  } catch (e) {
+    log.warn("external_internships is not ready:", e instanceof Error ? e.message : e);
+    return { ok: false, added: 0, skipped: 0, error: "table missing: run the migration" };
+  }
+  lastAttempt = Date.now();
+  return syncAdzuna();
+}
+
 type Row = Record<string, unknown>;
 
 /** Live external listings, newest first, optionally narrowed by the search words. Never throws: a missing table just means "none yet". */
