@@ -19,11 +19,11 @@ export default function StaticCatalogue({ cat }: { cat: string }) {
       </nav>
       <ul className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {list.map((c) => (
-          <li key={c.slug} className="rounded-2xl border border-black/[0.08] bg-white p-5 shadow-card">
+          <li key={c.slug}><Link href={`/courses/${c.slug}`} className="block h-full rounded-2xl border border-black/[0.08] bg-white p-5 shadow-card transition hover:-translate-y-1 hover:shadow-glow">
             <p className="text-[0.72rem] font-bold uppercase tracking-wider text-orange-dark">{name(c.cat)}</p>
             <h2 className="mt-1 text-[1.08rem] font-semibold leading-snug text-ink">{c.title}</h2>
             <p className="mt-2 text-[0.9rem] leading-relaxed text-ink-3">{c.brief}</p>
-            <p className="mt-3 text-[0.8rem] text-ink-4">{c.levelLabel} · {c.hours} · {c.modules} modules</p>
+            <p className="mt-3 text-[0.8rem] text-ink-4">{c.levelLabel} · {c.hours} · {c.modules} modules</p></Link>
           </li>
         ))}
       </ul>

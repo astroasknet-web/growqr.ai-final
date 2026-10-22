@@ -22,3 +22,11 @@ export function staticCategories(): StaticCategory[] {
 export function featuredCourses(keys: string[]): StaticCourse[] {
   return keys.map((k) => courses.find((c) => c.cat === k)).filter((c): c is StaticCourse => Boolean(c));
 }
+
+export type StaticCourseFull = StaticCourse & { level: string; tags: string[]; weeks: string; pace: string; badge: string; prereq: string; bestFor: string; learn: string[]; handsOn: string; outcome: string };
+
+/** One course with every field, for the detail page used while the database is not connected. */
+export function staticCourse(slug: string): StaticCourseFull | null {
+  const c = (data.courses as unknown as StaticCourseFull[]).find((x) => x.slug === slug);
+  return c ?? null;
+}

@@ -15,12 +15,14 @@ import { serializeJsonLd } from "@/lib/json-ld";
 import { SITE_URL } from "@/lib/seo";
 import { landingJsonLd, landingMetadata } from "@/lib/learn/course-seo";
 import { UniversityCourseSections } from "@/components/learn/UniversityCourseSections";
+import StaticCourseDetail from "@/components/market/StaticCourseDetail";
+import { staticCourse } from "@/lib/market/static-catalogue";
 
 export const dynamic = "force-dynamic";
 const clean = (s: string) => s.toLowerCase().replace(/[^a-z0-9-]/g, "");
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
-  if (!databaseConfigured()) return { title: "Course | GrowQR" };
+  if (!databaseConfigured()) { const sc = staticCourse(clean((await params).slug)); return { title: sc ? `${sc.title} | GrowQR` : "Course | GrowQR", description: sc?.brief }; }
   const c = await courses.bySlug(clean((await params).slug));
   if (!c) return { title: "Course not found | GrowQR", robots: { index: false, follow: true } };
   const rich = lessons.nativeCourse(c.slug);
@@ -38,7 +40,11 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
   const slug = clean((await params).slug);
   const sp = await searchParams;
   const me = await currentViewer();
-  if (!databaseConfigured()) notFound();
+  if (!databaseConfigured()) {
+    const sc = staticCourse(slug);
+    if (!sc) notFound();
+    return <MarketShell user={null} active="courses"><StaticCourseDetail c={sc} /></MarketShell>;
+  }
   const course = slug ? await courses.bySlug(slug) : null;
   if (!course) notFound();
   const isStudent = me?.role === "student";

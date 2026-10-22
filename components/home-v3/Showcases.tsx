@@ -185,7 +185,7 @@ function CourseStrip() {
           const cat = cats.find((x) => x.key === c.cat);
           return (
             <li key={c.slug}>
-              <Link href={portal("/courses")} className="hx-tile group block h-full p-5">
+              <Link href={portal(`/courses/${c.slug}`)} className="hx-tile group block h-full p-5">
                 <span className="text-[0.7rem] font-bold uppercase tracking-wider text-[var(--hx-muted)]">{cat?.name}</span>
                 <h3 className="mt-1 text-[1.02rem] font-semibold leading-snug text-[var(--hx-text)]">{c.title}</h3>
                 <p className="mt-1.5 text-[0.86rem] leading-relaxed text-[var(--hx-muted)]">{c.brief}</p>
