@@ -4,6 +4,7 @@ import Globe from "@/components/home-options/Globe";
 import InternshipBoard from "@/components/home-options/InternshipBoard";
 import { COUNTRIES } from "@/components/home-options/data";
 import { EBOOKS_URL, LIBRARY_TOPICS, portal } from "./data";
+import { featuredCourses, staticCategories, staticCourses } from "@/lib/market/static-catalogue";
 
 const WRAP = "mx-auto max-w-[1180px]";
 const H2 = "text-[clamp(2rem,4.2vw,3.2rem)] font-semibold leading-[1.07] tracking-tight";
@@ -62,7 +63,8 @@ export function Learn() {
           <h2 data-rv id="hx-learn" className={`${H2} text-[var(--hx-text)]`}>Learn Something That <span className="hx-grad-text">Changes Everything.</span></h2>
           <p data-rv className="mt-4 text-[1.05rem] text-[var(--hx-muted)]">Courses and live classes work together: learn at your pace, then ask questions live.</p>
         </div>
-        <ul className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <CourseStrip />
+        <ul className="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {LEARN.map((l, i) => (
             <li key={l.t} data-rv style={{ ["--d" as string]: `${i * 0.06}s` }}>
               <Link href={l.href} className="hx-tile group flex h-full flex-col p-6">
@@ -167,5 +169,35 @@ export function FinalCTA3() {
         </div>
       </div>
     </section>
+  );
+}
+
+/** Real catalogue data (lib/market/data/courses.json), so the section shows actual courses even without the database. */
+function CourseStrip() {
+  const total = staticCourses().length;
+  const cats = staticCategories();
+  const picks = featuredCourses(["data", "ai", "dev", "cloud", "business", "marketing"]);
+  return (
+    <div data-rv className="mb-2">
+      <p className="mb-4 text-[0.9rem] font-semibold text-[var(--hx-text)]">{total} courses in {cats.length} categories</p>
+      <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+        {picks.map((c) => {
+          const cat = cats.find((x) => x.key === c.cat);
+          return (
+            <li key={c.slug}>
+              <Link href={portal("/courses")} className="hx-tile group block h-full p-5">
+                <span className="text-[0.7rem] font-bold uppercase tracking-wider text-[var(--hx-muted)]">{cat?.name}</span>
+                <h3 className="mt-1 text-[1.02rem] font-semibold leading-snug text-[var(--hx-text)]">{c.title}</h3>
+                <p className="mt-1.5 text-[0.86rem] leading-relaxed text-[var(--hx-muted)]">{c.brief}</p>
+                <p className="mt-3 text-[0.78rem] text-[var(--hx-muted)]">{c.levelLabel} · {c.hours}</p>
+              </Link>
+            </li>
+          );
+        })}
+      </ul>
+      <ul className="mt-4 flex flex-wrap gap-2" aria-label="Course categories">
+        {cats.map((c) => <li key={c.key}><Link href={portal(`/courses?cat=${c.key}`)} className="inline-block rounded-full bg-white px-3.5 py-1.5 text-[0.8rem] font-medium text-[var(--hx-text)] ring-1 ring-slate-200 hover:ring-[var(--hx-violet)]">{c.name} ({c.n})</Link></li>)}
+      </ul>
+    </div>
   );
 }

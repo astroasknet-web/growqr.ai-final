@@ -5,6 +5,7 @@ import * as courses from "@/lib/market/courses";
 import * as learning from "@/lib/market/learning";
 import * as lessons from "@/lib/market/lessons";
 import { CatalogCard, type Progress } from "@/components/market/catalog";
+import StaticCatalogue from "@/components/market/StaticCatalogue";
 import { currentViewer, MarketShell } from "@/components/market/shell";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { SITE_URL } from "@/lib/seo";
@@ -50,7 +51,7 @@ const field = `min-h-[44px] rounded-lg border border-black/[0.18] bg-white px-3 
 
 export default async function CoursesPage({ searchParams }: { searchParams: Promise<SP> }) {
   const me = await currentViewer();
-  if (!databaseConfigured()) return <MarketShell user={null} active="courses"><p>Courses are not available right now. Please try again shortly.</p></MarketShell>;
+  if (!databaseConfigured()) return <MarketShell user={null} active="courses"><StaticCatalogue cat={one((await searchParams).cat)} /></MarketShell>;
   const f = await read(await searchParams);
   const native = lessons.nativeSlugs();
   const res = await courses.search({ q: f.q, cat: f.cat, level: f.level, aud: f.aud, len: f.len, sort: f.sort, page: f.page, only: f.available ? native : undefined });
