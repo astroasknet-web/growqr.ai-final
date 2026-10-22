@@ -3,6 +3,7 @@ import { visibleExperts } from '@/features/experts/data/experts-data';
 import { listEventsForSitemap } from '@/features/events/services/events.service';
 import { SITE_URL } from '@/lib/seo';
 import { hubs as examHubs } from '@/lib/market/vidaara';
+import { EXAMS, subjectsOf } from '@/lib/lms/content';
 import { nativeCourse, nativeSlugs } from '@/lib/market/lessons';
 import { TOTAL_TESTS } from '@/lib/tests/ielts';
 import { listBlogPosts } from '@/lib/blog/blogforge';
@@ -31,6 +32,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: `${baseUrl}/enterprise` },
     { url: `${baseUrl}/exam-prep` },
     ...examHubs().map((h) => ({ url: `${baseUrl}/exam-prep/${h.slug}` })),
+    ...EXAMS.flatMap((e) => [{ url: `${baseUrl}/learn/${e.slug}` }, ...subjectsOf(e).flatMap((s) => [{ url: `${baseUrl}/learn/${e.slug}/${s.subject}` }, ...s.chapters.map((c) => ({ url: `${baseUrl}/learn/${e.slug}/${s.subject}/${c.slug}` }))])]),
     { url: `${baseUrl}/agents` },
     { url: `${baseUrl}/about` },
     { url: `${baseUrl}/vision` },

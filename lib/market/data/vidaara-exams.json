@@ -27,7 +27,7 @@
   ],
   "hubs": [
     {
-      "slug": "jee", "title": "JEE (Main & Advanced)", "kind": "Engineering entrance", "path": "/courses/jee",
+      "slug": "jee", "learn": "/learn/jee", "title": "JEE (Main & Advanced)", "kind": "Engineering entrance", "path": "/courses/jee",
       "intro": "Free study material based on NCERT, with solved examples and JEE-level practice for Mathematics, Physics and Chemistry.",
       "unit": "chapters",
       "sections": [
@@ -38,7 +38,7 @@
       "tests": [{ "name": "JEE Mock Test", "desc": "A full-length timed test in the real exam pattern, with instant scoring and worked solutions.", "path": "/exam/jee-mains" }]
     },
     {
-      "slug": "neet", "title": "NEET UG", "kind": "Medical entrance", "path": "/courses/neet",
+      "slug": "neet", "learn": "/learn/neet", "title": "NEET UG", "kind": "Medical entrance", "path": "/courses/neet",
       "intro": "Free NCERT-based notes, worked examples and NEET-level practice across Physics, Chemistry and Biology.",
       "unit": "chapters",
       "sections": [
@@ -164,7 +164,7 @@
       ]
     },
     {
-      "slug": "ap-calculus-ab", "title": "AP Calculus AB", "kind": "Advanced Placement", "path": "/courses/ap/calculus-ab",
+      "slug": "ap-calculus-ab", "learn": "/learn/ap-calculus-ab", "title": "AP Calculus AB", "kind": "Advanced Placement", "path": "/courses/ap/calculus-ab",
       "intro": "A complete free course aligned to the College Board framework: concept notes, worked examples, self-check questions and timed practice tests.",
       "unit": "chapters",
       "sections": [
