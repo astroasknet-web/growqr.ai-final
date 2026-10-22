@@ -180,7 +180,7 @@
       "tests": [{ "name": "Chapter mock tests", "desc": "Two mock tests for each of the eight chapters.", "path": "/courses/ap/calculus-ab" }]
     },
     {
-      "slug": "imo", "title": "Maths Olympiad (IMO)", "kind": "Olympiad", "path": "/olympiad/imo",
+      "slug": "imo", "learn": "/olympiad/imo", "title": "Maths Olympiad (IMO)", "kind": "Olympiad", "path": "/olympiad/imo",
       "intro": "Free IMO preparation for Class 1 to 12, with chapter lessons, in-lesson checks, chapter tests and full-syllabus mocks in the olympiad pattern.",
       "unit": "classes",
       "sections": [
