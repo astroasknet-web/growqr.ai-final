@@ -27,7 +27,7 @@
   ],
   "hubs": [
     {
-      "slug": "jee", "learn": "/learn/jee", "title": "JEE (Main & Advanced)", "kind": "Engineering entrance", "path": "/courses/jee",
+      "slug": "jee", "learn": "/learn/jee", "mock": "/exam/jee-mains", "title": "JEE (Main & Advanced)", "kind": "Engineering entrance", "path": "/courses/jee",
       "intro": "Free study material based on NCERT, with solved examples and JEE-level practice for Mathematics, Physics and Chemistry.",
       "unit": "chapters",
       "sections": [
@@ -38,7 +38,7 @@
       "tests": [{ "name": "JEE Mock Test", "desc": "A full-length timed test in the real exam pattern, with instant scoring and worked solutions.", "path": "/exam/jee-mains" }]
     },
     {
-      "slug": "neet", "learn": "/learn/neet", "title": "NEET UG", "kind": "Medical entrance", "path": "/courses/neet",
+      "slug": "neet", "learn": "/learn/neet", "mock": "/exam/neet-ug", "title": "NEET UG", "kind": "Medical entrance", "path": "/courses/neet",
       "intro": "Free NCERT-based notes, worked examples and NEET-level practice across Physics, Chemistry and Biology.",
       "unit": "chapters",
       "sections": [
@@ -49,7 +49,7 @@
       "tests": [{ "name": "NEET Mock Test", "desc": "A full-length timed mock in the real exam pattern, with instant scoring and worked solutions.", "path": "/exam/neet-ug" }]
     },
     {
-      "slug": "upsc-prelims", "title": "UPSC Civil Services (Prelims)", "kind": "Civil services", "path": "/exam/upsc-prelims",
+      "slug": "upsc-prelims", "mock": "/exam/upsc-prelims", "title": "UPSC Civil Services (Prelims)", "kind": "Civil services", "path": "/exam/upsc-prelims",
       "intro": "Syllabus, exam pattern and free online mock tests for GS Paper I and the qualifying CSAT Paper II.",
       "unit": "topic groups",
       "sections": [
@@ -68,7 +68,7 @@
       ]
     },
     {
-      "slug": "ssc-cgl", "title": "SSC CGL", "kind": "Government jobs", "path": "/exam/ssc-cgl",
+      "slug": "ssc-cgl", "mock": "/exam/ssc-cgl", "studyMap": { "Quantitative Aptitude": "ssc-quant", "General Intelligence & Reasoning": "ssc-reasoning", "General Awareness": "ssc-gk", "English": "ssc-english" }, "title": "SSC CGL", "kind": "Government jobs", "path": "/exam/ssc-cgl",
       "intro": "Free mock tests for Tier 1 and Tier 2 Paper-1, with explanations, exam pattern and syllabus.",
       "unit": "topic groups",
       "sections": [
@@ -84,7 +84,7 @@
       ]
     },
     {
-      "slug": "cat-quant", "title": "CAT Quantitative Aptitude", "kind": "MBA entrance", "path": "/cat/quant",
+      "slug": "cat-quant", "learn": "/study/cat-quant", "title": "CAT Quantitative Aptitude", "kind": "MBA entrance", "path": "/cat/quant",
       "intro": "A free course of 6 modules and 57 chapters with concept notes, shortcuts, solved examples and auto-graded tests.",
       "unit": "chapters",
       "sections": [
@@ -102,7 +102,7 @@
       ]
     },
     {
-      "slug": "sat", "title": "SAT Math", "kind": "Study abroad (undergraduate)", "path": "/sat",
+      "slug": "sat", "learn": "/study/sat-math", "title": "SAT Math", "kind": "Study abroad (undergraduate)", "path": "/sat",
       "intro": "A free 40-chapter Digital SAT Math course with unlimited full-length mocks scored on the 200 to 800 scale and domain-wise analytics.",
       "unit": "domains",
       "sections": [
@@ -114,7 +114,7 @@
       "tests": [{ "name": "Full-length SAT Math mock", "desc": "A timed 44-question mock across all four domains, auto-graded with full solutions.", "path": "/sat/math/full-length-sat-practice" }]
     },
     {
-      "slug": "gre-maths", "title": "GRE Quantitative Reasoning", "kind": "Study abroad (graduate)", "path": "/exams/gre-maths",
+      "slug": "gre-maths", "learn": "/study/gre-quant", "title": "GRE Quantitative Reasoning", "kind": "Study abroad (graduate)", "path": "/exams/gre-maths",
       "intro": "Syllabus and format overview for GRE Quant (27 questions, two sections, 47 minutes), with a separate full course of 5 modules and 31 chapters.",
       "unit": "areas",
       "sections": [

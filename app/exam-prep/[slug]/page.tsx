@@ -27,15 +27,16 @@ export default async function HubPage({ params }: P) {
       <h1 className="mt-1 text-[26px] font-bold leading-tight tracking-tight text-ink sm:text-[34px]">{h.title}</h1>
       <p className="mt-2 max-w-3xl text-[16px] text-ink-3">{h.intro}</p>
       <div className="mt-5 flex flex-wrap gap-3">
-        {h.learn ? <Link href={h.learn} className={link}>Study on GrowQR</Link> : null}
-        <a href={vidaaraUrl(h.path)} target="_blank" rel="noopener noreferrer" className={h.learn ? "inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-black/[0.15] px-5 text-[15px] font-semibold hover:bg-cream-2" : link}>{h.learn ? "Also on Vidaara" : "Start on Vidaara"} <ArrowUpRight className="h-4 w-4" aria-hidden /></a>
+        {h.learn ? <Link href={h.learn} className={link}>Study on GrowQR</Link> : h.studyMap ? <Link href="/study" className={link}>Study on GrowQR</Link> : null}
+        {h.mock ? <Link href={h.mock} className={h.learn ? "inline-flex min-h-[44px] items-center rounded-lg border border-orange px-5 text-[15px] font-semibold text-orange-deep hover:bg-orange-lighter" : link}>Free mock test on GrowQR</Link> : null}
+        <a href={vidaaraUrl(h.path)} target="_blank" rel="noopener noreferrer" className={h.learn || h.mock || h.studyMap ? "inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-black/[0.15] px-5 text-[15px] font-semibold hover:bg-cream-2" : link}>{h.learn || h.mock || h.studyMap ? "Also on Vidaara" : "Start on Vidaara"} <ArrowUpRight className="h-4 w-4" aria-hidden /></a>
         <Link href="/exam-prep" className="inline-flex min-h-[44px] items-center rounded-lg border border-black/[0.15] px-5 text-[15px] font-semibold hover:bg-cream-2">All exams</Link>
       </div>
 
       <h2 className="mt-10 text-[20px] font-bold text-ink">What is covered{totalUnits(h) ? ` (${totalUnits(h)} ${h.unit})` : ""}</h2>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
         {h.sections.map((s) => {
-          const own = h.learn ? (h.slug === "ap-calculus-ab" ? `${h.learn}/calculus-ab` : `${h.learn}/${s.name.toLowerCase()}`) : null;
+          const own = h.studyMap?.[s.name] ? `/study/${h.studyMap[s.name]}` : h.learn ? (h.learn.startsWith("/study/") ? h.learn : h.slug === "ap-calculus-ab" ? `${h.learn}/calculus-ab` : `${h.learn}/${s.name.toLowerCase()}`) : null;
           const body = (
             <>
               <span className="flex items-start justify-between gap-3"><b className="text-[15px] text-ink">{s.name}</b>{s.count ? <span className="shrink-0 rounded-full bg-cream-3 px-2.5 py-0.5 text-[12px] text-ink-3">{s.count}</span> : null}</span>
