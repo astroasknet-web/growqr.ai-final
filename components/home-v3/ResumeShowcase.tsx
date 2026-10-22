@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { ArrowRight, Check } from "lucide-react";
+import { portal } from "./data";
 
 const STYLES = [
   { id: "classic", label: "Classic", accent: "#0b1020", head: "serif" },
@@ -27,8 +28,8 @@ export default function ResumeShowcase({ templateCount }: { templateCount: numbe
           </ul>
           <p data-rv className="mt-5 text-[0.84rem] text-[var(--hx-muted)]">Cover letters, portfolios and video resumes are not part of Resume Studio yet.</p>
           <div data-rv className="mt-8 flex flex-wrap gap-3">
-            <Link href="/studio" className="hx-btn hx-btn-dark">Create Your Resume <ArrowRight className="h-4 w-4" aria-hidden /></Link>
-            <Link href="/resume-score" className="hx-btn hx-btn-line">Explore Resume Tools</Link>
+            <Link href={portal("/studio")} className="hx-btn hx-btn-dark">Create Your Resume <ArrowRight className="h-4 w-4" aria-hidden /></Link>
+            <Link href={portal("/resume-score")} className="hx-btn hx-btn-line">Explore Resume Tools</Link>
           </div>
         </div>
 

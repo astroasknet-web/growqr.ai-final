@@ -3,7 +3,7 @@ import { ArrowRight, BookOpen, CalendarDays, GraduationCap, PlayCircle, Radio, R
 import Globe from "@/components/home-options/Globe";
 import InternshipBoard from "@/components/home-options/InternshipBoard";
 import { COUNTRIES } from "@/components/home-options/data";
-import { EBOOKS_URL, LIBRARY_TOPICS } from "./data";
+import { EBOOKS_URL, LIBRARY_TOPICS, portal } from "./data";
 
 const WRAP = "mx-auto max-w-[1180px]";
 const H2 = "text-[clamp(2rem,4.2vw,3.2rem)] font-semibold leading-[1.07] tracking-tight";
@@ -18,9 +18,9 @@ export function Abroad() {
           <h2 data-rv id="hx-abroad" className={`${H2} text-white`}>Think Beyond Borders. <span className="hx-grad-text">Study Around the World.</span></h2>
           <p data-rv className="mt-4 max-w-[32em] text-[1.05rem] leading-relaxed text-white/70">Explore {total} universities across {COUNTRIES.length} destinations, understand requirements, and prepare your application documents.</p>
           <ul data-rv className="mt-6 grid grid-cols-2 gap-x-6 text-[0.94rem]">
-            {COUNTRIES.map((c) => <li key={c.name} className="flex justify-between border-b border-white/10 py-2"><Link href={`/study-abroad/${c.name.toLowerCase()}`} className="font-semibold hover:text-[var(--v)]">{c.name}</Link><span className="text-white/55">{c.count}</span></li>)}
+            {COUNTRIES.map((c) => <li key={c.name} className="flex justify-between border-b border-white/10 py-2"><Link href={portal(`/study-abroad/${c.name.toLowerCase()}`)} className="font-semibold hover:text-[var(--v)]">{c.name}</Link><span className="text-white/55">{c.count}</span></li>)}
           </ul>
-          <Link data-rv href="/study-abroad" className="hx-btn hx-btn-pri mt-8">Start My Study Abroad Journey <ArrowRight className="h-4 w-4" aria-hidden /></Link>
+          <Link data-rv href={portal("/study-abroad")} className="hx-btn hx-btn-pri mt-8">Start My Study Abroad Journey <ArrowRight className="h-4 w-4" aria-hidden /></Link>
           <p data-rv className="mt-4 text-[0.8rem] text-white/45">Guidance only. We do not guarantee admission, scholarships or visas.</p>
         </div>
         <div data-rv><Globe dark /></div>
@@ -37,10 +37,10 @@ export function Opportunities() {
           <h2 data-rv id="hx-intern" className={`${H2} text-[var(--hx-text)]`}>Experience Today. <span className="hx-grad-text">Lead Tomorrow.</span></h2>
           <p data-rv className="mt-4 text-[1.05rem] text-[var(--hx-muted)]">Verified employers, no application fees. Slide the score to see which roles open up.</p>
         </div>
-        <div data-rv><InternshipBoard initial={72} /></div>
+        <div data-rv><InternshipBoard initial={72} href={portal("/internships")} /></div>
         <div className="mt-8 flex flex-col items-center gap-3">
           <p className="text-[0.84rem] text-[var(--hx-muted)]">Sample listings shown here. Live roles are on the internships page.</p>
-          <Link href="/internships" className="hx-btn hx-btn-dark">Find Your Next Opportunity <ArrowRight className="h-4 w-4" aria-hidden /></Link>
+          <Link href={portal("/internships")} className="hx-btn hx-btn-dark">Find Your Next Opportunity <ArrowRight className="h-4 w-4" aria-hidden /></Link>
         </div>
       </div>
     </section>
@@ -48,10 +48,10 @@ export function Opportunities() {
 }
 
 const LEARN = [
-  { icon: GraduationCap, t: "Self-paced courses", d: "Structured lessons, knowledge checks and progress tracking.", href: "/courses", cta: "Browse courses" },
-  { icon: RouteIcon, t: "Career paths", d: "Follow a sequence of courses toward a role.", href: "/courses#paths", cta: "See paths" },
-  { icon: Radio, t: "Live sessions", d: "Workshops and events with experts you can join live.", href: "/events", cta: "See sessions" },
-  { icon: PlayCircle, t: "Practice tests", d: "IELTS and GRE practice, marked instantly.", href: "/practice-tests", cta: "Practise" },
+  { icon: GraduationCap, t: "Self-paced courses", d: "Structured lessons, knowledge checks and progress tracking.", href: portal("/courses"), cta: "Browse courses" },
+  { icon: RouteIcon, t: "Career paths", d: "Follow a sequence of courses toward a role.", href: portal("/courses#paths"), cta: "See paths" },
+  { icon: Radio, t: "Live sessions", d: "Workshops and events with experts you can join live.", href: portal("/events"), cta: "See sessions" },
+  { icon: PlayCircle, t: "Practice tests", d: "IELTS and GRE practice, marked instantly.", href: portal("/practice-tests"), cta: "Practise" },
 ];
 
 export function Learn() {
@@ -74,7 +74,7 @@ export function Learn() {
             </li>
           ))}
         </ul>
-        <div data-rv className="mt-8"><Link href="/courses" className="hx-btn hx-btn-dark">Explore Learning <ArrowRight className="h-4 w-4" aria-hidden /></Link></div>
+        <div data-rv className="mt-8"><Link href={portal("/courses")} className="hx-btn hx-btn-dark">Explore Learning <ArrowRight className="h-4 w-4" aria-hidden /></Link></div>
       </div>
     </section>
   );

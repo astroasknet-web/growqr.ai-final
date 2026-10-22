@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { ArrowRight, ChevronDown, Sparkles } from "lucide-react";
-import { VERTICALS, type VerticalKey } from "./data";
+import { VERTICALS, portal, type VerticalKey } from "./data";
 import { COUNTRIES, INTERNSHIPS } from "@/components/home-options/data";
 
 const intern = INTERNSHIPS[2];
@@ -120,7 +120,7 @@ export default function Hero() {
           <div data-rv style={{ ["--d" as string]: ".18s" }} className="mt-9 flex flex-wrap items-center gap-3">
             <a href="#pillars" className="hx-btn hx-btn-pri">Explore Your Future <ArrowRight className="h-4 w-4" aria-hidden /></a>
             <a href="#pillars" className="hx-btn hx-btn-ghost">Discover All Services</a>
-            <Link href="/studio" className="hx-btn px-3 text-white/80 underline-offset-4 hover:text-white hover:underline">Build My Resume</Link>
+            <Link href={portal("/studio")} className="hx-btn px-3 text-white/80 underline-offset-4 hover:text-white hover:underline">Build My Resume</Link>
           </div>
           <a href="#pillars" className="mt-14 hidden items-center gap-2 text-[0.8rem] text-white/50 transition hover:text-white md:inline-flex" aria-label="Scroll to services">
             <ChevronDown className="h-4 w-4 animate-bounce motion-reduce:animate-none" aria-hidden /> Scroll to explore
