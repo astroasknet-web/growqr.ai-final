@@ -6,6 +6,7 @@ import * as learning from "@/lib/market/learning";
 import * as lessons from "@/lib/market/lessons";
 import { CatalogCard, type Progress } from "@/components/market/catalog";
 import StaticCatalogue from "@/components/market/StaticCatalogue";
+import ExamPrepBanner from "@/components/market/ExamPrepBanner";
 import { currentViewer, MarketShell } from "@/components/market/shell";
 import { serializeJsonLd } from "@/lib/json-ld";
 import { SITE_URL } from "@/lib/seo";
@@ -117,6 +118,8 @@ export default async function CoursesPage({ searchParams }: { searchParams: Prom
           </dl>
         </div>
       </section>
+
+      <ExamPrepBanner />
 
       {/* Fields: only fields that have courses */}
       <nav aria-label="Fields" className="-mx-4 mt-6 overflow-x-auto px-4 sm:mx-0 sm:px-0">

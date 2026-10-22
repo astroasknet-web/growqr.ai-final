@@ -26,7 +26,7 @@ export const CAREERS_OPPS: NavLink[] = [
 export const CAREERS_LEARN: NavLink[] = [
   { label: "Courses", desc: "121 courses across 19 fields", href: "/courses", icon: "book", },
   { label: "Practice tests", desc: "IELTS and GRE, marked instantly", href: "/practice-tests", icon: "tracker", },
-  { label: "Career paths", desc: "Data Analyst, Web Developer, AI Engineer", href: "/courses#paths", icon: "path", },
+  { label: "Exam prep", desc: "JEE, NEET, UPSC, SSC, CAT, SAT, GRE, IELTS", href: "/exam-prep", icon: "path" },
   { label: "E-books", desc: "Study guides on MathStudy.in", href: "https://mathstudy.in/", icon: "ebook", external: true },
 ];
 export const ABROAD = COUNTRIES.map((c) => ({ label: c.name, count: c.count, href: `/study-abroad/${c.name.toLowerCase()}` }));

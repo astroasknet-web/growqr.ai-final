@@ -50,7 +50,7 @@ export function Opportunities() {
 
 const LEARN = [
   { icon: GraduationCap, t: "Self-paced courses", d: "Structured lessons, knowledge checks and progress tracking.", href: portal("/courses"), cta: "Browse courses" },
-  { icon: RouteIcon, t: "Career paths", d: "Follow a sequence of courses toward a role.", href: portal("/courses#paths"), cta: "See paths" },
+  { icon: RouteIcon, t: "Exam prep", d: "Free JEE, NEET, UPSC, SSC, CAT, SAT, GRE, GMAT and IELTS material.", href: portal("/exam-prep"), cta: "See exams" },
   { icon: Radio, t: "Live sessions", d: "Workshops and events with experts you can join live.", href: portal("/events"), cta: "See sessions" },
   { icon: PlayCircle, t: "Practice tests", d: "IELTS and GRE practice, marked instantly.", href: portal("/practice-tests"), cta: "Practise" },
 ];

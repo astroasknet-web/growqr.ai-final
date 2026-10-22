@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { staticCategories, staticCourses } from "@/lib/market/static-catalogue";
+import ExamPrepBanner from "./ExamPrepBanner";
 
 /** The course list straight from the catalogue file, shown when the database is not connected. Browse only: enrolment needs the database. */
 export default function StaticCatalogue({ cat }: { cat: string }) {
@@ -11,6 +12,7 @@ export default function StaticCatalogue({ cat }: { cat: string }) {
     <div>
       <h1 className="font-sans text-[clamp(1.8rem,4vw,2.6rem)] font-semibold text-ink">Courses</h1>
       <p className="mt-2 max-w-[44em] text-ink-3">{staticCourses().length} skill-based courses in {cats.length} categories. Enrolment opens as soon as the learning platform is connected.</p>
+      <ExamPrepBanner />
       <nav aria-label="Course categories" className="mt-6 flex flex-wrap gap-2">
         <Link href="/courses" className={`rounded-full px-4 py-2 text-[0.88rem] font-semibold ring-1 ring-black/10 ${active ? "bg-white text-ink" : "bg-ink text-white"}`}>All ({staticCourses().length})</Link>
         {cats.map((c) => (

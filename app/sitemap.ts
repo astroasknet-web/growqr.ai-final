@@ -2,6 +2,7 @@ import { MetadataRoute } from 'next';
 import { visibleExperts } from '@/features/experts/data/experts-data';
 import { listEventsForSitemap } from '@/features/events/services/events.service';
 import { SITE_URL } from '@/lib/seo';
+import { hubs as examHubs } from '@/lib/market/vidaara';
 import { nativeCourse, nativeSlugs } from '@/lib/market/lessons';
 import { TOTAL_TESTS } from '@/lib/tests/ielts';
 import { listBlogPosts } from '@/lib/blog/blogforge';
@@ -28,6 +29,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const basicRoutes: MetadataRoute.Sitemap = [
     { url: `${baseUrl}` },
     { url: `${baseUrl}/enterprise` },
+    { url: `${baseUrl}/exam-prep` },
+    ...examHubs().map((h) => ({ url: `${baseUrl}/exam-prep/${h.slug}` })),
     { url: `${baseUrl}/agents` },
     { url: `${baseUrl}/about` },
     { url: `${baseUrl}/vision` },
