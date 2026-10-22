@@ -2,9 +2,9 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-export interface MockQ { q: string; options?: string[]; correct?: number; answer?: string; explanation: string }
+export interface MockQ { q: string; options?: string[]; correct?: number; answer?: string; explanation: string; marks?: number; neg?: number }
 export interface MockSec { type: string; title: string; questions: MockQ[] }
-interface Props { id: string; title: string; level: string; minutes: number; sections: MockSec[] }
+interface Props { id: string; title: string; level: string; minutes: number; sections: MockSec[]; note?: string; marking?: string }
 
 const KEY = (id: string) => `lms:test:${id}`;
 const fmt = (s: number) => `${String(Math.floor(s / 60)).padStart(2, "0")}:${String(s % 60).padStart(2, "0")}`;
@@ -17,7 +17,7 @@ function isRight(q: MockQ, a: string | undefined): boolean {
 }
 
 /** A timed mock test. Answers stay in this browser; the best score is kept in localStorage. HTML comes pre-rendered from the server. */
-export default function MockTest({ id, title, level, minutes, sections }: Props) {
+export default function MockTest({ id, title, level, minutes, sections, note, marking }: Props) {
   const flat = useMemo(() => sections.flatMap((s, si) => s.questions.map((q, qi) => ({ key: `${si}-${qi}`, sec: s, q }))), [sections]);
   const [phase, setPhase] = useState<"intro" | "run" | "done">("intro");
   const [left, setLeft] = useState(minutes * 60);
@@ -29,7 +29,8 @@ export default function MockTest({ id, title, level, minutes, sections }: Props)
     try { const v = localStorage.getItem(KEY(id)); if (v) setBest(Number(v)); } catch { /* storage blocked */ }
   }, [id]);
 
-  const score = flat.filter((f) => isRight(f.q, ans[f.key])).length;
+  const total = flat.reduce((n, f) => n + (f.q.marks ?? 1), 0);
+  const score = Math.round(flat.reduce((n, f) => { const a = ans[f.key]; if (a === undefined || a === "") return n; return n + (isRight(f.q, a) ? (f.q.marks ?? 1) : -(f.q.neg ?? 0)); }, 0) * 100) / 100;
 
   const finish = useCallback(() => {
     if (timer.current) clearInterval(timer.current);
@@ -61,8 +62,9 @@ export default function MockTest({ id, title, level, minutes, sections }: Props)
         <ul className="mt-4 space-y-1 text-[15px] text-ink-2">
           <li>{flat.length} questions in {sections.length} {sections.length === 1 ? "section" : "sections"}</li>
           <li>{minutes} minutes. The test submits itself when time runs out.</li>
-          <li>1 mark for each correct answer. Worked solutions are shown at the end.</li>
-          {best !== null ? <li>Your best score on this device: <b>{best}/{flat.length}</b></li> : null}
+          <li>{marking ?? "1 mark for each correct answer."} Worked solutions are shown at the end.</li>
+          {note ? <li className="font-semibold text-ink">{note}</li> : null}
+          {best !== null ? <li>Your best score on this device: <b>{best}/{total}</b></li> : null}
         </ul>
         <button type="button" onClick={() => setPhase("run")} className="mt-6 min-h-[48px] rounded-lg bg-orange-deep px-7 text-[15px] font-semibold text-white hover:bg-ink">Start the test</button>
       </div>
@@ -73,8 +75,8 @@ export default function MockTest({ id, title, level, minutes, sections }: Props)
   return (
     <div>
       <div className="sticky top-[76px] z-10 mb-4 flex items-center justify-between rounded-xl border border-black/[0.08] bg-white/95 px-4 py-3 shadow-card backdrop-blur">
-        <b className="text-[15px] text-ink">{done ? `Score: ${score} / ${flat.length}` : `Answered ${Object.values(ans).filter((v) => v !== "").length} / ${flat.length}`}</b>
-        {done ? <span className="text-[14px] text-ink-3">{Math.round((score / flat.length) * 100)}%</span> : <span className={`font-mono text-[16px] font-bold ${left < 300 ? "text-red-600" : "text-ink"}`} role="timer" aria-label="Time left">{fmt(left)}</span>}
+        <b className="text-[15px] text-ink">{done ? `Score: ${score} / ${total}` : `Answered ${Object.values(ans).filter((v) => v !== "").length} / ${flat.length}`}</b>
+        {done ? <span className="text-[14px] text-ink-3">{Math.max(0, Math.round((score / total) * 100))}%</span> : <span className={`font-mono text-[16px] font-bold ${left < 300 ? "text-red-600" : "text-ink"}`} role="timer" aria-label="Time left">{fmt(left)}</span>}
       </div>
 
       {sections.map((s, si) => (
