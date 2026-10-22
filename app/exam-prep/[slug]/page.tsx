@@ -36,7 +36,7 @@ export default async function HubPage({ params }: P) {
       <h2 className="mt-10 text-[20px] font-bold text-ink">What is covered{totalUnits(h) ? ` (${totalUnits(h)} ${h.unit})` : ""}</h2>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
         {h.sections.map((s) => {
-          const own = h.studyMap?.[s.name] ? `/study/${h.studyMap[s.name]}` : h.learn ? (h.learn.startsWith("/study/") ? h.learn : h.slug === "ap-calculus-ab" ? `${h.learn}/calculus-ab` : `${h.learn}/${s.name.toLowerCase()}`) : null;
+          const own = h.studyMap?.[s.name] ? `/study/${h.studyMap[s.name]}` : h.learn ? (h.learn.startsWith("/study/") ? h.learn : h.slug === "ap-calculus-ab" ? `${h.learn}/calculus-ab` : `${h.learn}/${s.name.toLowerCase().replace(/\s+/g, "-")}`) : null;
           const body = (
             <>
               <span className="flex items-start justify-between gap-3"><b className="text-[15px] text-ink">{s.name}</b>{s.count ? <span className="shrink-0 rounded-full bg-cream-3 px-2.5 py-0.5 text-[12px] text-ink-3">{s.count}</span> : null}</span>

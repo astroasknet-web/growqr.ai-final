@@ -17,7 +17,7 @@ export default function ExamPrepPage() {
       <h1 className="font-sans text-[clamp(1.8rem,4vw,2.6rem)] font-semibold text-ink">Exam prep and free courses</h1>
       <p className="mt-2 max-w-[46em] text-ink-3">Free study material and mock tests from the Vidaara learning platform. JEE, NEET, AP Calculus, CAT, SAT, GRE, SSC CGL, CTET and the full-length mocks run here on GrowQR; the rest open on Vidaara.</p>
 
-      <p className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[0.92rem]"><Link href="/study" className="font-semibold text-orange-deep underline">Study courses: CAT, SAT, GRE, SSC CGL, CTET</Link><Link href="/learn/jee" className="font-semibold text-orange-deep underline">JEE</Link><Link href="/learn/neet" className="font-semibold text-orange-deep underline">NEET</Link><Link href="/learn/ap-calculus-ab" className="font-semibold text-orange-deep underline">AP Calculus AB</Link></p>
+      <p className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-[0.92rem]"><Link href="/study" className="font-semibold text-orange-deep underline">Study courses: CAT, SAT, GRE, SSC CGL, CTET</Link><Link href="/learn/jee" className="font-semibold text-orange-deep underline">JEE</Link><Link href="/learn/neet" className="font-semibold text-orange-deep underline">NEET</Link><Link href="/learn/ap-calculus-ab" className="font-semibold text-orange-deep underline">AP Calculus AB</Link><Link href="/school" className="font-semibold text-orange-deep underline">School, Class 1 to 12</Link><Link href="/olympiad/imo" className="font-semibold text-orange-deep underline">Maths Olympiad</Link></p>
 
       <h2 className="mt-10 text-[1.3rem] font-bold text-ink">Exam preparation</h2>
       <ul className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">

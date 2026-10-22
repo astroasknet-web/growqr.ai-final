@@ -6,6 +6,7 @@ import { hubs as examHubs } from '@/lib/market/vidaara';
 import { EXAMS, subjectsOf } from '@/lib/lms/content';
 import { EXAM_SLUGS, loadExam } from '@/lib/lms/exams';
 import { allStudy } from '@/lib/lms/study';
+import { CLASSES, subjectsOfClass } from '@/lib/lms/school';
 import { nativeCourse, nativeSlugs } from '@/lib/market/lessons';
 import { TOTAL_TESTS } from '@/lib/tests/ielts';
 import { listBlogPosts } from '@/lib/blog/blogforge';
@@ -36,6 +37,9 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...examHubs().map((h) => ({ url: `${baseUrl}/exam-prep/${h.slug}` })),
     ...EXAM_SLUGS.flatMap((s) => [{ url: `${baseUrl}/exam/${s}` }, ...(loadExam(s)?.tests ?? []).map((t) => ({ url: `${baseUrl}/exam/${s}/test/${t.key}` }))]),
     { url: `${baseUrl}/study` },
+    { url: `${baseUrl}/school` },
+    { url: `${baseUrl}/olympiad/imo` },
+    ...CLASSES.flatMap((c) => [{ url: `${baseUrl}/school/${c}` }, ...subjectsOfClass(c).flatMap((s) => s.subject === "imo" ? [{ url: `${baseUrl}/olympiad/imo/${c}` }, { url: `${baseUrl}/olympiad/imo/${c}/mock` }, ...s.chapters.map((ch) => ({ url: `${baseUrl}/school/${c}/imo/${ch.slug}` }))] : [{ url: `${baseUrl}/school/${c}/${s.subject}` }, ...s.chapters.map((ch) => ({ url: `${baseUrl}/school/${c}/${s.subject}/${ch.slug}` }))])]),
     ...allStudy().flatMap((c) => [{ url: `${baseUrl}/study/${c.key}` }, ...c.modules.flatMap((m) => m.chapters.map((ch) => ({ url: `${baseUrl}/study/${c.key}/${ch.slug}` })))]),
     ...EXAMS.flatMap((e) => [{ url: `${baseUrl}/learn/${e.slug}` }, ...subjectsOf(e).flatMap((s) => [{ url: `${baseUrl}/learn/${e.slug}/${s.subject}` }, ...s.chapters.map((c) => ({ url: `${baseUrl}/learn/${e.slug}/${s.subject}/${c.slug}` }))])]),
     { url: `${baseUrl}/agents` },

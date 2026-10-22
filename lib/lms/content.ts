@@ -78,7 +78,7 @@ function tex(src: string, display: boolean): string {
 /** Sanitise the HTML first, then turn $...$ and $$...$$ into KaTeX markup. */
 export function render(html: string | null | undefined): string {
   if (!html) return "";
-  return cleanHtml(html).replace(/\$\$([\s\S]+?)\$\$|\$([^$\n]+?)\$/g, (_m, d: string | undefined, i: string | undefined) => (d !== undefined ? tex(d, true) : tex(i ?? "", false)));
+  return cleanHtml(html).replace(/\$\$([\s\S]+?)\$\$|\\\[([\s\S]+?)\\\]|\\\(([\s\S]+?)\\\)|\$([^$\n]+?)\$/g, (_m, d: string | undefined, b: string | undefined, p: string | undefined, i: string | undefined) => (d !== undefined ? tex(d, true) : b !== undefined ? tex(b, true) : tex(p ?? i ?? "", false)));
 }
 
 /** Plain-text version of a short HTML string, for titles and descriptions. */
