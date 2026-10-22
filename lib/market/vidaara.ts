@@ -4,7 +4,7 @@ import data from "./data/vidaara-exams.json";
 export type VidaaraSection = { name: string; desc: string; count?: number; path: string };
 export type VidaaraTest = { name: string; desc: string; path: string };
 export type VidaaraHub = { slug: string; learn?: string; mock?: string; studyMap?: Record<string, string>; title: string; kind: string; path: string; intro: string; unit: string; sections: VidaaraSection[]; tests: VidaaraTest[] };
-export type VidaaraCard = { title: string; path?: string; url?: string; group: string; hub?: string; comingSoon?: boolean };
+export type VidaaraCard = { title: string; path?: string; url?: string; own?: string; group: string; hub?: string; comingSoon?: boolean };
 
 export const VIDAARA_BASE = data.base;
 export const vidaaraUrl = (path: string): string => VIDAARA_BASE + path;

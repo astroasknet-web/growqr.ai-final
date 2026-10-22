@@ -9,14 +9,14 @@
     { "title": "Data Science using Python", "path": "/tutorials/data-science", "group": "Skills" },
     { "title": "Computer Science", "path": "/courses/computer-science", "group": "Skills" },
     { "title": "Mathematics", "path": "/courses/math", "group": "School subjects" },
-    { "title": "Vedic Mathematics", "path": "/tutorials/vedic-math", "group": "School subjects" },
+    { "title": "Vedic Mathematics", "path": "/tutorials/vedic-math", "own": "/vedic-math", "group": "School subjects" },
     { "title": "Physics", "path": "/courses/physics", "group": "School subjects" },
     { "title": "Chemistry", "path": "/courses/chemistry", "group": "School subjects" },
     { "title": "Biology", "path": "/courses/biology", "group": "School subjects" },
     { "title": "English Grammar", "path": "/courses/english", "group": "Languages" },
     { "title": "Spoken English", "path": "/languages/english", "group": "Languages" },
     { "title": "Vocabulary Builder", "path": "/vocabulary-builder", "group": "Languages" },
-    { "title": "IELTS Reading & Writing", "path": "/ielts", "group": "Exam prep", "hub": "ielts" },
+    { "title": "IELTS Reading & Writing", "path": "/ielts", "own": "/ielts", "group": "Exam prep", "hub": "ielts" },
     { "title": "JEE (Main & Advanced)", "path": "/courses/jee", "group": "Exam prep", "hub": "jee" },
     { "title": "NEET UG Prep", "path": "/courses/neet", "group": "Exam prep", "hub": "neet" },
     { "title": "UPSC Civil Services", "path": "/exam/upsc-prelims", "group": "Exam prep", "hub": "upsc-prelims" },
@@ -137,7 +137,7 @@
       "tests": [{ "name": "Practice tests hub", "desc": "General practice tests.", "path": "/tests" }]
     },
     {
-      "slug": "ielts", "title": "IELTS", "kind": "Study abroad (English test)", "path": "/ielts",
+      "slug": "ielts", "learn": "/ielts", "title": "IELTS", "kind": "Study abroad (English test)", "path": "/ielts",
       "intro": "Free IELTS preparation for Academic and General Training: 17 lessons on Reading and Writing, plus practice tests for all four skills.",
       "unit": "lessons",
       "sections": [

@@ -7,6 +7,8 @@ import { hub, hubs, totalUnits, vidaaraUrl } from "@/lib/market/vidaara";
 
 type P = { params: Promise<{ slug: string }> };
 const clean = (s: string) => s.toLowerCase().replace(/[^a-z0-9-]/g, "");
+/** IELTS Reading and Listening tests live under /practice-tests on GrowQR; Writing and Speaking tests are under /ielts. */
+const IELTS_TESTS: Record<string, string> = { "/ielts/reading-practice-tests": "/practice-tests/ielts-reading", "/ielts/listening-practice-tests": "/practice-tests/ielts-listening" };
 
 export function generateStaticParams() { return hubs().map((h) => ({ slug: h.slug })); }
 
@@ -36,7 +38,7 @@ export default async function HubPage({ params }: P) {
       <h2 className="mt-10 text-[20px] font-bold text-ink">What is covered{totalUnits(h) ? ` (${totalUnits(h)} ${h.unit})` : ""}</h2>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
         {h.sections.map((s) => {
-          const own = h.studyMap?.[s.name] ? `/study/${h.studyMap[s.name]}` : h.learn ? (h.learn.startsWith("/study/") ? h.learn : h.slug === "ap-calculus-ab" ? `${h.learn}/calculus-ab` : `${h.learn}/${s.name.toLowerCase().replace(/\s+/g, "-")}`) : null;
+          const own = h.slug === "ielts" ? s.path : h.studyMap?.[s.name] ? `/study/${h.studyMap[s.name]}` : h.learn ? (h.learn.startsWith("/study/") ? h.learn : h.slug === "ap-calculus-ab" ? `${h.learn}/calculus-ab` : `${h.learn}/${s.name.toLowerCase().replace(/\s+/g, "-")}`) : null;
           const body = (
             <>
               <span className="flex items-start justify-between gap-3"><b className="text-[15px] text-ink">{s.name}</b>{s.count ? <span className="shrink-0 rounded-full bg-cream-3 px-2.5 py-0.5 text-[12px] text-ink-3">{s.count}</span> : null}</span>
@@ -51,14 +53,17 @@ export default async function HubPage({ params }: P) {
 
       <h2 className="mt-10 text-[20px] font-bold text-ink">Practice and mock tests</h2>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-        {h.tests.map((t) => (
-          <li key={t.name}>
-            <a href={vidaaraUrl(t.path)} target="_blank" rel="noopener noreferrer" className="flex h-full items-start justify-between gap-3 rounded-xl border border-black/[0.08] bg-white p-4 transition hover:border-orange">
+        {h.tests.map((t) => {
+          const own = h.slug === "ielts" ? IELTS_TESTS[t.path] ?? t.path : null;
+          const inner = (
+            <>
               <span><b className="text-[15px] text-ink">{t.name}</b><span className="mt-1 block text-[14px] text-ink-3">{t.desc}</span></span>
-              <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-ink-4" aria-hidden />
-            </a>
-          </li>
-        ))}
+              {own ? <span className="mt-0.5 shrink-0 text-[12px] font-semibold text-emerald-800">On GrowQR</span> : <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-ink-4" aria-hidden />}
+            </>
+          );
+          const cls = "flex h-full items-start justify-between gap-3 rounded-xl border border-black/[0.08] bg-white p-4 transition hover:border-orange";
+          return <li key={t.name}>{own ? <Link href={own} className={cls}>{inner}</Link> : <a href={vidaaraUrl(t.path)} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>}</li>;
+        })}
       </ul>
       <p className="mt-10 text-[0.82rem] text-ink-4">Lessons and tests are published by Vidaara and open on vidaara.org. Chapter counts were read from the Vidaara pages.</p>
     </MarketShell>

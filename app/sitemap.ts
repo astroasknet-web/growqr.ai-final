@@ -7,6 +7,8 @@ import { EXAMS, subjectsOf } from '@/lib/lms/content';
 import { EXAM_SLUGS, loadExam } from '@/lib/lms/exams';
 import { allStudy } from '@/lib/lms/study';
 import { CLASSES, subjectsOfClass } from '@/lib/lms/school';
+import { allLessons, speakingTests, writingTests } from '@/lib/lms/ielts';
+import { curriculum as vedicCurriculum } from '@/lib/lms/vedic';
 import { nativeCourse, nativeSlugs } from '@/lib/market/lessons';
 import { TOTAL_TESTS } from '@/lib/tests/ielts';
 import { listBlogPosts } from '@/lib/blog/blogforge';
@@ -37,6 +39,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...examHubs().map((h) => ({ url: `${baseUrl}/exam-prep/${h.slug}` })),
     ...EXAM_SLUGS.flatMap((s) => [{ url: `${baseUrl}/exam/${s}` }, ...(loadExam(s)?.tests ?? []).map((t) => ({ url: `${baseUrl}/exam/${s}/test/${t.key}` }))]),
     { url: `${baseUrl}/study` },
+    { url: `${baseUrl}/ielts` },
+    { url: `${baseUrl}/ielts/writing-practice-tests` },
+    { url: `${baseUrl}/ielts/speaking-practice-tests` },
+    ...allLessons().map((l) => ({ url: `${baseUrl}/ielts/${l.section}/${l.slug}` })),
+    ...writingTests().map((t) => ({ url: `${baseUrl}/ielts/writing-practice-tests/${t.slug}` })),
+    ...speakingTests().map((t) => ({ url: `${baseUrl}/ielts/speaking-practice-tests/${t.slug}` })),
+    { url: `${baseUrl}/vedic-math` },
+    ...vedicCurriculum().modules.filter((m) => m.available).map((m) => ({ url: `${baseUrl}/vedic-math/${m.slug}` })),
     { url: `${baseUrl}/school` },
     { url: `${baseUrl}/olympiad/imo` },
     ...CLASSES.flatMap((c) => [{ url: `${baseUrl}/school/${c}` }, ...subjectsOfClass(c).flatMap((s) => s.subject === "imo" ? [{ url: `${baseUrl}/olympiad/imo/${c}` }, { url: `${baseUrl}/olympiad/imo/${c}/mock` }, ...s.chapters.map((ch) => ({ url: `${baseUrl}/school/${c}/imo/${ch.slug}` }))] : [{ url: `${baseUrl}/school/${c}/${s.subject}` }, ...s.chapters.map((ch) => ({ url: `${baseUrl}/school/${c}/${s.subject}/${ch.slug}` }))])]),
