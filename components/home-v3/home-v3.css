@@ -1,0 +1,102 @@
+/* Homepage v3 design tokens. Scoped to .hx so the rest of the site keeps its own palette. */
+.hx {
+  --hx-navy: #0b1020;
+  --hx-indigo: #171b3a;
+  --hx-violet: #7857ff;
+  --hx-cyan: #35d9ff;
+  --hx-white: #ffffff;
+  --hx-soft: #f5f7fc;
+  --hx-text: #171a2b;
+  --hx-muted: #737b91;
+  --hx-grad: linear-gradient(110deg, #7857ff 0%, #35d9ff 100%);
+  --hx-glass: rgba(255, 255, 255, 0.07);
+  --hx-line: rgba(255, 255, 255, 0.12);
+  font-family: var(--font-poppins), system-ui, sans-serif;
+  color: var(--hx-text);
+}
+
+.hx-grad-text {
+  background: var(--hx-grad);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+/* ---- vertical accents (one hue per vertical, same saturation family) ---- */
+.hx-v-internships { --v: #ff8a4c; --v2: #ffc36b; }
+.hx-v-resume { --v: #7857ff; --v2: #b39dff; }
+.hx-v-courses { --v: #35d9ff; --v2: #8ff0ff; }
+.hx-v-abroad { --v: #2fd39a; --v2: #8cf0c9; }
+.hx-v-classes { --v: #ff5f8f; --v2: #ffa3be; }
+.hx-v-ebooks { --v: #f2c14e; --v2: #ffe29a; }
+
+/* ---- buttons ---- */
+.hx-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem;
+  min-height: 52px; padding: 0 1.6rem; border-radius: 999px; font-weight: 600; font-size: 0.98rem;
+  border: 1px solid transparent; transition: transform 0.2s, box-shadow 0.2s, background 0.2s, border-color 0.2s;
+  text-decoration: none; cursor: pointer;
+}
+.hx-btn:focus-visible, .hx a:focus-visible, .hx button:focus-visible { outline: 3px solid var(--hx-cyan); outline-offset: 3px; }
+.hx-btn-pri { background: var(--hx-grad); color: #0b1020; box-shadow: 0 14px 40px -12px rgba(120, 87, 255, 0.7); }
+.hx-btn-pri:hover { transform: translateY(-2px); box-shadow: 0 20px 50px -12px rgba(53, 217, 255, 0.55); }
+.hx-btn-ghost { background: rgba(255, 255, 255, 0.06); color: #fff; border-color: rgba(255, 255, 255, 0.22); backdrop-filter: blur(8px); }
+.hx-btn-ghost:hover { background: rgba(255, 255, 255, 0.14); transform: translateY(-2px); }
+.hx-btn-dark { background: var(--hx-navy); color: #fff; }
+.hx-btn-dark:hover { background: var(--hx-violet); transform: translateY(-2px); }
+.hx-btn-line { background: #fff; color: var(--hx-text); border-color: rgba(23, 26, 43, 0.16); }
+.hx-btn-line:hover { border-color: var(--hx-violet); transform: translateY(-2px); }
+
+/* ---- hero ---- */
+.hx-hero {
+  background:
+    radial-gradient(60% 50% at 78% 18%, rgba(120, 87, 255, 0.45), transparent 70%),
+    radial-gradient(45% 40% at 12% 85%, rgba(53, 217, 255, 0.22), transparent 70%),
+    linear-gradient(180deg, #0b1020 0%, #171b3a 100%);
+}
+.hx-hero::after {
+  content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
+  background-image: linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: 56px 56px;
+  mask-image: radial-gradient(70% 70% at 50% 40%, #000, transparent);
+}
+.hx-glass {
+  background: linear-gradient(160deg, rgba(255, 255, 255, 0.11), rgba(255, 255, 255, 0.04));
+  border: 1px solid var(--hx-line);
+  backdrop-filter: blur(14px);
+  box-shadow: 0 24px 60px -24px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.08);
+}
+@keyframes hx-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-9px); } }
+@keyframes hx-flow { to { stroke-dashoffset: -40; } }
+@keyframes hx-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+.hx-float { animation: hx-float 7s ease-in-out infinite; }
+.hx-flow { stroke-dasharray: 4 6; animation: hx-flow 3s linear infinite; }
+.hx-live-dot { animation: hx-pulse 1.6s ease-in-out infinite; }
+
+/* ---- reveal (only hides after hydration, so no-JS and SSR stay visible) ---- */
+.hx [data-rv].rv-pre { opacity: 0; transform: translateY(18px); }
+.hx [data-rv] { transition: opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1), transform 0.7s cubic-bezier(0.22, 1, 0.36, 1); transition-delay: var(--d, 0s); }
+
+/* ---- bento tiles ---- */
+.hx-tile {
+  position: relative; overflow: hidden; border-radius: 28px; border: 1px solid rgba(23, 26, 43, 0.08); background: #fff;
+  transition: transform 0.3s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.3s;
+}
+.hx-tile::before {
+  content: ""; position: absolute; inset: 0; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+  background: radial-gradient(60% 60% at 90% 0%, color-mix(in srgb, var(--v) 22%, transparent), transparent 70%);
+}
+.hx-tile:hover { transform: translateY(-4px); box-shadow: 0 30px 60px -28px color-mix(in srgb, var(--v) 60%, #0b1020); }
+.hx-tile:hover::before, .hx-tile:focus-within::before { opacity: 1; }
+.hx-chip { display: inline-grid; place-items: center; width: 44px; height: 44px; border-radius: 14px; color: #0b1020; background: linear-gradient(135deg, var(--v), var(--v2)); }
+
+@media (prefers-reduced-motion: reduce) {
+  .hx-float, .hx-flow, .hx-live-dot { animation: none; }
+  .hx [data-rv].rv-pre { opacity: 1; transform: none; }
+  .hx [data-rv] { transition: none; }
+  .hx-btn, .hx-tile { transition: none; }
+}
+
+/* The site-wide h1/h2 rules force a dark colour and very tight spacing; reset spacing here and set colours per element. */
+.hx h1, .hx h2 { letter-spacing: -0.03em !important; font-weight: 600 !important; }
+.hx h3 { opacity: 1; letter-spacing: -0.01em; }
