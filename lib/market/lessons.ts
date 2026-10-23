@@ -6,7 +6,7 @@ import bbaFa from "./data/lessons/bba-financial-accounting.json";
 
 /**
  * Native lessons: the courses GrowQR teaches itself (ported from Vidaara by scripts/build-lessons.mjs). A catalogue course with an entry
- * here gets a lesson player at /courses/<slug>/learn; every other course still links out to the Vidaara LMS. Progress reuses the
+ * here gets a lesson player at /courses/<slug>/learn; every other course shows "Lessons coming soon". Progress reuses the
  * existing checkpoints (one per module + the project), so enrolment, My courses and Skill Passport tiers need no change.
  */
 export interface Quiz { pass: number; questions: Array<{ text: string; options: string[]; correct: number; explanation: string }> }

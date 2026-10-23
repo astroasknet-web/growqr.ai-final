@@ -25,7 +25,7 @@ const err = (code: ErrCode, msg: string): Value => ({ err: code, msg });
 const MSG: Record<string, string> = {
   "#DIV/0!": "The formula divides by zero or by an empty cell.",
   "#VALUE!": "The formula is trying to do maths with text. Check that the cells hold numbers.",
-  "#NAME?": "The formula uses a name Vidaara does not know. Check the spelling.",
+  "#NAME?": "The formula uses a name GrowQR does not know. Check the spelling.",
   "#REF!": "The formula points at a cell that is not on this sheet.",
   "#CIRC!": "The formula refers back to its own cell, directly or through other cells, so it can never finish.",
   "#N/A": "The value could not be found.",
@@ -162,7 +162,7 @@ export class Calculator {
   }
 
   private fn(name: string, args: Node[]): Value {
-    if (!FUNCS.has(name)) return err("#NAME?", `"${name}" is not a function Vidaara knows yet. Try SUM, AVERAGE, MIN, MAX, COUNT, COUNTA or IF.`);
+    if (!FUNCS.has(name)) return err("#NAME?", `"${name}" is not a function GrowQR knows yet. Try SUM, AVERAGE, MIN, MAX, COUNT, COUNTA or IF.`);
     const need = (min: number, max: number): Value | null => (args.length < min || args.length > max ? err("#VALUE!", `${name} needs ${min === max ? min : `${min} to ${max}`} value${max === 1 ? "" : "s"} inside the brackets, but it has ${args.length}.`) : null);
     switch (name) {
       case "SUM": { const n = this.numbers(args); return Array.isArray(n) ? n.reduce((a, b) => a + b, 0) : n; }

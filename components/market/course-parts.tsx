@@ -88,8 +88,8 @@ export function CourseTracker({ course, e, back }: { course: Pick<Course, "slug"
           {e.certificate_url === "" || !locked ? (
             <form action={courseAction} className="mt-3 space-y-2">
               {hidden("certificate")}
-              <label htmlFor={`cu-${course.slug}`} className="block text-[13px] font-medium text-ink-2">{e.certificate_url === "" ? "Add your Vidaara certificate link" : "Replace certificate link"}</label>
-              <input id={`cu-${course.slug}`} name="cert_url" type="url" inputMode="url" placeholder="https://vidaara.org/..." defaultValue={e.certificate_url} className={inputCls} />
+              <label htmlFor={`cu-${course.slug}`} className="block text-[13px] font-medium text-ink-2">{e.certificate_url === "" ? "Add your certificate link" : "Replace certificate link"}</label>
+              <input id={`cu-${course.slug}`} name="cert_url" type="url" inputMode="url" placeholder="https://..." defaultValue={e.certificate_url} className={inputCls} />
               <label htmlFor={`cc-${course.slug}`} className="block text-[13px] font-medium text-ink-2">Certificate ID <span className="text-ink-4 font-normal">(optional)</span></label>
               <input id={`cc-${course.slug}`} name="cert_code" maxLength={60} defaultValue={e.certificate_code} className={inputCls} />
               <button type="submit" className="min-h-[44px] px-4 rounded-lg bg-orange hover:bg-orange-dark text-white text-[14px] font-semibold">Save certificate</button>

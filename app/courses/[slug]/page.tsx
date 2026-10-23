@@ -135,10 +135,10 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
             </>
           ) : (
             <>
-              <h2 className="text-[18px] font-bold text-ink">Learn on Vidaara</h2>
-              <p className="text-[14px] text-ink-3">The lessons for this course run on the Vidaara learning platform. You can also start one of the courses taught here on GrowQR.</p>
-              <a className={`${btn} bg-orange-deep hover:bg-ink text-white`} href={courses.url(course.slug)} target="_blank" rel="noopener noreferrer">Open on Vidaara</a>
-              <Link className={`${btn} border border-black/[0.15] hover:bg-cream-2`} href="/courses?available=1">See courses you can start here</Link>
+              <h2 className="text-[18px] font-bold text-ink">Lessons coming soon</h2>
+              <p className="text-[14px] text-ink-3">The lessons for this course are being added to GrowQR. In the meantime you can start one of the courses that is ready, or study for an exam for free.</p>
+              <Link className={`${btn} bg-orange-deep hover:bg-ink text-white`} href="/courses?available=1">See courses you can start now</Link>
+              <Link className={`${btn} border border-black/[0.15] hover:bg-cream-2`} href="/exam-prep">Free exam prep</Link>
             </>
           )}
           <ul className="text-[14px] text-ink-2 space-y-1"><li>{course.hours}, about {course.weeks}</li><li>{course.badge || "Certificate"}</li></ul>

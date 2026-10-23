@@ -3,7 +3,7 @@ import type { Career, Domain } from "./career-stage";
 import type { RawScores } from "./scorers/types";
 
 /**
- * Turns scores into Vidaara course recommendations (port of Score\Recommender). Two layers, both from the editable
+ * Turns scores into GrowQR course recommendations (port of Score\Recommender). Two layers, both from the editable
  * recommendations.json: weakness-driven career-readiness courses, then upskilling courses for the detected domain.
  * Deduplicated by course slug and capped at max_total.
  */
@@ -34,7 +34,7 @@ export function recommend(section: { section_score: number }, rawScores: RawScor
     domain_recommendation?: { max?: number; reason_template?: string };
   };
   const base = (data.base_url ?? "").replace(/\/+$/, "");
-  const path = data.course_path ?? "/courses_new/";
+  const path = data.course_path ?? "/courses/";
   const maxTotal = Math.trunc(data.max_total ?? 6);
   const catalog = new Map<string, { slug?: string; title: string; category?: string }>();
   for (const row of data.catalog ?? []) if (row.slug !== undefined) catalog.set(row.slug, row);

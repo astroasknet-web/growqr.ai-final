@@ -47,10 +47,6 @@ function map(r: Record<string, unknown>): Course {
 
 const esc = (s: string) => s.replace(/[\\%_]/g, (c) => "\\" + c);
 
-export function baseUrl(): string {
-  return (process.env.COURSES_BASE_URL ?? "https://vidaara.org/courses_new/").replace(/\/+$/, "") + "/";
-}
-export const url = (slug: string): string => baseUrl() + encodeURIComponent(slug);
 
 export async function categories(): Promise<Array<{ key: string; name: string; c1: string; c2: string; n: number }>> {
   const rows = await all<Record<string, unknown>>(

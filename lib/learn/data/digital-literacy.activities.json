@@ -2132,7 +2132,7 @@
    ],
    "required": true,
    "objective": "Know the three parts of a web address: protocol, domain and path.",
-   "scenario": "In https://www.vidaara.org/courses/digital-literacy, each part tells the browser something different.",
+   "scenario": "In /courses/digital-literacy, each part tells the browser something different.",
    "steps": [
     "Read each piece of an address.",
     "Say whether it is the protocol (how to connect), the domain (which website) or the path (which page).",

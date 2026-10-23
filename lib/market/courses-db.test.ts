@@ -28,6 +28,7 @@ describe.skipIf(!DB)("courses and learning on a real database", () => {
   beforeAll(async () => {
     process.env.DATABASE_URL = DB;
     process.env.PORTAL_APP_URL = "https://growqr.test";
+    process.env.LMS_CERTIFICATE_HOSTS = "lms.example.org";
     process.env.LMS_WEBHOOK_SECRET = "wh-secret";
     delete process.env.RESEND_API_KEY;
     db = await import("../portal/db");
@@ -86,7 +87,6 @@ describe.skipIf(!DB)("courses and learning on a real database", () => {
     expect(paths[0].hours).toBe(paths[0].courses.reduce((a, c) => a + c.hours_num, 0));
     expect((await C.related(course, 3)).every((c) => c.category === course.category && c.slug !== course.slug)).toBe(true);
     expect((await C.forSkills(["Python", "Excel"], 3)).length).toBeGreaterThan(0);
-    expect(C.url("a b")).toMatch(/\/a%20b$/);
   });
 
   it("enrols, tracks progress and completes", async () => {
@@ -113,13 +113,13 @@ describe.skipIf(!DB)("courses and learning on a real database", () => {
   });
 
   it("only accepts certificate links on an allowed https host", async () => {
-    for (const bad of ["http://vidaara.org/c/1", "https://evil.com/c/1", "https://vidaara.org.evil.com/x", "https://user:pw@vidaara.org/x", "javascript:alert(1)", "not a url", "https://notvidaara.org/x", "https://vidaara.org/" + "a".repeat(300)]) {
+    for (const bad of ["http://lms.example.org/c/1", "https://evil.com/c/1", "https://lms.example.org.evil.com/x", "https://user:pw@lms.example.org/x", "javascript:alert(1)", "not a url", "https://notlms.example.org/x", "https://lms.example.org/" + "a".repeat(300)]) {
       expect(L.validCertificateUrl(bad), bad).toBe(false);
     }
-    for (const good of ["https://vidaara.org/cert/1", "https://app.vidaara.org/cert/1", "https://VIDAARA.org/x"]) expect(L.validCertificateUrl(good), good).toBe(true);
-    expect(await L.attachCertificate(uid, course, "https://evil.com/x", "")).toMatch(/Vidaara address/);
-    expect(await L.attachCertificate(uid, { id: 2147483000 }, "https://vidaara.org/x", "")).toMatch(/Finish every checkpoint/);
-    expect(await L.attachCertificate(uid, course, "https://vidaara.org/cert/9", "  VD-9  ")).toBeNull();
+    for (const good of ["https://lms.example.org/cert/1", "https://app.lms.example.org/cert/1", "https://LMS.example.org/x"]) expect(L.validCertificateUrl(good), good).toBe(true);
+    expect(await L.attachCertificate(uid, course, "https://evil.com/x", "")).toMatch(/allowed address/);
+    expect(await L.attachCertificate(uid, { id: 2147483000 }, "https://lms.example.org/x", "")).toMatch(/Finish every checkpoint/);
+    expect(await L.attachCertificate(uid, course, "https://lms.example.org/cert/9", "  VD-9  ")).toBeNull();
     const e = await L.find(uid, course.id);
     expect(e?.tier).toBe("certificate");
     expect(e?.certificate_code).toBe("VD-9");
@@ -134,7 +134,7 @@ describe.skipIf(!DB)("courses and learning on a real database", () => {
   });
 
   it("accepts a signed LMS completion once and locks the record", async () => {
-    const body = JSON.stringify({ email: email.toUpperCase(), course_slug: course.slug, certificate_url: "https://vidaara.org/cert/77", certificate_code: "VD-77" });
+    const body = JSON.stringify({ email: email.toUpperCase(), course_slug: course.slug, certificate_url: "https://lms.example.org/cert/77", certificate_code: "VD-77" });
     const ts = String(Math.floor(Date.now() / 1000));
     const sig = (b: string, t = ts, secret = "wh-secret") => createHmac("sha256", secret).update(`${t}.${b}`).digest("hex");
     expect((await L.handleWebhook(body, ts, "bad")).status).toBe(401);
@@ -145,7 +145,7 @@ describe.skipIf(!DB)("courses and learning on a real database", () => {
     expect(ok).toEqual({ status: 200, body: { ok: true } });
     expect((await L.handleWebhook(body, ts, sig(body))).status).toBe(409); // replay
     const e = await L.find(uid, course.id);
-    expect(e).toMatchObject({ status: "completed", verified: true, tier: "verified", certificate_url: "https://vidaara.org/cert/77" });
+    expect(e).toMatchObject({ status: "completed", verified: true, tier: "verified", certificate_url: "https://lms.example.org/cert/77" });
     expect(await L.setDone(uid, course, [0])).toBeNull(); // verified records are locked
     await L.unenrol(uid, course.id);
     expect(await L.find(uid, course.id)).not.toBeNull(); // and cannot be dropped

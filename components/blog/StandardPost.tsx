@@ -102,7 +102,7 @@ export default function StandardPost({ post, more = [] }: { post: LocalBlogPost;
         <p className="mt-4"><Link href="/blog" className={`text-[14px] font-semibold text-ink underline ${focus}`}>&larr; Back to the blog</Link></p>
       </article>
 
-      <aside aria-label="Explore Vidaara" className="mt-12 space-y-5 lg:sticky lg:top-28 lg:mt-0 lg:self-start lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
+      <aside aria-label="Explore this article" className="mt-12 space-y-5 lg:sticky lg:top-28 lg:mt-0 lg:self-start lg:max-h-[calc(100vh-8rem)] lg:overflow-y-auto lg:pr-1">
         <nav aria-labelledby="stoc-h" className="hidden rounded-2xl border border-black/[0.09] bg-white p-5 lg:block">
           <p id="stoc-h" className="text-[13px] font-bold uppercase tracking-wide text-ink-3">On this page</p>
           <ol className="mt-3 space-y-1.5 border-l border-black/[0.1] text-[14.5px]">

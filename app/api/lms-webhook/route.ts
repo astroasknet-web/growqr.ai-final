@@ -4,7 +4,7 @@ import { handleWebhook } from "@/lib/market/learning";
 
 export const dynamic = "force-dynamic";
 
-// Optional signed completion callback from the Vidaara LMS. Disabled until LMS_WEBHOOK_SECRET is set. See lib/market/learning.ts for the signature rule.
+// Optional signed completion callback from an external learning platform. Disabled until LMS_WEBHOOK_SECRET is set. See lib/market/learning.ts for the signature rule.
 export async function POST(req: Request) {
   const headers = { "Cache-Control": "no-store" };
   if (!databaseConfigured()) return NextResponse.json({ error: "unavailable" }, { status: 503, headers });
