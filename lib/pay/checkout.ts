@@ -117,6 +117,18 @@ export async function confirmPayment(publicId: string, viewer: Viewer, hint: { r
 }
 
 /** Customer cancels an unpaid order. */
+/**
+ * Before a signed-in customer starts a new checkout with a coupon, cancel their own earlier unpaid checkouts that still hold it (after a declined
+ * or abandoned payment, for example). Otherwise the coupon would stay reserved to the old order and the retry would be refused. An order that
+ * turns out to have been paid is left alone and keeps the coupon.
+ */
+export async function releaseHeldCoupon(userId: number, code: string): Promise<void> {
+  const held = await rows(pool, "SELECT o.public_id FROM pay_orders o JOIN pay_coupon_redemptions r ON r.order_id = o.id JOIN pay_coupons c ON c.id = r.coupon_id WHERE o.user_id = $1 AND o.status = 'pending' AND c.code = $2", [userId, code.toUpperCase()]);
+  for (const h of held) {
+    try { await cancelOrder(h.public_id, { userId }); } catch { /* paid meanwhile, or the provider could not be reached: leave it as it is */ }
+  }
+}
+
 export async function cancelOrder(publicId: string, viewer: Viewer): Promise<OrderView> {
   const order = await loadOrder(pool, publicId, viewer);
   if (order.status !== "pending") throw new PayError("order_not_cancellable", "Only an unpaid order can be cancelled.", 409);

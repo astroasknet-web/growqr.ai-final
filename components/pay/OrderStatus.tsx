@@ -3,10 +3,11 @@
 import Link from "next/link";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { AlertCircle, CheckCircle2, Clock, Loader2, XCircle } from "lucide-react";
+import { removeMany } from "@/lib/cart/store";
 import { formatMoney } from "@/lib/pay/money";
 
 interface OrderData {
-  order: { id: string; status: string; currency: string; totalMinor: number; refundedMinor: number; email: string; items: Array<{ title: string; qty: number; totalMinor: number }> };
+  order: { id: string; status: string; currency: string; totalMinor: number; refundedMinor: number; email: string; items: Array<{ sku?: string; title: string; qty: number; totalMinor: number }> };
   payment: { status: string; provider: string; problem: string | null } | null;
   documents: Array<{ number: string; kind: string; title: string }>;
 }
@@ -47,6 +48,10 @@ export default function OrderStatus({ id, token, retryHref }: { id: string; toke
     return () => { stop = true; if (timer.current) clearTimeout(timer.current); };
   }, [load]);
 
+  // Once the server says the order is paid, the things in it are no longer waiting in the cart.
+  const paidSkus = data && DONE.has(data.order.status) ? data.order.items.map((i) => i.sku ?? "").filter(Boolean).join(",") : "";
+  useEffect(() => { if (paidSkus) removeMany(paidSkus.split(",")); }, [paidSkus]);
+
   if (!data) {
     return error ? (
       <div role="alert" className="rounded-2xl border border-red-200 bg-red-50 p-6 text-red-800"><AlertCircle className="mb-2 h-5 w-5" aria-hidden />{error}</div>
@@ -77,9 +82,9 @@ export default function OrderStatus({ id, token, retryHref }: { id: string; toke
         </>
       ) : (
         <>
-          {stillWaiting ? <Clock className="h-10 w-10 text-amber-600" aria-hidden /> : <Loader2 className="h-10 w-10 animate-spin text-ink-3" aria-hidden />}
-          <h1 className="mt-4 text-[1.7rem] font-bold text-ink">{stillWaiting ? "We are still waiting for your bank" : "Confirming your payment"}</h1>
-          <p className="mt-2 text-ink-3">{stillWaiting ? `Some payments take longer to confirm. You do not need to pay again. We will email ${order.email} as soon as it is confirmed, and you can check this page later.` : "Please do not close this page or pay again. This takes a few seconds."}</p>
+          {payment?.problem === "declined" ? <XCircle className="h-10 w-10 text-red-600" aria-hidden /> : stillWaiting ? <Clock className="h-10 w-10 text-amber-600" aria-hidden /> : <Loader2 className="h-10 w-10 animate-spin text-ink-3" aria-hidden />}
+          <h1 className="mt-4 text-[1.7rem] font-bold text-ink">{payment?.problem === "declined" ? "That payment was declined" : stillWaiting ? "We are still waiting for your bank" : "Confirming your payment"}</h1>
+          <p className="mt-2 text-ink-3">{stillWaiting ? `Some payments take longer to confirm. You do not need to pay again. We will email ${order.email} as soon as it is confirmed, and you can check this page later.` : payment?.problem === "declined" ? "You have not been charged. Your cart is still saved." : "Please do not close this page or pay again. This takes a few seconds."}</p>
           {payment?.problem === "declined" ? <p className="mt-3 text-red-700">Your bank declined an attempt. You can try again with another method.</p> : null}
           {stillWaiting || payment?.problem ? <Link href={retryHref} className="mt-6 inline-flex min-h-[44px] items-center rounded-xl border border-black/15 px-5 font-semibold text-ink">Pay again</Link> : null}
         </>

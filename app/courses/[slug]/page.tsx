@@ -6,7 +6,8 @@ import * as passport from "@/lib/portal/passport/profile";
 import * as courses from "@/lib/market/courses";
 import * as jobs from "@/lib/market/jobs";
 import * as learning from "@/lib/market/learning";
-import { buyHref, canStudy, courseFee } from "@/lib/pay/course-access";
+import AddToCart from "@/components/pay/AddToCart";
+import { buyHref, canStudy, courseFee, courseSku } from "@/lib/pay/course-access";
 import { formatMoney } from "@/lib/pay/money";
 import * as lessons from "@/lib/market/lessons";
 import { JobCard } from "@/components/market/job-card";
@@ -126,6 +127,7 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
                   <p className="text-[28px] font-bold text-ink">{formatMoney(fee.amountMinor, "INR")}</p>
                   <p className="text-[13px] text-ink-3">One payment for this course. Lifetime access, certificate and badge.</p>
                   <Link className={`${btn} bg-orange-deep hover:bg-ink text-white`} href={buyHref(course.slug)}>Buy this course</Link>
+                  <AddToCart sku={courseSku(course.slug)} className="w-full" />
                   <Link className={`${btn} border border-black/[0.15] hover:bg-cream-2`} href={start}>See what is inside</Link>
                 </>
               ) : enrol ? (

@@ -48,7 +48,8 @@ export default async function CheckoutPage({ searchParams }: { searchParams: Pro
   let initial: Quote | null = null;
   let initialError: string | null = null;
   try {
-    initial = await quoteOrder(quoteSchema.parse({ items, country, coupon: coupon || undefined }), { userId: me?.id ?? null });
+    const currency = /^[A-Za-z]{3}$/.test(sp.currency ?? "") ? (sp.currency as string).toUpperCase() : undefined;
+    initial = await quoteOrder(quoteSchema.parse({ items, country, currency, coupon: coupon || undefined }), { userId: me?.id ?? null });
   } catch (e) {
     initialError = e instanceof PayError ? e.message : "We could not price this order. Please try again.";
     if (!(e instanceof PayError) && !(e instanceof Error && e.name === "ZodError")) console.error("checkout quote failed", e);

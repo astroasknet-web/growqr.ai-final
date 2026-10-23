@@ -1,5 +1,6 @@
 "use client";
 
+import CartLink from "@/components/pay/CartLink";
 import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
@@ -310,6 +311,7 @@ export default function HomeNav() {
                 <Search className="h-4 w-4" aria-hidden /><span className="hidden 2xl:inline">Search</span><kbd className="ml-1 hidden items-center gap-0.5 rounded-md border border-black/10 bg-white px-1.5 py-0.5 text-[0.66rem] font-semibold 2xl:inline-flex"><Command className="h-2.5 w-2.5" aria-hidden />K</kbd>
               </button>
               <button type="button" onClick={() => setPal(true)} aria-label="Search" className="grid h-11 w-11 place-items-center rounded-full border border-black/10 bg-white/70 md:hidden"><Search className="h-[18px] w-[18px]" aria-hidden /></button>
+              <CartLink />
               <a href={accountHref} className="hidden min-h-[44px] items-center whitespace-nowrap rounded-full px-3 text-[0.9rem] font-semibold text-ink-2 transition hover:bg-black/[0.04] md:inline-flex">{accountLabel}</a>
               <button type="button" onClick={cta.onClick} className="cta-shine hidden min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-full bg-orange px-4 text-[0.88rem] font-bold text-white shadow-[0_10px_24px_-10px_rgba(255,106,47,0.7)] transition hover:bg-orange-dark sm:inline-flex">{cta.label}<ArrowRight className="h-4 w-4" aria-hidden /></button>
               <button type="button" aria-label={drawer ? "Close menu" : "Open menu"} aria-expanded={drawer} onClick={() => setDrawer((d) => !d)} className="grid h-11 w-11 place-items-center rounded-full border border-black/10 bg-white/70 lg:hidden">{drawer ? <X className="h-5 w-5" aria-hidden /> : <Menu className="h-5 w-5" aria-hidden />}</button>

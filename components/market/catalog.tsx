@@ -1,3 +1,4 @@
+import AddToCart from "@/components/pay/AddToCart";
 import { formatMoney } from "@/lib/pay/money";
 import Link from "next/link";
 import glyphs from "@/lib/market/data/course-glyphs.json";
@@ -88,6 +89,7 @@ export function CatalogCard({ course, progress }: { course: Course; progress?: P
             <span aria-hidden="true" className={`h-2 w-2 rounded-full ${here ? "bg-emerald-600" : "bg-black/25"}`} />
             {here ? "Lessons available" : "Lessons coming soon"}
           </span>
+          {here && course.fee_minor ? <AddToCart sku={`course-${course.slug}`} compact /> : null}
           <Link
             href={cta.href}
             className={`inline-flex min-h-[40px] items-center rounded-lg px-4 text-[13.5px] font-semibold transition-colors ${ring} ${cta.tone === "primary" ? "bg-orange-deep text-white hover:bg-ink" : "border border-black/[0.18] text-ink hover:bg-cream-2"}`}
