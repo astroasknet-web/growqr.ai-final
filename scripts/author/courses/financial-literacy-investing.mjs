@@ -1,0 +1,548 @@
+import { bars, capstone, ck, classifyLab, course, def, example, explorer, flow, formula, list, mistakes, module_, p, S, sheetLab, table, tip, topic, tryIt, warn } from "../kit.mjs";
+
+const SK = "money";
+
+/* Expected values are computed in JavaScript so the labs do not depend on hand arithmetic; the tests confirm the sheet engine agrees. */
+const pmt = (rate, n, pv) => (rate === 0 ? pv / n : (pv * rate) / (1 - (1 + rate) ** -n));
+const fv = (rate, n, pay) => (rate === 0 ? pay * n : (pay * ((1 + rate) ** n - 1)) / rate);
+const NOTE = "Educational example only: this is not personal financial advice.";
+
+const labs = [
+  sheetLab({
+    id: "f1-budget", module: "money-basics", title: "Build a monthly budget", level: "beginner", minutes: 12, xp: 45, skills: [SK], required: true,
+    objective: "Total income and spending, find what is left and flag overspending.",
+    scenario: "Riya earns a monthly stipend and some pocket money. List her spending and see what remains. " + NOTE,
+    steps: ["In B3 total the income (B1 and B2).", "In B11 total the spending in B5:B10.", "In B12 work out what is left (income minus spending).", "In B13 show Saving or Overspent with IF.", "In C5 work out rent as a percent of income (rent divided by B3); copy the idea for C6."],
+    cells: { A1: "Stipend", B1: "12000", A2: "Pocket money", B2: "3000", A3: "Total income", A4: "Spending", C4: "% of income", A5: "Rent", B5: "5000", A6: "Food", B6: "3500", A7: "Transport", B7: "1200", A8: "Phone", B8: "400", A9: "Fun", B9: "1500", A10: "Books", B10: "800", A11: "Total spending", A12: "Left over", A13: "Verdict" }, view: { cols: 4, rows: 14 },
+    checks: [
+      ck("inc", "B3 is the total income", "=SUM(B1:B2)", "Total income is the money coming in each month.", S.formula("B3", { fns: ["SUM"], cover: "B1:B2", equals: 15000 })),
+      ck("sp", "B11 is the total spending", "=SUM(B5:B10)", "Add every spending line.", S.formula("B11", { fns: ["SUM"], cover: "B5:B10", equals: 12400 })),
+      ck("left", "B12 is what is left", "=B3-B11", "Left over is income minus spending.", S.formula("B12", { equals: 2600 })),
+      ck("verdict", "B13 shows Saving", "=IF(B12>=0,\"Saving\",\"Overspent\")", "A positive balance means money can be saved.", S.formula("B13", { fns: ["IF"], equals: "Saving" })),
+      ck("pct", "C5 is rent as a share of income", "=B5/B3", "A percentage compares a part with the whole.", S.formula("C5", { equals: 5000 / 15000 })),
+      ck("pct2", "C6 is food as a share of income", "=B6/B3", "Spending shares show where money goes.", S.formula("C6", { equals: 3500 / 15000 })),
+    ],
+    solution: { cells: { B3: "=SUM(B1:B2)", B11: "=SUM(B5:B10)", B12: "=B3-B11", B13: "=IF(B12>=0,\"Saving\",\"Overspent\")", C5: "=B5/B3", C6: "=B6/B3" } },
+  }),
+  sheetLab({
+    id: "f2-emergency", module: "saving-and-compounding", title: "How many months could you cope?", level: "beginner", minutes: 10, xp: 40, skills: [SK], required: true,
+    objective: "Work out an emergency fund target and how long it will take to reach it.",
+    scenario: "A family spends 24,000 rupees a month and has saved 30,000. A common target is six months of spending. " + NOTE,
+    steps: ["In B4 find how many months of spending the savings cover.", "In B5 find the target (months wanted times monthly spending).", "In B6 find how much more is needed.", "In B7 find how many months it takes to close the gap if they save 3,000 a month (round up with ROUNDUP)."],
+    cells: { A1: "Monthly spending", B1: "24000", A2: "Savings now", B2: "30000", A3: "Months wanted", B3: "6", A4: "Months covered now", A5: "Target fund", A6: "Still needed", A7: "Months to reach target at 3,000 a month" }, view: { cols: 3, rows: 9 },
+    checks: [
+      ck("cov", "B4 is months covered", "=B2/B1", "Savings divided by monthly spending tells how long you could manage.", S.formula("B4", { equals: 30000 / 24000 })),
+      ck("tgt", "B5 is the target fund", "=B3*B1", "Target is months wanted times monthly spending.", S.formula("B5", { equals: 144000 })),
+      ck("need", "B6 is the gap", "=B5-B2", "The gap is the target minus what you have.", S.formula("B6", { equals: 114000 })),
+      ck("mths", "B7 is the months to close the gap", "=ROUNDUP(B6/3000,0)", "Divide the gap by what you save each month and round up to whole months.", S.formula("B7", { fns: ["ROUNDUP"], equals: 38 })),
+    ],
+    solution: { cells: { B4: "=B2/B1", B5: "=B3*B1", B6: "=B5-B2", B7: "=ROUNDUP(B6/3000,0)" } },
+  }),
+  sheetLab({
+    id: "f3-compound", module: "saving-and-compounding", title: "Watch compound interest grow", level: "intermediate", minutes: 14, xp: 55, skills: [SK], required: true,
+    objective: "Build a year-by-year table where each year's interest is added to the balance.",
+    scenario: "10,000 rupees is invested at 8% a year. Compare simple interest (always on the original amount) with compound interest (on the growing balance).",
+    steps: ["In B6 start the compound balance with the amount in B1; in C6 the simple balance.", "In B7 grow the compound balance: previous balance times 1 plus the rate.", "In C7 grow the simple balance: the previous balance plus the amount times the rate.", "Do the same to row 10 (year 4).", "In B12 find how much more compound growth gives than simple after four years."],
+    cells: { A1: "Amount", B1: "10000", A2: "Yearly rate", B2: "8%", A5: "Year", B5: "Compound", C5: "Simple", A6: "0", A7: "1", A8: "2", A9: "3", A10: "4", A12: "Extra from compounding" }, view: { cols: 4, rows: 13 },
+    checks: [
+      ck("start", "B6 starts at the invested amount", "Type =B1 so the balance starts at the amount invested.", "Both balances begin with the same amount.", S.formula("B6", { equals: 10000 })),
+      ck("c1", "B7 is the balance after year 1", "=B6*(1+$B$2)", "Compound growth multiplies the balance by 1 plus the rate.", S.formula("B7", { equals: 10800 })),
+      ck("c4", "B10 is the compound balance after year 4", "Copy the same pattern down to row 10.", "After four years: 10,000 times 1.08 to the fourth power.", S.formula("B10", { equals: 10000 * 1.08 ** 4 })),
+      ck("s4", "C10 is the simple-interest balance after year 4", "=C9+$B$1*$B$2", "Simple interest adds the same amount every year.", S.formula("C10", { equals: 10000 + 4 * 800 })),
+      ck("gap", "B12 is the extra from compounding", "=B10-C10", "Interest earned on interest is the extra.", S.formula("B12", { equals: 10000 * 1.08 ** 4 - 13200 })),
+    ],
+    solution: { cells: { B6: "=B1", C6: "=B1", B7: "=B6*(1+$B$2)", B8: "=B7*(1+$B$2)", B9: "=B8*(1+$B$2)", B10: "=B9*(1+$B$2)", C7: "=C6+$B$1*$B$2", C8: "=C7+$B$1*$B$2", C9: "=C8+$B$1*$B$2", C10: "=C9+$B$1*$B$2", B12: "=B10-C10" } },
+  }),
+  sheetLab({
+    id: "f4-emi", module: "borrowing-and-credit", title: "Work out a loan's EMI and total cost", level: "intermediate", minutes: 14, xp: 55, skills: [SK], required: true,
+    objective: "Use PMT to find a monthly payment and see how much interest a loan really costs.",
+    scenario: "A student takes a laptop loan. Find the monthly instalment, the total repaid and the interest paid for two terms. " + NOTE,
+    steps: ["In B5 find the monthly payment for the 12-month loan with PMT (monthly rate = yearly rate / 12; use -B1 so the answer is positive).", "In B6 find the total repaid (payment times months).", "In B7 find the interest paid (total repaid minus the loan).", "Do the same in column C for the 24-month loan."],
+    cells: { A1: "Loan amount", B1: "60000", A2: "Yearly interest rate", B2: "12%", A3: "Months", B3: "12", C3: "24", A5: "Monthly payment (EMI)", A6: "Total repaid", A7: "Interest paid" }, view: { cols: 4, rows: 9 },
+    checks: [
+      ck("emi12", "B5 is the 12-month EMI", "=PMT($B$2/12,B3,-$B$1)", "PMT takes the monthly rate, the number of months and the loan (negative so the result is positive).", S.formula("B5", { fns: ["PMT"], equals: pmt(0.01, 12, 60000) })),
+      ck("tot12", "B6 is the total repaid over 12 months", "=B5*B3", "Total repaid is the payment times the number of months.", S.formula("B6", { equals: pmt(0.01, 12, 60000) * 12 })),
+      ck("int12", "B7 is the interest paid over 12 months", "=B6-$B$1", "Interest is what you repay above what you borrowed.", S.formula("B7", { equals: pmt(0.01, 12, 60000) * 12 - 60000 })),
+      ck("emi24", "C5 is the 24-month EMI", "Use C3 for the number of months.", "A longer loan has a lower payment.", S.formula("C5", { fns: ["PMT"], equals: pmt(0.01, 24, 60000) })),
+      ck("int24", "C7 is the interest paid over 24 months", "=C6-$B$1", "The longer loan costs more in total interest.", S.formula("C7", { equals: pmt(0.01, 24, 60000) * 24 - 60000 })),
+    ],
+    solution: { cells: { B5: "=PMT($B$2/12,B3,-$B$1)", B6: "=B5*B3", B7: "=B6-$B$1", C5: "=PMT($B$2/12,C3,-$B$1)", C6: "=C5*C3", C7: "=C6-$B$1" } },
+  }),
+  sheetLab({
+    id: "f5-real", module: "inflation-and-real-returns", title: "Real return after inflation", level: "intermediate", minutes: 12, xp: 50, skills: [SK], required: true,
+    objective: "Compare nominal returns with inflation to see whether money really grows.",
+    scenario: "Three places to keep 1,00,000 rupees for a year offer different returns. Prices rise by 6% a year. " + NOTE,
+    steps: ["In C3:C5 work out the money after one year (amount times 1 plus the return).", "In D3:D5 work out the real return: (1 plus nominal) divided by (1 plus inflation) minus 1.", "In E3:E5 use IF to show Gains or Loses buying power (real return above zero is a gain)."],
+    cells: { A1: "Inflation", B1: "6%", A2: "Where", B2: "Return", C2: "Money after 1 year", D2: "Real return", E2: "Buying power", A3: "Cash at home", B3: "0%", A4: "Savings account", B4: "3%", A5: "Fixed deposit", B5: "7%", F2: "Amount", F3: "100000", F4: "100000", F5: "100000" }, view: { cols: 6, rows: 7 },
+    checks: [
+      ck("c3", "C3 is the money after a year at home", "=F3*(1+B3)", "With no return the amount stays the same.", S.formula("C3", { equals: 100000 })),
+      ck("c5", "C5 is the money after a year in a fixed deposit", "=F5*(1+B5)", "A 7% return adds 7,000.", S.formula("C5", { equals: 107000 })),
+      ck("d4", "D4 is the real return of the savings account", "=(1+B4)/(1+$B$1)-1", "Real return compares growth with price rises.", S.formula("D4", { equals: 1.03 / 1.06 - 1 })),
+      ck("d5", "D5 is the real return of the fixed deposit", "=(1+B5)/(1+$B$1)-1", "A 7% return against 6% inflation barely gains.", S.formula("D5", { equals: 1.07 / 1.06 - 1 })),
+      ck("e3", "E3 says Loses for cash at home", "=IF(D3>0,\"Gains\",\"Loses\")", "A negative real return means buying power fell.", S.formula("E3", { fns: ["IF"], equals: "Loses" })),
+      ck("e5", "E5 says Gains for the fixed deposit", "Same formula in row 5.", "A positive real return means buying power rose.", S.formula("E5", { fns: ["IF"], equals: "Gains" })),
+    ],
+    solution: { cells: { C3: "=F3*(1+B3)", C4: "=F4*(1+B4)", C5: "=F5*(1+B5)", D3: "=(1+B3)/(1+$B$1)-1", D4: "=(1+B4)/(1+$B$1)-1", D5: "=(1+B5)/(1+$B$1)-1", E3: "=IF(D3>0,\"Gains\",\"Loses\")", E4: "=IF(D4>0,\"Gains\",\"Loses\")", E5: "=IF(D5>0,\"Gains\",\"Loses\")" } },
+  }),
+  sheetLab({
+    id: "f6-sip", module: "investing-basics", title: "Project a monthly saving plan", level: "intermediate", minutes: 14, xp: 55, skills: [SK], required: true,
+    objective: "Use FV to see what regular monthly saving can grow to, and compare it with just saving.",
+    scenario: "Dev can save 2,000 rupees a month for 10 years. Compare no growth with an assumed 8% yearly return (an assumption, not a promise). " + NOTE,
+    steps: ["In B6 find the total Dev puts in (monthly amount times months).", "In B7 find the future value with FV (monthly rate, months, negative payment).", "In B8 find the growth (future value minus total put in).", "In B9 show what share of the final amount is growth."],
+    cells: { A1: "Monthly saving", B1: "2000", A2: "Yearly return (assumed)", B2: "8%", A3: "Years", B3: "10", A5: "Months", B5: "120", A6: "Total put in", A7: "Future value", A8: "Growth", A9: "Growth share of final amount" }, view: { cols: 3, rows: 11 },
+    checks: [
+      ck("put", "B6 is the total put in", "=B1*B5", "Total contributions are the monthly amount times the months.", S.formula("B6", { equals: 240000 })),
+      ck("fv", "B7 is the future value", "=FV(B2/12,B5,-B1)", "FV needs the monthly rate, the number of months and the payment (negative).", S.formula("B7", { fns: ["FV"], equals: fv(0.08 / 12, 120, 2000) })),
+      ck("gr", "B8 is the growth", "=B7-B6", "Growth is the final amount minus what you put in.", S.formula("B8", { equals: fv(0.08 / 12, 120, 2000) - 240000 })),
+      ck("sh", "B9 is the growth share", "=B8/B7", "A share compares the growth with the final amount.", S.formula("B9", { equals: (fv(0.08 / 12, 120, 2000) - 240000) / fv(0.08 / 12, 120, 2000) })),
+    ],
+    solution: { cells: { B6: "=B1*B5", B7: "=FV(B2/12,B5,-B1)", B8: "=B7-B6", B9: "=B8/B7" } },
+  }),
+  sheetLab({
+    id: "f7-networth", module: "protecting-and-planning", title: "Your net worth statement", level: "beginner", minutes: 10, xp: 40, skills: [SK], required: true,
+    objective: "Add up what you own and what you owe to find your net worth.",
+    scenario: "A young graduate lists assets and debts. Find the net worth and the debt-to-asset ratio. " + NOTE,
+    steps: ["In B6 total the assets (B2:B5).", "In B12 total the debts (B9:B11).", "In B14 work out net worth (assets minus debts).", "In B15 work out the debt ratio (debts divided by assets) and in B16 show OK if it is below 0.5, otherwise High."],
+    cells: { A1: "Assets", A2: "Savings account", B2: "45000", A3: "Fixed deposit", B3: "30000", A4: "Laptop (value now)", B4: "35000", A5: "Gold jewellery", B5: "20000", A6: "Total assets", A8: "Debts", A9: "Education loan", B9: "40000", A10: "Credit card", B10: "8000", A11: "Friend", B11: "2000", A12: "Total debts", A14: "Net worth", A15: "Debt ratio", A16: "Rating" }, view: { cols: 3, rows: 17 },
+    checks: [
+      ck("ta", "B6 is total assets", "=SUM(B2:B5)", "Assets are what you own.", S.formula("B6", { fns: ["SUM"], cover: "B2:B5", equals: 130000 })),
+      ck("td", "B12 is total debts", "=SUM(B9:B11)", "Debts are what you owe.", S.formula("B12", { fns: ["SUM"], cover: "B9:B11", equals: 50000 })),
+      ck("nw", "B14 is net worth", "=B6-B12", "Net worth is assets minus debts.", S.formula("B14", { equals: 80000 })),
+      ck("dr", "B15 is the debt ratio", "=B12/B6", "The debt ratio compares debts with what you own.", S.formula("B15", { equals: 50000 / 130000 })),
+      ck("rate", "B16 shows OK", "=IF(B15<0.5,\"OK\",\"High\")", "A debt ratio below 0.5 means you own more than twice what you owe.", S.formula("B16", { fns: ["IF"], equals: "OK" })),
+    ],
+    solution: { cells: { B6: "=SUM(B2:B5)", B12: "=SUM(B9:B11)", B14: "=B6-B12", B15: "=B12/B6", B16: "=IF(B15<0.5,\"OK\",\"High\")" } },
+  }),
+  classifyLab({
+    id: "f8-needs-wants", module: "money-basics", title: "Needs, wants or savings?", level: "beginner", minutes: 6, xp: 20, skills: [SK], required: true,
+    objective: "Sort spending into needs, wants and savings.", scenario: "A simple budget splits money into three groups. Place each item.",
+    steps: ["Read each item.", "Choose the group.", "Press Check my work."],
+    categories: [["need", "Need"], ["want", "Want"], ["save", "Saving or investing"]],
+    items: [["Rent", "need", "A place to live is essential."], ["A new video game", "want", "Nice to have, but you can live without it."], ["Money put into an emergency fund", "save", "Saving is paying your future self."], ["Groceries", "need", "Food is essential."], ["A monthly streaming subscription", "want", "Entertainment is a want."], ["A monthly SIP in a mutual fund", "save", "Regular investing builds wealth over time."], ["Bus pass to get to college", "need", "Essential transport."], ["Eating out three times a week", "want", "Choice, not necessity."]],
+  }),
+  classifyLab({
+    id: "f9-credit", module: "borrowing-and-credit", title: "Credit habits: helps or hurts?", level: "intermediate", minutes: 7, xp: 25, skills: [SK], required: true,
+    objective: "Choose habits that protect a credit score and avoid debt traps.", scenario: "Lenders look at how you handle borrowed money.",
+    steps: ["Read each habit.", "Choose whether it helps or hurts.", "Press Check my work."],
+    categories: [["helps", "Helps"], ["hurts", "Hurts"]],
+    items: [["Paying the full credit card bill by the due date", "helps", "On-time full payment avoids interest and shows reliability."], ["Paying only the minimum amount every month", "hurts", "Interest builds on the rest and debt lingers."], ["Setting a reminder for every due date", "helps", "Late payments hurt a credit record."], ["Taking a new loan to repay another loan", "hurts", "It can start a debt spiral."], ["Using a small part of your credit limit", "helps", "Low use looks responsible."], ["Applying for many cards at once", "hurts", "Many applications in a short time look risky."], ["Borrowing only what you can afford to repay", "helps", "Affordability is the first test."], ["Ignoring a loan notice", "hurts", "Missed communication leads to penalties."]],
+  }),
+  classifyLab({
+    id: "f10-risk", module: "investing-basics", title: "Match the risk to the asset", level: "intermediate", minutes: 7, xp: 25, skills: [SK], required: true,
+    objective: "Rank common choices by typical risk and return.", scenario: "Higher possible returns usually come with higher risk. " + NOTE,
+    steps: ["Read each choice.", "Choose its typical risk level.", "Press Check my work."],
+    categories: [["low", "Lower risk, lower return"], ["mid", "Medium risk and return"], ["high", "Higher risk, higher possible return"]],
+    items: [["A bank savings account", "low", "Money is protected up to deposit insurance limits and always available."], ["A bank fixed deposit", "low", "A fixed, known return for a fixed term."], ["A government bond held to maturity", "low", "Backed by the government; returns are predictable."], ["A balanced mutual fund", "mid", "A mix of shares and bonds smooths the ride."], ["A diversified index fund of company shares", "high", "Values rise and fall with the market, often sharply."], ["One company's shares", "high", "All the risk sits in one business."], ["A cryptocurrency", "high", "Prices can swing wildly and you can lose everything."], ["A corporate bond from a strong company", "mid", "Higher return than a bank, with some default risk."]],
+  }),
+  classifyLab({
+    id: "f11-scams", module: "protecting-and-planning", title: "Spot the scam", level: "intermediate", minutes: 7, xp: 25, skills: [SK], required: true,
+    objective: "Recognise the warning signs of financial fraud.", scenario: "Scammers use urgency, secrecy and promises that sound too good to be true.",
+    steps: ["Read each message.", "Choose whether it is a warning sign or normal.", "Press Check my work."],
+    categories: [["scam", "Warning sign"], ["ok", "Normal"]],
+    items: [["Guaranteed 30% returns every month, no risk", "scam", "No genuine investment guarantees high returns with no risk."], ["A bank never asks you for your PIN or OTP by phone", "ok", "Banks do not ask for these; anyone who does is a fraud."], ["Send money today or you lose your prize", "scam", "Urgency stops you from thinking."], ["Check a company on the official regulator's website before investing", "ok", "Checking registration is a good habit."], ["Do not tell your family about this special offer", "scam", "Secrecy protects the scammer."], ["A lender shows the interest rate, fees and total cost in writing", "ok", "Clear costs are a sign of a legitimate lender."], ["A stranger on social media offers to double your money", "scam", "Strangers offering easy money are almost always fraudsters."], ["A shop gives a receipt and refund terms", "ok", "Proper paperwork is normal."]],
+  }),
+  sheetLab({
+    id: "cap-plan", module: "capstone", title: "Final project: your first financial plan", level: "challenge", minutes: 30, xp: 140, skills: [SK], required: true,
+    objective: "Combine a budget, a savings goal, a loan check and a projection in one plan.",
+    scenario: "Arun earns 30,000 a month. Build his plan: a budget, a savings rate, a goal, a loan test and a 5-year projection. " + NOTE,
+    steps: ["In B3 total the spending lines (B4:B8) and in B9 find what is left.", "In B10 find the savings rate (left over divided by income).", "In B13 work out the months to reach the 1,80,000 emergency fund target at the monthly saving in B9 (use ROUNDUP).", "In B16 find the EMI for the bike loan with PMT (use -B14 as the loan), and in B17 check with IF that the EMI is at most 20% of income: Affordable or Too high.", "In B19 project the value of saving B9 each month for 5 years at the assumed return with FV."],
+    cells: { A1: "Monthly income", B1: "30000", A2: "Spending", A3: "Total spending", A4: "Rent", B4: "9000", A5: "Food", B5: "6000", A6: "Transport", B6: "2500", A7: "Phone and internet", B7: "800", A8: "Other", B8: "4200", A9: "Left over", A10: "Savings rate", A12: "Emergency fund target", B12: "180000", A13: "Months to reach it", A14: "Bike loan amount", B14: "50000", A15: "Loan terms", B15: "24", D15: "Rate per year", E15: "12%", A16: "EMI", A17: "Affordable?", A18: "Assumed yearly return", B18: "8%", A19: "5-year value of saving" }, view: { cols: 5, rows: 21 },
+    checks: [
+      ck("ts", "B3 is total spending", "=SUM(B4:B8)", "Add every spending line.", S.formula("B3", { fns: ["SUM"], cover: "B4:B8", equals: 22500 })),
+      ck("left", "B9 is the money left", "=B1-B3", "Income minus spending.", S.formula("B9", { equals: 7500 })),
+      ck("rate", "B10 is the savings rate", "=B9/B1", "A savings rate is the share of income you keep.", S.formula("B10", { equals: 0.25 })),
+      ck("mths", "B13 is the months to reach the target", "=ROUNDUP(B12/B9,0)", "Target divided by the monthly saving, rounded up.", S.formula("B13", { fns: ["ROUNDUP"], equals: 24 })),
+      ck("emi", "B16 is the EMI", "=PMT(E15/12,B15,-B14)", "PMT with the monthly rate, the number of months and the loan.", S.formula("B16", { fns: ["PMT"], equals: pmt(0.01, 24, 50000) })),
+      ck("aff", "B17 says Affordable", "=IF(B16<=0.2*B1,\"Affordable\",\"Too high\")", "A common guide is that loan payments should stay under about a fifth of income.", S.formula("B17", { fns: ["IF"], equals: "Affordable" })),
+      ck("fv", "B19 projects the 5-year value", "=FV(B18/12,60,-B9)", "FV with the monthly rate, 60 months and the monthly saving.", S.formula("B19", { fns: ["FV"], equals: fv(0.08 / 12, 60, 7500) })),
+    ],
+    solution: { cells: { B3: "=SUM(B4:B8)", B9: "=B1-B3", B10: "=B9/B1", B13: "=ROUNDUP(B12/B9,0)", B16: "=PMT(E15/12,B15,-B14)", B17: "=IF(B16<=0.2*B1,\"Affordable\",\"Too high\")", B19: "=FV(B18/12,60,-B9)" } },
+  }),
+];
+
+const M1 = module_({
+  slug: "money-basics", title: "Money basics", hours: 1.25, level: "Foundations",
+  summary: "Understand where money comes from and goes, and build a simple budget you can keep.",
+  outcome: "You can list income and spending, separate needs from wants, build a monthly budget in a spreadsheet and explain how everyday banking tools work.",
+  intro: "Financial skill starts with a simple habit: knowing where your money goes. This course is educational and general: it explains principles that apply anywhere, using rupee examples. It is not personal financial advice and cannot know your situation.",
+  topics: [
+    topic({
+      title: "Income, spending and the budget", slug: "income-spending-budget",
+      blocks: [
+        p("**Income** is money you receive: pay, a stipend, pocket money, interest. **Spending** is money that leaves. The difference is what you can save: **savings = income - spending**."),
+        def("Budget", "A plan for how you will use your income over a period, usually a month, so spending serves your priorities instead of just happening."),
+        flow("A simple budgeting routine", ["List your income", "List fixed costs first", "Estimate flexible costs", "Decide what to save", "Track and adjust"]),
+        table("A popular starting rule: 50/30/20", ["Share of income", "Goes to", "Examples"], [["About 50%", "Needs", "Rent, food, transport, bills"], ["About 30%", "Wants", "Fun, eating out, subscriptions"], ["About 20%", "Saving and debt repayment", "Emergency fund, investing, loan payments"]]),
+        warn("50/30/20 is a rule of thumb, not a law. In a high-rent city needs may take more; adjust the shares but keep saving as a fixed line, not what is left over."),
+      ],
+      points: ["Savings are income minus spending.", "A budget is a plan; 50/30/20 is a starting guide, not a rule."],
+      check: [["If income is 15,000 and spending is 12,400, savings are:", ["2,600", "27,400", "12,400", "0"], 0, "Income minus spending."], ["In the 50/30/20 rule, 20% is for:", ["Wants", "Saving and debt repayment", "Rent", "Tax"], 1, "The 20% pays your future self."]],
+    }),
+    topic({
+      title: "Needs, wants and tracking", slug: "needs-wants-tracking",
+      blocks: [
+        table("Sorting spending", ["Group", "Test", "Examples"], [["Needs", "You would struggle to live or work without it", "Rent, basic food, transport to work, medicines"], ["Wants", "You would like it, but could do without", "Takeaway, new gadget, streaming"], ["Both", "A need with a want attached", "Food is a need; restaurant food is a want"]]),
+        p("Most overspending hides in small, repeated wants: a coffee, a delivery fee, a subscription you forgot. The cure is **tracking**: write down or log everything for one month. You do not have to judge; you only have to look."),
+        list("A tracking habit", ["Record every spend the same day, using an app or a notebook.", "Group spending into six to eight categories.", "At month end, total each category and compare it with your plan.", "Pick one category to reduce next month, not five."], true),
+        tip("Pay yourself first: move your saving into a separate account on payday, so the money is gone before you can spend it."),
+      ],
+      points: ["Needs are essential, wants are optional, and some items are both.", "Tracking for a month shows where money really goes."],
+      check: [["Which is mostly a want?", ["Rent", "A monthly subscription to a game", "Basic groceries", "A bus pass for college"], 1, "A subscription to entertainment is optional."], ["What does 'pay yourself first' mean?", ["Spend first", "Set aside savings on payday before spending", "Pay a friend", "Skip saving"], 1, "Saving happens before spending."]],
+    }),
+    topic({
+      title: "Banking basics", slug: "banking-basics",
+      blocks: [
+        table("Everyday money tools", ["Tool", "What it is", "Key point"], [["Savings account", "A bank account that pays small interest", "Easy access; low return"], ["Debit card or UPI", "Spends money you already have", "Cannot put you in debt"], ["Credit card", "Borrows from the bank to be repaid later", "Interest is high if you do not repay in full"], ["Net banking and apps", "Manage accounts online", "Guard passwords and OTPs"]]),
+        p("A **debit card** takes money straight from your account. A **credit card** lends you money for up to about 50 days free of interest if you pay the *whole* bill by the due date; otherwise interest, often 30 to 40% a year, is charged."),
+        list("Protect your money", ["Never share your PIN, password or OTP, even with someone who says they are from the bank.", "Check your account statements monthly.", "Use apps from official sources and set a lock on your phone.", "Report a lost card or suspicious transaction at once."], true),
+        warn("A bank will never ask you for your OTP or PIN. Anyone who does is a fraud."),
+      ],
+      points: ["Debit spends your money; credit borrows the bank's.", "Never share OTPs or PINs with anyone."],
+      check: [["Which carries a risk of expensive debt?", ["A debit card", "A credit card not paid in full", "A savings account", "A UPI payment from your balance"], 1, "Unpaid credit card balances attract high interest."]],
+    }),
+  ],
+  terms: [["Income", "Money received"], ["Budget", "A plan for using income"], ["Need", "Spending that is essential"], ["Want", "Spending that is optional"], ["Savings", "Income minus spending"], ["OTP", "A one-time code; never share it"]],
+  practical: { title: "Practical: a one-month tracker", intro: "Use a notebook or the budget lab.", steps: ["Write down every spend for seven days.", "Group them into needs, wants and saving.", "Compare with the 50/30/20 guide.", "Choose one change for next month."] },
+  quiz: [
+    ["Savings equal:", ["Income plus spending", "Income minus spending", "Spending minus income", "Income only"], 1, "What is left after spending."],
+    ["A good use of 'pay yourself first' is:", ["Spending on wants first", "Moving savings out on payday", "Borrowing", "Skipping budgets"], 1, "Savings happen before spending."],
+    ["A debit card spends:", ["Bank's money", "Your own money", "Nobody's money", "Future income"], 1, "The money is already in your account."],
+    ["Never share your:", ["Name", "OTP or PIN", "City", "Favourite colour"], 1, "These unlock your money."],
+    ["50/30/20 splits income into:", ["Needs, wants, saving", "Rent, tax, fun", "Cash, card, UPI", "Day, week, month"], 0, "It is a simple guide."],
+    ["The best way to find hidden spending is:", ["Ignore it", "Track every spend for a month", "Buy less food", "Stop banking"], 1, "Looking at the data shows the leaks."],
+    ["Eating out three times a week is mostly a:", ["Need", "Want", "Saving", "Tax"], 1, "A choice, not a necessity."],
+  ],
+});
+
+const M2 = module_({
+  slug: "saving-and-compounding", title: "Saving and compounding", hours: 1.25, level: "Core skills",
+  summary: "Build an emergency fund and see why starting early beats saving more later.",
+  outcome: "You can size an emergency fund, explain simple versus compound interest and use the rule of 72 to estimate doubling time.",
+  intro: "Saving is not about giving things up; it is about giving your future self options. The other half is time: money left alone grows on its own growth. This module shows how.",
+  topics: [
+    topic({
+      title: "The emergency fund", slug: "emergency-fund",
+      blocks: [
+        def("Emergency fund", "Money kept safe and easy to reach for surprises: a medical bill, a lost job, a broken phone. It is not for sales or holidays."),
+        table("How big?", ["Situation", "Typical target"], [["Student living with family", "One to three months of essential costs"], ["Employed, single income", "Three to six months"], ["Variable income or dependants", "Six months or more"]]),
+        example("A target in numbers", "A family spends 24,000 a month and has 30,000 saved. The goal is six months.", ["Target = 6 x 24,000 = 1,44,000.", "Months covered now = 30,000 / 24,000 = 1.25.", "Gap = 1,44,000 - 30,000 = 1,14,000.", "At 3,000 a month it takes 38 months."], "A big goal is reached by a steady small habit; break it into milestones such as one month of costs, then three."),
+        tip("Keep the fund in a place where it is safe and available within a day, such as a savings account, not tied up in investments that can fall."),
+      ],
+      points: ["An emergency fund covers essential costs for three to six months.", "Keep it safe and available, not invested for growth."],
+      check: [["What is an emergency fund for?", ["Holidays", "Unexpected essential costs", "Shopping sales", "Investing in shares"], 1, "It covers surprises."]],
+    }),
+    topic({
+      title: "Simple versus compound interest", slug: "simple-and-compound",
+      blocks: [
+        formula("Simple interest", "balance after t years = P x (1 + r x t)", "Interest is always on the original amount P."),
+        formula("Compound interest", "balance after t years = P x (1 + r) to the power t", "Each year's interest is added, so next year's interest is on the bigger amount."),
+        table("10,000 at 8% a year", ["Year", "Simple", "Compound"], [["1", "10,800", "10,800"], ["2", "11,600", "11,664"], ["3", "12,400", "12,597"], ["4", "13,200", "13,605"], ["10", "18,000", "21,589"]]),
+        explorer({ id: "compound-explorer", title: "See compounding at work", intro: "Change the amount, the rate and the years. Compare simple and compound growth.", inputs: [{ id: "p", label: "Amount invested (rupees)", min: 1000, max: 100000, step: 1000, value: 10000 }, { id: "r", label: "Yearly rate (%)", min: 1, max: 15, step: 0.5, value: 8 }, { id: "t", label: "Years", min: 1, max: 40, step: 1, value: 10 }], outputs: [{ label: "Simple interest balance", expr: "p * (1 + r / 100 * t)", unit: "rs" }, { label: "Compound balance", expr: "p * (1 + r / 100) ^ t", unit: "rs" }, { label: "Extra from compounding", expr: "p * (1 + r / 100) ^ t - p * (1 + r / 100 * t)", unit: "rs" }] }),
+        p("The gap is small at first and then explodes. That is why **time** matters more than the rate: someone who starts early gets many more years of interest on interest."),
+      ],
+      points: ["Simple interest uses the original amount; compound adds interest to the base.", "The longer the time, the bigger the compounding effect."],
+      check: [["Compound interest earns interest on:", ["Only the original amount", "The original amount plus past interest", "Nothing", "The loan"], 1, "Interest is added to the base."], ["Which matters more over decades?", ["A small rise in rate only", "Time invested", "The colour of the account", "The bank's name"], 1, "Time lets compounding work."]],
+    }),
+    topic({
+      title: "The rule of 72 and the cost of waiting", slug: "rule-of-72",
+      blocks: [
+        formula("Rule of 72", "years to double is about 72 / yearly rate in percent", "A quick mental estimate: at 8% money doubles in about 9 years."),
+        table("Doubling time", ["Rate", "Years to double (approx.)"], [["4%", "18"], ["6%", "12"], ["8%", "9"], ["12%", "6"]]),
+        example("Starting early versus late", "Mia saves 2,000 a month from age 25 to 35 and then stops. Nitin saves 2,000 a month from 35 to 60. Both earn 8% a year.", ["Mia puts in 2,40,000 over 10 years; the money then sits and keeps growing for 25 more years.", "Nitin puts in 6,00,000 over 25 years.", "At 60, Mia's money is typically about as large as, or larger than, Nitin's."], "Starting ten years earlier can beat saving more for longer, because early money has more years to compound. (Illustrative: real returns vary and are not guaranteed.)"),
+        warn("The same rule works against you with debt. A balance at 36% interest doubles in about two years if you do not repay."),
+      ],
+      points: ["Years to double are about 72 divided by the rate.", "Early saving needs less money than late saving."],
+      check: [["At 9% a year, money roughly doubles in about:", ["4 years", "8 years", "20 years", "40 years"], 1, "72 divided by 9 is 8."]],
+    }),
+  ],
+  terms: [["Emergency fund", "Safe money for surprises"], ["Simple interest", "Interest on the original amount only"], ["Compound interest", "Interest on interest"], ["Rule of 72", "A quick doubling-time estimate"]],
+  practical: { title: "Practical: set a savings goal", intro: "Pick a goal such as a phone, a course or an emergency fund.", steps: ["Write the amount and the date.", "Divide to find the monthly saving.", "Check it fits your budget.", "Set an automatic transfer for payday."] },
+  quiz: [
+    ["The rule of 72 estimates:", ["Tax", "Doubling time", "Loan size", "Inflation"], 1, "72 divided by the rate."],
+    ["An emergency fund should be:", ["Locked for years", "Safe and easy to reach", "Invested in one company", "Spent on holidays"], 1, "Availability matters."],
+    ["Compound interest is higher than simple interest because:", ["The rate is bigger", "Interest is earned on earlier interest", "It is a different bank", "It starts later"], 1, "Past interest becomes part of the base."],
+    ["At 6%, money doubles in about:", ["6 years", "12 years", "24 years", "3 years"], 1, "72 divided by 6."],
+    ["The best time to start saving is:", ["Later when richer", "As early as you can", "Never", "At 50"], 1, "Time is the key ingredient."],
+    ["10,000 at 10% compounded for 2 years gives:", ["12,000", "12,100", "11,000", "20,000"], 1, "10,000 x 1.1 x 1.1."],
+    ["Emergency funds usually cover:", ["Wants", "Essential costs for several months", "A new car", "A holiday"], 1, "They protect against income loss."],
+  ],
+});
+
+const M3 = module_({
+  slug: "borrowing-and-credit", title: "Borrowing and credit", hours: 1.25, level: "Core skills",
+  summary: "Understand loans, EMIs and credit scores, and avoid the traps that make debt grow.",
+  outcome: "You can calculate an EMI and the total cost of a loan, explain what a credit score is, and spot debt traps.",
+  intro: "Borrowing is a tool: it lets you buy something now and pay for it over time. The price of that convenience is interest. Understanding exactly how much it costs is the difference between a useful loan and a trap.",
+  topics: [
+    topic({
+      title: "How a loan works", slug: "how-loans-work",
+      blocks: [
+        def("EMI", "Equated Monthly Instalment: the fixed amount you pay each month, part of it interest and part repayment of the amount you borrowed (the principal)."),
+        formula("EMI", "EMI = P x r / (1 - (1 + r) to the power -n)", "P is the loan, r the monthly rate (yearly rate / 12) and n the number of months. In a sheet: =PMT(rate/12, months, -loan)."),
+        example("A 60,000 loan at 12% a year", "Compare 12 and 24 months.", ["12 months: EMI is about 5,330, total repaid about 63,950, interest about 3,950.", "24 months: EMI is about 2,825, total repaid about 67,800, interest about 7,800.", "The longer loan has a lower payment but costs almost double the interest."], "A smaller monthly payment is not the same as a cheaper loan. Always look at the total cost."),
+        bars("Interest paid on the same 60,000 loan (rupees)", [["12 months", 3951], ["24 months", 7803], ["36 months", 11715]]),
+        tip("Ask for three numbers before you sign: the interest rate, every fee, and the total you will repay."),
+      ],
+      points: ["EMI = principal share plus interest share each month.", "Longer loans have smaller payments but cost more interest."],
+      check: [["A longer loan term usually means:", ["Lower payment, more total interest", "Higher payment, less interest", "No interest", "A lower rate"], 0, "Spreading the loan reduces each payment but adds interest."], ["Before borrowing, you should find out:", ["Only the monthly payment", "The rate, fees and total cost", "The bank colour", "Nothing"], 1, "The total cost shows the real price."]],
+    }),
+    topic({
+      title: "Credit scores and credit cards", slug: "credit-scores",
+      blocks: [
+        p("A **credit score** is a number (in India often 300 to 900) that summarises how reliably you have repaid borrowed money. Lenders use it to decide whether to lend and at what rate."),
+        table("What affects a score", ["Factor", "Helps", "Hurts"], [["Payment history", "Paying every bill on time", "Late or missed payments"], ["Credit use", "Using a small part of your limit", "Maxing out cards"], ["Length of history", "Older accounts kept in good order", "Many new accounts at once"], ["Enquiries", "Few applications", "Many applications in a short time"]]),
+        list("Credit card habits", ["Pay the full statement amount before the due date.", "Treat the card as a payment tool, not extra income.", "Keep use well below the limit.", "Set an automatic payment so you never pay late."], true),
+        warn("Paying only the minimum keeps the account open but leaves the rest to attract interest, often 3% or more a month."),
+      ],
+      points: ["On-time payment is the biggest factor in a credit score.", "Pay credit cards in full and use little of the limit."],
+      check: [["Which most improves a credit score?", ["Paying on time every month", "Many new applications", "Maxing out the card", "Ignoring bills"], 0, "Reliable repayment builds a record."]],
+    }),
+    topic({
+      title: "Debt traps", slug: "debt-traps",
+      blocks: [
+        table("Common traps", ["Trap", "Why it hurts", "Safer move"], [["Minimum payments only", "Interest piles up on the unpaid part", "Pay in full, or as much as you can"], ["Payday and app loans with huge fees", "Effective rates can be several hundred percent a year", "Ask family or a bank; build an emergency fund"], ["Borrowing to repay a loan", "Debt grows; you pay fees twice", "Talk to the lender about a plan"], ["Buy now, pay later without a plan", "Many small instalments pile up", "Add every instalment to your budget"], ["Co-signing for a friend", "You owe the debt if they stop paying", "Only sign if you can afford the whole amount"]]),
+        mistakes(["Looking only at the monthly payment.", "Ignoring fees and penalty charges.", "Taking a loan for something that loses value quickly, such as a night out."]),
+        p("If you are already in difficulty, speak to the lender early. Many have repayment plans. Free credit counselling services exist. Waiting almost always makes things worse."),
+      ],
+      points: ["Minimum payments and high-fee loans are the classic traps.", "Talk to a lender early if repayments get hard."],
+      check: [["What is the danger of paying only the minimum on a credit card?", ["No danger", "Interest builds on the rest", "The limit goes up", "The score rises"], 1, "The unpaid part keeps costing interest."]],
+    }),
+  ],
+  terms: [["Principal", "The amount you borrowed"], ["Interest", "The price of borrowing"], ["EMI", "Fixed monthly payment"], ["Credit score", "A number summarising repayment reliability"], ["Default", "Failing to repay as agreed"]],
+  practical: { title: "Practical: compare two loans", intro: "Use the EMI lab.", steps: ["Compare a 12-month and a 24-month loan for the same amount.", "Note the payment and the total interest for each.", "Decide which you could afford and why.", "Write down the three numbers you would ask a lender for."] },
+  quiz: [
+    ["The principal is:", ["The interest", "The amount borrowed", "A bank", "The EMI"], 1, "The original amount."],
+    ["What does PMT calculate?", ["Interest rates", "A loan payment", "Tax", "Inflation"], 1, "It returns the instalment."],
+    ["Which habit protects a credit score?", ["Paying late", "Paying on time", "Maxing out cards", "Skipping statements"], 1, "On-time payment."],
+    ["A payday loan with huge fees is:", ["A cheap option", "A likely debt trap", "Risk-free", "Free"], 1, "Effective rates can be extreme."],
+    ["Which is the best question to ask a lender?", ["What colour is the office?", "What is the total I will repay?", "How big is the building?", "Who is your manager?"], 1, "Total cost is the real price."],
+    ["A 24-month loan versus a 12-month one costs:", ["The same interest", "More interest overall", "Less interest", "No interest"], 1, "Longer terms add interest."],
+    ["If repayments get hard, you should:", ["Hide", "Talk to the lender early", "Borrow more", "Ignore notices"], 1, "Early contact helps."],
+  ],
+});
+
+const M4 = module_({
+  slug: "inflation-and-real-returns", title: "Inflation and real returns", hours: 1, level: "Applied skills",
+  summary: "See why prices rise, why 'safe' cash loses buying power and how to judge a return honestly.",
+  outcome: "You can explain inflation, compute a real return and judge whether an investment beats rising prices.",
+  intro: "100 rupees today buys less than it did ten years ago. Inflation quietly shrinks the value of money, so a return only matters after you subtract it.",
+  topics: [
+    topic({
+      title: "What inflation is", slug: "what-inflation-is",
+      blocks: [
+        def("Inflation", "A general rise in prices over time, so each rupee buys less. It is measured as a percentage change a year."),
+        table("What 100 rupees of groceries costs if prices rise 6% a year", ["After", "Cost of the same basket"], [["1 year", "106"], ["5 years", "134"], ["10 years", "179"], ["20 years", "321"]]),
+        bars("Cost of a basket worth 100 today", [["Now", 100], ["5 years", 134], ["10 years", 179], ["20 years", 321]]),
+        p("Inflation is not the same for everyone. If you spend mostly on food and fuel, your personal inflation may be higher than the headline figure. Education and medical costs often rise faster than average prices."),
+        tip("Think of inflation as a slow leak in a tyre: you notice it only when you check the pressure."),
+      ],
+      points: ["Inflation reduces what each rupee buys.", "Your personal inflation depends on what you spend on."],
+      check: [["If inflation is 6% a year, a 100-rupee basket costs after one year:", ["94", "100", "106", "112"], 2, "Prices rise by 6%."]],
+    }),
+    topic({
+      title: "Nominal and real returns", slug: "real-returns",
+      blocks: [
+        formula("Real return", "real = (1 + nominal) / (1 + inflation) - 1", "A quick approximation: real is about nominal minus inflation."),
+        table("A year at 6% inflation", ["Where the money sits", "Nominal return", "Real return", "Buying power"], [["Cash at home", "0%", "-5.7%", "Falls"], ["Savings account at 3%", "3%", "-2.8%", "Falls"], ["Fixed deposit at 7%", "7%", "+0.9%", "Barely rises"], ["Investment at 10%", "10%", "+3.8%", "Rises"]]),
+        example("Is 5% good?", "A deposit pays 5% when inflation is 7%.", ["Real return = 1.05 / 1.07 - 1 = about -1.9%.", "After a year you have more rupees but can buy less.", "The deposit protects against losing the money, but not against losing value."], "Always ask: after inflation, did my money grow?"),
+        warn("Taxes reduce returns too. A return that beats inflation before tax may not after tax. Check the rules that apply where you live."),
+      ],
+      points: ["Real return is growth after inflation.", "A return below inflation shrinks buying power even though the number rises."],
+      check: [["A deposit pays 4% when inflation is 6%. Buying power:", ["Rises", "Falls", "Stays the same", "Doubles"], 1, "The real return is negative."]],
+    }),
+    topic({
+      title: "Cash, safety and growth", slug: "cash-safety-growth",
+      blocks: [
+        p("Cash is safe from market falls but is exposed to inflation. Investments can beat inflation but can fall in the short term. A sensible plan uses both, each for its own job."),
+        table("Each money bucket has a job", ["Bucket", "Job", "Where it sits"], [["Emergency fund", "Be there when needed", "Savings account"], ["Short-term goals (under 3 years)", "Be there on a date", "Savings account or fixed deposit"], ["Long-term goals (10 years or more)", "Grow above inflation", "Diversified investments"]]),
+        list("A rule of thumb", ["Money you need within three years should not be exposed to big market swings.", "Money you will not touch for ten years can accept ups and downs for higher expected growth.", "Never invest your emergency fund."]),
+        mistakes(["Keeping all long-term savings in cash for decades.", "Putting money needed next year into a volatile investment.", "Chasing last year's best performer."]),
+      ],
+      points: ["Cash is safe from markets but not from inflation.", "Match each pot of money to its time frame."],
+      check: [["Where does money needed in one year belong?", ["In a volatile investment", "In a safe, accessible place", "In a single company's shares", "Nowhere"], 1, "Short-term needs should avoid big swings."]],
+    }),
+  ],
+  terms: [["Inflation", "A general rise in prices"], ["Nominal return", "Growth before inflation"], ["Real return", "Growth after inflation"], ["Buying power", "What a rupee can buy"]],
+  practical: { title: "Practical: price rise in your life", intro: "Find the price of three things you buy that you or your family remember from ten years ago.", steps: ["Write the old and the current price.", "Work out the percentage rise.", "Compare with the return on a savings account.", "Say what that means for money kept in cash."] },
+  quiz: [
+    ["Inflation means prices:", ["Fall", "Rise over time", "Stay still", "Vanish"], 1, "A general rise."],
+    ["Real return is:", ["Growth before inflation", "Growth after inflation", "Tax", "Interest only"], 1, "It is what is left after prices rise."],
+    ["With 3% interest and 6% inflation your buying power:", ["Rises", "Falls", "Doubles", "Is unchanged"], 1, "The real return is negative."],
+    ["Emergency money should stay:", ["Invested in shares", "Safe and accessible", "In one stock", "Hidden"], 1, "It must be available when needed."],
+    ["Which beats inflation in the long run?", ["Cash under a mattress", "A diversified growth investment (not guaranteed)", "Nothing", "A zero-interest account"], 1, "Growth assets have historically exceeded inflation, though not every year."],
+    ["Personal inflation can differ because:", ["Prices are random", "People buy different things", "Banks decide", "It is the same for everyone"], 1, "Your basket differs."],
+    ["5% interest with 5% inflation gives a real return of about:", ["10%", "0%", "5%", "-5%"], 1, "Buying power is unchanged."],
+  ],
+});
+
+const M5 = module_({
+  slug: "investing-basics", title: "Investing basics", hours: 1.5, level: "Applied skills",
+  summary: "Understand risk and return, the main asset types, diversification and regular investing.",
+  outcome: "You can describe the main kinds of investment, explain the trade-off between risk and return and see how regular investing and diversification work.",
+  intro: "Saving keeps your money; investing aims to grow it. Growth comes with risk: the chance that you get less than you hoped. This module explains the trade-off in plain terms. It does not recommend any product.",
+  topics: [
+    topic({
+      title: "Risk and return", slug: "risk-and-return",
+      blocks: [
+        p("**Return** is what you earn on an investment. **Risk** is the chance that the result differs from what you expected, especially the chance of loss. In general, higher expected returns come with higher risk. If someone offers high returns with no risk, it is a scam."),
+        table("Risk, return and time", ["Choice", "Risk of loss", "Typical return pattern"], [["Savings account", "Very low", "Low but steady"], ["Fixed deposit", "Very low (to the bank limit)", "Fixed, known"], ["Bonds", "Low to medium", "Regular interest"], ["Company shares", "High in the short term", "Higher over long periods, with large swings"], ["Cryptocurrencies", "Very high", "Unpredictable"]]),
+        warn("Past performance does not guarantee future results. A fund that did well last year may do badly next year."),
+        tip("Risk tolerance has two parts: how much you can afford to lose (your finances and time) and how much you can stand to lose without panic-selling."),
+      ],
+      points: ["Higher potential return means higher risk.", "Risk includes how much you can afford and how you would react."],
+      check: [["A claim of high returns with no risk is:", ["Normal", "A scam warning sign", "Guaranteed", "Legal advice"], 1, "Genuine investments have risk."]],
+    }),
+    topic({
+      title: "The main kinds of investment", slug: "kinds-of-investment",
+      blocks: [
+        table("What each one is", ["Type", "What you own", "How you may earn"], [["Fixed deposit", "A deposit with a bank for a term", "Fixed interest"], ["Bond", "A loan to a government or company", "Regular interest, then principal"], ["Share (equity)", "A small part of a company", "Rising price and dividends"], ["Mutual fund or ETF", "A basket of many investments", "Depends on what is in the basket"], ["Gold", "A precious metal", "Price changes over time"], ["Property", "Land or buildings", "Rent and price changes"]]),
+        p("A **mutual fund** or an **index fund** pools money from many people and spreads it across many shares or bonds, so one failure does not sink you. Fees matter: a 1% yearly fee reduces returns noticeably over 30 years."),
+        mistakes(["Putting everything into one share or one trend.", "Investing in something you do not understand.", "Ignoring fees and charges."]),
+        tip("Check that a seller or an advisor is registered with the official regulator in your country before giving any money."),
+      ],
+      points: ["Deposits and bonds lend; shares own; funds pool many investments.", "Fees and understanding matter."],
+      check: [["A share represents:", ["A loan to a company", "Part ownership of a company", "A deposit", "A tax"], 1, "Shares are small parts of a business."], ["A mutual fund:", ["Holds one company only", "Pools money across many investments", "Is guaranteed", "Pays no fees"], 1, "It spreads risk across many holdings."]],
+    }),
+    topic({
+      title: "Diversification and regular investing", slug: "diversification-sip",
+      blocks: [
+        def("Diversification", "Spreading money across many different investments so that a fall in one does not wreck the whole. 'Do not put all your eggs in one basket.'"),
+        def("SIP (regular investing)", "A systematic investment plan puts the same amount in at fixed intervals, such as every month, whatever the market is doing."),
+        explorer({ id: "sip-explorer", title: "What regular investing can grow to (illustration)", intro: "Change the monthly amount, the assumed return and the years. The return is an assumption, not a promise.", inputs: [{ id: "m", label: "Monthly amount (rupees)", min: 500, max: 20000, step: 500, value: 2000 }, { id: "r", label: "Assumed yearly return (%)", min: 1, max: 15, step: 1, value: 8 }, { id: "y", label: "Years", min: 1, max: 40, step: 1, value: 10 }], outputs: [{ label: "Total you put in", expr: "m * 12 * y", unit: "rs" }, { label: "Possible value (simple yearly approximation)", expr: "m * 12 * (((1 + r / 100) ^ y - 1) / (r / 100))", unit: "rs" }] }),
+        list("Why regular investing helps", ["It turns investing into a habit, not a decision to make each month.", "You buy more units when prices are low and fewer when high (rupee-cost averaging).", "It removes the temptation to time the market, which even experts fail at."], false),
+        warn("Regular investing does not remove risk: values can still fall. It suits money you will not need for many years."),
+      ],
+      points: ["Diversification spreads risk; regular investing builds a habit.", "Illustrations assume returns that are not guaranteed."],
+      check: [["Diversification means:", ["Buying only one share", "Spreading money across many investments", "Selling everything", "Borrowing"], 1, "It reduces the damage from one failure."]],
+    }),
+  ],
+  terms: [["Risk", "The chance of a result worse than expected"], ["Return", "What an investment earns"], ["Diversification", "Spreading across investments"], ["SIP", "Regular, fixed-amount investing"], ["Index fund", "A fund that copies a market index"]],
+  practical: { title: "Practical: a risk profile", intro: "Answer honestly and write down your answers.", steps: ["When do you need this money: 1 year, 5 years or 15 years?", "How would you feel if it lost 20% in a year?", "Which kinds of investment fit that time and comfort?", "List two questions you would ask any provider."] },
+  quiz: [
+    ["Higher expected returns usually mean:", ["Lower risk", "Higher risk", "No risk", "Guaranteed profit"], 1, "Risk and return go together."],
+    ["Diversification helps by:", ["Guaranteeing profit", "Reducing the harm of one failure", "Removing fees", "Avoiding tax"], 1, "No single investment can sink you."],
+    ["A bond is:", ["A share in a company", "A loan you make", "A deposit", "A tax"], 1, "You lend money for interest."],
+    ["A SIP invests:", ["Randomly", "A fixed amount at fixed intervals", "Everything at once", "Only in gold"], 1, "Regular amounts."],
+    ["Past performance:", ["Guarantees the future", "Does not guarantee the future", "Is law", "Is tax"], 1, "Markets change."],
+    ["Before investing with someone you should:", ["Trust them", "Check they are registered with the regulator", "Pay at once", "Keep it secret"], 1, "Verification protects you."],
+    ["Fees matter because they:", ["Do nothing", "Reduce your returns over time", "Increase returns", "Are refunded"], 1, "Small fees compound over decades."],
+  ],
+});
+
+const M6 = module_({
+  slug: "protecting-and-planning", title: "Protecting and planning", hours: 1, level: "Applied skills",
+  summary: "Insure against big risks, understand tax in general terms, spot scams and put it together in a plan.",
+  outcome: "You can explain what insurance is for, recognise common scams, list your net worth and write a simple financial plan.",
+  intro: "The last part of money skills is protection: not losing what you have built. It also pulls everything into a plan you can review each year.",
+  topics: [
+    topic({
+      title: "Insurance basics", slug: "insurance-basics",
+      blocks: [
+        p("**Insurance** transfers a risk you cannot afford to a company in return for a regular payment, the **premium**. You pay a small certain cost to avoid a large uncertain one."),
+        table("Common kinds", ["Insurance", "Protects against"], [["Health", "Large medical bills"], ["Term life", "Loss of income for dependants if you die"], ["Motor", "Damage and third-party claims from a vehicle"], ["Home or contents", "Fire, theft and similar loss"]]),
+        list("Buying sensibly", ["Insure big risks you could not pay yourself, not small ones.", "Compare cover, exclusions and the claim process, not just the price.", "Pure protection (term insurance) is usually cheaper than products that mix insurance and investment.", "Read what is excluded before you sign."], true),
+        warn("Never buy a policy because of pressure or a promise of guaranteed high returns. Check the exact benefits in writing."),
+      ],
+      points: ["Insurance covers large risks you cannot afford yourself.", "Compare cover and exclusions, not only price."],
+      check: [["What is a premium?", ["The payout", "The regular payment for insurance", "A tax", "A bonus"], 1, "It is the price of cover."]],
+    }),
+    topic({
+      title: "Tax and scams", slug: "tax-and-scams",
+      blocks: [
+        p("Tax rules differ by country and change often, so this lesson stays general. Income is usually taxed; some savings and investments receive special treatment; and some gains are taxed when you sell. Keep records and use the official government source or a qualified professional for the details that apply to you."),
+        list("Habits that help with tax", ["Keep records of income, receipts and statements.", "File your return on time every year.", "Use official government websites, not links in messages.", "Ask a qualified person when the rules are unclear."]),
+        table("Signs of a scam", ["Sign", "Example"], [["Guaranteed high returns", "Double your money in a month, no risk"], ["Pressure to act now", "Offer ends in 10 minutes"], ["Secrecy", "Do not tell your family or bank"], ["Request for OTP, PIN or remote access", "I am from the bank, read me the code"], ["Payment by unusual means", "Send gift cards or crypto"]]),
+        tip("If you feel rushed, stop. Call the real organisation using a number from its official website, not from the message."),
+      ],
+      points: ["Tax rules are local: use official sources.", "Pressure, secrecy and guaranteed returns are scam signs."],
+      check: [["Which is a scam sign?", ["A written fee schedule", "Pressure to pay immediately", "A registered company", "A receipt"], 1, "Urgency is a classic tactic."]],
+    }),
+    topic({
+      title: "Net worth and your first plan", slug: "net-worth-and-plan",
+      blocks: [
+        formula("Net worth", "net worth = assets - debts", "Assets are what you own; debts are what you owe."),
+        flow("A simple financial plan", ["Know where you stand", "Set goals with dates", "Build the emergency fund", "Pay down expensive debt", "Invest regularly for the long term"]),
+        table("A plan has five lines", ["Line", "Example"], [["Goal", "Emergency fund of 1,80,000 in 24 months"], ["Monthly amount", "7,500 saved on payday"], ["Where it sits", "Savings account"], ["Review date", "Every January"], ["If life changes", "Pause investing before pausing the emergency fund"]]),
+        mistakes(["Having goals without amounts or dates.", "Never reviewing the plan.", "Investing before clearing very expensive debt."]),
+        tip("Review once a year: update your net worth, check your savings rate and adjust the goals."),
+      ],
+      points: ["Net worth is assets minus debts.", "A plan names the goal, the amount, the place and a review date."],
+      check: [["Net worth equals:", ["Income", "Assets minus debts", "Debts minus assets", "Savings only"], 1, "What you own less what you owe."], ["What should come before investing?", ["A holiday", "An emergency fund and clearing very costly debt", "Cryptocurrency", "A new phone"], 1, "Protect first, then grow."]],
+    }),
+  ],
+  terms: [["Insurance", "Paying a premium to transfer a large risk"], ["Premium", "The regular price of insurance"], ["Net worth", "Assets minus debts"], ["Scam", "A fraud that uses pressure and false promises"]],
+  practical: { title: "Practical: your net worth and plan", intro: "Use the net worth lab with your own numbers.", steps: ["List assets and debts honestly.", "Work out net worth and the debt ratio.", "Write one goal, with an amount and a date.", "Pick a date to review it."] },
+  quiz: [
+    ["Insurance is best for:", ["Small, affordable risks", "Large risks you could not pay yourself", "Shopping", "Saving"], 1, "It covers losses that would hurt."],
+    ["Where should tax details come from?", ["A stranger online", "Official government sources or a qualified professional", "A WhatsApp forward", "A rumour"], 1, "Rules vary and change."],
+    ["Net worth is:", ["Assets plus debts", "Assets minus debts", "Income", "Spending"], 1, "What you own less what you owe."],
+    ["A caller asks for your OTP. You should:", ["Give it", "Hang up and call the bank's official number", "Give half", "Ask for a reward"], 1, "Banks never ask for it."],
+    ["What belongs in a plan?", ["A goal, an amount, a place and a review date", "Only a wish", "Nothing", "A loan"], 0, "Specific details make it real."],
+    ["Term insurance is usually:", ["More expensive than mixed products", "Simple and cheaper protection", "An investment", "A loan"], 1, "Pure cover is cheaper."],
+    ["A fair offer will:", ["Rush you", "Put the costs in writing", "Ask for secrecy", "Guarantee profit"], 1, "Clear paperwork is a good sign."],
+  ],
+});
+
+export default course({
+  slug: "financial-literacy-investing", title: "Financial Literacy and Investing", tagline: "Budget, save, borrow wisely and start investing, with a working model for every idea", level: "Beginner", hours: 7.5,
+  summary: "Learn the money skills everyone needs: budgeting, saving and compounding, borrowing, inflation, the basics of investing and protecting what you have. Every module has a spreadsheet lab. Educational only: not personal financial advice.",
+  modules: [M1, M2, M3, M4, M5, M6],
+  capstone: capstone({
+    title: "Final project: your first financial plan", summary: "Build a complete plan and pass the final assessment.",
+    intro: "You now know how money works. In this final step you build a plan in the spreadsheet lab: a budget, a savings rate, an emergency fund target, a loan check and a five-year projection. Then take the final assessment. All examples are illustrative and not advice.",
+    steps: ["Work through the **Final project: your first financial plan** lab.", "Change one number in the plan and watch how the answers change.", "Take the final assessment below."], projectTitle: "Build your first financial plan",
+    quiz: [
+      ["Savings equal:", ["Income plus spending", "Income minus spending", "Spending only", "Debt"], 1, "Income less spending."],
+      ["Compound interest is earned on:", ["The original amount only", "The original amount and past interest", "Nothing", "Taxes"], 1, "Interest is added to the base."],
+      ["At 8% a year, money doubles in about:", ["3 years", "9 years", "20 years", "40 years"], 1, "72 divided by 8."],
+      ["A longer loan term usually:", ["Lowers the payment and raises total interest", "Raises the payment", "Removes interest", "Lowers the rate"], 0, "More months, more interest."],
+      ["What does PMT calculate?", ["A loan payment", "A tax", "A share price", "Inflation"], 0, "The regular payment."],
+      ["A negative real return means:", ["Money grew faster than prices", "Buying power fell", "A tax was paid", "A bank error"], 1, "Prices rose faster than your money."],
+      ["Higher expected returns usually come with:", ["Lower risk", "Higher risk", "No risk", "A guarantee"], 1, "Risk and return go together."],
+      ["Diversification:", ["Concentrates risk", "Spreads risk", "Raises fees", "Guarantees profit"], 1, "Spread across many investments."],
+      ["A scam sign is:", ["Pressure to act now", "A written contract", "A receipt", "A regulator's licence"], 0, "Urgency is a classic tactic."],
+      ["The first big goal for most people is:", ["A luxury", "An emergency fund", "A speculative investment", "A new car"], 1, "It protects against surprises."],
+      ["Net worth is:", ["Assets minus debts", "Income", "Spending", "Savings only"], 0, "What you own less what you owe."],
+      ["Who should you share your OTP with?", ["The bank", "A caller from the bank", "No one", "A friend"], 2, "No genuine organisation asks for it."],
+    ],
+  }),
+  labs,
+  skills: [{ id: SK, label: "Money skills" }],
+  badges: [
+    { id: "budgeter", title: "Budgeter", description: "Built a monthly budget.", when: { all: ["f1-budget"] } },
+    { id: "compounder", title: "Compounder", description: "Modelled compound growth.", when: { all: ["f3-compound"] } },
+    { id: "loan-wise", title: "Loan wise", description: "Worked out an EMI and the total interest.", when: { all: ["f4-emi"] } },
+    { id: "planner", title: "Planner", description: "Finished a first financial plan.", when: { all: ["cap-plan"] } },
+  ],
+  landing: {
+    hero: { eyebrow: "Money skills · Educational, not advice", title: "Financial Literacy and Investing: learn by doing", subtitle: "Budget, save, borrow wisely, understand inflation and start investing, using a real spreadsheet to model every idea.", level: "Beginner", outcomeLine: "After this course you can run a budget, judge a loan, and make a simple plan for your money." },
+    outcomes: [
+      { icon: "sheet", title: "Budget and track", text: "Income, spending, needs and wants, and the 50/30/20 guide." },
+      { icon: "cloud", title: "Save and compound", text: "Emergency funds, compound interest and the rule of 72." },
+      { icon: "computer", title: "Borrow wisely", text: "EMIs, total cost, credit scores and debt traps." },
+      { icon: "web", title: "Beat inflation", text: "Real returns and matching money to time frames." },
+      { icon: "ai", title: "Start investing", text: "Risk, return, diversification and regular investing." },
+      { icon: "safety", title: "Stay protected", text: "Insurance, tax basics, scams and a financial plan." },
+    ],
+    projects: [
+      { title: "A monthly budget", text: "Income, spending, balance and shares.", module: "money-basics" },
+      { title: "Compound growth table", text: "Simple versus compound over four years.", module: "saving-and-compounding" },
+      { title: "A loan comparison", text: "EMI and total interest for two terms.", module: "borrowing-and-credit" },
+      { title: "Your first financial plan", text: "Budget, goal, loan test and projection.", module: "capstone" },
+    ],
+    tools: [{ icon: "sheet", title: "Spreadsheet lab", text: "Formulas including PMT, FV, IF and ROUNDUP." }, { icon: "ai", title: "Explorer sliders", text: "Change amounts, rates and years and watch the numbers move." }, { icon: "sort", title: "Sort and decide", text: "Needs and wants, credit habits, risk and scam spotting." }],
+    assessment: ["Finish the required labs in each module: they are checked automatically and explained when something is missing.", "Pass each module quiz (70% or more). You can retry as often as you like.", "Complete the financial plan and the final assessment."],
+    faq: [
+      { q: "Is this financial advice?", a: "No. It teaches general principles with illustrative numbers. It cannot know your situation, so for decisions about your own money use a qualified professional and official sources." },
+      { q: "Does it recommend products or shares?", a: "No. It explains how different kinds of product work and what to ask, but never says what to buy." },
+      { q: "Does it use rupees?", a: "Yes, for examples. The ideas apply in any currency; tax and regulation vary by country." },
+    ],
+  },
+  catalogue: {
+    hours: "~7.5 hrs", weeks: "~3 weeks", pace: "3 hrs/wk", badge: "Money Skills",
+    brief: "Budget, save and compound, borrow wisely, understand inflation, learn investing basics and build a simple plan.",
+    learn: ["Budgets, needs and wants, and banking basics", "Emergency funds, compound interest and the rule of 72", "Loans, EMIs, credit scores and debt traps", "Inflation and real returns", "Risk, return, diversification and regular investing", "Insurance, tax basics, scam spotting and a financial plan"],
+    handsOn: "Build a first financial plan in a spreadsheet: budget, goal, loan test and a five-year projection.",
+    outcome: "Manage everyday money confidently and make informed, cautious decisions.",
+  },
+});

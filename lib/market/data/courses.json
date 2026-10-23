@@ -1313,24 +1313,24 @@
       "tags": [
         "All"
       ],
-      "hours": "~15 hrs",
+      "hours": "~8.5 hrs",
       "modules": 6,
       "weeks": "~3 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Cyber Essentials",
+      "pace": "3 hrs/wk",
+      "badge": "Cyber Safe",
       "prereq": "None.",
       "bestFor": "Every professional and organisation staff member.",
-      "brief": "Threats, safe practices, and CIA-triad basics.",
+      "brief": "Security principles, passwords and two-step verification, phishing, device and network safety, backups, privacy and incident response.",
       "learn": [
-        "Core concepts — confidentiality, integrity, availability",
-        "Common threats — malware, phishing, social engineering",
-        "Passwords, MFA, and safe authentication",
-        "Network and Wi-Fi security basics",
-        "Data protection, backups, and safe browsing",
-        "Incident basics — spotting and reporting a breach"
+        "Confidentiality, integrity, availability and defence in depth",
+        "Password strength, managers and two-step verification",
+        "Recognising phishing and social engineering",
+        "Securing devices, wifi and backups with 3-2-1",
+        "Risk scoring and personal data privacy",
+        "Responding to hacked accounts, lost devices and scams"
       ],
-      "handsOn": "Complete a personal/organisation security audit and hardening checklist.",
-      "outcome": "Stay safe online; foundation for a cyber career.",
+      "handsOn": "Write a one-page personal security plan covering accounts, devices, data, scams and incident response.",
+      "outcome": "Protect your accounts, devices and data and respond calmly when something goes wrong.",
       "icon": "shield"
     },
     {
@@ -1666,24 +1666,24 @@
       "tags": [
         "All"
       ],
-      "hours": "~30 hrs",
+      "hours": "~7.5 hrs",
       "modules": 6,
-      "weeks": "~6 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Digital Marketing",
+      "weeks": "~3 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Marketing Foundations",
       "prereq": "None.",
       "bestFor": "Freelancers, entrepreneurs, and job seekers (Google/Meta cert prep).",
-      "brief": "SEO, SEM, social, email, and content in one overview.",
+      "brief": "Customers, the funnel, copywriting, search, social and email, measurement and a campaign plan.",
       "learn": [
-        "The digital marketing landscape and funnel (AIDA)",
-        "Website and landing-page basics",
-        "SEO and SEM fundamentals",
-        "Social media and content marketing overview",
-        "Email marketing and marketing automation intro",
-        "Analytics, KPIs, and campaign planning"
+        "The marketing mix, segments, personas and value propositions",
+        "The funnel and owned, earned and paid media",
+        "Headlines, benefits and calls to action",
+        "Search, social media and email marketing with consent",
+        "CTR, CPC, conversion rate, CPA, ROAS and A/B testing",
+        "SMART goals, the campaign brief and honest marketing"
       ],
-      "handsOn": "Build a multi-channel marketing plan for a real/mock business.",
-      "outcome": "Choose a specialism — SEO, Performance Marketing, or Growth.",
+      "handsOn": "Analyse a four-week campaign: totals, cost per sale, return on ad spend, and a profit verdict.",
+      "outcome": "Plan, write, measure and responsibly run a small digital campaign.",
       "icon": "megaphone"
     },
     {
@@ -1696,24 +1696,24 @@
         "Fresher",
         "Founder"
       ],
-      "hours": "~30 hrs",
+      "hours": "~8 hrs",
       "modules": 6,
-      "weeks": "~6 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "SEO Specialist",
+      "weeks": "~3 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "SEO Foundations",
       "prereq": "Basic web familiarity.",
       "bestFor": "Marketers, founders, and content creators growing organic traffic.",
-      "brief": "On-page, technical, and off-page SEO to rank and grow.",
+      "brief": "How search works, keywords and helpful content, on-page and technical SEO, links and local SEO, reports and a plan.",
       "learn": [
-        "How search engines crawl, index, and rank",
-        "Keyword research and search intent",
-        "On-page SEO — titles, meta, headings, internal links",
-        "Technical SEO — speed, mobile, schema, sitemaps",
-        "Off-page SEO and link building",
-        "Tools (Search Console, GA4) and measuring results"
+        "Crawling, indexing, ranking and search intent",
+        "Keyword research, scoring and helpful content",
+        "Titles, descriptions, headings, alt text and internal links",
+        "Speed, mobile friendliness and crawlability",
+        "Links, local SEO and trust without shortcuts",
+        "Reading reports, quick wins and a three-month plan"
       ],
-      "handsOn": "Run an SEO audit and improve a page's ranking factors.",
-      "outcome": "Grow any site's traffic; a strong freelance skill.",
+      "handsOn": "Estimate extra visits and value from improving five pages, choose where to start and chart the opportunity.",
+      "outcome": "Audit a small website, plan content and report results honestly.",
       "icon": "search"
     },
     {
@@ -2050,24 +2050,24 @@
       "tags": [
         "Mid"
       ],
-      "hours": "~40 hrs",
+      "hours": "~9 hrs",
       "modules": 6,
-      "weeks": "~8 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Project Manager",
+      "weeks": "~3 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Project Planner",
       "prereq": "Some work experience helpful.",
       "bestFor": "Professionals moving into delivery/leadership across industries.",
-      "brief": "Planning, risk, and delivery frameworks (PMP/CAPM prep).",
+      "brief": "Charters, scope, WBS, estimating, scheduling, risk, communication, earned value and an introduction to agile.",
       "learn": [
-        "Project lifecycle and the PMBOK knowledge areas",
-        "Scope, schedule, and cost management",
-        "Risk, quality, and stakeholder management",
-        "Predictive vs agile/hybrid approaches",
-        "Tools — Gantt charts, WBS, and dashboards",
-        "Certification-exam preparation (CAPM/PMP)"
+        "Projects, the life cycle and the charter",
+        "Scope, work breakdown and estimating",
+        "Dependencies, the critical path and RACI",
+        "Risk registers, responses and quality",
+        "Status reports and stakeholder management",
+        "Earned value, closing and agile ideas"
       ],
-      "handsOn": "Produce a full project plan with schedule, budget, and risk register.",
-      "outcome": "Target PM roles and sit CAPM/PMP.",
+      "handsOn": "Write a one-page plan for a college tech fest with milestones, budget, risks and communication.",
+      "outcome": "Plan, schedule and control a small project with confidence and clear reporting.",
       "icon": "clipboard"
     },
     {
@@ -2080,24 +2080,24 @@
         "Fresher",
         "Mid"
       ],
-      "hours": "~25 hrs",
+      "hours": "~9.5 hrs",
       "modules": 6,
-      "weeks": "~5 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Agile & Scrum",
+      "weeks": "~4 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Agile Practitioner",
       "prereq": "None.",
       "bestFor": "Anyone joining a modern software/product team.",
-      "brief": "Sprints, backlogs, and cross-functional collaboration.",
+      "brief": "Agile values, Scrum roles and events, user stories and backlogs, estimating, boards, metrics and retrospectives.",
       "learn": [
-        "Agile values, the Scrum framework, and roles",
-        "Backlogs, user stories, and estimation",
-        "Sprint planning, standups, reviews, and retros",
-        "Kanban and flow-based delivery",
-        "Jira — boards, workflows, and reporting",
-        "Metrics — velocity and burndown"
+        "Agile values, principles and mindset",
+        "Scrum roles, events and artifacts",
+        "User stories, acceptance criteria and backlog prioritising",
+        "Story points, velocity and forecasting",
+        "Boards, WIP limits, burndown and tracker concepts",
+        "Retrospectives, team health and anti-patterns"
       ],
-      "handsOn": "Run a simulated sprint in Jira from backlog to review.",
-      "outcome": "Contribute confidently in agile teams; prep for Scrum certs.",
+      "handsOn": "Plan a full two-week sprint: goal, selected stories, capacity, Definition of Done and risks.",
+      "outcome": "Join an agile team, plan a sprint and read the metrics that matter.",
       "icon": "repeat"
     },
     {
@@ -2286,24 +2286,24 @@
       "tags": [
         "All"
       ],
-      "hours": "~20 hrs",
+      "hours": "~7.5 hrs",
       "modules": 6,
-      "weeks": "~4 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Financial Literacy",
+      "weeks": "~3 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Money Skills",
       "prereq": "None.",
       "bestFor": "Every age group — students to retirees.",
-      "brief": "Mutual funds, SIPs, stock-market basics, tax planning, and budgeting.",
+      "brief": "Budget, save and compound, borrow wisely, understand inflation, learn investing basics and build a simple plan.",
       "learn": [
-        "Budgeting, saving, and emergency funds",
-        "Banking, credit scores, and managing debt",
-        "Investment basics — FDs, mutual funds, SIPs, stocks",
-        "Risk, diversification, and compounding",
-        "Tax planning basics (Indian context) and insurance",
-        "Retirement planning and goal-based investing"
+        "Budgets, needs and wants, and banking basics",
+        "Emergency funds, compound interest and the rule of 72",
+        "Loans, EMIs, credit scores and debt traps",
+        "Inflation and real returns",
+        "Risk, return, diversification and regular investing",
+        "Insurance, tax basics, scam spotting and a financial plan"
       ],
-      "handsOn": "Build a personal budget and a goal-based investment plan.",
-      "outcome": "Manage money and invest with confidence. Educational only — not financial advice.",
+      "handsOn": "Build a first financial plan in a spreadsheet: budget, goal, loan test and a five-year projection.",
+      "outcome": "Manage everyday money confidently and make informed, cautious decisions.",
       "icon": "rupee"
     },
     {
@@ -2315,24 +2315,24 @@
       "tags": [
         "All"
       ],
-      "hours": "~25 hrs",
+      "hours": "~8 hrs",
       "modules": 6,
-      "weeks": "~5 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Bookkeeping",
+      "weeks": "~3 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Bookkeeping Foundations",
       "prereq": "None.",
       "bestFor": "Small-business owners, freelancers, and commerce students.",
-      "brief": "Debits, credits, ledgers, and statements.",
+      "brief": "The accounting equation, double entry, ledger, trial balance, cash and bank, adjustments and final accounts.",
       "learn": [
-        "The accounting equation and double-entry system",
-        "Journals, ledgers, and the trial balance",
-        "Recording income, expenses, and adjustments",
-        "The three financial statements",
-        "Cash vs accrual accounting",
-        "Bookkeeping for a small business"
+        "Assets, liabilities, capital, income and expenses",
+        "Debits, credits and journal entries",
+        "Ledger accounts and the trial balance",
+        "Cash book, petty cash and bank reconciliation",
+        "Accruals, prepayments and depreciation",
+        "Income statement and balance sheet"
       ],
-      "handsOn": "Keep a full set of books for a sample business for one period.",
-      "outcome": "Manage business books; next step Tally & GST.",
+      "handsOn": "Prepare an income statement and a balanced balance sheet from a business's year-end figures.",
+      "outcome": "Keep a small business's books and understand its accounts.",
       "icon": "book"
     },
     {
@@ -2580,24 +2580,24 @@
         "College",
         "Fresher"
       ],
-      "hours": "~15 hrs",
+      "hours": "~8 hrs",
       "modules": 6,
       "weeks": "~3 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Business Communication",
+      "pace": "3 hrs/wk",
+      "badge": "Business Communicator",
       "prereq": "Basic English.",
       "bestFor": "Students and freshers entering corporate roles.",
-      "brief": "Professional writing, meetings, and cross-cultural communication.",
+      "brief": "Channels, emails, memos, meetings, feedback and working across cultures and distance.",
       "learn": [
-        "Professional email structure and tone",
-        "Writing clear messages, requests, and follow-ups",
-        "Meeting etiquette, agendas, and minutes",
-        "Chat/Slack and remote communication norms",
-        "Cross-cultural and global-team communication",
-        "Common mistakes and professional polish"
+        "The communication loop and audience analysis",
+        "Clear emails: subject, structure, plain language and tone",
+        "Memos, executive summaries and data in writing",
+        "Agendas, minutes and costing a meeting",
+        "Assertiveness, SBI feedback and active listening",
+        "International English and remote team agreements"
       ],
-      "handsOn": "Write a set of professional emails and run a mock meeting.",
-      "outcome": "Communicate like a corporate professional.",
+      "handsOn": "Write a project update: summary, options, recommendation and actions.",
+      "outcome": "Communicate clearly in writing, in meetings and in difficult conversations.",
       "icon": "mail"
     },
     {
@@ -2610,24 +2610,24 @@
         "College",
         "Fresher"
       ],
-      "hours": "~20 hrs",
+      "hours": "~9 hrs",
       "modules": 6,
-      "weeks": "~4 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Career-Ready",
+      "weeks": "~3 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Career Ready",
       "prereq": "None.",
       "bestFor": "Final-year students and freshers job-hunting.",
-      "brief": "Resume building, mock interviews, and workplace expectations.",
+      "brief": "Career clarity, CV and profile, cover letters and networking, interviews, offers and your first 90 days.",
       "learn": [
-        "Building an ATS-friendly resume and cover letter",
-        "LinkedIn and online presence for jobs",
-        "Aptitude and group-discussion basics",
-        "HR and technical interview preparation (STAR method)",
-        "Workplace etiquette and first-90-days expectations",
-        "Salary negotiation basics"
+        "Skills, strengths and evidence",
+        "An achievement-based one-page CV",
+        "Cover letters and honest networking",
+        "STAR answers and common interview questions",
+        "Assessments, comparing offers and negotiating",
+        "A 30-60-90 day plan and professional conduct"
       ],
-      "handsOn": "Complete a resume and a recorded mock interview with feedback.",
-      "outcome": "Walk into interviews prepared and confident.",
+      "handsOn": "Build a one-page interview pack with a pitch, three stories and smart questions.",
+      "outcome": "Apply, interview and start a job with confidence and professionalism.",
       "icon": "briefcase"
     },
     {
@@ -2639,24 +2639,24 @@
       "tags": [
         "All"
       ],
-      "hours": "~12 hrs",
+      "hours": "~8.5 hrs",
       "modules": 6,
       "weeks": "~3 weeks",
-      "pace": "4 hrs/wk",
-      "badge": "Productivity",
+      "pace": "3 hrs/wk",
+      "badge": "Productivity Planner",
       "prereq": "None.",
       "bestFor": "Students and professionals who feel overwhelmed.",
-      "brief": "Prioritization, focus systems, and habits that beat procrastination.",
+      "brief": "Time audits, priorities, weekly planning, focus, habits, goals and sustainable productivity.",
       "learn": [
-        "Goal-setting and prioritisation (Eisenhower matrix)",
-        "Planning systems — time-blocking and to-do methods",
-        "Beating procrastination and building focus",
-        "Managing distractions and deep work",
-        "Energy, habits, and routines",
-        "Productivity tools and reviews"
+        "Auditing and understanding your time",
+        "Urgent versus important and time traps",
+        "Weekly planning, blocking and saying no",
+        "Focus, attention and habit building",
+        "SMART goals and reviews",
+        "Avoiding burnout and designing your own system"
       ],
-      "handsOn": "Design and run a personal productivity system for two weeks.",
-      "outcome": "Get more done with less stress.",
+      "handsOn": "Design a one-page personal productivity system with capture, plan, focus, review and rest.",
+      "outcome": "Plan your time, protect your focus and review your progress with a simple system.",
       "icon": "clock"
     },
     {
@@ -2668,24 +2668,24 @@
       "tags": [
         "All"
       ],
-      "hours": "~15 hrs",
+      "hours": "~8.5 hrs",
       "modules": 6,
       "weeks": "~3 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Critical Thinking",
+      "pace": "3 hrs/wk",
+      "badge": "Critical Thinker",
       "prereq": "None.",
       "bestFor": "Students and professionals in any field.",
-      "brief": "Structured reasoning, logic, and decision frameworks.",
+      "brief": "Facts and assumptions, arguments and evidence, fallacies and biases, decisions, root causes and creative problem solving.",
       "learn": [
-        "What critical thinking is and cognitive biases",
-        "Structured problem-solving frameworks",
-        "Logic, arguments, and evaluating evidence",
-        "Root-cause analysis (5 Whys, fishbone)",
-        "Decision-making under uncertainty",
-        "Creative problem-solving techniques"
+        "Fact, opinion and assumption",
+        "Arguments, evidence and common fallacies",
+        "Weighted decision matrices and cognitive biases",
+        "Problem statements, five whys and Pareto analysis",
+        "Creative techniques and systems thinking",
+        "Evaluating news and writing reasoned recommendations"
       ],
-      "handsOn": "Break down and solve a real problem using a structured framework.",
-      "outcome": "Think and decide more clearly.",
+      "handsOn": "Analyse a case: define the problem, find causes, weigh options and recommend a tested solution.",
+      "outcome": "Evaluate claims, decide with structure and solve problems systematically.",
       "icon": "bulb"
     },
     {

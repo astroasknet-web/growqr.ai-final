@@ -58,6 +58,9 @@ export function flow(caption, steps) {
 
 /** Interactive widgets (see lib/learn/widgets/types.ts). */
 export const explorer = (spec) => widgetHtml({ type: "explorer", ...spec });
+/** Accounting widgets: pick the debit and credit accounts for each transaction; watch A = L + C stay balanced. */
+export const journal = (spec) => widgetHtml({ type: "journal", ...spec });
+export const equation = (spec) => widgetHtml({ type: "equation", ...spec });
 export const flashcards = (id, title, cards) => widgetHtml({ type: "flashcards", id, title, cards: cards.map(([front, back]) => ({ front, back })) });
 /** Move the correct option to a chosen position (swap), so answers are spread over A to D instead of piling up on one letter. */
 function place(options, correct, target) {

@@ -1,0 +1,565 @@
+import { bars, capstone, ck, classifyLab, course, def, equation, example, explorer, flow, formula, journal, list, mistakes, module_, p, S, sheetLab, table, tip, topic, tryIt, warn } from "../kit.mjs";
+
+const SK = "bookkeeping";
+
+const labs = [
+  sheetLab({
+    id: "a1-equation", module: "accounting-basics", title: "Check the accounting equation", level: "beginner", minutes: 10, xp: 40, skills: [SK], required: true,
+    objective: "Total assets and liabilities, find the owner's capital and prove the equation balances.",
+    scenario: "Sana starts a small tailoring shop. List what she owns and owes, and find her capital.",
+    steps: ["In B5 total the assets (B2:B4).", "In B9 total the liabilities (B7:B8).", "In B10 find the capital: assets minus liabilities.", "In B11 show Balanced if assets equal liabilities plus capital."],
+    cells: { A1: "Assets", A2: "Cash", B2: "50000", A3: "Stock of cloth", B3: "30000", A4: "Sewing machines", B4: "20000", A5: "Total assets", A6: "Liabilities", A7: "Bank loan", B7: "25000", A8: "Creditors (cloth supplier)", B8: "15000", A9: "Total liabilities", A10: "Capital (owner)", A11: "Check" }, view: { cols: 3, rows: 13 },
+    checks: [
+      ck("ta", "B5 is total assets", "=SUM(B2:B4)", "Assets are what the business owns.", S.formula("B5", { fns: ["SUM"], cover: "B2:B4", equals: 100000 })),
+      ck("tl", "B9 is total liabilities", "=SUM(B7:B8)", "Liabilities are what the business owes.", S.formula("B9", { fns: ["SUM"], cover: "B7:B8", equals: 40000 })),
+      ck("cap", "B10 is the capital", "=B5-B9", "Capital is what is left for the owner: assets minus liabilities.", S.formula("B10", { equals: 60000 })),
+      ck("chk", "B11 shows Balanced", "=IF(B5=B9+B10,\"Balanced\",\"Check\")", "The accounting equation says assets always equal liabilities plus capital.", S.formula("B11", { fns: ["IF"], equals: "Balanced" })),
+    ],
+    solution: { cells: { B5: "=SUM(B2:B4)", B9: "=SUM(B7:B8)", B10: "=B5-B9", B11: "=IF(B5=B9+B10,\"Balanced\",\"Check\")" } },
+  }),
+  sheetLab({
+    id: "a2-trial", module: "ledger-and-trial-balance", title: "Complete a trial balance", level: "intermediate", minutes: 12, xp: 50, skills: [SK], required: true,
+    objective: "Total the debit and credit columns and check that they agree.",
+    scenario: "At the end of the month the ledger balances are listed. Prove that the books balance.",
+    steps: ["In B11 total the Debit column.", "In C11 total the Credit column.", "In B12 show Agree if the totals are equal, otherwise Differ.", "In B13 find the difference between the two totals (use ABS)."],
+    cells: { A1: "Account", B1: "Debit", C1: "Credit", A2: "Cash", B2: "45000", A3: "Debtors", B3: "20000", A4: "Stock", B4: "30000", A5: "Equipment", B5: "60000", A6: "Rent", B6: "8000", A7: "Salaries", B7: "12000", A8: "Creditors", C8: "25000", A9: "Capital", C9: "100000", A10: "Sales", C10: "50000", A11: "Totals", A12: "Do they agree?", A13: "Difference" }, view: { cols: 4, rows: 14 },
+    checks: [
+      ck("dr", "B11 totals the debits", "=SUM(B2:B10)", "Debit balances are assets and expenses.", S.formula("B11", { fns: ["SUM"], cover: "B2:B10", equals: 175000 })),
+      ck("cr", "C11 totals the credits", "=SUM(C2:C10)", "Credit balances are liabilities, capital and income.", S.formula("C11", { fns: ["SUM"], cover: "C2:C10", equals: 175000 })),
+      ck("agree", "B12 shows Agree", "=IF(B11=C11,\"Agree\",\"Differ\")", "In double entry every debit has an equal credit, so the totals must agree.", S.formula("B12", { fns: ["IF"], equals: "Agree" })),
+      ck("diff", "B13 is the difference", "=ABS(B11-C11)", "A balanced trial balance has a difference of zero.", S.formula("B13", { fns: ["ABS"], equals: 0 })),
+    ],
+    solution: { cells: { B11: "=SUM(B2:B10)", C11: "=SUM(C2:C10)", B12: "=IF(B11=C11,\"Agree\",\"Differ\")", B13: "=ABS(B11-C11)" } },
+  }),
+  sheetLab({
+    id: "a3-find-error", module: "ledger-and-trial-balance", title: "Find the difference", level: "intermediate", minutes: 12, xp: 45, skills: [SK], required: false,
+    objective: "Measure a trial balance difference and say which side is larger.",
+    scenario: "A trial balance does not agree. Find the size of the difference and which side is too big, to guide the search for the mistake.",
+    steps: ["Total the Debit column in B9 and the Credit column in C9.", "In B10 find the difference with ABS.", "In B11 show Debit side or Credit side, whichever total is larger."],
+    cells: { A1: "Account", B1: "Debit", C1: "Credit", A2: "Cash", B2: "30000", A3: "Debtors", B3: "18000", A4: "Equipment", B4: "40000", A5: "Wages", B5: "9000", A6: "Capital", C6: "70000", A7: "Creditors", C7: "15000", A8: "Sales", C8: "10600", A9: "Totals", A10: "Difference", A11: "Larger side" }, view: { cols: 4, rows: 12 },
+    checks: [
+      ck("dr", "B9 totals the debits", "=SUM(B2:B8)", "Add every debit balance.", S.formula("B9", { fns: ["SUM"], equals: 97000 })),
+      ck("cr", "C9 totals the credits", "=SUM(C2:C8)", "Add every credit balance.", S.formula("C9", { fns: ["SUM"], equals: 95600 })),
+      ck("d", "B10 is the difference", "=ABS(B9-C9)", "The difference tells you how big the error is.", S.formula("B10", { equals: 1400 })),
+      ck("side", "B11 says which side is larger", "=IF(B9>C9,\"Debit side\",\"Credit side\")", "A larger debit side suggests a debit was overstated or a credit left out.", S.formula("B11", { fns: ["IF"], equals: "Debit side" })),
+    ],
+    solution: { cells: { B9: "=SUM(B2:B8)", C9: "=SUM(C2:C8)", B10: "=ABS(B9-C9)", B11: "=IF(B9>C9,\"Debit side\",\"Credit side\")" } },
+  }),
+  sheetLab({
+    id: "a4-ledger", module: "ledger-and-trial-balance", title: "Balance a cash account", level: "intermediate", minutes: 12, xp: 50, skills: [SK], required: true,
+    objective: "Total both sides of a ledger account and find its balance.",
+    scenario: "Here is the cash account for the month. Receipts are on the debit side and payments on the credit side. Find the balance carried down.",
+    steps: ["In B8 total the debit side (B2:B4).", "In D8 total the credit side (D2:D5).", "In B10 find the balance: debit total minus credit total.", "In B11 show Debit balance or Credit balance with IF."],
+    cells: { A1: "Debit (receipts)", B1: "Rs", C1: "Credit (payments)", D1: "Rs", A2: "Capital", B2: "100000", C2: "Purchases", D2: "40000", A3: "Sales", B3: "30000", C3: "Rent", D3: "8000", A4: "Debtors", B4: "15000", C4: "Salaries", D4: "12000", C5: "Equipment", D5: "20000", A8: "Total debit", C8: "Total credit", A10: "Balance", A11: "Type of balance" }, view: { cols: 5, rows: 12 },
+    checks: [
+      ck("td", "B8 totals the debit side", "=SUM(B2:B4)", "Add the receipts.", S.formula("B8", { fns: ["SUM"], cover: "B2:B4", equals: 145000 })),
+      ck("tc", "D8 totals the credit side", "=SUM(D2:D5)", "Add the payments.", S.formula("D8", { fns: ["SUM"], cover: "D2:D5", equals: 80000 })),
+      ck("bal", "B10 is the balance", "=B8-D8", "The balance is the difference between the two sides.", S.formula("B10", { equals: 65000 })),
+      ck("type", "B11 says Debit balance", "=IF(B10>=0,\"Debit balance\",\"Credit balance\")", "A positive result means more came in than went out: cash in hand.", S.formula("B11", { fns: ["IF"], equals: "Debit balance" })),
+    ],
+    solution: { cells: { B8: "=SUM(B2:B4)", D8: "=SUM(D2:D5)", B10: "=B8-D8", B11: "=IF(B10>=0,\"Debit balance\",\"Credit balance\")" } },
+  }),
+  sheetLab({
+    id: "a5-cashbook", module: "cash-and-bank", title: "Write up a cash book", level: "beginner", minutes: 12, xp: 45, skills: [SK], required: true,
+    objective: "Record receipts and payments and find the closing balance.",
+    scenario: "A stall owner keeps a cash book for a week. Find the total received, the total paid and the cash left.",
+    steps: ["In B9 total the receipts (B3:B8).", "In D9 total the payments (D3:D7).", "In B11 find the closing balance: opening balance plus receipts minus payments.", "In B12 check it with IF: show Low if the closing balance is under 5,000, otherwise OK."],
+    cells: { A1: "Opening balance", B1: "5000", A2: "Receipts", B2: "Rs", C2: "Payments", D2: "Rs", A3: "Mon sales", B3: "3200", C3: "Stock bought", D3: "4500", A4: "Tue sales", B4: "2800", C4: "Transport", D4: "600", A5: "Wed sales", B5: "3500", C5: "Stall fee", D5: "1200", A6: "Thu sales", B6: "2400", C6: "Helper wages", D6: "1500", A7: "Fri sales", B7: "4100", C7: "Bags", D7: "350", A8: "Sat sales", B8: "5200", A9: "Total receipts", C9: "Total payments", A11: "Closing balance", A12: "Status" }, view: { cols: 5, rows: 13 },
+    checks: [
+      ck("tr", "B9 totals the receipts", "=SUM(B3:B8)", "Add every receipt.", S.formula("B9", { fns: ["SUM"], cover: "B3:B8", equals: 21200 })),
+      ck("tp", "D9 totals the payments", "=SUM(D3:D7)", "Add every payment.", S.formula("D9", { fns: ["SUM"], cover: "D3:D7", equals: 8150 })),
+      ck("cb", "B11 is the closing balance", "=B1+B9-D9", "Opening balance plus receipts minus payments.", S.formula("B11", { equals: 18050 })),
+      ck("st", "B12 says OK", "=IF(B11<5000,\"Low\",\"OK\")", "A simple check helps spot a cash shortage early.", S.formula("B12", { fns: ["IF"], equals: "OK" })),
+    ],
+    solution: { cells: { B9: "=SUM(B3:B8)", D9: "=SUM(D3:D7)", B11: "=B1+B9-D9", B12: "=IF(B11<5000,\"Low\",\"OK\")" } },
+  }),
+  sheetLab({
+    id: "a6-bankrec", module: "cash-and-bank", title: "Reconcile the bank balance", level: "intermediate", minutes: 14, xp: 55, skills: [SK], required: true,
+    objective: "Explain the difference between the cash book and the bank statement.",
+    scenario: "The cash book shows 24,500 but the bank statement shows 27,800. Two timing differences explain it.",
+    steps: ["In B6 work out the adjusted bank balance: statement balance, minus unpresented cheques, plus uncredited deposits.", "In B7 find the difference between the adjusted bank balance and the cash book balance.", "In B8 show Reconciled if the difference is zero, otherwise Investigate."],
+    cells: { A1: "Balance per cash book", B1: "24500", A2: "Balance per bank statement", B2: "27800", A3: "Unpresented cheques (issued, not yet cashed)", B3: "4200", A4: "Uncredited deposits (paid in, not yet shown)", B4: "900", A6: "Adjusted bank balance", A7: "Difference from cash book", A8: "Result" }, view: { cols: 3, rows: 10 },
+    checks: [
+      ck("adj", "B6 is the adjusted bank balance", "=B2-B3+B4", "Cheques not yet cashed still leave the account; deposits not yet shown will arrive.", S.formula("B6", { equals: 24500 })),
+      ck("diff", "B7 is the difference", "=B6-B1", "After adjustments the two balances should agree.", S.formula("B7", { equals: 0 })),
+      ck("res", "B8 says Reconciled", "=IF(B7=0,\"Reconciled\",\"Investigate\")", "A zero difference means the timing differences explain everything.", S.formula("B8", { fns: ["IF"], equals: "Reconciled" })),
+    ],
+    solution: { cells: { B6: "=B2-B3+B4", B7: "=B6-B1", B8: "=IF(B7=0,\"Reconciled\",\"Investigate\")" } },
+  }),
+  sheetLab({
+    id: "a7-depreciation", module: "adjustments-and-depreciation", title: "A straight-line depreciation schedule", level: "intermediate", minutes: 14, xp: 55, skills: [SK], required: true,
+    objective: "Spread the cost of an asset over its useful life and track its book value.",
+    scenario: "A machine costs 1,20,000, will last five years and then be worth 20,000. Build the yearly schedule.",
+    steps: ["In B4 work out the yearly depreciation: (cost minus scrap value) divided by the life.", "In B8 write year 1's depreciation (the locked yearly amount) and in C8 the accumulated depreciation; in D8 the book value (cost minus accumulated).", "Copy the pattern down to year 5."],
+    cells: { A1: "Cost", B1: "120000", A2: "Scrap value", B2: "20000", A3: "Life (years)", B3: "5", A4: "Yearly depreciation", A7: "Year", B7: "Depreciation", C7: "Accumulated", D7: "Book value", A8: "1", A9: "2", A10: "3", A11: "4", A12: "5" }, view: { cols: 5, rows: 14 },
+    checks: [
+      ck("dep", "B4 is the yearly depreciation", "=(B1-B2)/B3", "Straight line spreads the depreciable amount evenly.", S.formula("B4", { equals: 20000 })),
+      ck("y1", "D8 is the book value after year 1", "=$B$1-C8", "Book value is cost minus accumulated depreciation.", S.formula("D8", { equals: 100000 })),
+      ck("acc", "C10 is the accumulated depreciation after year 3", "=C9+B10", "Each year's depreciation is added to the running total.", S.formula("C10", { equals: 60000 })),
+      ck("y5", "D12 equals the scrap value after year 5", "Fill the pattern down to row 12.", "By the end of its life the asset is worth only its scrap value.", S.formula("D12", { equals: 20000 })),
+    ],
+    solution: { cells: { B4: "=(B1-B2)/B3", B8: "=$B$4", C8: "=B8", D8: "=$B$1-C8", B9: "=$B$4", C9: "=C8+B9", D9: "=$B$1-C9", B10: "=$B$4", C10: "=C9+B10", D10: "=$B$1-C10", B11: "=$B$4", C11: "=C10+B11", D11: "=$B$1-C11", B12: "=$B$4", C12: "=C11+B12", D12: "=$B$1-C12" } },
+  }),
+  sheetLab({
+    id: "a8-income", module: "final-accounts", title: "Prepare an income statement", level: "intermediate", minutes: 16, xp: 60, skills: [SK], required: true,
+    objective: "Work out cost of goods sold, gross profit and net profit, and the margins.",
+    scenario: "A shop's year-end figures are below. Prepare its income statement.",
+    steps: ["In B8 find the cost of goods sold: opening stock plus purchases minus closing stock.", "In B9 find the gross profit: sales minus cost of goods sold.", "In B14 total the expenses (B10:B13) and in B15 find the net profit.", "In B16 find the gross profit margin (gross profit divided by sales) and in B17 the net profit margin."],
+    cells: { A1: "Sales", B1: "250000", A2: "Opening stock", B2: "20000", A3: "Purchases", B3: "140000", A4: "Closing stock", B4: "30000", A8: "Cost of goods sold", A9: "Gross profit", A10: "Rent", B10: "24000", A11: "Wages", B11: "36000", A12: "Depreciation", B12: "10000", A13: "Other expenses", B13: "14000", A14: "Total expenses", A15: "Net profit", A16: "Gross profit margin", A17: "Net profit margin" }, view: { cols: 3, rows: 19 },
+    checks: [
+      ck("cogs", "B8 is the cost of goods sold", "=B2+B3-B4", "Opening stock plus purchases less what is left.", S.formula("B8", { equals: 130000 })),
+      ck("gp", "B9 is the gross profit", "=B1-B8", "Sales minus the cost of the goods sold.", S.formula("B9", { equals: 120000 })),
+      ck("te", "B14 totals the expenses", "=SUM(B10:B13)", "Add every running expense.", S.formula("B14", { fns: ["SUM"], cover: "B10:B13", equals: 84000 })),
+      ck("np", "B15 is the net profit", "=B9-B14", "Gross profit less expenses.", S.formula("B15", { equals: 36000 })),
+      ck("gm", "B16 is the gross profit margin", "=B9/B1", "Margins let you compare businesses of different sizes.", S.formula("B16", { equals: 0.48 })),
+      ck("nm", "B17 is the net profit margin", "=B15/B1", "Net profit as a share of sales.", S.formula("B17", { equals: 0.144 })),
+    ],
+    solution: { cells: { B8: "=B2+B3-B4", B9: "=B1-B8", B14: "=SUM(B10:B13)", B15: "=B9-B14", B16: "=B9/B1", B17: "=B15/B1" } },
+  }),
+  classifyLab({
+    id: "a9-elements", module: "accounting-basics", title: "Asset, liability, capital, income or expense?", level: "beginner", minutes: 7, xp: 25, skills: [SK], required: true,
+    objective: "Put each item under the right heading.", scenario: "Every account belongs to one of five groups.",
+    steps: ["Read each item.", "Choose the group.", "Press Check my work."],
+    categories: [["asset", "Asset"], ["liab", "Liability"], ["cap", "Capital"], ["inc", "Income"], ["exp", "Expense"]],
+    items: [["Cash in hand", "asset", "What the business owns."], ["A bank loan", "liab", "What the business owes."], ["The owner's investment", "cap", "What the business owes the owner."], ["Sales", "inc", "Money earned from customers."], ["Rent paid", "exp", "A cost of running the business."], ["Money owed by customers (debtors)", "asset", "A customer owes you, so it is something you own a right to."], ["Money owed to suppliers (creditors)", "liab", "You owe them."], ["Interest received", "inc", "Earned on money."], ["Salaries", "exp", "A cost of running the business."], ["A delivery van", "asset", "A long-term thing the business owns."]],
+  }),
+  classifyLab({
+    id: "a10-dr-cr", module: "double-entry", title: "Debit or credit?", level: "intermediate", minutes: 8, xp: 30, skills: [SK], required: true,
+    objective: "Apply the debit and credit rules to the accounts affected.", scenario: "Assets and expenses increase on the debit side; liabilities, capital and income increase on the credit side.",
+    steps: ["Read each effect.", "Choose Debit or Credit.", "Press Check my work."],
+    categories: [["dr", "Debit"], ["cr", "Credit"]],
+    items: [["Cash increases when a customer pays", "dr", "An increase in an asset is a debit."], ["Sales increase when you sell goods", "cr", "An increase in income is a credit."], ["Rent expense increases when you pay rent", "dr", "An increase in an expense is a debit."], ["A bank loan increases when you borrow", "cr", "An increase in a liability is a credit."], ["Cash decreases when you pay a supplier", "cr", "A decrease in an asset is a credit."], ["Capital increases when the owner invests", "cr", "An increase in capital is a credit."], ["Creditors decrease when you pay them", "dr", "A decrease in a liability is a debit."], ["Equipment increases when you buy a machine", "dr", "An increase in an asset is a debit."]],
+  }),
+  classifyLab({
+    id: "a11-accrual", module: "adjustments-and-depreciation", title: "Accrued or prepaid?", level: "intermediate", minutes: 7, xp: 25, skills: [SK], required: true,
+    objective: "Tell expenses owed from expenses paid in advance.", scenario: "Accounts must match costs to the period they belong to, not just to when cash moves.",
+    steps: ["Read each situation.", "Choose the adjustment.", "Press Check my work."],
+    categories: [["accrued", "Accrued expense (owed)"], ["prepaid", "Prepaid expense (paid ahead)"]],
+    items: [["December electricity used but the bill arrives in January", "accrued", "The cost belongs to December although it is unpaid."], ["Insurance for next year paid in December", "prepaid", "Paid now for a future period."], ["Staff wages for the last week of the year not yet paid", "accrued", "Earned but unpaid at the year end."], ["Rent for January paid on 28 December", "prepaid", "Paid before the period it covers."], ["Interest on a loan for the last month, not yet paid", "accrued", "The cost has built up but not been paid."], ["A one-year website subscription paid for in full on the first day", "prepaid", "Most of the benefit is still to come."]],
+  }),
+  sheetLab({
+    id: "cap-books", module: "capstone", title: "Final project: from figures to final accounts", level: "challenge", minutes: 35, xp: 150, skills: [SK], required: true,
+    objective: "Prepare an income statement and prove the balance sheet balances.",
+    scenario: "Use the year-end figures to find net profit, closing capital, total assets and total liabilities, and show that the books balance.",
+    steps: ["In B16 find the cost of goods sold (opening stock + purchases - closing stock).", "In B17 find the gross profit and in B18 the total expenses (rent, wages, other).", "In B19 find the net profit and in B20 the closing capital (opening capital + net profit - drawings).", "In B21 total the assets (cash, debtors, closing stock, equipment) and in B22 the liabilities (creditors, loan).", "In B23 show Balanced if assets equal closing capital plus liabilities."],
+    cells: { A1: "Sales", B1: "150000", A2: "Opening stock", B2: "20000", A3: "Purchases", B3: "90000", A4: "Closing stock", B4: "30000", A5: "Rent", B5: "18000", A6: "Wages", B6: "25000", A7: "Other expenses", B7: "9000", A8: "Drawings", B8: "8000", A9: "Opening capital", B9: "100000", A10: "Cash", B10: "40000", A11: "Debtors", B11: "25000", A12: "Equipment (net)", B12: "60000", A13: "Creditors", B13: "25000", A14: "Bank loan", B14: "20000", A16: "Cost of goods sold", A17: "Gross profit", A18: "Total expenses", A19: "Net profit", A20: "Closing capital", A21: "Total assets", A22: "Total liabilities", A23: "Check" }, view: { cols: 3, rows: 25 },
+    checks: [
+      ck("cogs", "B16 is the cost of goods sold", "=B2+B3-B4", "Opening stock plus purchases less closing stock.", S.formula("B16", { equals: 80000 })),
+      ck("gp", "B17 is the gross profit", "=B1-B16", "Sales less cost of goods sold.", S.formula("B17", { equals: 70000 })),
+      ck("exp", "B18 totals the expenses", "=SUM(B5:B7)", "Rent, wages and other expenses.", S.formula("B18", { fns: ["SUM"], cover: "B5:B7", equals: 52000 })),
+      ck("np", "B19 is the net profit", "=B17-B18", "Gross profit less expenses.", S.formula("B19", { equals: 18000 })),
+      ck("cap", "B20 is the closing capital", "=B9+B19-B8", "Opening capital plus profit less drawings.", S.formula("B20", { equals: 110000 })),
+      ck("ta", "B21 totals the assets", "=B10+B11+B4+B12", "Cash, debtors, closing stock and equipment.", S.formula("B21", { equals: 155000 })),
+      ck("tl", "B22 totals the liabilities", "=B13+B14", "Creditors and the bank loan.", S.formula("B22", { equals: 45000 })),
+      ck("bal", "B23 shows Balanced", "=IF(B21=B20+B22,\"Balanced\",\"Check\")", "Assets equal capital plus liabilities when the books are right.", S.formula("B23", { fns: ["IF"], equals: "Balanced" })),
+    ],
+    solution: { cells: { B16: "=B2+B3-B4", B17: "=B1-B16", B18: "=SUM(B5:B7)", B19: "=B17-B18", B20: "=B9+B19-B8", B21: "=B10+B11+B4+B12", B22: "=B13+B14", B23: "=IF(B21=B20+B22,\"Balanced\",\"Check\")" } },
+  }),
+];
+
+const eqSpec = {
+  id: "equation-sana", title: "Predict what each transaction does", items: [
+    { key: "cash", label: "Cash", side: "A" }, { key: "stock", label: "Stock", side: "A" }, { key: "equip", label: "Equipment", side: "A" },
+    { key: "loan", label: "Bank loan", side: "L" }, { key: "cred", label: "Creditors", side: "L" }, { key: "cap", label: "Capital", side: "C" },
+  ], start: { cash: 0, stock: 0, equip: 0, loan: 0, cred: 0, cap: 0 }, moves: [
+    { text: "Sana starts the shop with 1,00,000 rupees of her own money.", delta: { cash: 100000, cap: 100000 }, why: "Cash (an asset) and capital both rise by the same amount, so the equation stays balanced." },
+    { text: "She buys sewing machines for 30,000 paying cash.", delta: { cash: -30000, equip: 30000 }, why: "One asset goes down and another goes up: total assets are unchanged." },
+    { text: "She buys cloth worth 20,000 on credit from a supplier.", delta: { stock: 20000, cred: 20000 }, why: "Assets and liabilities both rise: she owns more and owes more." },
+    { text: "She takes a bank loan of 25,000.", delta: { cash: 25000, loan: 25000 }, why: "Cash rises and a liability rises by the same amount." },
+    { text: "She pays the supplier 10,000.", delta: { cash: -10000, cred: -10000 }, why: "Cash falls and the amount she owes falls by the same amount." },
+  ],
+};
+const jSpec = {
+  id: "journal-sana", title: "Journalise Sana's first transactions", intro: "For each transaction choose the account to debit and the account to credit.", accounts: ["Cash", "Capital", "Equipment", "Stock", "Creditors", "Sales", "Rent"],
+  txns: [
+    { text: "Sana invests 1,00,000 in the business.", dr: [["Cash", 100000]], cr: [["Capital", 100000]], why: "Cash (an asset) increases, so debit it; capital increases, so credit it." },
+    { text: "She buys equipment for 30,000, paying cash.", dr: [["Equipment", 30000]], cr: [["Cash", 30000]], why: "Equipment (an asset) increases, so debit it; cash decreases, so credit it." },
+    { text: "She buys stock for 20,000 on credit.", dr: [["Stock", 20000]], cr: [["Creditors", 20000]], why: "Stock increases (debit); she owes the supplier more (credit creditors)." },
+    { text: "She sells goods for 15,000 cash.", dr: [["Cash", 15000]], cr: [["Sales", 15000]], why: "Cash increases (debit); sales income increases (credit)." },
+    { text: "She pays 3,000 rent.", dr: [["Rent", 3000]], cr: [["Cash", 3000]], why: "Rent is an expense, so debit it; cash decreases, so credit it." },
+  ],
+};
+
+const M1 = module_({
+  slug: "accounting-basics", title: "Accounting basics", hours: 1.25, level: "Foundations",
+  summary: "What accounting is for, the five kinds of account and the equation that holds every set of books together.",
+  outcome: "You can name the five types of account, state and apply the accounting equation and explain what each source document records.",
+  intro: "Accounting is the language of business: it records what happened in money terms, so owners, lenders and tax authorities can understand it. It starts with one simple equation, and everything else is built from it.",
+  topics: [
+    topic({
+      title: "What accounting does", slug: "what-accounting-does",
+      blocks: [
+        p("**Bookkeeping** is recording each transaction accurately. **Accounting** goes further: it summarises the records into reports and helps people decide. Both rest on the same principle: every transaction is recorded in money terms, on a date, with evidence."),
+        table("Who uses accounts and why", ["User", "Wants to know"], [["Owner", "Is the business making a profit? Can I take money out?"], ["Bank", "Can this business repay a loan?"], ["Tax authority", "How much tax is due?"], ["Supplier", "Will I be paid?"], ["Investor", "Is it a good place to put money?"]]),
+        flow("The accounting cycle in short", ["Evidence: receipts and invoices", "Record in the journal", "Post to the ledger", "Check with a trial balance", "Prepare the final accounts"]),
+        tip("A rule of the trade: no evidence, no entry. Every figure in the books should trace back to a document."),
+      ],
+      points: ["Bookkeeping records; accounting summarises and informs.", "Every entry needs evidence and a date."],
+      check: [["Which user mainly asks 'can this business repay a loan?'", ["Owner", "Bank", "Customer", "Employee"], 1, "Lenders care about repayment ability."]],
+    }),
+    topic({
+      title: "Assets, liabilities and capital: the equation", slug: "the-equation",
+      blocks: [
+        formula("The accounting equation", "Assets = Liabilities + Capital", "What the business owns equals what it owes to outsiders plus what it owes the owner."),
+        table("The five groups", ["Group", "Meaning", "Examples"], [["Asset", "Something of value the business owns or is owed", "Cash, stock, equipment, debtors"], ["Liability", "A debt owed to outsiders", "Bank loan, creditors"], ["Capital", "The owner's stake: what is left after liabilities", "Money the owner put in plus profits"], ["Income", "Money earned", "Sales, interest received"], ["Expense", "Cost of running the business", "Rent, wages, electricity"]]),
+        equation(eqSpec),
+        p("Notice that every transaction affects at least **two** things, and the equation stays in balance. That is the idea behind double entry, which you meet in the next module."),
+      ],
+      points: ["Assets = Liabilities + Capital, always.", "Every transaction changes at least two items and keeps the equation balanced."],
+      check: [["Assets are 100,000 and liabilities are 40,000. Capital is:", ["140,000", "60,000", "40,000", "100,000"], 1, "Capital = Assets minus Liabilities."], ["Which is a liability?", ["Cash", "A bank loan", "Sales", "Equipment"], 1, "A debt owed to outsiders."]],
+    }),
+    topic({
+      title: "Business transactions and source documents", slug: "source-documents",
+      blocks: [
+        table("Documents that start every entry", ["Document", "Records"], [["Invoice", "A sale or purchase on credit"], ["Receipt", "Money received"], ["Cash memo", "A cash sale"], ["Credit note", "A refund or return"], ["Cheque stub and bank slip", "Payments and deposits"], ["Pay slip", "Wages paid"]]),
+        example("From document to entry", "A customer pays 5,000 by cash for goods.", ["Source document: a cash memo for 5,000.", "What happened: cash came in, and a sale was made.", "Two accounts: Cash and Sales."], "Every entry begins with a document and identifies two accounts."),
+        mistakes(["Recording a transaction from memory with no document.", "Mixing personal and business money.", "Losing receipts: keep them filed by month."]),
+      ],
+      points: ["Each transaction is backed by a source document.", "Keep personal and business money apart."],
+      check: [["A document recording a refund to a customer is:", ["An invoice", "A credit note", "A pay slip", "A bank slip"], 1, "Credit notes record returns and refunds."]],
+    }),
+  ],
+  terms: [["Asset", "Something the business owns"], ["Liability", "A debt owed"], ["Capital", "The owner's stake"], ["Income", "Money earned"], ["Expense", "Cost of running the business"], ["Transaction", "A money event that is recorded"]],
+  practical: { title: "Practical: your own balance sheet", intro: "List what you own and what you owe.", steps: ["Write your assets and their values.", "Write your debts.", "Work out your capital (net worth).", "Check that assets equal liabilities plus capital."] },
+  quiz: [
+    ["The accounting equation is:", ["Assets = Liabilities + Capital", "Assets = Capital - Liabilities", "Income = Assets", "Expenses = Assets"], 0, "It holds for every business."],
+    ["An expense is:", ["A cost of running the business", "Money earned", "A debt", "An asset"], 0, "Costs go in expense accounts."],
+    ["Creditors are:", ["People who owe you", "People you owe", "Customers", "Owners"], 1, "Creditors are lenders or suppliers you owe."],
+    ["What backs every entry?", ["A guess", "A source document", "A calendar", "A chart"], 1, "No evidence, no entry."],
+    ["Debtors are:", ["Assets", "Liabilities", "Capital", "Expenses"], 0, "They owe the business money."],
+    ["When the owner invests cash, which rise?", ["Cash and capital", "Cash and liabilities", "Sales and cash", "Rent and cash"], 0, "Both sides of the equation rise."],
+    ["A cash sale of goods is evidenced by:", ["A cash memo", "A cheque stub", "A pay slip", "A loan letter"], 0, "A cash memo records it."],
+  ],
+});
+
+const M2 = module_({
+  slug: "double-entry", title: "Double entry and the journal", hours: 1.25, level: "Core skills",
+  summary: "The rule that every transaction has a debit and a credit, and how to record transactions in the journal.",
+  outcome: "You can decide which account to debit and which to credit for everyday transactions and write them up as journal entries.",
+  intro: "Double entry is the heart of bookkeeping. Every transaction has two sides: something is received and something is given. We record both, so the books always balance and errors show up.",
+  topics: [
+    topic({
+      title: "Debit and credit", slug: "debit-and-credit",
+      blocks: [
+        def("Debit and credit", "Debit (Dr) is the left side of an account; credit (Cr) is the right. They are just left and right: neither means good or bad."),
+        table("The rules: which side increases each group", ["Account group", "Increases with a", "Decreases with a"], [["Asset", "Debit", "Credit"], ["Expense", "Debit", "Credit"], ["Liability", "Credit", "Debit"], ["Capital", "Credit", "Debit"], ["Income", "Credit", "Debit"]]),
+        p("A memory aid: assets and expenses sit on the **debit** side of the equation, so they rise with debits. Liabilities, capital and income are on the **credit** side, so they rise with credits."),
+        example("Pay a rent bill", "The business pays 3,000 rupees rent in cash.", ["Rent (expense) increases, so debit Rent 3,000.", "Cash (asset) decreases, so credit Cash 3,000.", "Debits equal credits: 3,000 = 3,000."], "Dr Rent 3,000; Cr Cash 3,000."),
+        warn("A bank 'credit' on your statement means money came in, which is a debit in your own cash records. Statements are written from the bank's point of view."),
+      ],
+      points: ["Debit is left, credit is right.", "Assets and expenses rise with debits; liabilities, capital and income rise with credits."],
+      check: [["Which account rises with a credit?", ["Cash", "Sales", "Rent", "Equipment"], 1, "Income rises with a credit."], ["Paying a supplier from cash: which account is credited?", ["Creditors", "Cash", "Sales", "Rent"], 1, "Cash decreases, and a decrease in an asset is a credit."]],
+    }),
+    topic({
+      title: "Writing journal entries", slug: "journal-entries",
+      blocks: [
+        p("The **journal** is the book of first entry: every transaction is written here in date order, with a short narration, before it goes to the ledger. A journal entry shows the account debited, the account credited, the amounts and a note."),
+        table("A journal entry", ["Date", "Account", "Debit", "Credit"], [["1 Jan", "Cash A/c  Dr", "1,00,000", ""], ["", "    To Capital A/c", "", "1,00,000"], ["", "(Being capital introduced by the owner)", "", ""]]),
+        journal(jSpec),
+        list("Steps for any entry", ["Identify the two accounts affected.", "Decide each account's group (asset, liability, capital, income, expense).", "Decide if each increases or decreases.", "Use the rules to decide debit or credit.", "Check that total debits equal total credits."], true),
+      ],
+      points: ["The journal records every transaction first.", "Total debits must equal total credits."],
+      check: [["Buying equipment for cash: debit and credit?", ["Dr Cash, Cr Equipment", "Dr Equipment, Cr Cash", "Dr Capital, Cr Cash", "Dr Rent, Cr Cash"], 1, "Equipment (asset) rises, cash falls."], ["The journal is:", ["A report", "The book of first entry", "A bank statement", "A tax form"], 1, "Transactions enter here first."]],
+    }),
+    topic({
+      title: "Accounts and T-accounts", slug: "t-accounts",
+      blocks: [
+        p("A **ledger account** is a page for one thing, such as Cash or Rent. A **T-account** draws it as a T: debits on the left, credits on the right. Over time each account collects all the entries that affect it."),
+        table("A cash T-account", ["Debit (money in)", "Rs", "Credit (money out)", "Rs"], [["Capital", "1,00,000", "Equipment", "30,000"], ["Sales", "15,000", "Rent", "3,000"], ["", "", "Balance c/d", "82,000"]]),
+        example("Reading it", "The cash account above has receipts of 1,15,000 and payments of 33,000.", ["Debit side total: 1,00,000 + 15,000 = 1,15,000.", "Credit side total: 30,000 + 3,000 = 33,000.", "Balance = 1,15,000 - 33,000 = 82,000, a debit balance (cash in hand)."], "A debit balance on a cash account means cash is held; a credit balance would mean an overdraft."),
+        tip("To find an account's balance, total each side and subtract the smaller from the larger. The larger side tells you the type of balance."),
+      ],
+      points: ["A T-account shows debits on the left and credits on the right.", "The balance is the difference between the two sides."],
+      check: [["A cash account has debits of 50,000 and credits of 30,000. The balance is:", ["80,000 credit", "20,000 debit", "20,000 credit", "0"], 1, "The debit side is larger by 20,000."]],
+    }),
+  ],
+  terms: [["Debit", "The left side of an account"], ["Credit", "The right side of an account"], ["Journal", "The book of first entry"], ["Ledger", "The collection of all accounts"], ["T-account", "An account drawn as a T"]],
+  practical: { title: "Practical: five journal entries", intro: "Use real or imagined events from a small shop.", steps: ["Write five transactions with a source document each.", "Identify the two accounts in each.", "Decide the debit and credit.", "Check that debits equal credits for each entry."] },
+  quiz: [
+    ["Debit means:", ["Bad", "The left side", "The right side", "Profit"], 1, "Debit is left."],
+    ["Which increases with a debit?", ["Income", "Capital", "Assets", "Liabilities"], 2, "Assets and expenses rise with debits."],
+    ["Selling goods for cash: debit and credit?", ["Dr Cash, Cr Sales", "Dr Sales, Cr Cash", "Dr Rent, Cr Cash", "Dr Capital, Cr Sales"], 0, "Cash rises (Dr); sales rise (Cr)."],
+    ["Borrowing from a bank: debit and credit?", ["Dr Loan, Cr Cash", "Dr Cash, Cr Loan", "Dr Capital, Cr Cash", "Dr Sales, Cr Loan"], 1, "Cash rises and a liability rises."],
+    ["In every entry:", ["Debits are bigger", "Debits equal credits", "Credits are bigger", "Only one account changes"], 1, "That is double entry."],
+    ["A decrease in an asset is recorded as a:", ["Debit", "Credit", "Either", "Neither"], 1, "Opposite of an increase."],
+    ["The ledger holds:", ["Bank statements", "All the accounts", "Only cash", "Letters"], 1, "A collection of accounts."],
+  ],
+});
+
+const M3 = module_({
+  slug: "ledger-and-trial-balance", title: "Ledger and trial balance", hours: 1.25, level: "Core skills",
+  summary: "Post entries to the ledger, balance accounts and prove the books with a trial balance.",
+  outcome: "You can post journal entries to ledger accounts, balance each account, draw up a trial balance and understand what errors it can and cannot reveal.",
+  intro: "The journal records events in date order. The ledger sorts them by account, so you can see the total effect on cash, sales or rent. The trial balance then checks that the whole system is in balance.",
+  topics: [
+    topic({
+      title: "Posting and balancing accounts", slug: "posting-and-balancing",
+      blocks: [
+        flow("From journal to ledger", ["Take a journal entry", "Post the debit to its account", "Post the credit to its account", "Repeat for every entry"]),
+        p("To **balance** an account: total the debit side, total the credit side, find the difference, write it on the smaller side as 'balance carried down' (c/d), then bring it down on the other side as 'balance brought down' (b/d) to start the next period."),
+        example("Balance a cash account", "Debits: 1,00,000 + 30,000 + 15,000. Credits: 40,000 + 8,000 + 12,000 + 20,000.", ["Debit total 1,45,000; credit total 80,000.", "Difference 65,000, written on the credit side as balance c/d.", "Both sides now total 1,45,000.", "The balance b/d of 65,000 starts the next period on the debit side."], "Cash in hand at the end of the period: 65,000."),
+        warn("Never rub out an entry. If you made a mistake, correct it with a new entry that reverses it, so there is a clear record."),
+      ],
+      points: ["Post each debit and credit to its own account.", "Balance by totalling both sides and carrying down the difference."],
+      check: [["Balance c/d means:", ["Brought down", "Carried down", "Credit debit", "Cancelled"], 1, "It carries the balance to the next period."]],
+    }),
+    topic({
+      title: "The trial balance", slug: "the-trial-balance",
+      blocks: [
+        def("Trial balance", "A list of every ledger balance, with debit balances in one column and credit balances in the other. If the books are right, the two columns have the same total."),
+        table("A trial balance", ["Account", "Debit", "Credit"], [["Cash", "45,000", ""], ["Debtors", "20,000", ""], ["Stock", "30,000", ""], ["Equipment", "60,000", ""], ["Rent", "8,000", ""], ["Salaries", "12,000", ""], ["Creditors", "", "25,000"], ["Capital", "", "1,00,000"], ["Sales", "", "50,000"], ["Totals", "1,75,000", "1,75,000"]]),
+        p("Assets and expenses have **debit** balances; liabilities, capital and income have **credit** balances. If the totals agree, the arithmetic of double entry is right."),
+        tip("A trial balance is a check, not a final account. It lists balances; the income statement and balance sheet come next."),
+      ],
+      points: ["Debit balances are assets and expenses; credit balances are liabilities, capital and income.", "Equal totals suggest the arithmetic is right."],
+      check: [["A trial balance lists:", ["Only cash", "All ledger balances in two columns", "Only expenses", "Customers"], 1, "Debit and credit balances."]],
+    }),
+    topic({
+      title: "Errors a trial balance cannot find", slug: "errors-trial-balance",
+      blocks: [
+        p("If the totals disagree, an error exists. If they agree, there may still be errors that the trial balance cannot detect."),
+        table("Errors and the trial balance", ["Error", "Shows in trial balance?"], [["A debit with no matching credit", "Yes: totals differ"], ["An amount added up wrongly", "Yes: totals differ"], ["A transaction left out entirely", "No: both sides lack it"], ["Debit and credit both posted to the wrong account", "No: totals still agree"], ["The wrong amount recorded on both sides", "No: totals still agree"], ["An entry reversed (debit and credit swapped)", "No: totals still agree"]]),
+        list("When the totals do not agree", ["Find the difference and check if it is a round number or half of a number.", "A difference divisible by 9 often points to transposed digits (e.g. 54 written as 45).", "Recheck additions and balances.", "Check that every entry was posted to both accounts.", "If it still cannot be found, place the difference in a suspense account until it is found."], true),
+        mistakes(["Forcing the trial balance to agree by adjusting a figure.", "Assuming equal totals mean error-free books."]),
+      ],
+      points: ["Disagreeing totals show a mistake; agreeing totals do not prove there is none.", "Omissions and errors on both sides do not show in a trial balance."],
+      check: [["Which error will NOT show up in a trial balance?", ["A debit with no credit", "A transaction left out completely", "A wrongly added balance", "A missing credit"], 1, "If both sides miss it, they still agree."]],
+    }),
+  ],
+  terms: [["Posting", "Copying a journal entry to the ledger"], ["Balance c/d", "Balance carried down to the next period"], ["Trial balance", "A list of balances proving debits equal credits"], ["Suspense account", "A temporary account for an unlocated difference"]],
+  practical: { title: "Practical: balance three accounts", intro: "Use the ledger and trial balance labs.", steps: ["Post ten transactions to Cash, Sales and Rent accounts.", "Balance each account.", "List the balances in a trial balance.", "If it does not agree, find the difference and trace it."] },
+  quiz: [
+    ["Posting means:", ["Mailing", "Copying a journal entry to the ledger", "Printing", "Deleting"], 1, "Entries move to accounts."],
+    ["A trial balance should have:", ["More debits", "Equal debit and credit totals", "More credits", "Only assets"], 1, "Debits equal credits."],
+    ["Which has a debit balance?", ["Sales", "Cash", "Capital", "Creditors"], 1, "Assets have debit balances."],
+    ["An omitted transaction:", ["Shows in the trial balance", "Does not show in the trial balance", "Doubles the totals", "Always makes debits bigger"], 1, "Neither side contains it."],
+    ["A difference that is divisible by 9 may be due to:", ["Transposed digits", "A missing account", "A bank error", "Tax"], 0, "Swapping two digits changes a number by a multiple of 9."],
+    ["A suspense account is used for:", ["Sales", "A temporary unexplained difference", "Profit", "Rent"], 1, "It parks the difference until found."],
+    ["Why not erase wrong entries?", ["Pen is costly", "A clear record of corrections is needed", "It is slow", "Nobody checks"], 1, "Books must show their history."],
+  ],
+});
+
+const M4 = module_({
+  slug: "cash-and-bank", title: "Cash and bank", hours: 1, level: "Applied skills",
+  summary: "Keep a cash book and petty cash, and reconcile your records with the bank statement.",
+  outcome: "You can write up a cash book, run a petty cash system and prepare a bank reconciliation.",
+  intro: "Cash is where most small businesses live and die. The cash book and the bank reconciliation are the two habits that keep it under control.",
+  topics: [
+    topic({
+      title: "The cash book", slug: "the-cash-book",
+      blocks: [
+        p("A **cash book** is both a journal and a ledger account for cash (and often bank). Receipts go on the debit side; payments go on the credit side. At the end of each period you total and balance it."),
+        table("A simple cash book", ["Date", "Receipt", "Rs", "Payment", "Rs"], [["Mon", "Sales", "3,200", "Stock bought", "4,500"], ["Tue", "Sales", "2,800", "Transport", "600"], ["Wed", "Sales", "3,500", "Stall fee", "1,200"]]),
+        formula("Closing cash balance", "closing balance = opening balance + receipts - payments", "A negative result means more has gone out than came in."),
+        tip("Count the actual cash at the end of each day and compare it with the book. A small difference caught today is easy to explain; a large one found next month is not."),
+      ],
+      points: ["The cash book records receipts on the debit and payments on the credit.", "Compare the book with the actual cash regularly."],
+      check: [["Closing cash balance equals:", ["Receipts - payments", "Opening + receipts - payments", "Opening - receipts", "Payments only"], 1, "Start from the opening balance."]],
+    }),
+    topic({
+      title: "Petty cash", slug: "petty-cash",
+      blocks: [
+        p("**Petty cash** is a small float of cash kept for minor expenses: tea, stamps, a taxi fare. The **imprest system** works like this: the cashier starts with a fixed float (say 5,000), pays out against signed vouchers, and at the end of the period is reimbursed exactly what was spent, bringing the float back to 5,000."),
+        list("Good petty cash controls", ["Pay out only against a signed voucher with a receipt.", "One person is responsible for the box.", "Count it regularly; cash plus vouchers must equal the float.", "Set a limit for a single payment."], true),
+        example("A petty cash check", "Float 5,000. Vouchers total 3,150. Cash in the box 1,850.", ["Vouchers + cash = 3,150 + 1,850 = 5,000.", "This equals the float, so the box is correct.", "The business reimburses 3,150 to restore the float."], "Under the imprest system, cash plus vouchers always equals the float."),
+      ],
+      points: ["Imprest: a fixed float, topped up to the same amount.", "Cash plus vouchers must equal the float."],
+      check: [["Under the imprest system, cash plus vouchers should equal:", ["Zero", "The float", "Sales", "The bank balance"], 1, "The float is the fixed starting amount."]],
+    }),
+    topic({
+      title: "Bank reconciliation", slug: "bank-reconciliation",
+      blocks: [
+        p("The bank statement and your own cash book rarely agree at any moment, mainly because of **timing**. A **bank reconciliation** explains the difference."),
+        table("Why they differ", ["Item", "Cash book", "Bank statement", "Effect"], [["Cheque issued but not yet cashed (unpresented)", "Already deducted", "Not yet", "Statement higher"], ["Deposit made but not yet shown (uncredited)", "Already added", "Not yet", "Statement lower"], ["Bank charges or interest", "Not yet recorded", "Already shown", "Update the cash book"], ["Standing order or direct debit", "Not yet recorded", "Already shown", "Update the cash book"]]),
+        formula("Adjusted bank balance", "statement balance - unpresented cheques + uncredited deposits", "After these timing adjustments it should equal the cash book balance."),
+        example("Reconcile", "Cash book 24,500. Statement 27,800. Unpresented cheques 4,200. Uncredited deposit 900.", ["27,800 - 4,200 + 900 = 24,500.", "That equals the cash book balance.", "The difference was entirely timing."], "The records agree: reconciled."),
+        warn("Items that appear on the statement but not in your cash book (charges, direct debits) must be entered into your cash book, because they are real."),
+      ],
+      points: ["Unpresented cheques and uncredited deposits are timing differences.", "Update the cash book for charges and direct debits."],
+      check: [["A cheque you issued that the payee has not yet cashed is:", ["An uncredited deposit", "An unpresented cheque", "A bank charge", "A direct debit"], 1, "The bank has not yet paid it."]],
+    }),
+  ],
+  terms: [["Cash book", "The record of cash and bank receipts and payments"], ["Petty cash", "A float for minor expenses"], ["Imprest", "A fixed float restored to the same amount"], ["Unpresented cheque", "Issued but not yet cashed"], ["Reconciliation", "Explaining the difference between two records"]],
+  practical: { title: "Practical: reconcile your own account", intro: "Use a month of your own bank statement or the lab data.", steps: ["List the items in your records and on the statement.", "Match them.", "Identify unmatched items and their reason.", "Write the reconciliation."] },
+  quiz: [
+    ["Receipts go on the:", ["Debit side of the cash book", "Credit side", "Neither", "Both"], 0, "Cash coming in is a debit."],
+    ["A petty cash float of 5,000 with vouchers of 3,150 should have cash of:", ["3,150", "1,850", "5,000", "0"], 1, "Float minus vouchers."],
+    ["An uncredited deposit makes the bank statement:", ["Higher", "Lower than the cash book", "Equal", "Negative"], 1, "The bank has not yet shown it."],
+    ["Bank charges on the statement need to be:", ["Ignored", "Entered into the cash book", "Disputed", "Deleted"], 1, "They are real costs."],
+    ["Why reconcile?", ["For fun", "To explain differences and catch errors", "To pay tax", "To avoid banks"], 1, "Reconciliation finds mistakes."],
+    ["Imprest means:", ["A loan", "A fixed float restored to the same amount", "A tax", "A discount"], 1, "The float is replenished to its original size."],
+    ["Unpresented cheques lead to a statement balance that is:", ["Higher than the cash book", "Lower", "Zero", "Equal"], 0, "The bank has not yet paid them out."],
+  ],
+});
+
+const M5 = module_({
+  slug: "adjustments-and-depreciation", title: "Adjustments and depreciation", hours: 1.25, level: "Applied skills",
+  summary: "Match costs to the right period with accruals, prepayments and depreciation.",
+  outcome: "You can adjust for accrued and prepaid expenses and calculate straight-line depreciation and book value.",
+  intro: "Cash does not always move at the moment a cost belongs to. Adjustments make sure each period carries the costs it truly used, which makes the profit figure honest.",
+  topics: [
+    topic({
+      title: "The matching idea: accruals and prepayments", slug: "accruals-prepayments",
+      blocks: [
+        def("Matching", "Costs are recorded in the period they helped earn income, whether or not cash moved in that period."),
+        table("Two kinds of adjustment", ["Adjustment", "Meaning", "Effect on the expense for the year"], [["Accrued expense", "Used or incurred, but not yet paid", "Add it to the expense; it is a liability"], ["Prepaid expense", "Paid in advance for a later period", "Remove the part that belongs to the future; it is an asset"]]),
+        example("Rent", "Annual rent is 24,000 payable in advance. The year ends on 31 March, but the business paid 6,000 extra in advance for April to June.", ["Cash paid this year: 30,000.", "Expense belonging to this year: 24,000.", "Prepayment (an asset): 6,000, carried forward."], "Rent expense for the year is 24,000, with 6,000 shown as a prepaid asset."),
+        tip("Ask of each cost: which period did this benefit? Charge it there."),
+      ],
+      points: ["Accruals add owed costs; prepayments remove costs that belong to the future.", "Matching gives a truer profit."],
+      check: [["Wages earned in the last week but unpaid are:", ["Prepaid", "Accrued", "Capital", "Income"], 1, "They are owed at the year end."]],
+    }),
+    topic({
+      title: "Depreciation", slug: "depreciation",
+      blocks: [
+        p("An asset such as a machine or van is useful for several years. **Depreciation** spreads its cost over those years instead of charging all of it when it is bought. It is a way of matching the cost to the years that benefit, not a cash payment."),
+        formula("Straight-line depreciation", "yearly depreciation = (cost - scrap value) / useful life in years", "The same amount every year."),
+        table("A machine costing 1,20,000 with scrap value 20,000 over 5 years", ["Year", "Depreciation", "Accumulated", "Book value"], [["1", "20,000", "20,000", "1,00,000"], ["2", "20,000", "40,000", "80,000"], ["3", "20,000", "60,000", "60,000"], ["4", "20,000", "80,000", "40,000"], ["5", "20,000", "1,00,000", "20,000"]]),
+        explorer({ id: "dep-explorer", title: "Change the numbers", intro: "See the yearly depreciation and the book value after any number of years.", inputs: [{ id: "cost", label: "Cost (rupees)", min: 10000, max: 500000, step: 5000, value: 120000 }, { id: "scrap", label: "Scrap value (rupees)", min: 0, max: 50000, step: 1000, value: 20000 }, { id: "life", label: "Useful life (years)", min: 1, max: 15, step: 1, value: 5 }, { id: "yrs", label: "Years used so far", min: 0, max: 15, step: 1, value: 3 }], outputs: [{ label: "Yearly depreciation", expr: "(cost - scrap) / life", unit: "rs" }, { label: "Book value after those years", expr: "cost - (cost - scrap) / life * yrs", unit: "rs" }] }),
+        warn("Depreciation reduces profit but does not reduce cash. The cash was spent when the asset was bought."),
+      ],
+      points: ["Straight-line depreciation = (cost - scrap) / life.", "Book value is cost minus accumulated depreciation."],
+      check: [["Cost 50,000, scrap 5,000, life 5 years. Yearly depreciation?", ["9,000", "10,000", "5,000", "45,000"], 0, "(50,000 - 5,000) / 5 = 9,000."]],
+    }),
+    topic({
+      title: "Bad debts and closing stock", slug: "bad-debts-stock",
+      blocks: [
+        p("A **bad debt** is money a customer owes but will never pay. It is an expense, and the debtor asset is reduced. A **provision for doubtful debts** is an estimate of bad debts to come, charged now so that profit is not overstated."),
+        p("**Closing stock** is the goods unsold at the year end. It is not an expense of this year because it will be sold next year, so it is deducted from the cost of goods sold and shown as an asset."),
+        formula("Cost of goods sold", "COGS = opening stock + purchases - closing stock", "Only the goods actually sold in the year are charged against sales."),
+        example("The effect of stock", "Opening stock 20,000. Purchases 90,000. Closing stock 30,000.", ["COGS = 20,000 + 90,000 - 30,000 = 80,000.", "If you forgot closing stock, COGS would be 110,000 and profit 30,000 too low."], "Forgetting closing stock understates profit; counting it twice overstates it."),
+        mistakes(["Treating unsold stock as a cost of the year.", "Never writing off debts that will not be paid.", "Charging a purchase of equipment all as an expense."]),
+      ],
+      points: ["Bad debts are expenses; unsold stock is an asset.", "COGS = opening stock + purchases - closing stock."],
+      check: [["Closing stock is shown as:", ["An expense", "An asset", "A liability", "Capital"], 1, "It will be sold later."]],
+    }),
+  ],
+  terms: [["Accrued expense", "A cost incurred but not yet paid"], ["Prepaid expense", "A cost paid in advance"], ["Depreciation", "Spreading an asset's cost over its life"], ["Book value", "Cost less accumulated depreciation"], ["Bad debt", "A debt that will not be paid"]],
+  practical: { title: "Practical: depreciate one asset", intro: "Choose a laptop or a bicycle with a realistic cost and life.", steps: ["Estimate the cost, scrap value and life.", "Work out the yearly depreciation.", "Draw the book value for each year.", "Explain why this is not a cash cost."] },
+  quiz: [
+    ["Depreciation is:", ["A cash payment", "A spreading of cost over time", "A tax", "A profit"], 1, "No cash moves."],
+    ["A prepaid expense is shown as:", ["A liability", "An asset", "Income", "Capital"], 1, "The benefit is still to come."],
+    ["COGS equals:", ["Opening stock + purchases - closing stock", "Sales - purchases", "Closing stock only", "Opening stock only"], 0, "Only goods sold are charged."],
+    ["Which describes an accrued expense?", ["Paid ahead", "Incurred but unpaid", "A refund", "A gift"], 1, "It is owed at the year end."],
+    ["Book value after 2 years (cost 100,000, yearly depreciation 15,000):", ["70,000", "85,000", "115,000", "30,000"], 0, "100,000 - 30,000."],
+    ["A bad debt is:", ["Income", "An expense", "An asset", "Capital"], 1, "It is a loss from non-payment."],
+    ["Why match costs to periods?", ["It is required by law only", "It makes profit more honest", "It saves tax always", "It hides costs"], 1, "It gives a truer picture."],
+  ],
+});
+
+const M6 = module_({
+  slug: "final-accounts", title: "Final accounts", hours: 1.25, level: "Applied skills",
+  summary: "Prepare an income statement and a balance sheet and read what they say.",
+  outcome: "You can prepare simple final accounts from a trial balance, check that the balance sheet balances and read the key margins.",
+  intro: "Final accounts are the report card of a business. The **income statement** shows whether it made a profit over a period; the **balance sheet** shows what it owns and owes at one moment.",
+  topics: [
+    topic({
+      title: "The income statement", slug: "income-statement",
+      blocks: [
+        flow("From sales to net profit", ["Sales", "Less cost of goods sold", "Gross profit", "Less expenses", "Net profit"]),
+        table("An income statement", ["Line", "Rs"], [["Sales", "2,50,000"], ["Cost of goods sold (20,000 + 1,40,000 - 30,000)", "1,30,000"], ["Gross profit", "1,20,000"], ["Rent", "24,000"], ["Wages", "36,000"], ["Depreciation", "10,000"], ["Other expenses", "14,000"], ["Total expenses", "84,000"], ["Net profit", "36,000"]]),
+        formula("Margins", "gross margin = gross profit / sales; net margin = net profit / sales", "Here: 48% and 14.4%."),
+        bars("Where each 100 rupees of sales goes", [["Cost of goods", 52], ["Expenses", 33.6], ["Net profit", 14.4]]),
+      ],
+      points: ["Sales - COGS = gross profit; gross profit - expenses = net profit.", "Margins compare profit with sales."],
+      check: [["Sales 100, COGS 60, expenses 25. Net profit?", ["15", "40", "25", "60"], 0, "100 - 60 - 25 = 15."]],
+    }),
+    topic({
+      title: "The balance sheet", slug: "balance-sheet",
+      blocks: [
+        table("A balance sheet", ["Assets", "Rs", "Liabilities and capital", "Rs"], [["Cash", "40,000", "Creditors", "25,000"], ["Debtors", "25,000", "Bank loan", "20,000"], ["Closing stock", "30,000", "Capital: opening 1,00,000", ""], ["Equipment (net)", "60,000", "plus profit 18,000, less drawings 8,000", "1,10,000"], ["Total", "1,55,000", "Total", "1,55,000"]]),
+        formula("Closing capital", "closing capital = opening capital + net profit - drawings", "Profit increases the owner's stake; money taken out reduces it."),
+        p("The two totals **must** agree. If they do not, an entry or a calculation is wrong. The balance sheet is a snapshot at one date, unlike the income statement, which covers a period."),
+        warn("Drawings are not an expense. They are the owner taking their own money out, and they reduce capital, not profit."),
+      ],
+      points: ["A balance sheet lists assets against liabilities and capital at one date.", "Closing capital = opening capital + profit - drawings."],
+      check: [["Drawings are:", ["An expense", "Money the owner takes out, reducing capital", "A sale", "An asset"], 1, "They reduce the owner's stake."]],
+    }),
+    topic({
+      title: "Reading the accounts", slug: "reading-accounts",
+      blocks: [
+        table("Quick checks", ["Question", "How to check"], [["Is it profitable?", "Net profit and net margin"], ["Is the shop pricing well?", "Gross margin against last year or similar shops"], ["Can it pay its short-term debts?", "Current assets (cash, debtors, stock) compared with creditors"], ["Is the owner taking too much?", "Drawings compared with profit"], ["Is it too reliant on borrowing?", "Loan compared with capital"]]),
+        example("A quick read", "Net profit 18,000 on sales of 1,50,000 with drawings of 8,000.", ["Net margin = 12%.", "The owner took out 8,000 of the 18,000 profit, leaving 10,000 in the business.", "Capital grew from 1,00,000 to 1,10,000."], "A healthy picture: profitable, with profits retained and a growing stake."),
+        mistakes(["Looking only at profit and ignoring cash.", "Comparing margins across very different kinds of business.", "Treating one year as a trend."]),
+        tip("Profit is not cash. A business can be profitable on paper and still run out of money if customers pay late."),
+      ],
+      points: ["Read profit, margins, short-term strength and borrowing together.", "Profit is not the same as cash."],
+      check: [["A business with profit but no cash is:", ["Impossible", "Possible if customers pay late", "Always safe", "A loss"], 1, "Timing of cash matters."]],
+    }),
+  ],
+  terms: [["Gross profit", "Sales less cost of goods sold"], ["Net profit", "Gross profit less expenses"], ["Balance sheet", "Assets against liabilities and capital at one date"], ["Drawings", "Money the owner takes out"], ["Margin", "Profit as a share of sales"]],
+  practical: { title: "Practical: read a real small business", intro: "Use a simple set of figures from a shop you know, or the lab data.", steps: ["Prepare the income statement.", "Prepare the balance sheet.", "Check that it balances.", "Write three sentences on what the figures show."] },
+  quiz: [
+    ["Gross profit is:", ["Sales - COGS", "Sales - expenses", "Capital", "Assets"], 0, "Before running costs."],
+    ["Net profit is:", ["Gross profit - expenses", "Sales", "Assets - liabilities", "Cash"], 0, "After running costs."],
+    ["The two sides of a balance sheet:", ["Differ", "Must be equal", "Add to profit", "Are optional"], 1, "Assets equal liabilities plus capital."],
+    ["Closing capital =", ["Opening capital + profit - drawings", "Opening capital - profit", "Profit only", "Drawings + loan"], 0, "Profit adds, drawings subtract."],
+    ["The income statement covers:", ["A moment", "A period", "Nothing", "A person"], 1, "A period such as a year."],
+    ["Net margin 14.4% means:", ["14.4 rupees profit per 100 of sales", "14.4 sales", "A loss", "A tax"], 0, "Net profit divided by sales."],
+    ["Drawings reduce:", ["Profit", "Capital", "Sales", "Stock"], 1, "They come out of the owner's stake."],
+  ],
+});
+
+export default course({
+  slug: "basic-accounting-bookkeeping", title: "Basic Accounting and Bookkeeping", tagline: "From the accounting equation to final accounts, with real practice in every module", level: "Beginner", hours: 8,
+  summary: "Learn bookkeeping from first principles: the accounting equation, double entry, the journal and ledger, the trial balance, cash and bank, adjustments and final accounts. Every module has interactive practice and a spreadsheet lab.",
+  modules: [M1, M2, M3, M4, M5, M6],
+  capstone: capstone({
+    title: "Final project: from figures to final accounts", summary: "Prepare final accounts from year-end figures and pass the final assessment.",
+    intro: "You can now record, check and summarise a business's money. In this final step you take a set of year-end figures and prepare the income statement and balance sheet in the spreadsheet lab, proving the books balance. Then take the final assessment.",
+    steps: ["Work through the **Final project: from figures to final accounts** lab.", "Change drawings or closing stock and watch how profit and capital change.", "Take the final assessment below."], projectTitle: "Prepare final accounts",
+    quiz: [
+      ["The accounting equation is:", ["Assets = Liabilities + Capital", "Assets + Liabilities = Capital", "Income = Expenses", "Capital = Sales"], 0, "It always holds."],
+      ["Which account rises with a debit?", ["Sales", "Capital", "Rent expense", "Creditors"], 2, "Expenses rise with debits."],
+      ["Buying stock on credit: debit and credit?", ["Dr Stock, Cr Creditors", "Dr Creditors, Cr Stock", "Dr Cash, Cr Stock", "Dr Sales, Cr Creditors"], 0, "Stock rises; you owe more."],
+      ["A trial balance proves:", ["No errors at all", "Debits equal credits", "Profit", "Cash is right"], 1, "Some errors can still hide."],
+      ["Which error does a trial balance not reveal?", ["A one-sided entry", "A transaction omitted entirely", "A wrongly added balance", "A missing credit"], 1, "Both sides miss it."],
+      ["An unpresented cheque causes the bank statement balance to be:", ["Higher than the cash book", "Lower", "Equal", "Unknown"], 0, "The bank has not yet paid it."],
+      ["Straight-line depreciation is:", ["Cost / life", "(Cost - scrap) / life", "Cost x life", "Scrap / life"], 1, "Spread the depreciable amount evenly."],
+      ["COGS =", ["Opening + purchases - closing stock", "Sales - expenses", "Purchases - sales", "Opening - closing"], 0, "Only goods sold."],
+      ["Gross profit is:", ["Sales - COGS", "Sales - expenses", "Net profit", "Assets"], 0, "Before running costs."],
+      ["Closing capital =", ["Opening + profit - drawings", "Opening - profit", "Profit - drawings", "Assets"], 0, "Profit adds; drawings subtract."],
+      ["Drawings are:", ["An expense", "Owner's withdrawals reducing capital", "Sales", "A liability"], 1, "They are not an expense."],
+      ["Why match costs to periods?", ["To get a truer profit", "To reduce tax", "To hide costs", "To save time"], 0, "Matching gives an honest result."],
+    ],
+  }),
+  labs,
+  skills: [{ id: SK, label: "Bookkeeping" }],
+  badges: [
+    { id: "equation", title: "The equation", description: "Proved the accounting equation.", when: { all: ["a1-equation"] } },
+    { id: "books-balance", title: "Books balance", description: "Completed a trial balance and a ledger account.", when: { all: ["a2-trial", "a4-ledger"] } },
+    { id: "reconciler", title: "Reconciler", description: "Reconciled a bank statement.", when: { all: ["a6-bankrec"] } },
+    { id: "accountant", title: "Junior accountant", description: "Prepared final accounts.", when: { all: ["cap-books"] } },
+  ],
+  landing: {
+    hero: { eyebrow: "Accounting skills · No software to install", title: "Basic Accounting and Bookkeeping: learn by doing", subtitle: "Learn double entry with interactive journal and equation practice, then build ledgers, trial balances, bank reconciliations and final accounts in a working spreadsheet.", level: "Beginner", outcomeLine: "After this course you can keep a small business's books and prepare its income statement and balance sheet." },
+    outcomes: [
+      { icon: "sheet", title: "Understand the equation", text: "Assets, liabilities, capital, income and expenses." },
+      { icon: "word", title: "Record with double entry", text: "Debits, credits and journal entries." },
+      { icon: "sort", title: "Post and prove", text: "Ledgers, balances and the trial balance." },
+      { icon: "cloud", title: "Control cash", text: "Cash book, petty cash and bank reconciliation." },
+      { icon: "ai", title: "Adjust properly", text: "Accruals, prepayments and depreciation." },
+      { icon: "web", title: "Prepare final accounts", text: "An income statement and a balance sheet that balances." },
+    ],
+    projects: [
+      { title: "Prove the equation", text: "Total assets and liabilities and find the capital.", module: "accounting-basics" },
+      { title: "A trial balance", text: "Show that debits equal credits.", module: "ledger-and-trial-balance" },
+      { title: "A bank reconciliation", text: "Explain the difference between book and bank.", module: "cash-and-bank" },
+      { title: "Final accounts", text: "Profit, capital and a balanced balance sheet.", module: "capstone" },
+    ],
+    tools: [{ icon: "sheet", title: "Spreadsheet lab", text: "Real formulas with SUM, IF and ABS." }, { icon: "ai", title: "Journal and equation practice", text: "Pick debits and credits and watch A = L + C stay balanced." }, { icon: "sort", title: "Sort and decide", text: "Account types, debit or credit and accruals." }],
+    assessment: ["Finish the required labs in each module: they are checked automatically and explained when something is missing.", "Pass each module quiz (70% or more). You can retry as often as you like.", "Complete the final accounts project and the final assessment."],
+    faq: [
+      { q: "Do I need to know maths?", a: "Only arithmetic and percentages. Accounting is mostly careful, orderly thinking." },
+      { q: "Is this about Indian accounting?", a: "The examples use rupees, but double entry is the same worldwide. Local tax and legal rules are not covered." },
+      { q: "Will it make me an accountant?", a: "It gives you the foundation for bookkeeping and for professional study. Professional qualifications need further courses and exams." },
+    ],
+  },
+  catalogue: {
+    hours: "~8 hrs", weeks: "~3 weeks", pace: "3 hrs/wk", badge: "Bookkeeping Foundations",
+    brief: "The accounting equation, double entry, ledger, trial balance, cash and bank, adjustments and final accounts.",
+    learn: ["Assets, liabilities, capital, income and expenses", "Debits, credits and journal entries", "Ledger accounts and the trial balance", "Cash book, petty cash and bank reconciliation", "Accruals, prepayments and depreciation", "Income statement and balance sheet"],
+    handsOn: "Prepare an income statement and a balanced balance sheet from a business's year-end figures.",
+    outcome: "Keep a small business's books and understand its accounts.",
+  },
+});
