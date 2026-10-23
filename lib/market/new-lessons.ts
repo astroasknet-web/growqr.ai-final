@@ -6,6 +6,7 @@ export const NEW_LESSONS: Record<string, () => unknown> = {
   "basic-microsoft-excel": () => require("./data/lessons/basic-microsoft-excel.json"),
   "blockchain-architecture-networks": () => require("./data/lessons/blockchain-architecture-networks.json"),
   "blockchain-blocks-hashing-consensus": () => require("./data/lessons/blockchain-blocks-hashing-consensus.json"),
+  "build-first-blockchain-dapp": () => require("./data/lessons/build-first-blockchain-dapp.json"),
   "business-communication": () => require("./data/lessons/business-communication.json"),
   "corporate-readiness-interview": () => require("./data/lessons/corporate-readiness-interview.json"),
   "critical-thinking-problem-solving": () => require("./data/lessons/critical-thinking-problem-solving.json"),

@@ -3169,23 +3169,23 @@
         "Fresher"
       ],
       "hours": "~15 hrs",
-      "modules": 8,
-      "weeks": "~6 weeks",
+      "modules": 6,
+      "weeks": "~5 weeks",
       "pace": "3 hrs/wk",
-      "badge": "DApp Development",
+      "badge": "DApp Builder",
       "prereq": "Solidity Programming for Beginners.",
       "bestFor": "Developers ready to ship their first full dApp.",
-      "brief": "Build a decentralised app — smart contract, web frontend, and wallet.",
+      "brief": "Plan, write, test, deploy and ship an on-chain guestbook with Hardhat, ethers and a plain JavaScript front end.",
       "learn": [
-        "dApp architecture — contracts, frontend, and provider",
-        "Connecting a wallet (MetaMask) with ethers.js/web3.js",
-        "Reading from and writing to a smart contract",
-        "Handling transactions, confirmations, and errors",
-        "Displaying on-chain data in a web UI",
-        "Deploying the contract and hosting the frontend"
+        "Scoping a small dApp and choosing tools",
+        "Writing and testing a bounded Solidity contract",
+        "Deploying with Hardhat, managing secrets and verifying source",
+        "Connecting a wallet and reading and writing with ethers",
+        "Transaction states, live events and accessibility",
+        "Hosting, XSS, phishing risks and a launch plan"
       ],
-      "handsOn": "Ship a working dApp end to end (e.g. a message board or tip jar) on a testnet.",
-      "outcome": "Build and deploy full decentralised applications.",
+      "handsOn": "Plan your own small dApp as a complete README with architecture, contract functions, tests, deployment and limits.",
+      "outcome": "Plan, build and ship a small dApp on a test network and explain every layer.",
       "icon": "blocks"
     },
     {

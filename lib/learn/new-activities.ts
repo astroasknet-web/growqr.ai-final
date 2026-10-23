@@ -6,6 +6,7 @@ export const NEW_ACTIVITIES: Record<string, () => unknown> = {
   "basic-microsoft-excel": () => require("./data/basic-microsoft-excel.activities.json"),
   "blockchain-architecture-networks": () => require("./data/blockchain-architecture-networks.activities.json"),
   "blockchain-blocks-hashing-consensus": () => require("./data/blockchain-blocks-hashing-consensus.activities.json"),
+  "build-first-blockchain-dapp": () => require("./data/build-first-blockchain-dapp.activities.json"),
   "business-communication": () => require("./data/business-communication.activities.json"),
   "corporate-readiness-interview": () => require("./data/corporate-readiness-interview.activities.json"),
   "critical-thinking-problem-solving": () => require("./data/critical-thinking-problem-solving.activities.json"),
