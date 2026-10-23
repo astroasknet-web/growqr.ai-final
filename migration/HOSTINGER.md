@@ -1,13 +1,13 @@
 # Running the portal on Hostinger (qrscore.mathstudy.in)
 
-One Node app on Hostinger, built by GitHub, talking to the qrscore Supabase project. The old PHP site is simply detached from the domain.
+One Node app on Hostinger, built by GitHub, talking to a Hostinger MySQL database (see DATABASE-SETUP.md). The old PHP site is simply detached from the domain.
 
 ```
  you push to main ──> GitHub Actions: test + next build ──> branch `deploy` (a ready-to-run server)
                                                               │
  Hostinger Node app (was test.vidaara.org) pulls `deploy`, runs `node server.js`
                                                               │
- qrscore.mathstudy.in ──> that app ──> Supabase (database + private file buckets)
+ qrscore.mathstudy.in ──> that app ──> MySQL database (hPanel) + a storage folder for uploads
 ```
 
 Why GitHub builds it: the build needs far more memory than a small Hostinger plan allows (the vidaara.org app has crashed on memory before). Hostinger only has to run the finished server.
@@ -16,8 +16,6 @@ Why GitHub builds it: the build needs far more memory than a small Hostinger pla
 
 1. **Settings -> Secrets and variables -> Actions -> New repository secret**, name `BUILD_ENV`, value = these lines (they are baked into the browser code, so only public values):
    ```
-   NEXT_PUBLIC_SUPABASE_URL=https://<qrscore project>.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=<anon key>
    NEXT_PUBLIC_RAZORPAY_KEY_ID=<rzp key id>
    NEXT_PUBLIC_TURNSTILE_SITE_KEY=<turnstile site key>
    ```
@@ -50,9 +48,10 @@ If Hostinger insists on a build command, use `echo done`.
 | `MARKETING_URL` | only used with `SITE_MODE=portal-only` |
 | `SITE_NOINDEX` | `1` while testing (adds "do not index"); remove at go-live |
 | `PORTAL_APP_URL` | `https://qrscore.mathstudy.in` (no trailing path) |
-| `DATABASE_URL` | Supabase -> Project settings -> Database -> **Session pooler** (port 5432) or Direct connection string |
+| `DATABASE_URL` | `mysql://<user>:<password>@localhost:3306/<database>` from hPanel -> Databases (see `DATABASE-SETUP.md`) |
+| `DATABASE_SSL` | `disable` when the database is on the same plan |
 | `PORTAL_AUTO_MIGRATE` | `1` (on every start: builds missing tables, loads the course and university catalogues; safe to repeat) |
-| `NEXT_PUBLIC_SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY` | for private file storage (buckets `resumes` and `vault`; the app uses the existing ones, create them as **private** if missing) |
+| `STORAGE_DIR` | folder for uploaded files, outside the app folder (for example `/home/<user>/growqr-storage`) |
 | `PASSPORT_SIGNING_SEED` | at least 32 characters; the **same** value the PHP app used, or old passports stop verifying (any value is fine if nothing real exists) |
 | `RESEND_API_KEY`, `PORTAL_MAIL_FROM` | outgoing email (verify the sending domain in Resend) |
 | `CRON_SECRET` | a long random string (used by the scheduled job below) |
@@ -82,7 +81,7 @@ hPanel -> Advanced -> Cron Jobs, every 10 minutes:
 From your own computer (needs Node and a clone of the repo):
 
 ```
-DATABASE_URL=<the same Supabase string> npx tsx scripts/portal-create-user.ts you@example.com "Your Name" admin
+npx tsx scripts/portal-create-user.ts you@example.com "Your Name" admin --sql   # prints an INSERT to paste into phpMyAdmin (see DATABASE-SETUP.md)
 ```
 
 It prints a one-time password; log in at `/login` and set up two-step login when asked.
@@ -124,13 +123,12 @@ Those pages read the main site's data. On this host they work only when it has t
 
 | Name | What it makes work |
 |---|---|
-| `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `SUPABASE_SERVICE_ROLE_KEY` | events, experts, community data (the growqr.ai Supabase project) |
 | `BLOGFORGE_API_URL`, `BLOGFORGE_API_KEY`, `NEXT_PUBLIC_BLOGFORGE_URL`, `NEXT_PUBLIC_BLOGFORGE_SITE_SLUG` | the blog engine. Without them /blog shows a few sample posts ("demo mode") |
 | `RESEND_API_KEY` | emails (event registration, expert booking) |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (build secret), `TURNSTILE_SECRET_KEY` | bot check on forms (add this host to the widget's allowed hostnames) |
 | `NEXT_PUBLIC_GA_MEASUREMENT_ID`, `NEXT_PUBLIC_ZOHO_SALESIQ_WIDGET_CODE` | optional: analytics and the chat widget |
 
-Keep `DATABASE_URL` pointing at the project that holds the portal tables (it can be a different project from the one above while you demo). Note that file uploads (resume, documents) use the `NEXT_PUBLIC_SUPABASE_URL` project's Storage, so create the two **private** buckets `resumes` and `vault` there.
+Events, experts and the other site data now live in the same MySQL database as the portal (`DATABASE_URL`); uploads go to `STORAGE_DIR`.
 
 ## Preview builds from `dev`
 

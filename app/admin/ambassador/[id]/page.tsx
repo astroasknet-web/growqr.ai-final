@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, ExternalLink, FileText, Phone, Mail } from "lucide-react";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import StatusDropdown from "@/components/admin/StatusDropdown";
 import NotesEditor from "@/components/admin/NotesEditor";
 import StatusBadgeServer from "@/components/admin/StatusBadgeServer";

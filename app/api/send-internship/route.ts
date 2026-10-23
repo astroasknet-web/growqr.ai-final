@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse, after } from "next/server";
 import { Resend } from "resend";
-import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase-server";
+import { createAdminClient, isDatabaseConfigured } from "@/lib/data/server";
 import { escapeHtml } from "@/lib/escape-html";
 import { rateLimit, rateLimited } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
@@ -213,8 +213,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Portfolio link must start with https://" }, { status: 400 });
     }
 
-    // Demo mode (no Supabase configured): accept without verifying/persisting.
-    if (!isSupabaseConfigured()) return NextResponse.json({ success: true });
+    // Demo mode (no the database configured): accept without verifying/persisting.
+    if (!isDatabaseConfigured()) return NextResponse.json({ success: true });
 
     // Turnstile
     if (!(await verifyTurnstile(token, "Internship"))) {
@@ -255,11 +255,11 @@ export async function POST(req: NextRequest) {
     const settings = await getInternshipSettings();
     const band = triageFor(rqScore, settings.shortlistMinRq);
 
-    // Persist to Supabase. Email + phone are both UNIQUE at the DB level
+    // Persist to the database. Email + phone are both UNIQUE at the DB level
     // (migration 0025). Service role from the start, no anon-insert phase.
     let insertedId: string | null = null;
-    if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
-      const supabase = createAdminClient();
+    if (isDatabaseConfigured()) {
+      const db = createAdminClient();
 
       let dbError: any = null;
       let attempt = 0;
@@ -270,7 +270,7 @@ export async function POST(req: NextRequest) {
         // Defense in depth: the form caps these client-side to match the DB
         // CHECK constraints, but a direct API call could bypass that. Slice
         // here so an oversized value truncates instead of 500ing on insert.
-        const { data: insertedRow, error } = await supabase.from("internship_applications").insert([{
+        const { data: insertedRow, error } = await db.from("internship_applications").insert([{
           growqr_user_id: growqrProfileId,
           growqr_profile_url: growqrProfileUrl(growqrProfileId),
           growqr_profile_snapshot: profile ? buildProfileSnapshot(profile) : null,
@@ -345,7 +345,7 @@ export async function POST(req: NextRequest) {
           };
           return NextResponse.json({ error: duplicateMessages[field] }, { status: 409 });
         }
-        console.error(`Internship Supabase insert error after ${maxRetries} attempts:`, dbError);
+        console.error(`Internship the database insert error after ${maxRetries} attempts:`, dbError);
         return NextResponse.json(
           { error: "Failed to save application due to a network error. Please try again." },
           { status: 500 }

@@ -4,7 +4,7 @@ export const maxDuration = 30;
 
 import { createHash } from "node:crypto";
 import { after, NextRequest, NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { createLogger } from "@/lib/log";
 import { rateLimit } from "@/lib/rate-limit";
 import { syncLeadToZoho } from "@/lib/crm/sync";

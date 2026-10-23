@@ -78,7 +78,7 @@ export async function removeStudent(teacherId: number, classId: number, studentI
 }
 
 export async function assignmentsOf(classId: number): Promise<Assignment[]> {
-  return (await all("SELECT * FROM assignments WHERE class_id = $1 ORDER BY due_date NULLS LAST, id", [classId])).map(mapAssign);
+  return (await all("SELECT * FROM assignments WHERE class_id = $1 ORDER BY due_date IS NULL, due_date, id", [classId])).map(mapAssign);
 }
 
 export interface NewAssignment { kind: string; ref: string; testNo?: number; note?: string; due?: string }
@@ -129,7 +129,7 @@ export async function progress(assignments: Assignment[], studentIds: number[]):
       }
     } else {
       const rows = await all(
-        "SELECT DISTINCT ON (user_id) user_id, raw, total, band, score FROM test_attempts WHERE exam = $1 AND test_no = $2 AND user_id = ANY($3::int[]) ORDER BY user_id, raw DESC, created_at DESC",
+        "SELECT t.user_id, t.raw, t.total, t.band, t.score FROM test_attempts t WHERE t.exam = $1 AND t.test_no = $2 AND t.user_id = ANY($3::int[]) AND t.id = (SELECT t2.id FROM test_attempts t2 WHERE t2.exam = t.exam AND t2.test_no = t.test_no AND t2.user_id = t.user_id ORDER BY t2.raw DESC, t2.created_at DESC, t2.id DESC LIMIT 1)",
         [a.ref, a.test_no, studentIds],
       );
       for (const r of rows) {

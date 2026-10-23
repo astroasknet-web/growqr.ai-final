@@ -1,7 +1,7 @@
 /**
  * Intent → response orchestration. Every branch returns within the 5-second
  * webhook budget: no LLM calls, no synchronous CRM writes. A successful
- * qualification queues the lead to Supabase (fast) and schedules the real
+ * qualification queues the lead to the database (fast) and schedules the real
  * CRM/notification work via next/server after() — post-response, off the
  * visitor-facing latency budget, with the existing cron sync sweep as the
  * reconciliation layer if after() doesn't run to completion. Same pattern
@@ -15,7 +15,7 @@
  */
 
 import { after } from "next/server";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { createLogger } from "@/lib/log";
 import { syncLeadToZoho } from "@/lib/crm/sync";
 import { detectIntent, isB2bIntent, isStrongHumanRequest, type BotIntent } from "@/lib/bot/intents";

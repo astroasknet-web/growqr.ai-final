@@ -2,7 +2,7 @@ import { runPortalMigrations } from "./lib/portal/migrate";
 import { seedCatalogues } from "./lib/portal/seed";
 
 /**
- * Node-only start-up work (kept out of instrumentation.ts so the edge bundle never sees `pg`).
+ * Node-only start-up work (kept out of instrumentation.ts so the edge bundle never sees the database driver).
  *
  * 1. Some hosts (Hostinger among them) do not hand dashboard environment variables to a pre-built server. As a fallback, a file named
  *    `.env.production` (or `.env`) placed next to server.js is read here, before the first request. Real environment variables win.

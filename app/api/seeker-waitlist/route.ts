@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { getResend } from "@/lib/resend";
 import { emailLogo } from "@/lib/email/logo";
 import { createLogger } from "@/lib/log";
@@ -66,8 +66,8 @@ export const POST = createFormRoute<SeekerWaitlistSubmission>({
     // It also removes a workaround: anon had no SELECT policy, so the insert
     // could not RETURN its own id and a second admin-client lookup was needed.
     // crm_sync_status still relies on the DB default 'pending'.
-    const supabase = createAdminClient();
-    const { data: inserted, error } = await supabase
+    const db = createAdminClient();
+    const { data: inserted, error } = await db
       .from("seeker_waitlist")
       .insert({
         email: data.email,

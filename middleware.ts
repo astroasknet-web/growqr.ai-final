@@ -1,6 +1,5 @@
-import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { isAdminUser } from "@/lib/auth/admin-allowlist";
+import { hasSessionCookie, SESSION_COOKIE } from "@/lib/auth/admin-allowlist";
 import { portalDecision } from "@/lib/site-mode";
 
 export async function middleware(request: NextRequest) {
@@ -18,60 +17,18 @@ export async function middleware(request: NextRequest) {
     if (noindex) res.headers.set("X-Robots-Tag", "noindex, nofollow");
     return res;
   }
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-
-  // If env vars aren't set (e.g. during build or misconfigured deploy),
-  // don't crash the whole site — just let the request through.
-  if (!url || !anon) {
-    return NextResponse.next({ request });
+  // The admin area signs in with the portal's staff login. The edge cannot reach the database, so it only turns away requests that
+  // carry no session at all; the admin layout and every admin API route check that the account really is an admin.
+  const isLoginPage = pathname === "/admin/login";
+  if (!isLoginPage && !hasSessionCookie(request.cookies.get(SESSION_COOKIE)?.value)) {
+    const to = request.nextUrl.clone();
+    to.pathname = "/admin/login";
+    to.search = "";
+    return NextResponse.redirect(to);
   }
-
-  try {
-    let supabaseResponse = NextResponse.next({ request });
-
-    const supabase = createServerClient(url, anon, {
-      cookies: {
-        getAll() {
-          return request.cookies.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value }) =>
-            request.cookies.set(name, value)
-          );
-          supabaseResponse = NextResponse.next({ request });
-          cookiesToSet.forEach(({ name, value, options }) =>
-            supabaseResponse.cookies.set(name, value, options)
-          );
-        },
-      },
-    });
-
-    const { data: { user } } = await supabase.auth.getUser();
-
-    // Authorization, not just authentication: the user's Supabase account
-    // must be flagged as admin (app_metadata.is_admin, set via service role).
-    const isAdmin = isAdminUser(user);
-
-    const isLoginPage = request.nextUrl.pathname === "/admin/login";
-
-    if (!isAdmin && !isLoginPage) {
-      const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = "/admin/login";
-      return NextResponse.redirect(redirectUrl);
-    }
-
-    if (isAdmin && isLoginPage) {
-      const redirectUrl = request.nextUrl.clone();
-      redirectUrl.pathname = "/admin/ambassador";
-      return NextResponse.redirect(redirectUrl);
-    }
-
-    return supabaseResponse;
-  } catch {
-    // Never let a middleware crash propagate to the main site.
-    return NextResponse.next({ request });
-  }
+  const headers = new Headers(request.headers);
+  headers.set("x-admin-path", pathname);
+  return NextResponse.next({ request: { headers } });
 }
 
 export const config = {

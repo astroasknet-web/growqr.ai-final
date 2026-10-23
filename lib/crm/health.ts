@@ -1,4 +1,4 @@
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { getResend } from "@/lib/resend";
 import { createLogger } from "@/lib/log";
 import { escapeHtml } from "@/lib/escape-html";

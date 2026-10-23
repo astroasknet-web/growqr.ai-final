@@ -1,5 +1,5 @@
 import "server-only";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import type { EventRow } from "../types/event";
 
 export interface EventWithCount extends EventRow {

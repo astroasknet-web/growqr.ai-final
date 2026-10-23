@@ -8,7 +8,7 @@ import { heuristics } from "./scanner";
  * Study abroad on a real database: profile, shortlist, applications through the counselor pipeline, the document vault with its security
  * scan and signed links, stages and counselor access.
  *
- *   PORTAL_TEST_DATABASE_URL=postgres://postgres@127.0.0.1:54329/postgres npx vitest run lib/abroad/abroad-db.test.ts
+ *   PORTAL_TEST_DATABASE_URL=mysql://root@127.0.0.1:3307/growqr_test npx vitest run lib/abroad/abroad-db.test.ts
  */
 vi.mock("next/headers", () => ({
   cookies: async () => ({ get: () => undefined, set: () => undefined, delete: () => undefined }),
@@ -68,8 +68,6 @@ describe.skipIf(!DB)("study abroad on a real database", () => {
     process.env.PORTAL_APP_URL = "https://growqr.test";
     process.env.STORAGE_DIR = path.join(process.env.TEMP ?? "/tmp", `abroad-test-${tag}`);
     delete process.env.RESEND_API_KEY;
-    delete process.env.NEXT_PUBLIC_SUPABASE_URL;
-    delete process.env.SUPABASE_SERVICE_ROLE_KEY;
     db = await import("../portal/db");
     A = await import("./catalogue");
     S = await import("./store");

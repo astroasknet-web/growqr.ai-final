@@ -1,5 +1,5 @@
 /**
- * Run the reminder sweeper by hand, against live Supabase and live Resend.
+ * Run the reminder sweeper by hand, against the live database and live Resend.
  *
  *   npx tsx scripts/reminders-run.ts
  *

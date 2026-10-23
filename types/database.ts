@@ -1,9 +1,6 @@
 /**
- * Supabase database types — GENERATED FILE, do not edit by hand.
- *
- * Regenerate after any schema change:
- *   npx supabase gen types typescript --project-id nykbhgnrdcjekzshhvzi --schema public > types/database.ts
- * (or via the Supabase MCP generate_typescript_types tool), then re-add this header.
+ * Row shapes for the marketing tables (events, applications, bookings, bot, admin log). They describe the MySQL tables in
+ * db/migrations/20261101000001_marketing.sql and are used by the data layer in lib/data. Edit them together with the migration.
  */
 export type Json =
   | string

@@ -27,9 +27,9 @@ blank data) · `sync.ts` (claim state machine + sweep) · `sources.ts`
 (registry + kill switch) · `health.ts` (digest alerting) · `drift.ts`
 (picklist drift comparator).
 
-Source-of-truth contract: **Supabase owns website submissions · Zoho owns CRM
+Source-of-truth contract: **the database owns website submissions · Zoho owns CRM
 lifecycle · the app DB owns product/billing.** Zoho state is never mirrored
-back into Supabase; machine writes must never overwrite human CRM actions.
+back into the database; machine writes must never overwrite human CRM actions.
 
 ## Environment contract
 
@@ -63,7 +63,7 @@ CRON_SECRET=               # bearer auth for /api/cron/crm-sync (fail-closed)
 ## Adding a form to the CRM (3 steps)
 
 1. **Columns:** give its table the attribution + `crm_sync_*` columns
-   (copy §2 of `supabase/migrations/0011_crm_sync_columns.sql`).
+   (copy §2 of `db/migrations/20261101000001_marketing.sql`).
 2. **Builder:** write `buildXPayload(row) → ZohoLeadRecord | null` in
    `payload.ts` (null = excluded by rule) and register the table in
    `sources.ts`.
@@ -91,7 +91,7 @@ CRON_SECRET=               # bearer auth for /api/cron/crm-sync (fail-closed)
 ## The state machine
 
 Every lead table (`b2b_leads`, `contact_messages`, `seeker_waitlist`) carries
-`crm_sync_status`, CHECK-enforced in Postgres:
+`crm_sync_status`, CHECK-enforced in MySQL:
 
 ```
 pending ──claim──▶ syncing ──▶ synced          (terminal, zoho_lead_id set)
@@ -134,7 +134,7 @@ A dead Zoho credential shows up as: new rows `failed` with a token-refresh
 error message → digest within one cron cycle once attempts hit 5, or
 immediately visible via the health queries below.
 
-## Health queries (Supabase SQL editor)
+## Health queries (phpMyAdmin SQL tab)
 
 Status counts per table:
 

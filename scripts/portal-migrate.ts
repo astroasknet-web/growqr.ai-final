@@ -1,9 +1,9 @@
 /**
- * Applies the portal's database migrations (supabase/migrations/2026*.sql) that this database has not seen yet.
- * The marketing site's own migrations (0001-0045) are managed with the Supabase CLI and are not touched here.
+ * Applies the portal's database migrations (db/migrations/2026*.sql) that this database has not seen yet.
+ * See migration/DATABASE-SETUP.md.
  *
- *   DATABASE_URL=postgres://... npx tsx scripts/portal-migrate.ts            apply what is pending
- *   DATABASE_URL=postgres://... npx tsx scripts/portal-migrate.ts --status   only list applied / pending
+ *   DATABASE_URL=mysql://... npx tsx scripts/portal-migrate.ts            apply what is pending
+ *   DATABASE_URL=mysql://... npx tsx scripts/portal-migrate.ts --status   only list applied / pending
  */
 import { runPortalMigrations } from "../lib/portal/migrate";
 

@@ -4,7 +4,7 @@ import type { BotResponse } from "@/lib/bot/context";
 
 /**
  * Pure-function coverage only. flushIdleTranscripts() is exercised against the
- * real database instead (its whole job is a Supabase RPC plus a Zoho call, and
+ * real database instead (its whole job is a database function plus a Zoho call, and
  * mocking both would only test the mocks); the SQL side — the idle window, the
  * conversation_ids join, the requeue guard — was verified against production
  * when migration 0022 was applied.

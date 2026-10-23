@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase-server";
+import { createAdminClient, isDatabaseConfigured } from "@/lib/data/server";
 import { validateIntake, type IntakeForm } from "@/features/experts/intake/config";
 import { rateLimit, rateLimited } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
@@ -22,8 +22,8 @@ export async function POST(req: NextRequest) {
   try {
     const data: Partial<IntakeForm> & { token?: string } = await req.json();
 
-    // Demo mode (no Supabase configured): accept without verifying/persisting.
-    if (!isSupabaseConfigured()) return NextResponse.json({ success: true });
+    // Demo mode (no the database configured): accept without verifying/persisting.
+    if (!isDatabaseConfigured()) return NextResponse.json({ success: true });
 
     // Bot gate, before the insert and before any validation work. Same
     // fail-closed contract as every other public form (lib/turnstile.ts): a

@@ -1,7 +1,6 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { appUrl } from "@/lib/portal/mail";
-import * as storage from "@/lib/market/storage";
 import * as pc from "@/lib/portal/passport/credential";
 import * as share from "@/lib/portal/passport/share";
 import { Analytics, pretty, up } from "@/lib/admin/analytics";
@@ -279,7 +278,7 @@ export async function TabBody({ tab, an, label, reissued }: { tab: string; an: A
     const ob = d.outbox;
     const base = await appUrl();
     const mailOn = !!process.env.RESEND_API_KEY;
-    const remote = storage.remote();
+    const storageDir = process.env.STORAGE_DIR ?? "";
     const sodium = pc.available();
     const stale = await share.staleIssuerCount().catch(() => 0);
     const did = await pc.did().catch(() => "");
@@ -288,9 +287,9 @@ export async function TabBody({ tab, an, label, reissued }: { tab: string; an: A
     const checks: Chk[] = [
       [!base || /example|localhost/.test(base) ? "warn" : "ok", "Public address (PORTAL_APP_URL)", !base || /example|localhost/.test(base) ? `Currently ${base || "not set"}. Email links will point there.` : base],
       [mailOn ? "ok" : "bad", "Email sending", mailOn ? "Resend is configured" : "RESEND_API_KEY is not set, so no email is actually sent and signup verification cannot work."],
-      [remote ? "ok" : "warn", "File storage", remote ? "Supabase Storage (private buckets)" : "Local disk. Fine for testing, use Supabase Storage in production."],
+      [storageDir ? "ok" : "warn", "File storage (STORAGE_DIR)", storageDir ? `Files are kept in ${storageDir}` : "Not set, so uploads go in the app folder and a redeploy may remove them. Set STORAGE_DIR to a folder outside the app."],
       [!sodium ? "bad" : "ok", "Passport signing (QR-verifiable passports)", sodium ? "PASSPORT_SIGNING_SEED is set (stable across redeploys)" : "PASSPORT_SIGNING_SEED is missing or shorter than 32 characters, so students cannot publish passports."],
-      [d.migrations > 0 ? "ok" : "warn", "Database migrations", d.migrations > 0 ? `${d.migrations} recorded` : "No migration record (schema_meta). Fine if migrations are applied by the Supabase CLI."],
+      [d.migrations > 0 ? "ok" : "warn", "Database migrations", d.migrations > 0 ? `${d.migrations} recorded` : "No migration record (schema_meta). Set PORTAL_AUTO_MIGRATE=1 or run npm run portal:migrate."],
       [process.env.PORTAL_MFA_REQUIRE_STAFF === "false" ? "warn" : "ok", "Two-step login for staff", process.env.PORTAL_MFA_REQUIRE_STAFF === "false" ? "Not required" : "Required"],
       [d.events_total > 0 ? "ok" : "warn", "Traffic tracking", d.events_total > 0 ? `${num(d.events_total)} events recorded` : "No events yet"],
     ];
@@ -300,12 +299,12 @@ export async function TabBody({ tab, an, label, reissued }: { tab: string; an: A
       <>
         {reissued !== undefined ? <p role="status" className="mb-5 rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-3 text-[14px] text-emerald-900">&#10003; Re-issued {reissued} passport(s) for the current address.</p> : null}
         <KpiGrid>
-          <Kpi label="Database size" value={d.db_size ?? "n/a"} note="Supabase Postgres" />
+          <Kpi label="Database size" value={d.db_size ?? "n/a"} note="MySQL" />
           <Kpi label="Emails sent" value={num(ob.sent ?? 0)} note={`${num(ob.logged ?? 0)} only logged`} />
           <Kpi label="Emails failed" value={num(ob.failed ?? 0)} note={`${num(ob.pending ?? 0)} waiting`} tone={(ob.failed ?? 0) > 0 ? "bad" : ""} />
           <Kpi label="Sign-in limits hit (24h)" value={num(d.throttle_24h)} note="rate-limit events, possible guessing" />
           <Kpi label="Events tracked" value={num(d.events_total)} note="page views and clicks" />
-          <Kpi label="Node" value={process.version} note={remote ? "remote storage" : "local storage"} />
+          <Kpi label="Node" value={process.version} note={storageDir ? "storage folder set" : "default storage folder"} />
         </KpiGrid>
         <Grid>
           <Card title="Setup checklist" wide>

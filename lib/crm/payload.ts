@@ -23,7 +23,7 @@ import {
 } from "@/lib/crm/derive";
 
 /**
- * Supabase row → Zoho Lead record, one builder per source. Field API names
+ * the database row → Zoho Lead record, one builder per source. Field API names
  * and picklist display values verified against the live org (see derive.ts).
  *
  * Absent values are OMITTED rather than sent as null: on the upsert's update

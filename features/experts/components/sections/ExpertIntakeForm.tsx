@@ -6,7 +6,7 @@
    detail page (/experts/[slug]). Hard-enforces per-field character limits via
    the shared config (features/experts/intake/config.ts) so experts can only
    submit content that fits the live UI. Writes to the `expert_submissions`
-   Supabase table through /api/expert-intake.
+   the database table through /api/expert-intake.
    ══════════════════════════════════════════════════════════════════════════ */
 
 import { useCallback, useEffect, useRef, useState } from "react";

@@ -1,4 +1,4 @@
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { isRoundType, type RoundType } from "@/lib/internship/interviews";
 import { PREFERRED_ROLES } from "@/lib/internship-options";
 import type { Json, Tables, TablesUpdate } from "@/types/database";

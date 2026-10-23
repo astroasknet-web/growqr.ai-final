@@ -9,7 +9,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
  * Cross-checks against the ORIGINAL PHP code: a credential signed by PHP must verify here and the other way round, and both
  * must derive the same signing key from the same seed.
  *
- *   PORTAL_TEST_DATABASE_URL=postgres://postgres@127.0.0.1:54329/postgres npx vitest run lib/portal/passport.test.ts
+ *   PORTAL_TEST_DATABASE_URL=mysql://root@127.0.0.1:3307/growqr_test npx vitest run lib/portal/passport.test.ts
  * (PHP needs PHPRC pointing at an ini with pdo_pgsql; without PHP the cross-checks are skipped.)
  */
 vi.mock("next/headers", () => ({

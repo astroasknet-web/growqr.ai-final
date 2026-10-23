@@ -1,4 +1,4 @@
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { createLogger } from "@/lib/log";
 import { upsertLead, ZohoApiError } from "@/lib/crm/zoho-client";
 import {
@@ -198,7 +198,7 @@ export async function runSourceSync(
   const admin = createAdminClient();
   const scope = `${source.table}#${rowId}`;
 
-  // Atomic claim. supabase-js cannot express the id/update types across a
+  // Atomic claim. the query builder cannot express the id/update types across a
   // union of tables, hence the two narrow casts — the shapes are identical
   // in all three tables (Phase 2 migration).
   const { data: row, error: claimError } = await admin

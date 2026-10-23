@@ -35,9 +35,9 @@ vi.mock("@/lib/turnstile", () => ({
 }));
 
 // These tests validate the fully-configured pipeline (Turnstile, persist,
-// CRM). The demo-mode short-circuit (unconfigured Supabase) is a separate path.
-vi.mock("@/lib/supabase-server", () => ({
-  isSupabaseConfigured: () => true,
+// CRM). The demo-mode short-circuit (unconfigured the database) is a separate path.
+vi.mock("@/lib/data/server", () => ({
+  isDatabaseConfigured: () => true,
 }));
 
 interface TestData {

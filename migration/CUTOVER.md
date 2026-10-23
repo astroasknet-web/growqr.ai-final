@@ -1,3 +1,5 @@
+> **Note (October 2026):** the database is now MySQL on Hostinger and Supabase has been removed. Where this page mentions Supabase or Postgres, read [DATABASE-SETUP.md](DATABASE-SETUP.md) instead. The rest is kept as the history of the move.
+
 # Cut-over runbook: qrscore (PHP) -> test.vidaara.org (Next.js)
 
 Status: phases 1-8 are built and verified locally. Nothing has been deployed. This is the order to follow on the day.

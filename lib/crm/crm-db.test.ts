@@ -6,7 +6,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
  * The Overseas CRM on a real database: access levels, the lead pipeline and its rules, applications, the student's path, documents,
  * student-paid third-party verification, payments (desk and Razorpay, with Razorpay mocked) and the management reports.
  *
- *   PORTAL_TEST_DATABASE_URL=postgres://postgres@127.0.0.1:54329/postgres npx vitest run lib/crm/crm-db.test.ts
+ *   PORTAL_TEST_DATABASE_URL=mysql://root@127.0.0.1:3307/growqr_test npx vitest run lib/crm/crm-db.test.ts
  */
 vi.mock("next/headers", () => ({
   cookies: async () => ({ get: () => undefined, set: () => undefined, delete: () => undefined }),
@@ -54,8 +54,6 @@ describe.skipIf(!DB)("overseas CRM on a real database", () => {
     process.env.CRM_VERIFY_PER_DOC_INR = "750";
     process.env.CRM_VERIFY_BASE_INR = "250";
     delete process.env.RESEND_API_KEY;
-    delete process.env.NEXT_PUBLIC_SUPABASE_URL;
-    delete process.env.SUPABASE_SERVICE_ROLE_KEY;
     db = await import("../portal/db");
     AC = await import("./access");
     LD = await import("./leads");

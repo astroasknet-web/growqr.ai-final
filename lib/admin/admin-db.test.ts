@@ -3,7 +3,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 /**
  * Administrator tools: college matching (equal to PHP similar_text / levenshtein), the college review queue, and the Resume Studio plan grants.
  *
- *   PORTAL_TEST_DATABASE_URL=postgres://postgres@127.0.0.1:54329/postgres npx vitest run lib/admin/admin-db.test.ts
+ *   PORTAL_TEST_DATABASE_URL=mysql://root@127.0.0.1:3307/growqr_test npx vitest run lib/admin/admin-db.test.ts
  */
 vi.mock("next/headers", () => ({
   cookies: async () => ({ get: () => undefined, set: () => undefined, delete: () => undefined }),

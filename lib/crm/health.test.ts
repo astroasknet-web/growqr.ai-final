@@ -9,7 +9,7 @@ vi.mock("@/lib/resend", () => ({
   getResend: () => ({ emails: { send: sendMock } }),
 }));
 
-vi.mock("@/lib/supabase-server", () => ({
+vi.mock("@/lib/data/server", () => ({
   createAdminClient: createAdminClientMock,
 }));
 

@@ -60,7 +60,7 @@ export interface CrmSourceDefinition<K extends CrmSourceKey = CrmSourceKey> {
    */
   afterSync?: (row: Tables<K>, result: PersonResolution) => Promise<void>;
   /**
-   * Supabase `.or()` filter string selecting already-'synced' rows whose
+   * `.or()` filter string selecting already-'synced' rows whose
    * afterSync hook still has incomplete work (e.g. one `_created` flag still
    * false). Required alongside `afterSync` for the hook to ever be retried:
    * a Task/Note/notification failure never flips `crm_sync_status` off

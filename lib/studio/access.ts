@@ -1,4 +1,4 @@
-import type { PoolClient } from "pg";
+import type { PoolClient } from "../portal/db";
 import { one, run, val } from "../portal/db";
 import * as templates from "./templates";
 
@@ -49,8 +49,8 @@ export async function canUseTemplate(uid: number, templateId: string, pro?: bool
  */
 export async function secondsUntilNextSave(uid: number, pro?: boolean, q?: Pick<PoolClient, "query">): Promise<number> {
   if (pro ?? (await isPro(uid))) return 0;
-  const sql = `SELECT EXTRACT(EPOCH FROM (MAX(created_at) + INTERVAL '${cooldownHours()} hour' - LOCALTIMESTAMP(0))) AS left FROM studio_versions WHERE user_id = $1 AND kind = 'save'`;
-  const left = q ? (await q.query(sql, [uid])).rows[0]?.left : await val(sql, [uid]);
+  const sql = `SELECT TIMESTAMPDIFF(SECOND, LOCALTIMESTAMP(0), MAX(created_at) + INTERVAL ${Math.trunc(cooldownHours())} HOUR) AS secs_left FROM studio_versions WHERE user_id = $1 AND kind = 'save'`;
+  const left = q ? (await q.query(sql, [uid])).rows[0]?.secs_left : await val(sql, [uid]);
   return left === null || left === undefined ? 0 : Math.max(0, Math.ceil(Number(left)));
 }
 

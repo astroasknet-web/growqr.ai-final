@@ -2,7 +2,7 @@ import "server-only";
 import * as React from "react";
 import { createHash, randomBytes } from "node:crypto";
 import { cookies } from "next/headers";
-import { one, run } from "./db";
+import { one, run, tx } from "./db";
 import { clientIp, sha256 } from "./security";
 
 /**
@@ -51,6 +51,11 @@ export const getSession = memo(async (): Promise<PortalSession | null> => {
   return loadSession(tokenId(token));
 });
 
+function parseData(v: unknown): Record<string, unknown> {
+  if (v && typeof v === "object") return v as Record<string, unknown>;
+  try { const j = JSON.parse(String(v ?? "{}")); return j && typeof j === "object" ? j : {}; } catch { return {}; }
+}
+
 export async function loadSession(id: string): Promise<PortalSession | null> {
   const row = await one<{
     id: string; csrf: string; data: Record<string, unknown>; last_seen_stale: boolean;
@@ -67,7 +72,7 @@ export async function loadSession(id: string): Promise<PortalSession | null> {
   const user: PortalUser | null = row.uid
     ? { id: row.uid, role: row.role as Role, email: row.email as string, name: row.name as string, email_verified_at: row.email_verified_at, mfa_enabled_at: row.mfa_enabled_at }
     : null;
-  return { id: row.id, csrf: row.csrf, data: row.data ?? {}, user };
+  return { id: row.id, csrf: row.csrf, data: parseData(row.data), user };
 }
 
 async function setCookie(token: string): Promise<void> {
@@ -89,24 +94,33 @@ export async function startSession(userId: number | null, data: Record<string, u
   const ip = sha256(await clientIp()).slice(0, 16);
   await run(
     `INSERT INTO portal_sessions (id, user_id, csrf, data, ip_hash, created_at, last_seen_at, expires_at)
-     VALUES ($1, $2, $3, $4::jsonb, $5, NOW(), NOW(), NOW() + make_interval(days => $6::int))`,
+     VALUES ($1, $2, $3, $4, $5, NOW(), NOW(), NOW() + make_interval(days => $6::int))`,
     [tokenId(token), userId, randomBytes(16).toString("hex"), JSON.stringify(data), ip, LIFETIME_DAYS],
   );
   if (userId !== null) await run("UPDATE users SET last_login_at = NOW() WHERE id = $1", [userId]);
   await setCookie(token);
 }
 
+/** Read, change and write back a session's data atomically (the row is locked while it is changed). */
+async function mergeData(id: string, change: (d: Record<string, unknown>) => Record<string, unknown>): Promise<void> {
+  await tx(async (c) => {
+    const r = await c.query("SELECT data FROM portal_sessions WHERE id = $1 FOR UPDATE", [id]);
+    if (!r.rows[0]) return;
+    await c.query("UPDATE portal_sessions SET data = $2 WHERE id = $1", [id, JSON.stringify(change(parseData(r.rows[0].data)))]);
+  });
+}
+
 /** Merge values into the current session's data (creating an anonymous session when there is none). Server Actions and route handlers only. */
 export async function putSessionData(patch: Record<string, unknown>): Promise<void> {
   const s = await getSession();
   if (!s) return startSession(null, patch);
-  await run("UPDATE portal_sessions SET data = data || $2::jsonb WHERE id = $1", [s.id, JSON.stringify(patch)]);
+  await mergeData(s.id, (d) => ({ ...d, ...patch }));
 }
 
 export async function dropSessionData(...keys: string[]): Promise<void> {
   const s = await getSession();
   if (!s) return;
-  await run("UPDATE portal_sessions SET data = data - $2::text[] WHERE id = $1", [s.id, keys]);
+  await mergeData(s.id, (d) => { const o = { ...d }; for (const k of keys) delete o[k]; return o; });
 }
 
 /** Log out: delete the session row and the cookie. */

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { Resend } from "resend";
-import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase-server";
+import { createAdminClient, isDatabaseConfigured } from "@/lib/data/server";
 import { escapeHtml } from "@/lib/escape-html";
 import { SITE_URL } from "@/lib/seo";
 import { emailLogo } from "@/lib/email/logo";
@@ -181,8 +181,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Demo mode (no Supabase configured): accept without verifying/persisting.
-    if (!isSupabaseConfigured()) return NextResponse.json({ success: true });
+    // Demo mode (no the database configured): accept without verifying/persisting.
+    if (!isDatabaseConfigured()) return NextResponse.json({ success: true });
 
     // Turnstile
     if (!(await verifyTurnstile(token, "Ambassador"))) {
@@ -192,7 +192,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Persist to Supabase — duplicate email returns 409
+    // Persist to the database — duplicate email returns 409
     // Service role, not the anon key: the anon INSERT policy this used to rely
     // on let anyone post straight to PostgREST and bypass the Turnstile check
     // above. Revoked in migration 0021, so this route is the only way in.
@@ -201,9 +201,9 @@ export async function POST(req: NextRequest) {
     // applicant a confirmation email, and returned success — the application was
     // simply gone, with nothing in the logs to say so. An applicant who is told
     // they applied and never hears again is the worst outcome this route has.
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    if (!isDatabaseConfigured()) {
       console.error(
-        "Ambassador submit: Supabase env missing — refusing the application rather than dropping it",
+        "Ambassador submit: the database env missing — refusing the application rather than dropping it",
       );
       return NextResponse.json(
         { error: "We couldn't submit your application right now. Please try again shortly." },
@@ -211,7 +211,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const supabase = createAdminClient();
+    const db = createAdminClient();
 
     // Phone has no DB-level unique constraint (the live table already has
     // legitimate duplicate phone numbers from before this check existed, so
@@ -219,7 +219,7 @@ export async function POST(req: NextRequest) {
     // lookup enforces uniqueness for new submissions going forward; it has
     // the usual check-then-insert race window under concurrent duplicate
     // submits, which a hard constraint wouldn't.
-    const { data: existingPhone } = await supabase
+    const { data: existingPhone } = await db
       .from("ambassador_applications")
       .select("id")
       .eq("phone", data.phone.trim())
@@ -238,7 +238,7 @@ export async function POST(req: NextRequest) {
 
     while (attempt < maxRetries) {
       attempt++;
-      const { error } = await supabase.from("ambassador_applications").insert([{
+      const { error } = await db.from("ambassador_applications").insert([{
         full_name: data.fullName.trim(),
         email: data.email.trim().toLowerCase(),
         phone: data.phone.trim(),
@@ -295,7 +295,7 @@ export async function POST(req: NextRequest) {
           { status: 409 }
         );
       }
-      console.error(`Ambassador Supabase insert error after ${maxRetries} attempts:`, dbError);
+      console.error(`Ambassador the database insert error after ${maxRetries} attempts:`, dbError);
       return NextResponse.json(
         { error: "Failed to save application due to a network error. Please try again." },
         { status: 500 }

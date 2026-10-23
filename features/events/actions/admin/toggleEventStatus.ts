@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { getAdminUser } from "@/lib/auth/admin";
 import { createAdminLog } from "@/lib/admin-logs";
 

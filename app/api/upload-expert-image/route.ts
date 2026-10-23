@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase-server";
+import { createAdminClient, isDatabaseConfigured } from "@/lib/data/server";
 import { rateLimit, rateLimited } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { hasMagicBytes, imageKindFromMime } from "@/lib/file-signature";
@@ -14,9 +14,9 @@ export async function POST(req: NextRequest) {
   const limit = await rateLimit(req, { key: "upload-expert-image", limit: 5, windowMs: 10 * 60_000 });
   if (!limit.ok) return rateLimited(limit.retryAfterSec);
 
-  // Demo mode (no Supabase configured): no bucket to write to. Return a
+  // Demo mode (no the database configured): no bucket to write to. Return a
   // placeholder so the intake form can proceed; nothing is stored.
-  if (!isSupabaseConfigured()) return NextResponse.json({ path: "demo-preview", url: null });
+  if (!isDatabaseConfigured()) return NextResponse.json({ path: "demo-preview", url: null });
 
   try {
     const formData = await req.formData();
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const supabase = createAdminClient();
+    const db = createAdminClient();
     const file = formData.get("file") as File | null;
     // Optional sub-folder so portraits and reviewer avatars stay tidy.
     const kind = (formData.get("kind") as string | null)?.replace(/[^a-z0-9-]/gi, "") || "misc";
@@ -54,17 +54,17 @@ export async function POST(req: NextRequest) {
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
     const path = `${kind}/${timestamp}-${safeName}`;
 
-    const { error } = await supabase.storage
+    const { error } = await db.storage
       .from(BUCKET)
       .upload(path, bytes, { contentType: file.type, upsert: false });
 
     if (error) {
-      console.error("Supabase image upload error:", error);
+      console.error("the database image upload error:", error);
       return NextResponse.json({ error: "Upload failed. Please try again." }, { status: 500 });
     }
 
     // Signed URL valid for 1 year — used for previews and in the saved submission.
-    const { data: signed } = await supabase.storage
+    const { data: signed } = await db.storage
       .from(BUCKET)
       .createSignedUrl(path, 60 * 60 * 24 * 365);
 

@@ -14,7 +14,7 @@ vi.mock("@/lib/crm/zoho-client", () => ({
   updateTask: vi.fn(),
 }));
 
-vi.mock("@/lib/supabase-server", () => ({ createAdminClient: vi.fn() }));
+vi.mock("@/lib/data/server", () => ({ createAdminClient: vi.fn() }));
 
 const { resolveBookingPerson } = await import("@/lib/crm/call-booking");
 const { buildCallBookingPayload } = await import("@/lib/crm/payload");

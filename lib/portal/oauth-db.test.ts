@@ -11,7 +11,7 @@ vi.setConfig({ testTimeout: 60_000, hookTimeout: 60_000 });
 /**
  * Provider sign-in and the built-in human check on a real database.
  *
- *   PORTAL_TEST_DATABASE_URL=postgres://postgres@127.0.0.1:5544/postgres DATABASE_SSL=disable npx vitest run lib/portal/oauth-db.test.ts
+ *   PORTAL_TEST_DATABASE_URL=mysql://root@127.0.0.1:3307/growqr_test DATABASE_SSL=disable npx vitest run lib/portal/oauth-db.test.ts
  */
 const DB = process.env.PORTAL_TEST_DATABASE_URL;
 describe.skipIf(!DB)("provider sign-in and the human check on a real database", () => {

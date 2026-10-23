@@ -47,7 +47,7 @@ const log = createLogger("bot-ai");
 
 /**
  * Hard cap on the model call, inside SalesIQ's 5-second webhook budget
- * alongside two Supabase queries. This is the ONLY AI call per turn again
+ * alongside two the database queries. This is the ONLY AI call per turn again
  * (2026-08-02) — no second sequential call to budget around anymore.
  *
  * RAISED from 2,200ms (2026-08-01): that figure came from AI_FALLBACK_DESIGN.md

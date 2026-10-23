@@ -4,7 +4,7 @@ import { legacyRedirects } from "../../legacy-redirects";
 /**
  * Cut-over pieces: old-URL redirects, the first-party page-view/click recorder, and the student college directory (suggest + submit).
  *
- *   PORTAL_TEST_DATABASE_URL=postgres://postgres@127.0.0.1:54329/postgres npx vitest run lib/portal/cutover-db.test.ts
+ *   PORTAL_TEST_DATABASE_URL=mysql://root@127.0.0.1:3307/growqr_test npx vitest run lib/portal/cutover-db.test.ts
  */
 vi.mock("next/headers", () => ({
   cookies: async () => ({ get: () => undefined, set: () => undefined, delete: () => undefined }),

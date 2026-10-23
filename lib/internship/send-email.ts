@@ -1,5 +1,5 @@
 import { getResend } from "@/lib/resend";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { CAREERS_FROM, CAREERS_REPLY_TO } from "./emails";
 
 /**

@@ -1,5 +1,5 @@
 import "server-only";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { escapePostgrestPattern } from "@/lib/postgrest";
 import { isCohort } from "@/lib/cohorts";
 import { isAmbassadorStatus } from "@/lib/admin/statuses";

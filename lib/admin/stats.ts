@@ -1,5 +1,5 @@
 import "server-only";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { INTERNSHIP_STATUSES } from "@/components/admin/InternshipStatusBadge";
 import { AMBASSADOR_STATUSES } from "@/lib/admin/statuses";
 import { TRIAGE_BANDS } from "@/lib/internship/triage";

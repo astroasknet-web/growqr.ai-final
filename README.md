@@ -1,7 +1,7 @@
 # GrowQR Website
 
 Next.js marketing site for GrowQR — an AI-powered Skill Identity & Readiness
-platform. Built with the App Router, React 19, Tailwind, Supabase, and Razorpay.
+platform. Built with the App Router, React 19, Tailwind, MySQL, and Razorpay.
 
 > **New to this codebase? Start with the handover doc** —
 > [`HANDOVER.html`](HANDOVER.html) (browser) ·
@@ -15,7 +15,7 @@ platform. Built with the App Router, React 19, Tailwind, Supabase, and Razorpay.
 
 - **Next.js 15** (App Router) + **React 19** + **TypeScript**
 - **Tailwind CSS** + Framer Motion for UI/animation
-- **Supabase** (Postgres + Auth) for events, expert bookings, and admin data
+- **MySQL** (Hostinger) for accounts, events, expert bookings, applications, and admin data
 - **Resend** (transactional email), **Razorpay** (payments — currently disabled, see below)
 - **Cloudflare Turnstile** (form bot protection), **OpenAI** (SalesIQ chat fallback)
 
@@ -30,7 +30,7 @@ npm run dev
 Open http://localhost:3000.
 
 See [`migration/env.example`](migration/env.example) for every variable the app needs. Without
-Supabase keys the site still runs, but auth, events, and bookings won't work.
+a DATABASE_URL the site still runs, but sign-in, events, forms and bookings won't work.
 
 ## Branches & deployment
 
@@ -60,16 +60,15 @@ This is an early product — some areas are intentionally MVP / quick builds.
 
 - **`/experts`** — Expert profiles are mostly **local static data**
   (`features/experts/data/experts-data.ts`). Booking **availability and slots**
-  are managed in **Supabase** (`features/experts/services/*`, plus the
+  are managed in the **database** (`features/experts/services/*`, plus the
   `expert_submissions` intake table). Payments are wired but **disabled**
   (`PAYMENTS_ENABLED = false` in `app/api/experts/book/route.ts`) — bookings are
   currently free until a decision is made on charging. This whole flow is still
   MVP-grade.
-- **`/events`** — Fully **Supabase-backed** (events, registrations, assets).
+- **`/events`** — Fully **database-backed** (events, registrations, assets).
   Services live in `features/events/services/*`.
-- **Admin dashboard (`/admin`)** — Gated on the Supabase user's
-  `app_metadata.is_admin`, which only the service role can set (see
-  `lib/auth/admin-allowlist.ts` and `middleware.ts`). There is no `ADMIN_EMAILS`
+- **Admin dashboard (`/admin`)** — Gated on the portal login: an
+  account whose role is `admin` (see `lib/auth/admin.ts` and `middleware.ts`). There is no `ADMIN_EMAILS`
   variable. Provides:
   - **Ambassadors** management (`/admin/ambassador`)
   - **Events** management (`/admin/events`, create/edit)
@@ -77,7 +76,7 @@ This is an early product — some areas are intentionally MVP / quick builds.
   - **Internship** hiring pipeline (`/admin/internship`, plus `/settings`)
   - **Logs** (`/admin/logs`)
 
-Database schema lives in `supabase/migrations/`.
+Database schema lives in `db/migrations/`.
 
 ## Project structure
 
@@ -85,16 +84,16 @@ Database schema lives in `supabase/migrations/`.
 app/            Routes (App Router) + API route handlers
 components/      Shared UI + homepage sections
 features/        Domain features (experts, events) — UI, services, data
-lib/            Cross-cutting helpers (auth, payments, supabase, email…)
+lib/            Cross-cutting helpers (auth, payments, database, email…)
 public/         Static assets
-supabase/       Database migrations
+db/             Database migrations (MySQL)
 ```
 
 ## Portal (merged from the qrscore app)
 
 Student and staff accounts, Skill Passport, Resume Studio, internships and courses marketplace, study abroad, Overseas CRM, admin console and counselor pages now live in this codebase (`app/(portal)/`, `app/internships`, `app/courses`, `app/study-abroad`, `app/file/[token]`, `app/resume-score`, `lib/portal`, `lib/market`, `lib/abroad`, `lib/crm`, `lib/studio`, `lib/admin`, `lib/qrscore`).
 
-- **Database:** Supabase Postgres only. See [`DATABASE.md`](DATABASE.md) (schema, data copy, buckets, connection string).
+- **Database:** MySQL / MariaDB only. See [`DATABASE.md`](DATABASE.md) and [`migration/DATABASE-SETUP.md`](migration/DATABASE-SETUP.md).
 - **Going live:** see [`migration/CUTOVER.md`](migration/CUTOVER.md); history and decisions in [`migration/MIGRATION-PLAN.md`](migration/MIGRATION-PLAN.md).
 - **Commands:** `npm run portal:migrate`, `npm run portal:copy-data`, `npm test` (set `PORTAL_TEST_DATABASE_URL` to a scratch database to include the database tests).
 - **Old PHP addresses** are redirected by `legacy-redirects.ts`.
