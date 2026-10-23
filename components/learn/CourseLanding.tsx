@@ -13,9 +13,9 @@ const focus = "focus-visible:outline focus-visible:outline-2 focus-visible:outli
 const btnPrimary = `inline-flex min-h-[52px] items-center justify-center rounded-xl bg-orange-deep px-7 text-[16px] font-semibold text-white hover:bg-ink ${focus}`;
 const btnGhost = `inline-flex min-h-[52px] items-center justify-center rounded-xl border border-black/[0.2] bg-white px-6 text-[16px] font-semibold text-ink hover:bg-cream-2 ${focus}`;
 
-export default function CourseLanding({ slug, nc, lc, summary, done, next, signedIn, isStudent, enrolled, progress, sampleHref }: {
+export default function CourseLanding({ slug, nc, lc, summary, done, next, signedIn, isStudent, enrolled, progress, sampleHref, owned = true }: {
   slug: string; nc: NativeCourse; lc: LearnCourse; summary: Summary | null; done: Set<number>; next: { href: string; label: string };
-  signedIn: boolean; isStudent: boolean; enrolled: boolean; progress: number; sampleHref: string | null;
+  signedIn: boolean; isStudent: boolean; enrolled: boolean; progress: number; sampleHref: string | null; owned?: boolean;
 }) {
   const L = lc.landing!;
   const keys = [...nc.modules.map((m) => m.slug), "capstone"];
@@ -33,7 +33,9 @@ export default function CourseLanding({ slug, nc, lc, summary, done, next, signe
               {[L.hero.level, `About ${nc.hours} hours`, `${nc.modules.length} modules`, `${totalActs} hands-on activities`, "Lifetime access"].map((t) => <li key={t} className="rounded-full bg-white px-3 py-1.5 ring-1 ring-black/[0.1]">{t}</li>)}
             </ul>
             <div className="mt-7 flex flex-wrap items-center gap-3">
-              <Link href={next.href} className={btnPrimary}>{enrolled && progress > 0 ? next.label : "Start learning"}</Link>
+              {owned
+                ? <Link href={next.href} className={btnPrimary}>{enrolled && progress > 0 ? next.label : "Start learning"}</Link>
+                : <Link href={`/courses/${slug}`} className={btnPrimary}>See price and buy</Link>}
               <a href="#roadmap" className={btnGhost}>See the roadmap</a>
             </div>
             <p className="mt-4 max-w-xl text-[14.5px] text-ink-3">{L.hero.outcomeLine}</p>
@@ -60,8 +62,10 @@ export default function CourseLanding({ slug, nc, lc, summary, done, next, signe
               ))}</ul></div>
           </div>
         </section>
+      ) : !owned ? (
+        <p className="mt-6 rounded-xl bg-cream-2 px-4 py-3 text-[14px] text-ink-2">The lessons, labs and quizzes open when you buy this course or choose it from a plan that includes courses. {sampleHref ? "You can try one sample activity below without an account. " : ""}{!signedIn ? <><Link href={`/login?next=${encodeURIComponent(`/courses/${slug}/learn`)}`} className="font-semibold underline">Log in as a student</Link> to save your work, earn XP and badges, and get your completion recorded.</> : null}</p>
       ) : !signedIn ? (
-        <p className="mt-6 rounded-xl bg-cream-2 px-4 py-3 text-[14px] text-ink-2">You can try everything here without an account. <Link href={`/login?next=${encodeURIComponent(`/courses/${slug}/learn`)}`} className="font-semibold underline">Log in as a student</Link> to save your work, earn XP and badges, and get your completion recorded.</p>
+        <p className="mt-6 rounded-xl bg-cream-2 px-4 py-3 text-[14px] text-ink-2"><Link href={`/login?next=${encodeURIComponent(`/courses/${slug}/learn`)}`} className="font-semibold underline">Log in as a student</Link> to save your work, earn XP and badges, and get your completion recorded.</p>
       ) : null}
 
       <section aria-labelledby="out-h" className="mt-12">

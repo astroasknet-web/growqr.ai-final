@@ -7,6 +7,7 @@ import * as learning from "@/lib/market/learning";
 import * as lessons from "@/lib/market/lessons";
 import { learnCourse } from "@/lib/learn/activities";
 import { nextStep } from "@/lib/learn/next";
+import { canStudy } from "@/lib/pay/course-access";
 import * as results from "@/lib/learn/results";
 import CourseLanding from "@/components/learn/CourseLanding";
 import { currentViewer, MarketShell } from "@/components/market/shell";
@@ -56,6 +57,7 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
       ],
     };
     const sample = lc.activities.find((a) => a.id === "c1-parts") ?? lc.activities.find((a) => a.kind === "classify");
+    const owned = await canStudy(me?.id ?? null, course.id, slug);
     return (
       <MarketShell user={me} active="courses">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(ld) }} />
@@ -64,7 +66,7 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
           <form action={courseAction} className="mb-4"><input type="hidden" name="act" value="enrol" /><input type="hidden" name="slug" value={slug} /><input type="hidden" name="back" value={`/courses/${slug}/learn`} />
             <button type="submit" className="min-h-[44px] rounded-lg border border-black/[0.18] bg-white px-4 text-[14px] font-medium text-ink hover:bg-cream-2">Enrol to track your progress</button></form>
         ) : null}
-        <CourseLanding slug={slug} nc={nc} lc={lc} summary={summary} done={done} next={next} signedIn={Boolean(me)} isStudent={isStudent} enrolled={Boolean(enrol)} progress={enrol?.progress ?? 0} sampleHref={sample ? `/courses/${slug}/learn/${sample.module}/a/${sample.id}` : null} />
+        <CourseLanding slug={slug} nc={nc} lc={lc} summary={summary} done={done} next={next} signedIn={Boolean(me)} isStudent={isStudent} enrolled={Boolean(enrol)} progress={enrol?.progress ?? 0} sampleHref={sample ? `/courses/${slug}/learn/${sample.module}/a/${sample.id}` : null} owned={owned} />
       </MarketShell>
     );
   }
