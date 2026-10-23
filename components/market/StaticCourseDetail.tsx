@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { staticCategories, type StaticCourseFull } from "@/lib/market/static-catalogue";
 import { isNative } from "@/lib/market/lessons";
-import { url as courseUrl } from "@/lib/market/courses";
 
 /** Course detail from the catalogue file. Shown while the database is not connected; enrolment and progress need it. */
 export default function StaticCourseDetail({ c }: { c: StaticCourseFull }) {
@@ -30,9 +29,9 @@ export default function StaticCourseDetail({ c }: { c: StaticCourseFull }) {
           </article>
         </div>
         <aside aria-label="Start this course" className="space-y-3 rounded-2xl border border-black/[0.08] bg-white p-5 shadow-card">
-          <h2 className="text-[18px] font-bold text-ink">{isNative(c.slug) ? "Lessons run on GrowQR" : "Learn on Vidaara"}</h2>
-          <p className="text-[14px] text-ink-3">{isNative(c.slug) ? "Enrolment, quizzes and progress tracking open as soon as the learning platform is connected." : "The lessons for this course run on the Vidaara learning platform."}</p>
-          {isNative(c.slug) ? null : <a href={courseUrl(c.slug)} target="_blank" rel="noopener noreferrer" className="flex min-h-[48px] w-full items-center justify-center rounded-lg bg-orange-deep text-[15px] font-semibold text-white hover:bg-ink">Open on Vidaara</a>}
+          <h2 className="text-[18px] font-bold text-ink">{isNative(c.slug) ? "Lessons run on GrowQR" : "Lessons coming soon"}</h2>
+          <p className="text-[14px] text-ink-3">{isNative(c.slug) ? "Enrolment, quizzes and progress tracking open as soon as the learning platform is connected." : "The lessons for this course are being added to GrowQR. Start one that is ready, or study for an exam for free."}</p>
+          {isNative(c.slug) ? null : <Link href="/exam-prep" className="flex min-h-[48px] w-full items-center justify-center rounded-lg bg-orange-deep text-[15px] font-semibold text-white hover:bg-ink">Free exam prep</Link>}
           <Link href="/courses" className="flex min-h-[48px] w-full items-center justify-center rounded-lg border border-black/[0.15] text-[15px] font-semibold hover:bg-cream-2">Back to all courses</Link>
         </aside>
       </div>

@@ -2,7 +2,7 @@ import { MetadataRoute } from 'next';
 import { visibleExperts } from '@/features/experts/data/experts-data';
 import { listEventsForSitemap } from '@/features/events/services/events.service';
 import { SITE_URL } from '@/lib/seo';
-import { hubs as examHubs } from '@/lib/market/vidaara';
+import { hubs as examHubs } from '@/lib/market/exam-prep';
 import { EXAMS, subjectsOf } from '@/lib/lms/content';
 import { EXAM_SLUGS, loadExam } from '@/lib/lms/exams';
 import { allStudy } from '@/lib/lms/study';

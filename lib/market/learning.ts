@@ -3,14 +3,14 @@ import { all, one, run, val } from "../portal/db";
 import { appUrl, send } from "../portal/mail";
 
 /**
- * GrowQR's own course enrolment and progress tracking (port of Portal\Learning). Courses are taught on the Vidaara LMS, but GrowQR keeps
+ * GrowQR's own course enrolment and progress tracking (port of Portal\Learning). Courses are taught on GrowQR; GrowQR keeps
  * its own record so the portal stays independent: the student ticks module checkpoints, and a completion earns trust in tiers:
  *   self         completed by the student's own ticks
- *   certificate  completed + a certificate link on an allowed (Vidaara) domain
+ *   certificate  completed + a certificate link on an allowed domain
  *   verified     confirmed by a signed LMS webhook (or an admin)
  * Only certificate/verified completions feed Skill Passport matching.
  *
- * Environment: LMS_CERTIFICATE_HOSTS (comma list, default "vidaara.org"), LMS_WEBHOOK_SECRET (enables /api/lms-webhook).
+ * Environment: LMS_CERTIFICATE_HOSTS (comma list of allowed certificate hosts; none by default), LMS_WEBHOOK_SECRET (enables /api/lms-webhook).
  */
 export type Tier = "verified" | "certificate" | "self";
 
@@ -74,7 +74,7 @@ export async function setDone(userId: number, course: { id: number; title: strin
   return find(userId, course.id);
 }
 
-const certHosts = (): string[] => (process.env.LMS_CERTIFICATE_HOSTS ?? "vidaara.org").split(",").map((h) => h.trim().toLowerCase()).filter(Boolean);
+const certHosts = (): string[] => (process.env.LMS_CERTIFICATE_HOSTS ?? "").split(",").map((h) => h.trim().toLowerCase()).filter(Boolean);
 
 /** Is this an acceptable certificate link? https on an allowed host. */
 export function validCertificateUrl(u: string): boolean {
@@ -95,7 +95,7 @@ export async function attachCertificate(userId: number, course: { id: number }, 
   const e = await find(userId, course.id);
   if (!e || e.status !== "completed") return "Finish every checkpoint before adding your certificate.";
   const u = certUrl.trim();
-  if (!validCertificateUrl(u)) return "Paste the certificate link from Vidaara (it must start with https:// and be on a Vidaara address).";
+  if (!validCertificateUrl(u)) return "Paste the certificate link (it must start with https:// and be on an allowed address).";
   await run("UPDATE course_enrolments SET certificate_url = $1, certificate_code = $2, updated_at = NOW() WHERE id = $3", [u, Array.from(code.trim()).slice(0, 60).join(""), e.id]);
   return null;
 }

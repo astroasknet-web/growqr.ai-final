@@ -14,14 +14,14 @@ const cfg = path.join(src, "config");
 const out = path.join(process.cwd(), "content", "lms", "study");
 
 const COURSES = [
-  { key: "cat-quant", course: "cat-quant-course", dir: "cat-study", title: "CAT Quantitative Aptitude", kind: "MBA entrance", vidaara: "/cat/quant", blurb: "The full CAT QA syllabus in 6 modules and 57 chapters, with formulas, shortcuts, solved examples, practice problems and flashcards." },
-  { key: "sat-math", course: "sat-math-course", dir: "sat-study", title: "SAT Math", kind: "Study abroad (undergraduate)", vidaara: "/sat/math", blurb: "The Digital SAT Math syllabus chapter by chapter, with worked examples and practice problems." },
-  { key: "gre-quant", course: "gre-quant-course", dir: "gre-study", title: "GRE Quantitative Reasoning", kind: "Study abroad (graduate)", vidaara: "/gre/quant", blurb: "The GRE Quant syllabus in 5 modules and 31 chapters, with solved examples and practice problems." },
-  { key: "ssc-quant", course: "ssc-quant-course", dir: "ssc-study", title: "SSC CGL: Quantitative Aptitude", kind: "Government jobs", vidaara: "/exam/ssc-cgl/quant", blurb: "SSC CGL quantitative aptitude, topic by topic." },
-  { key: "ssc-reasoning", course: "ssc-reasoning-course", dir: "ssc-reasoning-study", title: "SSC CGL: General Intelligence & Reasoning", kind: "Government jobs", vidaara: "/exam/ssc-cgl/reasoning", blurb: "SSC CGL reasoning, topic by topic." },
-  { key: "ssc-english", course: "ssc-english-course", dir: "ssc-english-study", title: "SSC CGL: English", kind: "Government jobs", vidaara: "/exam/ssc-cgl/english", blurb: "SSC CGL English language, topic by topic." },
-  { key: "ssc-gk", course: "ssc-ga-course", dir: "ssc-ga-study", title: "SSC CGL: General Awareness", kind: "Government jobs", vidaara: "/exam/ssc-cgl/general-awareness", blurb: "SSC CGL general awareness, topic by topic." },
-  { key: "ctet", course: "ctet-course", dir: "ctet-study", title: "CTET (Teacher Eligibility Test)", kind: "Teaching", vidaara: "/ctet", blurb: "CTET preparation in 7 modules and 52 chapters." },
+  { key: "cat-quant", course: "cat-quant-course", dir: "cat-study", title: "CAT Quantitative Aptitude", kind: "MBA entrance", blurb: "The full CAT QA syllabus in 6 modules and 57 chapters, with formulas, shortcuts, solved examples, practice problems and flashcards." },
+  { key: "sat-math", course: "sat-math-course", dir: "sat-study", title: "SAT Math", kind: "Study abroad (undergraduate)", blurb: "The Digital SAT Math syllabus chapter by chapter, with worked examples and practice problems." },
+  { key: "gre-quant", course: "gre-quant-course", dir: "gre-study", title: "GRE Quantitative Reasoning", kind: "Study abroad (graduate)", blurb: "The GRE Quant syllabus in 5 modules and 31 chapters, with solved examples and practice problems." },
+  { key: "ssc-quant", course: "ssc-quant-course", dir: "ssc-study", title: "SSC CGL: Quantitative Aptitude", kind: "Government jobs", blurb: "SSC CGL quantitative aptitude, topic by topic." },
+  { key: "ssc-reasoning", course: "ssc-reasoning-course", dir: "ssc-reasoning-study", title: "SSC CGL: General Intelligence & Reasoning", kind: "Government jobs", blurb: "SSC CGL reasoning, topic by topic." },
+  { key: "ssc-english", course: "ssc-english-course", dir: "ssc-english-study", title: "SSC CGL: English", kind: "Government jobs", blurb: "SSC CGL English language, topic by topic." },
+  { key: "ssc-gk", course: "ssc-ga-course", dir: "ssc-ga-study", title: "SSC CGL: General Awareness", kind: "Government jobs", blurb: "SSC CGL general awareness, topic by topic." },
+  { key: "ctet", course: "ctet-course", dir: "ctet-study", title: "CTET (Teacher Eligibility Test)", kind: "Teaching", blurb: "CTET preparation in 7 modules and 52 chapters." },
 ];
 
 function load(file) {
@@ -55,7 +55,7 @@ for (const c of COURSES) {
     }
   }
   const keep = new Set(present);
-  const idx = { key: c.key, title: c.title, kind: c.kind, vidaara: c.vidaara, blurb: c.blurb, modules: modules.map((m) => ({ ...m, chapters: m.chapters.filter((ch) => keep.has(ch.slug)) })).filter((m) => m.chapters.length) };
+  const idx = { key: c.key, title: c.title, kind: c.kind, blurb: c.blurb, modules: modules.map((m) => ({ ...m, chapters: m.chapters.filter((ch) => keep.has(ch.slug)) })).filter((m) => m.chapters.length) };
   fs.writeFileSync(path.join(dir, "index.json"), JSON.stringify(idx));
   console.log(`${c.key}: ${present.length} chapters`);
 }

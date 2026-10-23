@@ -1,14 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { ArrowUpRight } from "lucide-react";
 import { MarketShell } from "@/components/market/shell";
-import { hub, hubs, totalUnits, vidaaraUrl } from "@/lib/market/vidaara";
+import { hub, hubs, totalUnits } from "@/lib/market/exam-prep";
 
 type P = { params: Promise<{ slug: string }> };
 const clean = (s: string) => s.toLowerCase().replace(/[^a-z0-9-]/g, "");
-/** IELTS Reading and Listening tests live under /practice-tests on GrowQR; Writing and Speaking tests are under /ielts. */
-const IELTS_TESTS: Record<string, string> = { "/ielts/reading-practice-tests": "/practice-tests/ielts-reading", "/ielts/listening-practice-tests": "/practice-tests/ielts-listening" };
 
 export function generateStaticParams() { return hubs().map((h) => ({ slug: h.slug })); }
 
@@ -21,7 +18,9 @@ export async function generateMetadata({ params }: P): Promise<Metadata> {
 export default async function HubPage({ params }: P) {
   const h = hub(clean((await params).slug));
   if (!h) notFound();
-  const link = "inline-flex min-h-[44px] items-center gap-1.5 rounded-lg bg-orange-deep px-5 text-[15px] font-semibold text-white hover:bg-ink";
+  const primary = "inline-flex min-h-[44px] items-center gap-1.5 rounded-lg bg-orange-deep px-5 text-[15px] font-semibold text-white hover:bg-ink";
+  const secondary = "inline-flex min-h-[44px] items-center rounded-lg border border-orange px-5 text-[15px] font-semibold text-orange-deep hover:bg-orange-lighter";
+  const study = h.learn ?? (h.studyMap ? "/study" : null);
   return (
     <MarketShell user={null} active="courses">
       <nav aria-label="Breadcrumb" className="mb-4 text-[13px] text-ink-3"><Link href="/" className="underline">Home</Link> / <Link href="/exam-prep" className="underline">Exam prep</Link> / {h.title}</nav>
@@ -29,43 +28,35 @@ export default async function HubPage({ params }: P) {
       <h1 className="mt-1 text-[26px] font-bold leading-tight tracking-tight text-ink sm:text-[34px]">{h.title}</h1>
       <p className="mt-2 max-w-3xl text-[16px] text-ink-3">{h.intro}</p>
       <div className="mt-5 flex flex-wrap gap-3">
-        {h.learn ? <Link href={h.learn} className={link}>Study on GrowQR</Link> : h.studyMap ? <Link href="/study" className={link}>Study on GrowQR</Link> : null}
-        {h.mock ? <Link href={h.mock} className={h.learn ? "inline-flex min-h-[44px] items-center rounded-lg border border-orange px-5 text-[15px] font-semibold text-orange-deep hover:bg-orange-lighter" : link}>Free mock test on GrowQR</Link> : null}
-        <a href={vidaaraUrl(h.path)} target="_blank" rel="noopener noreferrer" className={h.learn || h.mock || h.studyMap ? "inline-flex min-h-[44px] items-center gap-1.5 rounded-lg border border-black/[0.15] px-5 text-[15px] font-semibold hover:bg-cream-2" : link}>{h.learn || h.mock || h.studyMap ? "Also on Vidaara" : "Start on Vidaara"} <ArrowUpRight className="h-4 w-4" aria-hidden /></a>
+        {study ? <Link href={study} className={primary}>Start studying</Link> : null}
+        {h.mock ? <Link href={h.mock} className={study ? secondary : primary}>Take a free mock test</Link> : null}
         <Link href="/exam-prep" className="inline-flex min-h-[44px] items-center rounded-lg border border-black/[0.15] px-5 text-[15px] font-semibold hover:bg-cream-2">All exams</Link>
       </div>
+      {!study && !h.mock ? <p className="mt-4 text-[14px] text-ink-3">Study material and practice tests for this exam are coming soon.</p> : null}
 
       <h2 className="mt-10 text-[20px] font-bold text-ink">What is covered{totalUnits(h) ? ` (${totalUnits(h)} ${h.unit})` : ""}</h2>
       <ul className="mt-4 grid gap-3 sm:grid-cols-2">
         {h.sections.map((s) => {
-          const own = h.slug === "ielts" ? s.path : h.studyMap?.[s.name] ? `/study/${h.studyMap[s.name]}` : h.learn ? (h.learn.startsWith("/study/") ? h.learn : h.slug === "ap-calculus-ab" ? `${h.learn}/calculus-ab` : `${h.learn}/${s.name.toLowerCase().replace(/\s+/g, "-")}`) : null;
           const body = (
             <>
               <span className="flex items-start justify-between gap-3"><b className="text-[15px] text-ink">{s.name}</b>{s.count ? <span className="shrink-0 rounded-full bg-cream-3 px-2.5 py-0.5 text-[12px] text-ink-3">{s.count}</span> : null}</span>
               <span className="mt-1 block text-[14px] leading-relaxed text-ink-3">{s.desc}</span>
-              {own ? <span className="mt-2 block text-[12px] font-semibold text-emerald-800">Study on GrowQR</span> : null}
             </>
           );
-          const cls = "block h-full rounded-xl border border-black/[0.08] bg-white p-4 transition hover:border-orange";
-          return <li key={s.name}>{own ? <Link href={own} className={cls}>{body}</Link> : <a href={vidaaraUrl(s.path)} target="_blank" rel="noopener noreferrer" className={cls}>{body}</a>}</li>;
+          return <li key={s.name}>{s.own ? <Link href={s.own} className="block h-full rounded-xl border border-black/[0.08] bg-white p-4 transition hover:border-orange">{body}</Link> : <div className="h-full rounded-xl border border-black/[0.08] bg-white p-4">{body}</div>}</li>;
         })}
       </ul>
 
-      <h2 className="mt-10 text-[20px] font-bold text-ink">Practice and mock tests</h2>
-      <ul className="mt-4 grid gap-3 sm:grid-cols-2">
-        {h.tests.map((t) => {
-          const own = h.slug === "ielts" ? IELTS_TESTS[t.path] ?? t.path : null;
-          const inner = (
-            <>
-              <span><b className="text-[15px] text-ink">{t.name}</b><span className="mt-1 block text-[14px] text-ink-3">{t.desc}</span></span>
-              {own ? <span className="mt-0.5 shrink-0 text-[12px] font-semibold text-emerald-800">On GrowQR</span> : <ArrowUpRight className="mt-0.5 h-4 w-4 shrink-0 text-ink-4" aria-hidden />}
-            </>
-          );
-          const cls = "flex h-full items-start justify-between gap-3 rounded-xl border border-black/[0.08] bg-white p-4 transition hover:border-orange";
-          return <li key={t.name}>{own ? <Link href={own} className={cls}>{inner}</Link> : <a href={vidaaraUrl(t.path)} target="_blank" rel="noopener noreferrer" className={cls}>{inner}</a>}</li>;
-        })}
-      </ul>
-      <p className="mt-10 text-[0.82rem] text-ink-4">Lessons and tests are published by Vidaara and open on vidaara.org. Chapter counts were read from the Vidaara pages.</p>
+      {h.tests.length ? (
+        <>
+          <h2 className="mt-10 text-[20px] font-bold text-ink">Practice and mock tests</h2>
+          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+            {h.tests.map((t) => (
+              <li key={t.name}><Link href={t.own} className="block h-full rounded-xl border border-black/[0.08] bg-white p-4 transition hover:border-orange"><b className="text-[15px] text-ink">{t.name}</b><span className="mt-1 block text-[14px] text-ink-3">{t.desc}</span></Link></li>
+            ))}
+          </ul>
+        </>
+      ) : null}
     </MarketShell>
   );
 }

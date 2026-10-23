@@ -10,7 +10,7 @@ export type StudyKey = (typeof STUDY_KEYS)[number];
 
 export interface StudyChapterRef { number: number; slug: string; title: string; topics: string[] }
 export interface StudyModule { number: number; title: string; summary: string; chapters: StudyChapterRef[] }
-export interface StudyIndex { key: StudyKey; title: string; kind: string; vidaara: string; blurb: string; modules: StudyModule[] }
+export interface StudyIndex { key: StudyKey; title: string; kind: string; blurb: string; modules: StudyModule[] }
 export interface Solved { problem: string; solution: string }
 export interface Unsolved { problem: string; hints?: string[]; answer: string }
 export interface StudyTopic { slug: string; name: string; details: string; solved: Solved[]; unsolved: Unsolved[] }
