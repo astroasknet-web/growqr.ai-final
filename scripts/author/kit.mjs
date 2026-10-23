@@ -111,7 +111,7 @@ export function capstone({ title, summary, intro, steps, projectTitle, quiz }) {
 
 /* ---------------------------------------------------------------------------------------------------------------- activities */
 /** A check: ck(id, label, hint, explain, spec). */
-export const ck = (id, label, hint, explain, spec) => ({ id, label, hint, explain, spec });
+export const ck = (id, label, hint, explain, spec) => ({ id, label, hint: String(hint).length > 5 ? hint : `Try the formula ${hint} here.`, explain, spec });
 
 export const S = {
   value: (ref, equals) => ({ k: "sheet.value", ref, equals }),

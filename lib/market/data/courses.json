@@ -3020,24 +3020,24 @@
         "College",
         "Fresher"
       ],
-      "hours": "~8 hrs",
+      "hours": "~9 hrs",
       "modules": 6,
       "weeks": "~3 weeks",
       "pace": "3 hrs/wk",
-      "badge": "Blockchain Technology",
+      "badge": "Blockchain Core",
       "prereq": "Introduction to Blockchain & Web3 (or basic blockchain awareness).",
       "bestFor": "Beginners who want the technical foundations behind blockchain.",
-      "brief": "Blocks, hashes, cryptography, distributed ledgers, and consensus (PoW/PoS).",
+      "brief": "Blocks and transactions, hashing and Merkle trees, proof of work, proof of stake and BFT, forks and finality, and designing trust.",
       "learn": [
-        "Anatomy of a block and how blocks chain together",
-        "Cryptographic hashing and why it makes chains tamper-evident",
-        "Public/private keys and digital signatures",
-        "Distributed ledgers, nodes, and peer-to-peer networks",
-        "Consensus mechanisms — Proof of Work vs Proof of Stake",
-        "Mining, validation, and how new blocks are added"
+        "Block headers, UTXOs, accounts and the transaction life cycle",
+        "Hash properties and Merkle proofs",
+        "Proof of work: difficulty, mining maths and 51% attacks",
+        "Proof of stake, slashing and BFT voting",
+        "Forks, reorganisations and how long to wait",
+        "Choosing and writing consensus rules"
       ],
-      "handsOn": "Trace a transaction from wallet to confirmed block and hash a sample block with a tool.",
-      "outcome": "Understand how blockchains stay secure and agree on truth.",
+      "handsOn": "Write a consensus rulebook for a five-hospital consortium chain with quorum, finality, fault and upgrade rules.",
+      "outcome": "Explain, compare and critique how blockchains agree on one shared history.",
       "icon": "box"
     },
     {
@@ -3049,24 +3049,24 @@
       "tags": [
         "All"
       ],
-      "hours": "~6 hrs",
-      "modules": 5,
-      "weeks": "~2 weeks",
+      "hours": "~8 hrs",
+      "modules": 6,
+      "weeks": "~3 weeks",
       "pace": "3 hrs/wk",
-      "badge": "Cryptocurrency Fundamentals",
+      "badge": "Crypto Literate",
       "prereq": "None; basic blockchain awareness helps.",
       "bestFor": "Beginners wanting a safe, practical grounding in crypto and digital assets.",
-      "brief": "How cryptocurrencies, wallets, keys, tokens, and exchanges actually work.",
+      "brief": "Money and crypto, types of digital assets, wallets and exchanges, markets and risk, tokenomics and due diligence, and rules, tax and safety.",
       "learn": [
-        "How cryptocurrencies work and what gives them value",
-        "Wallets, public/private keys, and seed phrases",
-        "Sending, receiving, and confirming transactions",
-        "Coins vs tokens and common token types",
-        "Exchanges (centralised vs decentralised) and custody",
-        "Security, scams, and safe self-custody practices"
+        "What money is for, and where crypto fits",
+        "Coins, tokens, stablecoins, CBDCs and NFTs",
+        "Custody, exchanges, orders and real trading costs",
+        "Returns, volatility, DCA and behavioural traps",
+        "Supply, vesting, market cap, FDV and red flags",
+        "Regulation, tax records and a personal plan"
       ],
-      "handsOn": "Set up a test wallet, send a testnet transaction, and trace it on a block explorer.",
-      "outcome": "Use and reason about digital assets safely — without hype. Educational only, not financial advice.",
+      "handsOn": "Write a due-diligence report on a fictional stablecoin covering its peg, reserves, fees, risks and rules.",
+      "outcome": "Judge a crypto asset's risks and costs and keep your own limits and records.",
       "icon": "wallet"
     },
     {
