@@ -1,0 +1,15 @@
+{
+  "version": 1,
+  "functions": {
+    "/api/cal/intent": {},
+    "/api/cron/crm-sync": {
+      "maxDuration": 60
+    },
+    "/api/cal/webhook": {
+      "maxDuration": 30
+    },
+    "/api/files/[bucket]/[...path]": {},
+    "/api/auth/captcha/image": {},
+    "/api/v1/webhooks/[provider]": {}
+  }
+}
