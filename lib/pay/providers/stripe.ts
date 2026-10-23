@@ -21,10 +21,17 @@ let override: Stripe | null = null;
 export function setStripeClient(c: Stripe | null): void {
   override = c;
 }
+/** Local demo only (scripts/demo-fake-stripe.mjs): STRIPE_API_BASE points the SDK at a stand-in on this machine. Ignored in production. */
+function localStandIn(): { host?: string; port?: string; protocol?: "http" | "https" } {
+  const base = process.env.STRIPE_API_BASE;
+  if (!base || process.env.NODE_ENV === "production") return {};
+  const u = new URL(base);
+  return { host: u.hostname, port: u.port || (u.protocol === "https:" ? "443" : "80"), protocol: u.protocol === "https:" ? "https" : "http" };
+}
 function api(): Stripe {
   if (override) return override;
   if (!cfg.stripeSecret()) throw new ProviderError("Stripe is not configured", "stripe", false, "not_configured");
-  return (client ??= new Stripe(cfg.stripeSecret(), { maxNetworkRetries: 2, timeout: 20_000, appInfo: { name: "GrowQR payments" } }));
+  return (client ??= new Stripe(cfg.stripeSecret(), { maxNetworkRetries: 2, timeout: 20_000, appInfo: { name: "GrowQR payments" }, ...localStandIn() }));
 }
 
 /** Turn an SDK error into a ProviderError that says whether trying again could help. */

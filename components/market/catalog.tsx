@@ -1,3 +1,4 @@
+import { formatMoney } from "@/lib/pay/money";
 import Link from "next/link";
 import glyphs from "@/lib/market/data/course-glyphs.json";
 import type { Course } from "@/lib/market/courses";
@@ -74,6 +75,7 @@ export function CatalogCard({ course, progress }: { course: Course; progress?: P
         <ul className="mt-3 flex flex-wrap gap-x-3 gap-y-1 text-[12px] text-ink-3" aria-label="Course details">
           <li>{course.hours}</li>
           <li>{course.modules} modules</li>
+          {course.fee_minor ? <li className="font-semibold text-ink">{formatMoney(course.fee_minor, "INR").replace(/.00$/, "")}</li> : null}
           {course.weeks ? <li>{course.weeks}</li> : null}
         </ul>
         {pct > 0 && progress?.status !== "completed" ? (
