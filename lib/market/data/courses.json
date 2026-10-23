@@ -3344,24 +3344,24 @@
       "tags": [
         "Mid"
       ],
-      "hours": "~18 hrs",
-      "modules": 8,
-      "weeks": "~7 weeks",
-      "pace": "4 hrs/wk",
-      "badge": "Professional Blockchain Web Developer",
+      "hours": "~14 hrs",
+      "modules": 6,
+      "weeks": "~5 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "PHP and Node.js Chain Integration",
       "prereq": "Web development in PHP or Node.js.",
       "bestFor": "Web developers integrating blockchain into existing applications.",
-      "brief": "Integrate blockchain features into traditional PHP/Node.js apps and databases.",
+      "brief": "Architecture for PHP shops, JSON-RPC, exact money, a Node.js chain service, signed webhooks, order data models and operations.",
       "learn": [
-        "When to use blockchain alongside a traditional backend",
-        "Calling blockchain nodes/RPCs from PHP and Node.js",
-        "Verifying signatures and payments server-side",
-        "Syncing on-chain events into a SQL database",
-        "Building hybrid on-chain/off-chain workflows",
-        "Security, keys, and secrets management"
+        "Why and how to split PHP and Node.js",
+        "A careful PHP JSON-RPC client and exact money handling",
+        "A protected Node.js service, a payment contract and a watcher",
+        "Signed webhooks with timestamps and idempotent storage",
+        "Handling underpaid, late and duplicate payments",
+        "Hosting, monitoring, reconciliation and honest limits"
       ],
-      "handsOn": "Add a blockchain-verified feature (e.g. a payment or record proof) to a PHP/Node app.",
-      "outcome": "Bring Web3 features into real production web stacks.",
+      "handsOn": "Design a complete crypto checkout for a PHP shop on a test network, with flow, data model, security rules and operations.",
+      "outcome": "Design a careful blockchain integration for an existing PHP application.",
       "icon": "server"
     },
     {
