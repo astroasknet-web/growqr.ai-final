@@ -101,7 +101,10 @@ export async function checkCoupon(db: Db, code: string, ctx: { skus: string[]; c
   if (c.kind === "fixed" && String(c.currency) !== ctx.currency) throw bad(`This coupon only applies to ${c.currency} orders.`);
   if (c.skus && !ctx.skus.every((s) => String(c.skus).split(",").map((x) => x.trim()).includes(s))) throw bad("This coupon does not apply to everything in your basket.");
   if (c.max_redemptions !== null && Number(c.redeemed) >= Number(c.max_redemptions)) throw bad("This coupon has been fully used.");
-  const used = Number((await first<{ n: number }>(db, "SELECT COUNT(*) AS n FROM pay_coupon_redemptions WHERE coupon_id = $1 AND (($2 IS NOT NULL AND user_id = $2) OR email = $3)", [c.id, ctx.userId, ctx.email]))?.n ?? 0);
+  // A price preview does not count the buyer's own unpaid checkouts: a declined payment must not lock them out of retrying. Creating the real order
+  // first cancels those unpaid checkouts (see releaseHeldCoupon), so the limit is still exact where it matters.
+  const ownPending = lock || ctx.userId === null ? "" : " AND NOT (order_id IN (SELECT id FROM pay_orders WHERE status = 'pending' AND user_id = $2))";
+  const used = Number((await first<{ n: number }>(db, `SELECT COUNT(*) AS n FROM pay_coupon_redemptions WHERE coupon_id = $1 AND (($2 IS NOT NULL AND user_id = $2) OR email = $3)${ownPending}`, [c.id, ctx.userId, ctx.email]))?.n ?? 0);
   if (used >= Number(c.per_user_limit)) throw bad("You have already used this coupon.");
   const discountMinor = applyCoupon(ctx.subtotalMinor, { kind: c.kind, percentBp: c.percent_bp === null ? null : Number(c.percent_bp), fixedMinor: c.fixed_minor === null ? null : Number(c.fixed_minor) });
   if (discountMinor <= 0) throw bad("This coupon gives no discount on this basket.");

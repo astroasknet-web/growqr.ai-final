@@ -23,7 +23,7 @@ export default async function BillingOrderPage({ params }: { params: Promise<{ i
   }
   return (
     <PortalPage user={me} active="billing" title="Order" subtitle={id}>
-      <OrderStatus id={id} token={null} retryHref="/pricing" />
+      <OrderStatus id={id} token={null} retryHref="/cart" />
       <p className="mt-6 text-[0.9rem] text-ink-3">Need a refund? See our <Link href="/refund-policy" className="font-semibold underline">refund policy</Link> and write to support with this order number.</p>
     </PortalPage>
   );

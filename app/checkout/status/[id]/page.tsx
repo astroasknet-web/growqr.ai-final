@@ -13,7 +13,7 @@ export default async function CheckoutStatusPage({ params, searchParams }: { par
   return (
     <PageShell>
       <main className="mx-auto max-w-2xl px-5 pb-24 pt-28 sm:pt-32">
-        <OrderStatus id={id} token={token} retryHref="/pricing" />
+        <OrderStatus id={id} token={token} retryHref="/cart" />
       </main>
     </PageShell>
   );

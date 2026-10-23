@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
+import AddToCart from "@/components/pay/AddToCart";
 import { Check } from "lucide-react";
 import { PLANS, savingPercent } from "@/lib/market/plans";
 
@@ -59,6 +60,7 @@ export function PlanGrid({ yearly, headingLevel = 2 }: { yearly: boolean; headin
             >
               {p.cta}
             </Link>
+            {p.key !== "free" ? <AddToCart sku={`plan-${p.key}-${showYear || p.annualOnly ? "yearly" : "monthly"}`} compact className="mt-2 w-full" /> : null}
 
             <div className="mt-6 border-t border-black/[0.07] pt-5">
               <p className="mb-3 text-[0.82rem] font-semibold text-ink">{p.inherits ?? "Includes"}</p>

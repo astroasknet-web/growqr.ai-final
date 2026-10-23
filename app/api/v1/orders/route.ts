@@ -1,4 +1,4 @@
-import { startCheckout } from "@/lib/pay/checkout";
+import { releaseHeldCoupon, startCheckout } from "@/lib/pay/checkout";
 import { assertSameOrigin, fail, handleError, ipOf, ok, pageParams, viewerOf } from "@/lib/pay/http";
 import { withIdempotency } from "@/lib/pay/idempotency";
 import { createOrder, createOrderSchema, listOrders, PayError } from "@/lib/pay/orders";
@@ -24,6 +24,7 @@ export async function POST(req: Request) {
     const origin = siteOrigin(req);
     let guestToken: string | null = null; // the guest's bearer token: returned once, never stored with the replayable answer
 
+    if (v.userId !== null && body.coupon) await releaseHeldCoupon(v.userId, body.coupon);
     const out = await withIdempotency(`order:${v.userId ?? ip}`, req.headers.get("idempotency-key"), body, async () => {
       const created = await createOrder(body, { userId: v.userId });
       if (v.userId === null) guestToken = created.accessToken;
