@@ -1,6 +1,6 @@
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
-import Pricing from "@/components/home/Pricing";
+import HomePlans from "@/components/home/HomePlans";
 import PartnerStrip from "@/components/home/PartnerStrip";
 import FAQ from "@/components/home/FAQ";
 import { EnterpriseContactProvider } from "@/components/enterprise/EnterpriseContactModal";
@@ -14,8 +14,8 @@ import { Abroad, Opportunities, Learn, Library, HowItWorks3, Trust, FinalCTA3 } 
 
 /**
  * Homepage v3 composition:
- *   Hero (six-module ecosystem) > Pillars (bento) > Goal guide > Resume Studio > Study abroad >
- *   Internships > Learning > E-books > How it works > Pricing > Trust > Partners > FAQ > Final CTA
+ *   Hero (six-module ecosystem) > Pillars (bento) > Pricing (student packages) > Goal guide > Resume Studio >
+ *   Study abroad > Internships > Learning > E-books > How it works > Trust > Partners > FAQ > Final CTA
  */
 export default function HomeV3() {
   const templateCount = Object.keys(allTemplates()).length;
@@ -27,6 +27,7 @@ export default function HomeV3() {
           <Reveal className="overflow-x-clip">
             <Hero />
             <Pillars />
+            <HomePlans />
             <Discovery />
             <ResumeShowcase templateCount={templateCount} />
             <Abroad />
@@ -35,7 +36,6 @@ export default function HomeV3() {
             <Library />
             <HowItWorks3 />
           </Reveal>
-          <Pricing />
           <Reveal>
             <Trust templateCount={templateCount} />
           </Reveal>
