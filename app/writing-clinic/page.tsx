@@ -29,7 +29,7 @@ const FAQ = [
   { q: "Which exams does it cover?", a: "IELTS Writing (Task 1 and Task 2), GRE Analytical Writing (Issue and Argument), GMAT-style argument critique, SAT-style analytical essays, and personal statements and statements of purpose for college applications." },
   { q: "Does the GMAT or SAT still have an essay?", a: "The current GMAT and the main SAT no longer include a written essay. These modes train the same skills, which are analysing arguments and explaining how an author persuades. They are also used in school tests, MBA preparation and college applications." },
   { q: "Is my writing stored?", a: "No. Your answer is checked in your browser and is not sent anywhere. Your recent scores are kept on your own device only." },
-  { q: "What does it cost?", a: "Free to try. Paid packages raise the number of checks a month and add progress charts and, soon, AI feedback on your ideas." },
+  { q: "What does it cost?", a: "Free to try, with 2 essay checks a month. Paid packages raise it to 15, 25 and then unlimited." },
 ];
 
 export default function WritingClinicRoute() {
@@ -75,12 +75,12 @@ export default function WritingClinicRoute() {
 
         <section className="mx-auto max-w-[1180px] px-5 pb-16" aria-labelledby="plans">
           <h2 id="plans" className="text-center text-[1.8rem] font-semibold text-ink">Practise more with a package</h2>
-          <p className="mx-auto mt-2 max-w-[36em] text-center text-ink-3">The Writing Clinic comes with every GrowQR package. Higher packages mean more checks, saved history and progress charts.</p>
+          <p className="mx-auto mt-2 max-w-[36em] text-center text-ink-3">The Writing Clinic comes with every GrowQR package. Higher packages mean more essay checks every month.</p>
           <div className="mt-8 grid gap-4 sm:grid-cols-3">
             {paid.map((p) => (
               <div key={p.key} className="rounded-2xl border border-black/10 bg-white p-5">
                 <p className="flex items-center gap-2 font-semibold text-ink"><span aria-hidden className="h-2.5 w-2.5 rounded-full" style={{ background: p.accent }} />{p.name}</p>
-                <p className="mt-2 text-[1.8rem] font-semibold text-ink">₹{p.monthly}<span className="text-[0.9rem] font-normal text-ink-4"> a month</span></p>
+                <p className="mt-2 text-[1.8rem] font-semibold text-ink">₹{p.monthly}<span className="text-[0.9rem] font-normal text-ink-4"> a month{p.annualOnly ? ", billed yearly" : ""}</span></p>
                 <p className="mt-2 text-[0.9rem] text-ink-3">{p.features.find((f) => /Writing Clinic/.test(f.text))?.text}</p>
               </div>
             ))}
