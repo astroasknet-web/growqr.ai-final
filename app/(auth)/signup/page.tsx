@@ -30,6 +30,7 @@ export default async function SignupPage({ searchParams }: { searchParams: Promi
   return (
     <AuthSplit
       eyebrow="Join GrowQR"
+      panel="signup"
       title={title}
       subtitle={<>{sub} Already registered? <Link href="/login" className="font-semibold text-[#5b3fe0] underline underline-offset-2">Log in</Link></>}
     >

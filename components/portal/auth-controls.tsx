@@ -3,13 +3,13 @@
 import { useEffect, useRef, useState, type ReactNode } from "react";
 import { useFormStatus } from "react-dom";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
-import { AlertCircle, CheckCircle2, Eye, EyeOff, Loader2, RefreshCw, ShieldCheck, TriangleAlert } from "lucide-react";
+import { AlertCircle, CheckCircle2, Loader2, RefreshCw, ShieldCheck, TriangleAlert } from "lucide-react";
 import { estimate } from "@/lib/portal/strength";
 import { solve } from "./pow";
 
 /** The controls used by the redesigned account pages. */
 
-export type CaptchaInfo = { mode: "off" | "turnstile" | "pow"; siteKey: string };
+export type CaptchaInfo = { mode: "off" | "turnstile" | "pow" | "image"; siteKey: string };
 
 const inputBase =
   "w-full rounded-xl border bg-white px-4 py-3 text-[16px] text-ink outline-none transition placeholder:text-ink-4 min-h-[48px] focus:border-[#7857ff] focus:ring-4 focus:ring-[#7857ff]/15 sm:text-[15px]";
@@ -70,8 +70,8 @@ export function PasswordInput({ label = "Password", name = "password", icon, err
           aria-invalid={error ? true : undefined} aria-describedby={error ? `${id}-err` : hint ? `${id}-hint` : undefined}
           className={`${inputBase} pr-12 ${icon ? "pl-11" : ""} ${error ? "border-red-400" : "border-black/[0.14]"}`}
         />
-        <button type="button" onClick={() => setShow((v) => !v)} aria-label={show ? "Hide password" : "Show password"} aria-pressed={show} className="absolute right-1.5 top-1/2 grid h-10 w-10 -translate-y-1/2 place-items-center rounded-lg text-ink-4 hover:text-ink-2">
-          {show ? <EyeOff className="h-[18px] w-[18px]" aria-hidden /> : <Eye className="h-[18px] w-[18px]" aria-hidden />}
+        <button type="button" onClick={() => setShow((v) => !v)} aria-label={show ? "Hide password" : "Show password"} aria-pressed={show} className="absolute right-1.5 top-1/2 grid h-10 min-w-[3rem] -translate-y-1/2 place-items-center rounded-lg px-2 text-ink-3 hover:text-ink-2">
+          <span aria-hidden className="text-[12.5px] font-semibold">{show ? "Hide" : "Show"}</span>
         </button>
       </div>
       {caps ? <p className="mt-1.5 flex items-center gap-1.5 text-[12.5px] font-medium text-amber-700" role="status"><TriangleAlert className="h-3.5 w-3.5" aria-hidden /> Caps Lock is on</p> : null}
@@ -91,7 +91,7 @@ export function GradientButton({ children, pendingText = "Please wait...", disab
   const { pending } = useFormStatus();
   const off = pending || disabled;
   return (
-    <button type="submit" disabled={off} className="group relative flex min-h-[52px] w-full items-center justify-center gap-2 overflow-hidden rounded-xl bg-gradient-to-r from-[#7857ff] to-[#2bb8ea] px-6 text-[15px] font-semibold text-white shadow-[0_14px_30px_-14px_rgba(120,87,255,0.8)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60">
+    <button type="submit" disabled={off} className="group relative flex min-h-[52px] w-full items-center justify-center gap-2 overflow-hidden rounded-xl auth-cta px-6 text-[15px] font-bold text-white disabled:cursor-not-allowed disabled:opacity-60">
       {pending ? <><Loader2 className="h-4 w-4 animate-spin" aria-hidden /> {pendingText}</> : children}
     </button>
   );
@@ -107,7 +107,29 @@ export function HumanCheck({ captcha, onReady, resetKey }: { captcha: CaptchaInf
   const ts = useRef<TurnstileInstance | null>(null);
   const [attempt, setAttempt] = useState(0);
 
+  const [token, setToken] = useState("");
+  const [typed, setTyped] = useState("");
+  const [imgState, setImgState] = useState<"loading" | "ready" | "error">("loading");
+
   useEffect(() => { if (captcha.mode === "off") onReady(true); }, [captcha.mode, onReady]);
+
+  // Picture code: get a fresh signed token at load, after every submit, and when the person asks for a new picture.
+  useEffect(() => {
+    if (captcha.mode !== "image") return;
+    let live = true;
+    setImgState("loading"); setTyped(""); setToken(""); onReady(false);
+    (async () => {
+      try {
+        const r = await fetch("/api/auth/captcha", { cache: "no-store" });
+        if (!r.ok) throw new Error("captcha");
+        const { token: t } = (await r.json()) as { token: string };
+        if (live) { setToken(t); setImgState("ready"); }
+      } catch {
+        if (live) setImgState("error");
+      }
+    })();
+    return () => { live = false; };
+  }, [captcha.mode, resetKey, attempt, onReady]);
 
   useEffect(() => {
     if (captcha.mode !== "pow") return;
@@ -131,6 +153,34 @@ export function HumanCheck({ captcha, onReady, resetKey }: { captcha: CaptchaInf
   useEffect(() => { if (captcha.mode === "turnstile") { ts.current?.reset(); onReady(false); } }, [resetKey, captcha.mode, onReady]);
 
   if (captcha.mode === "off") return null;
+  if (captcha.mode === "image") {
+    return (
+      <div className="mb-5 rounded-2xl border border-black/[0.1] bg-gradient-to-br from-indigo-50/70 via-white to-orange-50/70 p-3.5">
+        <label htmlFor="f-captcha" className="mb-2 flex items-center gap-1.5 text-[13.5px] font-semibold text-ink-2"><ShieldCheck className="h-4 w-4 text-[#5b3fe0]" aria-hidden /> Type the code you see</label>
+        <input type="hidden" name="captchaToken" value={token} readOnly />
+        <div className="flex items-stretch gap-2.5">
+          <div className="relative h-[60px] w-[180px] shrink-0 overflow-hidden rounded-xl border border-black/[0.08] bg-white">
+            {imgState === "ready" && token ? (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img src={`/api/auth/captcha/image?t=${encodeURIComponent(token)}`} alt="Security code: six letters and numbers" width={180} height={60} className="h-full w-full object-cover" />
+            ) : (
+              <span className="grid h-full place-items-center text-[12.5px] text-ink-4">{imgState === "error" ? "Could not load" : "Loading…"}</span>
+            )}
+          </div>
+          <button type="button" onClick={() => setAttempt((n) => n + 1)} className="inline-flex min-h-[44px] items-center justify-center rounded-xl border border-black/[0.14] bg-white px-3 text-ink-3 hover:bg-cream-2" aria-label="Show a new code" title="Show a new code">
+            <RefreshCw className="h-4 w-4" aria-hidden />
+          </button>
+        </div>
+        <input
+          id="f-captcha" name="captcha" value={typed} autoComplete="off" autoCapitalize="characters" spellCheck={false} maxLength={6} inputMode="text" required
+          onChange={(e) => { const v = e.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "").slice(0, 6); setTyped(v); onReady(v.length === 6 && !!token); }}
+          placeholder="Enter the 6 characters"
+          className="mt-2.5 w-full rounded-xl border border-black/[0.14] bg-white px-4 py-3 text-[16px] font-semibold uppercase tracking-[0.3em] text-ink outline-none transition placeholder:text-[13px] placeholder:font-normal placeholder:normal-case placeholder:tracking-normal placeholder:text-ink-4 focus:border-[#7857ff] focus:ring-4 focus:ring-[#7857ff]/15"
+        />
+        <p className="mt-1.5 text-[12px] text-ink-4">Letters and numbers, not case sensitive. Can&rsquo;t read it? Press the refresh button.</p>
+      </div>
+    );
+  }
   if (captcha.mode === "turnstile") {
     return (
       <div className="mb-5">
