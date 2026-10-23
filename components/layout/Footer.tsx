@@ -3,12 +3,15 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { FaXTwitter, FaLinkedin, FaInstagram } from "react-icons/fa6";
-import { MdEmail } from "react-icons/md";
+import { FaFacebookF, FaInstagram, FaLinkedin, FaLinkedinIn, FaTelegram, FaWhatsapp, FaXTwitter } from "react-icons/fa6";
+import { ArrowRight, ArrowUp, Check, Link2, Mail, MapPin, Share2 } from "lucide-react";
 import Logo from "./Logo";
 import { TurnstileWidget, type TurnstileWidgetHandle } from "@/components/ui/TurnstileWidget";
 import { useIsIndia } from "@/components/layout/CurrencyProvider";
 import { trackGenerateLead, trackFormError } from "@/lib/analytics";
+import { CLASSROOM_URL } from "@/lib/links";
+import { RESUME_SCORE_URL } from "@/components/home-options/data";
+import { SITE_URL } from "@/lib/seo";
 
 // Pricing is a B2C (self-serve, individual) concept — GrowQR's B2B surfaces
 // (Enterprises/Institutes/Recruiters/Startups solution pages, /enterprise and
@@ -43,22 +46,11 @@ function usePricingHref() {
 export default function Footer() {
   const pricingHref = usePricingHref();
   const isIndia = useIsIndia();
-  // Experts, events and community are India-specific. International visitors
-  // instead get the four solution links relevant to those markets.
-  const exploreLinks = isIndia
-    ? [
-        { href: "/experts", label: "Experts" },
-        { href: "/events", label: "Events" },
-        { href: "/community", label: "Community" },
-        { href: "/enterprise", label: "Enterprise" },
-      ]
-    : [
-        { href: "/enterprise", label: "Enterprise" },
-        { href: "/solutions/institutes", label: "Institutes" },
-        { href: "/solutions/recruiters", label: "Recruiters" },
-        { href: "/solutions/coaches", label: "Coaches" },
-      ];
+  // Experts, events and community are India-specific, so they are listed in the "Go global" column for Indian visitors only.
   const [email, setEmail] = useState("");
+  const [copied, setCopied] = useState(false);
+  const [canNativeShare, setCanNativeShare] = useState(false);
+  useEffect(() => { setCanNativeShare(typeof navigator !== "undefined" && typeof navigator.share === "function"); }, []);
   const [isLoading, setIsLoading] = useState(false);
   const [successMessage, setSuccessMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -152,45 +144,113 @@ export default function Footer() {
     await processSubscription();
   };
 
+  const shareUrl = SITE_URL;
+  const shareText = "GrowQR: courses, exam prep, resume score and study abroad help for students";
+  const enc = encodeURIComponent;
+  const shares = [
+    { label: "WhatsApp", href: `https://wa.me/?text=${enc(`${shareText} ${shareUrl}`)}`, icon: <FaWhatsapp />, hover: "hover:bg-[#25D366]" },
+    { label: "X", href: `https://twitter.com/intent/tweet?text=${enc(shareText)}&url=${enc(shareUrl)}`, icon: <FaXTwitter />, hover: "hover:bg-black" },
+    { label: "LinkedIn", href: `https://www.linkedin.com/sharing/share-offsite/?url=${enc(shareUrl)}`, icon: <FaLinkedinIn />, hover: "hover:bg-[#0A66C2]" },
+    { label: "Facebook", href: `https://www.facebook.com/sharer/sharer.php?u=${enc(shareUrl)}`, icon: <FaFacebookF />, hover: "hover:bg-[#1877F2]" },
+    { label: "Telegram", href: `https://t.me/share/url?url=${enc(shareUrl)}&text=${enc(shareText)}`, icon: <FaTelegram />, hover: "hover:bg-[#229ED9]" },
+    { label: "Email", href: `mailto:?subject=${enc("Have a look at GrowQR")}&body=${enc(`${shareText}\n\n${shareUrl}`)}`, icon: <Mail />, hover: "hover:bg-orange" },
+  ];
+  const follow = [
+    { label: "LinkedIn", href: "https://www.linkedin.com/company/growqr", icon: <FaLinkedin /> },
+    { label: "X", href: "https://x.com/Growqr", icon: <FaXTwitter /> },
+    { label: "Instagram", href: "https://www.instagram.com/growqr.ai", icon: <FaInstagram /> },
+  ];
+
+  const linkCls = "group inline-flex items-center gap-1.5 rounded text-[14px] text-white/70 transition hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange";
+  const Col = ({ title, links }: { title: string; links: Array<{ href: string; label: string; tag?: string; external?: boolean }> }) => (
+    <nav aria-label={title}>
+      <h3 className="mb-4 text-[11px] font-bold uppercase tracking-[0.18em] text-orange">{title}</h3>
+      <ul className="space-y-3">
+        {links.map((l) => (
+          <li key={l.href + l.label}>
+            {l.external ? (
+              <a href={l.href} target="_blank" rel="noopener noreferrer" className={linkCls}>{l.label}<span className="sr-only"> (opens in a new tab)</span></a>
+            ) : (
+              <Link href={l.href} className={linkCls}>
+                {l.label}
+                {l.tag ? <span className="rounded-full bg-orange/20 px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wide text-orange">{l.tag}</span> : null}
+              </Link>
+            )}
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2500);
+    } catch {
+      window.prompt("Copy this link", shareUrl);
+    }
+  };
+  const nativeShare = () => { void navigator.share?.({ title: "GrowQR", text: shareText, url: shareUrl }).catch(() => undefined); };
+
   return (
-    <footer
-      id="company"
-      className="bg-cream border-t border-black/5"
-    >
-      <div className="mx-auto max-w-[1340px] px-6 md:px-14 py-12 md:py-16">
-        <div className="grid grid-cols-2 md:grid-cols-12 gap-x-6 gap-y-10 md:gap-x-8 md:gap-y-0">
+    <footer id="company" className="relative overflow-hidden bg-ink text-white" aria-label="Site footer">
+      {/* soft colour glows */}
+      <div aria-hidden="true" className="pointer-events-none absolute -left-40 -top-40 h-[520px] w-[520px] rounded-full bg-orange/25 blur-[120px]" />
+      <div aria-hidden="true" className="pointer-events-none absolute -right-40 top-1/3 h-[480px] w-[480px] rounded-full bg-[#7c5cff]/25 blur-[130px]" />
+      <div aria-hidden="true" className="pointer-events-none absolute inset-0 opacity-[0.07]" style={{ backgroundImage: "radial-gradient(#fff 1px, transparent 1px)", backgroundSize: "26px 26px" }} />
 
-          {/* ── Logo + Newsletter + Social ── */}
-          <div className="col-span-2 md:col-span-4">
-            <Logo width={132} height={62} />
+      <div className="relative mx-auto max-w-[1340px] px-6 pb-8 pt-16 md:px-14 md:pt-20">
+        {/* call to action */}
+        <section aria-labelledby="footer-cta" className="relative overflow-hidden rounded-[2rem] bg-gradient-to-br from-orange via-[#ff4d6d] to-[#7c5cff] p-8 shadow-[0_30px_80px_-30px_rgba(255,106,47,0.7)] md:p-12">
+          <div aria-hidden="true" className="pointer-events-none absolute -right-10 -top-16 h-64 w-64 rounded-full bg-white/15 blur-2xl" />
+          <div className="relative grid items-center gap-8 lg:grid-cols-[1.4fr,1fr]">
+            <div>
+              <p className="text-[12px] font-bold uppercase tracking-[0.2em] text-white/80">Learn. Prove it. Get hired.</p>
+              <h2 id="footer-cta" className="mt-3 text-[clamp(1.8rem,4vw,3rem)] font-bold leading-[1.05] tracking-tight text-white">Your whole career, in one place.</h2>
+              <p className="mt-3 max-w-[34em] text-[15.5px] leading-relaxed text-white/90">Courses, exam prep, a resume that scores well, a verified Skill Passport and a path to study abroad. Start free, no card needed.</p>
+              <div className="mt-6 flex flex-wrap gap-3">
+                <Link href="/signup" className="inline-flex min-h-[50px] items-center gap-2 rounded-full bg-white px-6 text-[15px] font-bold text-ink transition hover:scale-[1.03] hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">Start free <ArrowRight className="h-4 w-4" aria-hidden="true" /></Link>
+                <Link href="/pricing" className="inline-flex min-h-[50px] items-center rounded-full border border-white/70 px-6 text-[15px] font-bold text-white transition hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white">See plans</Link>
+                <Link href={RESUME_SCORE_URL} className="inline-flex min-h-[50px] items-center rounded-full px-4 text-[15px] font-semibold text-white underline underline-offset-4 hover:text-white/90">Score my resume</Link>
+              </div>
+            </div>
+            <ul className="grid grid-cols-3 gap-3 text-center" aria-label="GrowQR at a glance">
+              {[["121", "courses"], ["30", "Vedic Maths modules"], ["11", "exam prep hubs"]].map(([n, l]) => (
+                <li key={l} className="rounded-2xl bg-white/15 px-2 py-5 backdrop-blur-sm ring-1 ring-white/25">
+                  <span className="block text-[clamp(1.6rem,3.4vw,2.4rem)] font-extrabold leading-none text-white">{n}</span>
+                  <span className="mt-2 block text-[12px] leading-snug text-white/85">{l}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
 
-            <form className="flex items-center gap-2 mt-6 w-full max-w-[280px] sm:w-fit sm:max-w-none" onSubmit={handleNewsletterSubmit}>
-              <input
-                type="email"
-                value={email}
-                onChange={(event) => setEmail(event.target.value)}
-                onFocus={() => setTurnstileArmed(true)}
-                placeholder="Your email"
-                required
-                disabled={isLoading}
-                className="h-9 w-full min-w-0 sm:w-44 rounded-full border border-black/10 bg-white px-4 text-sm text-ink placeholder:text-ink-4 focus:outline-none focus:ring-2 focus:ring-orange/30"
-              />
-              <input
-                type="text"
-                value={honeypot}
-                onChange={(event) => setHoneypot(event.target.value)}
-                tabIndex={-1}
-                autoComplete="off"
-                className="hidden"
-                aria-hidden="true"
-              />
-              <button
-                type="submit"
-                disabled={isLoading}
-                className="h-9 px-4 rounded-full bg-orange text-white text-sm font-semibold hover:bg-orange-dark transition-colors shrink-0"
-              >
-                {isLoading ? "Joining..." : "Join"}
-              </button>
+        {/* brand and the product columns */}
+        <div className="mt-14 grid grid-cols-2 gap-x-6 gap-y-12 lg:grid-cols-12">
+          <div className="col-span-2 lg:col-span-4">
+            <div className="inline-block rounded-2xl bg-white px-4 py-3"><Logo width={124} height={58} /></div>
+            <p className="mt-5 max-w-[22em] text-[15px] leading-relaxed text-white/75">Learn the skills, prove them with a QR-verified Skill Passport, and get matched to internships, jobs and universities.</p>
+
+            <form className="mt-6 w-full max-w-[360px]" onSubmit={handleNewsletterSubmit} aria-label="Join the GrowQR newsletter">
+              <label htmlFor="footer-email" className="mb-2 block text-[13px] font-semibold text-white">Get tips, offers and new courses</label>
+              <div className="flex items-center gap-2">
+                <input
+                  id="footer-email"
+                  type="email"
+                  value={email}
+                  onChange={(event) => setEmail(event.target.value)}
+                  onFocus={() => setTurnstileArmed(true)}
+                  placeholder="Your email"
+                  required
+                  disabled={isLoading}
+                  className="h-11 w-full min-w-0 rounded-full border border-white/20 bg-white/10 px-4 text-[14px] text-white placeholder:text-white/50 focus:border-orange focus:outline-none focus:ring-2 focus:ring-orange/40"
+                />
+                <input type="text" value={honeypot} onChange={(event) => setHoneypot(event.target.value)} tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
+                <button type="submit" disabled={isLoading} className="h-11 shrink-0 rounded-full bg-orange px-5 text-[14px] font-bold text-white transition hover:bg-orange-dark disabled:opacity-60">
+                  {isLoading ? "Joining..." : "Join"}
+                </button>
+              </div>
             </form>
             {turnstileArmed && (
               <TurnstileWidget
@@ -205,142 +265,135 @@ export default function Footer() {
                 }}
               />
             )}
-            {successMessage && <p className="mt-2 text-xs text-orange-deep">{successMessage}</p>}
-            {errorMessage   && <p className="mt-2 text-xs text-orange-deep">{errorMessage}</p>}
-
-            <div className="flex gap-2 mt-5">
-              <a href="https://www.linkedin.com/company/growqr" target="_blank" rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-white border border-black/8 flex items-center justify-center text-ink-4 hover:bg-orange hover:text-white hover:border-orange transition-all duration-300"
-                aria-label="LinkedIn"><FaLinkedin className="w-4 h-4" /></a>
-              <a href="https://x.com/Growqr" target="_blank" rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-white border border-black/8 flex items-center justify-center text-ink-4 hover:bg-orange hover:text-white hover:border-orange transition-all duration-300"
-                aria-label="X"><FaXTwitter className="w-4 h-4" /></a>
-              <a href="https://www.instagram.com/growqr.ai" target="_blank" rel="noopener noreferrer"
-                className="w-9 h-9 rounded-full bg-white border border-black/8 flex items-center justify-center text-ink-4 hover:bg-orange hover:text-white hover:border-orange transition-all duration-300"
-                aria-label="Instagram"><FaInstagram className="w-4 h-4" /></a>
-              <a href="mailto:support@growqr.ai?subject=GrowQR%20Enquiry&body=Hi%20GrowQR%20Team%2C%0A%0AI%20have%20a%20question%20about%20GrowQR%3A%0A%0A"
-                className="w-9 h-9 rounded-full bg-white border border-black/8 flex items-center justify-center text-ink-4 hover:bg-orange hover:text-white hover:border-orange transition-all duration-300"
-                aria-label="Email"><MdEmail className="w-4 h-4" /></a>
+            <div aria-live="polite">
+              {successMessage && <p className="mt-2 text-[13px] text-emerald-300">{successMessage}</p>}
+              {errorMessage && <p className="mt-2 text-[13px] text-orange">{errorMessage}</p>}
             </div>
-          </div>
 
-          {/* ── Company ── */}
-          <div className="col-span-1 md:col-span-2">
-            <h3 className="text-[11px] font-semibold text-ink-4 uppercase tracking-widest mb-4">
-              Company
-            </h3>
-            <ul className="space-y-3.5">
-              <li><Link href="/about"          className="text-sm text-ink-3 hover:text-orange transition-colors">About Us</Link></li>
-              <li><Link href="/vision"          className="text-sm text-ink-3 hover:text-orange transition-colors">Vision</Link></li>
-              <li><Link href="/gallery"         className="text-sm text-ink-3 hover:text-orange transition-colors">Gallery</Link></li>
-              <li><Link href="/blog"            className="text-sm text-ink-3 hover:text-orange transition-colors">Blog</Link></li>
-              {pricingHref && (
-                <li><Link href={pricingHref}  className="text-sm text-ink-3 hover:text-orange transition-colors">Pricing</Link></li>
-              )}
-              <li><Link href="/contact"         className="text-sm text-ink-3 hover:text-orange transition-colors">Contact Us</Link></li>
-              {/*
-                The three legal links are ungated on purpose. They were once behind
-                `isIndia` on the reasoning that both policies are written to Indian
-                law, and that gate must not come back:
-
-                · GrowQR is headquartered in Princeton, NJ (see PrivacyPage). The
-                  Privacy Policy covers global processing and applies the DPDP Act
-                  *where the visitor is in India*; it is not an India-only document.
-                · The newsletter field in this same footer collects an email from
-                  every visitor, so the policy has to be reachable from the point of
-                  collection, not only from Indian IPs.
-                · Meta App Review requires the deletion instructions to stay publicly
-                  accessible for as long as the Instagram/LinkedIn connection is live,
-                  and Google OAuth verification expects a privacy link on the site.
-                  Both are recurring reviews, not one-time hurdles.
-                · `isIndia` would also be the wrong gate for the Refund Policy:
-                  LIVE_COUNTRIES in lib/currency.ts has 13 markets where plans are
-                  purchasable, so gating on India hides refund terms from paying
-                  customers in the UAE, Norway, Brazil and ten others. Gate on
-                  `useIsLive()` if that link ever needs narrowing.
-              */}
-              <li><Link href="/privacy-policy"  className="text-sm text-ink-3 hover:text-orange transition-colors">Privacy Policy</Link></li>
-              <li><Link href="/refund-policy"   className="text-sm text-ink-3 hover:text-orange transition-colors">Refund Policy</Link></li>
-              <li><Link href="/data-deletion"   className="text-sm text-ink-3 hover:text-orange transition-colors">Data Deletion</Link></li>
-            </ul>
-          </div>
-
-          {/* ── Explore ── */}
-          <div className="col-span-1 md:col-span-2">
-            <h3 className="text-[11px] font-semibold text-ink-4 uppercase tracking-widest mb-4">
-              Explore
-            </h3>
-            <ul className="space-y-3.5">
-              {exploreLinks.map(({ href, label }) => (
-                <li key={href}>
-                  <Link href={href} className="text-sm text-ink-3 hover:text-orange transition-colors">
-                    {label}
-                  </Link>
+            <h3 className="mb-3 mt-8 text-[11px] font-bold uppercase tracking-[0.18em] text-orange">Follow GrowQR</h3>
+            <ul className="flex flex-wrap gap-2.5">
+              {follow.map((f) => (
+                <li key={f.label}>
+                  <a href={f.href} target="_blank" rel="noopener noreferrer" aria-label={`GrowQR on ${f.label} (opens in a new tab)`}
+                    className="grid h-11 w-11 place-items-center rounded-full bg-white/10 text-[17px] text-white ring-1 ring-white/15 transition duration-300 hover:-translate-y-0.5 hover:bg-orange hover:ring-orange focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange">{f.icon}</a>
                 </li>
               ))}
-            </ul>
-          </div>
-
-          {/* ── Offices ── */}
-          <div className="col-span-2 md:col-span-4">
-            <h3 className="text-[11px] font-semibold text-ink-4 uppercase tracking-widest mb-4">
-              Offices
-            </h3>
-            <ul className="space-y-4">
               <li>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-orange shrink-0" />
-                  <span className="text-sm font-medium text-ink-3">New Jersey, USA</span>
-                  <span className="text-[9px] font-bold text-orange bg-orange/10 px-1.5 py-0.5 rounded">HQ</span>
-                </div>
-                <p className="text-xs text-ink-4 leading-relaxed pl-3.5">
-                  103 Carnegie Center Drive, Princeton, NJ 08540
-                </p>
-              </li>
-              <li>
-                <a
-                  href="https://share.google/OeH9CLBjeBa3VssRT"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <div className="flex items-center gap-2 mb-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-orange shrink-0" />
-                    <span className="text-sm font-medium text-ink-3">Noida, India</span>
-                  </div>
-                  <p className="text-xs text-ink-4 leading-relaxed pl-3.5">
-                    4th Floor, Wesource Building, Sector 125, Noida, UP 201313
-                  </p>
-                </a>
-              </li>
-              <li>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-orange shrink-0" />
-                  <span className="text-sm font-medium text-ink-3">Oslo, Norway</span>
-                </div>
-                <p className="text-xs text-ink-4 leading-relaxed pl-3.5">
-                  Odalsgata 42, 2003 Lillestrom
-                </p>
-              </li>
-              <li>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="w-1.5 h-1.5 rounded-full bg-orange shrink-0" />
-                  <span className="text-sm font-medium text-ink-3">St Julian&apos;s, Malta</span>
-                </div>
-                <p className="text-xs text-ink-4 leading-relaxed pl-3.5">
-                  Dragonara Business Centre, 5th Floor, Dragonara Road, St Julian&apos;s
-                </p>
+                <a href="mailto:support@growqr.ai?subject=GrowQR%20Enquiry" aria-label="Email GrowQR support"
+                  className="grid h-11 w-11 place-items-center rounded-full bg-white/10 text-[17px] text-white ring-1 ring-white/15 transition duration-300 hover:-translate-y-0.5 hover:bg-orange hover:ring-orange focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange"><Mail className="h-[18px] w-[18px]" aria-hidden="true" /></a>
               </li>
             </ul>
           </div>
 
+          <div className="lg:col-span-2">
+            <Col title="Learn" links={[
+              { href: "/courses", label: "All courses" },
+              { href: "/vedic-math", label: "Vedic Mathematics" },
+              { href: "/olympiad/imo", label: "Maths Olympiad (IMO)" },
+              { href: "/exam-prep", label: "Exam prep (JEE, NEET, UPSC)" },
+              { href: "/ielts", label: "IELTS practice" },
+              { href: "/writing-clinic", label: "Writing Clinic" },
+              { href: CLASSROOM_URL, label: "Online classes", external: true },
+            ]} />
+          </div>
+          <div className="lg:col-span-2">
+            <Col title="Career" links={[
+              { href: RESUME_SCORE_URL, label: "Free resume score" },
+              { href: "/ai-resume-expert", label: "AI Resume Expert" },
+              { href: "/ai-interviewer", label: "AI Interviewer" },
+              { href: "/internships", label: "Internships" },
+              { href: "/growqr-internship", label: "GrowQR Internship" },
+              { href: "/ai-skill-trainer", label: "AI Skill Trainer" },
+              { href: "/solutions/students", label: "For students" },
+            ]} />
+          </div>
+          <div className="lg:col-span-2">
+            <Col title="Go global" links={[
+              { href: "/study-abroad", label: "Study abroad" },
+              { href: "/universities", label: "Universities" },
+              ...(isIndia ? [{ href: "/experts", label: "Experts" }, { href: "/events", label: "Events" }, { href: "/community", label: "Community" }] : []),
+              { href: "/ambassadors", label: "Ambassadors" },
+              { href: "/pricing", label: "Plans and pricing" },
+            ]} />
+          </div>
+          <div className="lg:col-span-2">
+            <Col title="Company" links={[
+              { href: "/about", label: "About us" },
+              { href: "/vision", label: "Vision" },
+              { href: "/gallery", label: "Gallery" },
+              { href: "/blog", label: "Blog" },
+              { href: "/enterprise", label: "For enterprises" },
+              { href: "/solutions/institutes", label: "For institutes" },
+              { href: "/solutions/recruiters", label: "For recruiters" },
+              { href: "/contact", label: "Contact us" },
+              ...(pricingHref ? [{ href: pricingHref, label: "Pricing on this page" }] : []),
+            ]} />
+          </div>
         </div>
-      </div>
 
-      <div className="border-t border-black/5">
-        <div className="mx-auto max-w-[1340px] px-6 md:px-14 py-4 sm:py-5 pb-[calc(1rem+env(safe-area-inset-bottom))] flex flex-col md:flex-row justify-center items-center gap-3 sm:gap-4">
-          <p className="text-xs text-ink-4 text-center">
-            © {new Date().getFullYear()} GrowQR. All rights reserved.
-          </p>
+        {/* share */}
+        <section aria-labelledby="footer-share" className="mt-14 flex flex-col items-start justify-between gap-5 rounded-3xl bg-white/[0.06] p-6 ring-1 ring-white/10 md:flex-row md:items-center md:p-7">
+          <div>
+            <h3 id="footer-share" className="text-[18px] font-bold text-white">Know someone who should try GrowQR?</h3>
+            <p className="mt-1 text-[14px] text-white/70">Share it with your friends, classmates and family.</p>
+          </div>
+          <ul className="flex flex-wrap items-center gap-2.5">
+            {shares.map((s) => (
+              <li key={s.label}>
+                <a href={s.href} target="_blank" rel="noopener noreferrer" aria-label={`Share GrowQR on ${s.label} (opens in a new tab)`}
+                  className={`grid h-11 w-11 place-items-center rounded-full bg-white/10 text-[17px] text-white ring-1 ring-white/15 transition duration-300 hover:-translate-y-0.5 hover:ring-transparent ${s.hover} focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange`}>{s.icon}</a>
+              </li>
+            ))}
+            <li>
+              <button type="button" onClick={copy} className="inline-flex h-11 items-center gap-2 rounded-full bg-white px-4 text-[14px] font-bold text-ink transition hover:bg-orange hover:text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange">
+                {copied ? <Check className="h-4 w-4" aria-hidden="true" /> : <Link2 className="h-4 w-4" aria-hidden="true" />}{copied ? "Link copied" : "Copy link"}
+              </button>
+              <span className="sr-only" role="status">{copied ? "Link copied to the clipboard" : ""}</span>
+            </li>
+            {canNativeShare ? (
+              <li><button type="button" onClick={nativeShare} className="inline-flex h-11 items-center gap-2 rounded-full border border-white/30 px-4 text-[14px] font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange"><Share2 className="h-4 w-4" aria-hidden="true" />Share</button></li>
+            ) : null}
+          </ul>
+        </section>
+
+        {/* offices */}
+        <section aria-labelledby="footer-offices" className="mt-10">
+          <h3 id="footer-offices" className="mb-4 text-[11px] font-bold uppercase tracking-[0.18em] text-orange">Our offices</h3>
+          <ul className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { city: "New Jersey, USA", addr: "103 Carnegie Center Drive, Princeton, NJ 08540", hq: true },
+              { city: "Noida, India", addr: "4th Floor, Wesource Building, Sector 125, Noida, UP 201313", href: "https://share.google/OeH9CLBjeBa3VssRT" },
+              { city: "Oslo, Norway", addr: "Odalsgata 42, 2003 Lillestrom" },
+              { city: "St Julian's, Malta", addr: "Dragonara Business Centre, 5th Floor, Dragonara Road, St Julian's" },
+            ].map((o) => {
+              const body = (
+                <>
+                  <span className="flex items-center gap-2 text-[14px] font-semibold text-white"><MapPin className="h-4 w-4 text-orange" aria-hidden="true" />{o.city}{o.hq ? <span className="rounded bg-orange px-1.5 py-0.5 text-[9px] font-extrabold text-white">HQ</span> : null}</span>
+                  <span className="mt-1.5 block text-[12.5px] leading-relaxed text-white/60">{o.addr}</span>
+                </>
+              );
+              return (
+                <li key={o.city}>
+                  {o.href ? <a href={o.href} target="_blank" rel="noopener noreferrer" className="block h-full rounded-2xl bg-white/[0.05] p-4 ring-1 ring-white/10 transition hover:bg-white/[0.09] focus-visible:outline focus-visible:outline-2 focus-visible:outline-orange">{body}<span className="sr-only"> (opens in a new tab)</span></a>
+                    : <div className="h-full rounded-2xl bg-white/[0.05] p-4 ring-1 ring-white/10">{body}</div>}
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+
+        {/* The three legal links are ungated on purpose: the Privacy Policy covers global processing and has to be reachable from the newsletter field and for Meta and Google reviews; the Refund Policy must be visible to paying customers in every market. Do not hide them behind a country check. */}
+        <div className="mt-12 flex flex-col items-center justify-between gap-4 border-t border-white/10 pt-6 pb-[calc(0.5rem+env(safe-area-inset-bottom))] md:flex-row">
+          <p className="text-[12.5px] text-white/55">© {new Date().getFullYear()} GrowQR. All rights reserved.</p>
+          <nav aria-label="Legal" className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-[12.5px]">
+            <Link href="/privacy-policy" className="text-white/65 hover:text-white">Privacy Policy</Link>
+            <Link href="/refund-policy" className="text-white/65 hover:text-white">Refund Policy</Link>
+            <Link href="/data-deletion" className="text-white/65 hover:text-white">Data Deletion</Link>
+            <Link href="/editorial-policy" className="text-white/65 hover:text-white">Editorial Policy</Link>
+          </nav>
+          <button type="button" onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })} className="inline-flex h-10 items-center gap-2 rounded-full border border-white/25 px-4 text-[12.5px] font-semibold text-white transition hover:bg-white/10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-orange">
+            Back to top <ArrowUp className="h-3.5 w-3.5" aria-hidden="true" />
+          </button>
         </div>
       </div>
     </footer>

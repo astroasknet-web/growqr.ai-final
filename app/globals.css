@@ -75,6 +75,9 @@ next-devtools-indicator,
   display: none !important;
 }
 
+/* The header is fixed (announcement bar plus navigation, about 8rem). Anchors and focused fields scroll to just below it instead of under it. */
+html { scroll-padding-top: 8rem; }
+
 :root {
   --orange: #ff6a2f;
   --orange-light: #ffeadb;
