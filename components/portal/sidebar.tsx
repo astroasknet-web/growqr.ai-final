@@ -2,17 +2,17 @@
 
 import Link from "next/link";
 import { useEffect, useState, type ComponentType } from "react";
-import { BookOpen, Briefcase, ClipboardList, FileText, Globe2, GraduationCap, LayoutDashboard, LogOut, Menu, PlusSquare, QrCode, Share2, ShieldCheck, UserRound, Users, Video, X } from "lucide-react";
+import { BookOpen, Briefcase, ClipboardList, FileText, Globe2, GraduationCap, LayoutDashboard, LogOut, Menu, PlusSquare, QrCode, Receipt, Share2, ShieldCheck, UserRound, Users, Video, X } from "lucide-react";
 import { logoutAction } from "@/app/(portal)/actions";
 
 /** The signed-in person's menu: a vertical sidebar on large screens, a slide-in drawer on small ones, with Log out pinned at the bottom. */
-export type IconKey = "account" | "passport" | "studio" | "internships" | "applications" | "courses" | "classes" | "abroad" | "share" | "hiring" | "post" | "crm" | "console" | "caseload" | "teacher" | "children";
+export type IconKey = "account" | "passport" | "studio" | "internships" | "applications" | "courses" | "classes" | "abroad" | "share" | "hiring" | "post" | "crm" | "console" | "caseload" | "teacher" | "children" | "billing";
 export interface NavItem { key: string; href: string; label: string; icon: IconKey }
 export interface NavGroup { title: string; items: NavItem[] }
 
 const ICONS: Record<IconKey, ComponentType<{ className?: string; "aria-hidden"?: boolean }>> = {
   account: LayoutDashboard, passport: QrCode, studio: FileText, internships: Briefcase, applications: ClipboardList, courses: BookOpen, classes: Video,
-  abroad: Globe2, share: Share2, hiring: Users, post: PlusSquare, crm: Globe2, console: ShieldCheck, caseload: Users, teacher: GraduationCap, children: UserRound,
+  abroad: Globe2, share: Share2, hiring: Users, post: PlusSquare, crm: Globe2, console: ShieldCheck, caseload: Users, teacher: GraduationCap, children: UserRound, billing: Receipt,
 };
 const ROLE: Record<string, string> = { student: "Student", teacher: "Teacher", parent: "Parent", employer: "Employer", admin: "Administrator", counselor: "Counsellor" };
 

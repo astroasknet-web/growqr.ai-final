@@ -87,9 +87,12 @@ export function pickCurrency(country: string, candidates: string[], requested?: 
 
 interface CouponRow extends Row { id: number }
 
-/** Validate a coupon inside the order transaction (the coupon row is locked so the redemption limits hold under concurrency). */
-async function reserveCoupon(db: Db, code: string, ctx: { skus: string[]; currency: string; subtotalMinor: number; userId: number | null; email: string }): Promise<{ id: number; discountMinor: number }> {
-  const c = (await first<CouponRow>(db, "SELECT * FROM pay_coupons WHERE code = $1 FOR UPDATE", [code.toUpperCase()])) as CouponRow | null;
+/**
+ * Check a coupon against a basket. With `lock` (inside the order transaction) the coupon row is locked, so the redemption limits hold under
+ * concurrency; without it (the checkout page's price preview) nothing is locked or changed.
+ */
+export async function checkCoupon(db: Db, code: string, ctx: { skus: string[]; currency: string; subtotalMinor: number; userId: number | null; email: string }, lock = false): Promise<{ id: number; discountMinor: number }> {
+  const c = (await first<CouponRow>(db, `SELECT * FROM pay_coupons WHERE code = $1${lock ? " FOR UPDATE" : ""}`, [code.toUpperCase()])) as CouponRow | null;
   const bad = (m: string) => new PayError("coupon_invalid", m, 400);
   if (!c || !c.active) throw bad("This coupon code is not valid.");
   const now = Date.now();
@@ -150,7 +153,7 @@ export async function createOrder(input: CreateOrderInput, viewer: { userId: num
     let discount = 0;
     let couponId: number | null = null;
     if (input.coupon) {
-      const c = await reserveCoupon(db, input.coupon, { skus, currency, subtotalMinor: subtotal, userId: viewer.userId, email: input.billing.email });
+      const c = await checkCoupon(db, input.coupon, { skus, currency, subtotalMinor: subtotal, userId: viewer.userId, email: input.billing.email }, true);
       discount = c.discountMinor;
       couponId = c.id;
     }

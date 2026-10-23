@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { Check } from "lucide-react";
 import { PLANS, savingPercent } from "@/lib/market/plans";
 
@@ -21,6 +22,13 @@ export function BillingToggle({ yearly, onChange }: { yearly: boolean; onChange:
 /** The four package cards. Used on the pricing page and the home page. */
 export function PlanGrid({ yearly, headingLevel = 2 }: { yearly: boolean; headingLevel?: 2 | 3 }) {
   const H = headingLevel === 2 ? "h2" : "h3";
+  // Buy buttons go to checkout only when the server says online payment is switched on; otherwise they keep going to sign-up.
+  const [payOn, setPayOn] = useState(false);
+  useEffect(() => {
+    let live = true;
+    fetch("/api/v1/payments/config").then((r) => r.json()).then((j) => { if (live) setPayOn(!!j?.data?.enabled); }).catch(() => {});
+    return () => { live = false; };
+  }, []);
   return (
     <div className="mx-auto grid max-w-[1180px] gap-5 px-5 py-10 sm:grid-cols-2 lg:grid-cols-4" role="list" aria-label="Packages">
       {PLANS.map((p) => {
@@ -46,7 +54,7 @@ export function PlanGrid({ yearly, headingLevel = 2 }: { yearly: boolean; headin
             </p>
 
             <Link
-              href={p.key === "free" ? "/signup" : `/signup?plan=${p.key}`}
+              href={p.key === "free" ? "/signup" : payOn ? `/checkout?sku=plan-${p.key}-${showYear || p.annualOnly ? "yearly" : "monthly"}` : `/signup?plan=${p.key}`}
               className={`mt-5 inline-flex min-h-[46px] items-center justify-center rounded-xl px-5 text-[0.95rem] font-semibold transition ${p.key === "free" ? "border border-black/15 text-ink hover:bg-cream-2" : "bg-ink text-white hover:opacity-90"}`}
             >
               {p.cta}
