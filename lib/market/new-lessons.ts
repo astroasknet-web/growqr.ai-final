@@ -5,6 +5,7 @@ export const NEW_LESSONS: Record<string, () => unknown> = {
   "agile-scrum-jira": () => require("./data/lessons/agile-scrum-jira.json"),
   "basic-accounting-bookkeeping": () => require("./data/lessons/basic-accounting-bookkeeping.json"),
   "basic-microsoft-excel": () => require("./data/lessons/basic-microsoft-excel.json"),
+  "blockchain-5-real-world-projects": () => require("./data/lessons/blockchain-5-real-world-projects.json"),
   "blockchain-architecture-networks": () => require("./data/lessons/blockchain-architecture-networks.json"),
   "blockchain-blocks-hashing-consensus": () => require("./data/lessons/blockchain-blocks-hashing-consensus.json"),
   "blockchain-php-nodejs": () => require("./data/lessons/blockchain-php-nodejs.json"),

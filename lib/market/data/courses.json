@@ -3403,24 +3403,24 @@
         "Fresher",
         "Mid"
       ],
-      "hours": "~30 hrs",
-      "modules": 10,
-      "weeks": "~10 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Professional Blockchain Project Developer",
+      "hours": "~16 hrs",
+      "modules": 6,
+      "weeks": "~6 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Blockchain Projects Portfolio",
       "prereq": "Solidity and dApp development.",
       "bestFor": "Developers building a strong Web3 portfolio.",
-      "brief": "A project-based program building five practical blockchain applications.",
+      "brief": "Five honest, finishable blockchain projects: tokens with vesting, certificate verification, voting, NFT ticketing and a records registry.",
       "learn": [
-        "Project 1 — a token system with distribution",
-        "Project 2 — on-chain certificate verification",
-        "Project 3 — a decentralised voting demonstration",
-        "Project 4 — an NFT application",
-        "Project 5 — a blockchain-based records/registry",
-        "Packaging the work into a hireable portfolio"
+        "Scoping, repositories and honest READMEs",
+        "A token system with a funded vesting vault",
+        "Certificate verification that keeps personal data off the chain",
+        "Transparent and commit-and-reveal ballots and their limits",
+        "NFT tickets with check-in and frozen used tickets",
+        "A registrar-controlled registry and packaging a portfolio"
       ],
-      "handsOn": "Build and deploy all five applications as portfolio-ready projects.",
-      "outcome": "Graduate with five shipped Web3 projects.",
+      "handsOn": "Write a professional portfolio case study for one of the five projects, with decisions, tests, privacy and honest limits.",
+      "outcome": "Present five finished, honestly described blockchain projects.",
       "icon": "layers"
     },
     {

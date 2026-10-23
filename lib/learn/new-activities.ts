@@ -5,6 +5,7 @@ export const NEW_ACTIVITIES: Record<string, () => unknown> = {
   "agile-scrum-jira": () => require("./data/agile-scrum-jira.activities.json"),
   "basic-accounting-bookkeeping": () => require("./data/basic-accounting-bookkeeping.activities.json"),
   "basic-microsoft-excel": () => require("./data/basic-microsoft-excel.activities.json"),
+  "blockchain-5-real-world-projects": () => require("./data/blockchain-5-real-world-projects.activities.json"),
   "blockchain-architecture-networks": () => require("./data/blockchain-architecture-networks.activities.json"),
   "blockchain-blocks-hashing-consensus": () => require("./data/blockchain-blocks-hashing-consensus.activities.json"),
   "blockchain-php-nodejs": () => require("./data/blockchain-php-nodejs.activities.json"),
