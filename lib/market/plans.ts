@@ -2,7 +2,7 @@
  * Student packages. One place for the names, prices and what each includes, so the pricing page, emails and (later) checkout read the
  * same numbers. Prices are in rupees. For Pro and Silver the yearly price is about eight months' worth (about a third off).
  * Gold is sold as an annual plan only (one payment a year).
- * A feature marked `soon` is on the roadmap and shown with a "Soon" tag; it is not promised as live.
+ * `soon` is an optional flag that shows a "Soon" tag next to a feature that is not live yet. No feature uses it at the moment.
  */
 export interface PlanFeature { text: string; soon?: boolean }
 export interface Plan {
@@ -38,7 +38,7 @@ export const PLANS: Plan[] = [
       { text: "Resume scan and score check" },
       { text: "1 AI resume score check a month" },
       { text: "Writing Clinic: 15 essay checks a month" },
-      { text: "1 course recommended from your resume scan results", soon: true },
+      { text: "1 course recommended from your resume scan results" },
     ],
   },
   {
@@ -48,25 +48,25 @@ export const PLANS: Plan[] = [
       { text: "5 AI resume score checks a month, with ATS feedback" },
       { text: "10 IELTS Reading and Writing tests" },
       { text: "Verified, shareable Skill Passport with QR credential" },
-      { text: "2 AI interview practice sessions with feedback", soon: true },
+      { text: "2 AI interview practice sessions with feedback" },
       { text: "Writing Clinic: 25 essay checks a month" },
-      { text: "One career counselling and doubt-solving session with experts every month", soon: true },
-      { text: "2 courses recommended from your resume scan results", soon: true },
-      { text: "Maths calculation speed studio, for competitive exams", soon: true },
+      { text: "One career counselling and doubt-solving session with experts every month" },
+      { text: "2 courses recommended from your resume scan results" },
+      { text: "Maths calculation speed studio, for competitive exams" },
     ],
   },
   {
     key: "gold", name: "Gold", tagline: "Hands-on help for study abroad and careers.", monthly: 999, yearly: 999, annualOnly: true, badge: "Best value", accent: "#d97706", cta: "Get Gold", inherits: "Everything in Silver, plus",
     features: [
       { text: "All 45 Resume Studio templates, unlimited resumes" },
-      { text: "QR Score Booster: start all your recommended courses (3 to 4) with a plan to raise your score", soon: true },
+      { text: "QR Score Booster: start all your recommended courses (3 to 4) with a plan to raise your score" },
       { text: "30 IELTS Reading and Writing tests" },
       { text: "Writing Clinic: unlimited essay checks" },
-      { text: "Live English speaking classes, for IELTS, TOEFL and professional growth", soon: true },
-      { text: "Study abroad registration portal, with a university shortlist matched to your documents", soon: true },
-      { text: "One 1:1 overseas education counselling session a year", soon: true },
-      { text: "One expert review of your resume a year", soon: true },
-      { text: "2 mock visa interviews a year", soon: true },
+      { text: "Live English speaking classes, for IELTS, TOEFL and professional growth" },
+      { text: "Study abroad registration portal, with a university shortlist matched to your documents" },
+      { text: "One 1:1 overseas education counselling session a year" },
+      { text: "One expert review of your resume a year" },
+      { text: "2 mock visa interviews a year" },
       { text: "Priority email support" },
     ],
   },
@@ -78,9 +78,9 @@ export const COMPARE: Array<{ group: string; rows: Row[] }> = [
   { group: "Learn", rows: [
     { label: "Courses", v: ["Explore all", "Explore all", "Explore all", "Explore all"] },
     { label: "Vedic Mathematics", v: ["Module 1", "Complete course", "Complete course", "Complete course"] },
-    { label: "Courses recommended from your resume scan", v: ["–", "1", "2", "All (3 to 4)"], soon: true },
+    { label: "Courses recommended from your resume scan", v: ["–", "1", "2", "All (3 to 4)"] },
     { label: "IELTS Reading and Writing tests", v: ["–", "–", "10", "30"] },
-    { label: "Maths calculation speed studio", v: ["–", "–", "Yes", "Yes"], soon: true },
+    { label: "Maths calculation speed studio", v: ["–", "–", "Yes", "Yes"] },
   ] },
   { group: "Resume Studio", rows: [
     { label: "Templates", v: ["3", "10", "25", "All 45"] },
@@ -95,16 +95,16 @@ export const COMPARE: Array<{ group: string; rows: Row[] }> = [
   ] },
   { group: "Career and skills", rows: [
     { label: "Skill Passport", v: ["Basic", "Basic", "Verified (QR)", "Verified (QR)"] },
-    { label: "AI interview practice", v: ["–", "–", "2", "2"], soon: true },
-    { label: "Career counselling and doubt-solving session", v: ["–", "–", "Monthly", "Monthly"], soon: true },
-    { label: "QR Score Booster plan", v: ["–", "–", "–", "Yes"], soon: true },
+    { label: "AI interview practice", v: ["–", "–", "2", "2"] },
+    { label: "Career counselling and doubt-solving session", v: ["–", "–", "Monthly", "Monthly"] },
+    { label: "QR Score Booster plan", v: ["–", "–", "–", "Yes"] },
   ] },
   { group: "Study abroad and expert help", rows: [
-    { label: "Study abroad portal with university shortlist", v: ["–", "–", "–", "Yes"], soon: true },
-    { label: "1:1 overseas counselling session", v: ["–", "–", "–", "1 a year"], soon: true },
-    { label: "Expert resume review", v: ["–", "–", "–", "1 a year"], soon: true },
-    { label: "Mock visa interviews", v: ["–", "–", "–", "2 a year"], soon: true },
-    { label: "Live English speaking classes", v: ["–", "–", "–", "Yes"], soon: true },
+    { label: "Study abroad portal with university shortlist", v: ["–", "–", "–", "Yes"] },
+    { label: "1:1 overseas counselling session", v: ["–", "–", "–", "1 a year"] },
+    { label: "Expert resume review", v: ["–", "–", "–", "1 a year"] },
+    { label: "Mock visa interviews", v: ["–", "–", "–", "2 a year"] },
+    { label: "Live English speaking classes", v: ["–", "–", "–", "Yes"] },
     { label: "Support", v: ["Community", "Standard", "Standard", "Priority email"] },
   ] },
 ];

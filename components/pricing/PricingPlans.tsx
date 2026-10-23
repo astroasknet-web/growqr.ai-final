@@ -79,7 +79,7 @@ export default function PricingPlans() {
       </section>
 
       <p className="mx-auto max-w-[44em] px-5 pb-10 text-center text-[0.85rem] text-ink-4">
-        Early-access prices for students, in Indian rupees. Gold is sold as an annual plan. Items tagged <span className="font-semibold text-amber-800">Soon</span> are being built and will be added to your plan when they open.
+        Early-access prices for students, in Indian rupees. Gold is sold as an annual plan.
       </p>
 
 
