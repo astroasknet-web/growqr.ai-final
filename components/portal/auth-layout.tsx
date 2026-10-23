@@ -71,7 +71,7 @@ export function AuthSplit({ title, subtitle, children, eyebrow = "Welcome", pane
             ))}
           </div>
         </div>
-        <p className="relative z-10 flex items-start gap-2 text-[13px] leading-snug text-white/60"><Lock className="mt-0.5 h-4 w-4 shrink-0" aria-hidden /> Protected by a human check, hashed passwords and optional two-step login. Free for students, with no placement fees.</p>
+        <p className="relative z-10 flex items-start gap-2 text-[13px] leading-snug text-white/60"><Lock className="mt-0.5 h-4 w-4 shrink-0" aria-hidden /> Protected by a human check and encrypted passwords. Free for students, with no placement fees.</p>
       </aside>
 
       <main className="auth-side flex flex-col justify-center px-4 py-8 sm:px-10">
