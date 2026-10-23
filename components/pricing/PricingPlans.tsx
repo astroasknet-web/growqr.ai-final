@@ -31,7 +31,7 @@ export default function PricingPlans() {
 
       <section className="mx-auto grid max-w-[1180px] gap-5 px-5 py-10 sm:grid-cols-2 lg:grid-cols-4" aria-label="Packages">
         {PLANS.map((p) => {
-          const showYear = yearly || !!p.annualOnly;
+          const showYear = yearly && !p.annualOnly;
           const price = showYear ? p.yearly : p.monthly;
           const per = p.monthly === 0 ? "forever" : showYear ? "per year" : "per month";
           const perMonth = showYear && p.yearly ? Math.round(p.yearly / 12) : 0;
@@ -49,7 +49,7 @@ export default function PricingPlans() {
                 <span className="text-[0.9rem] text-ink-4">{per}</span>
               </p>
               <p className="mt-1 h-5 text-[0.82rem] text-emerald-700">
-                {p.annualOnly ? `Annual plan only · about ${inr(perMonth)} a month` : perMonth ? `Just ${inr(perMonth)} a month · save ${savingPercent(p)}%` : p.monthly === 0 ? "No card needed" : ""}
+                {p.annualOnly ? `Billed yearly: ${inr(p.yearly)} · annual plan only` : perMonth ? `Just ${inr(perMonth)} a month · save ${savingPercent(p)}%` : p.monthly === 0 ? "No card needed" : ""}
               </p>
 
               <Link
@@ -79,7 +79,7 @@ export default function PricingPlans() {
       </section>
 
       <p className="mx-auto max-w-[44em] px-5 pb-10 text-center text-[0.85rem] text-ink-4">
-        Early-access prices for students, in Indian rupees. Gold is sold as an annual plan.
+        Early-access prices for students, in Indian rupees. Gold is billed yearly.
       </p>
 
 
@@ -93,7 +93,7 @@ export default function PricingPlans() {
                 {PLANS.map((p) => (
                   <th key={p.key} scope="col" className="px-4 py-3 font-semibold text-ink">
                     <span aria-hidden className="mr-1.5 inline-block h-2.5 w-2.5 rounded-full" style={{ background: p.accent }} />{p.name}
-                    <span className="block text-[0.8rem] font-normal text-ink-4">{p.monthly ? inr(yearly || p.annualOnly ? p.yearly : p.monthly) + (yearly || p.annualOnly ? "/yr" : "/mo") : "₹0"}</span>
+                    <span className="block text-[0.8rem] font-normal text-ink-4">{p.monthly ? inr(yearly && !p.annualOnly ? p.yearly : p.monthly) + (yearly && !p.annualOnly ? "/yr" : "/mo") : "₹0"}</span>
                   </th>
                 ))}
               </tr>

@@ -80,7 +80,7 @@ export default function WritingClinicRoute() {
             {paid.map((p) => (
               <div key={p.key} className="rounded-2xl border border-black/10 bg-white p-5">
                 <p className="flex items-center gap-2 font-semibold text-ink"><span aria-hidden className="h-2.5 w-2.5 rounded-full" style={{ background: p.accent }} />{p.name}</p>
-                <p className="mt-2 text-[1.8rem] font-semibold text-ink">₹{p.annualOnly ? p.yearly : p.monthly}<span className="text-[0.9rem] font-normal text-ink-4">{p.annualOnly ? " a year" : " a month"}</span></p>
+                <p className="mt-2 text-[1.8rem] font-semibold text-ink">₹{p.monthly}<span className="text-[0.9rem] font-normal text-ink-4"> a month{p.annualOnly ? ", billed yearly" : ""}</span></p>
                 <p className="mt-2 text-[0.9rem] text-ink-3">{p.features.find((f) => /Writing Clinic/.test(f.text))?.text}</p>
               </div>
             ))}

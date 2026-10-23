@@ -1,7 +1,7 @@
 /**
  * Student packages. One place for the names, prices and what each includes, so the pricing page, emails and (later) checkout read the
  * same numbers. Prices are in rupees. For Pro and Silver the yearly price is about eight months' worth (about a third off).
- * Gold is sold as an annual plan only (one payment a year).
+ * Gold is ₹999 a month, billed yearly (₹11,988 in one payment). It is not sold month by month.
  * `soon` is an optional flag that shows a "Soon" tag next to a feature that is not live yet. No feature uses it at the moment.
  */
 export interface PlanFeature { text: string; soon?: boolean }
@@ -11,7 +11,7 @@ export interface Plan {
   tagline: string;
   monthly: number;
   yearly: number;
-  /** Sold only as one payment a year. */
+  /** Billed yearly only: the monthly price is shown, charged as one payment for the year. */
   annualOnly?: boolean;
   badge?: string;
   accent: string;
@@ -56,7 +56,7 @@ export const PLANS: Plan[] = [
     ],
   },
   {
-    key: "gold", name: "Gold", tagline: "Hands-on help for study abroad and careers.", monthly: 999, yearly: 999, annualOnly: true, badge: "Best value", accent: "#d97706", cta: "Get Gold", inherits: "Everything in Silver, plus",
+    key: "gold", name: "Gold", tagline: "Hands-on help for study abroad and careers.", monthly: 999, yearly: 11988, annualOnly: true, badge: "Best value", accent: "#d97706", cta: "Get Gold", inherits: "Everything in Silver, plus",
     features: [
       { text: "All 45 Resume Studio templates, unlimited resumes" },
       { text: "QR Score Booster: start all your recommended courses (3 to 4) with a plan to raise your score" },
@@ -113,7 +113,7 @@ export const savingPercent = (p: Plan): number => (p.monthly && !p.annualOnly ? 
 
 export const FAQ: Array<{ q: string; a: string }> = [
   { q: "Is the Free plan really free?", a: "Yes. There is no card, no trial and no time limit. You can move up to a paid plan whenever you want." },
-  { q: "Why is Gold only sold yearly?", a: "Gold includes sessions with our experts, such as overseas counselling, a resume review and mock visa interviews. We offer it as one annual payment so those sessions can be planned and kept at this price." },
+  { q: "Why is Gold only sold yearly?", a: "Gold includes sessions with our experts, such as overseas counselling, a resume review and mock visa interviews. We bill it once a year so those sessions can be planned and kept at this price." },
   { q: "Can I switch or cancel?", a: "You can change plan any time. Yearly plans can be cancelled within 7 days for a refund, as set out in our refund policy." },
   { q: "Do I get a discount for paying yearly?", a: "On Pro and Silver, yes. Paying for a year costs eight months, about one third off." },
   { q: "Are these the final prices?", a: "These are early-access prices to help students get started. Anyone who joins now keeps this price while their plan stays active." },
