@@ -32,4 +32,5 @@ export const NEW_ACTIVITIES: Record<string, () => unknown> = {
   "statistics-for-analysts": () => require("./data/statistics-for-analysts.activities.json"),
   "time-management-productivity": () => require("./data/time-management-productivity.activities.json"),
   "token-development-erc-standards": () => require("./data/token-development-erc-standards.activities.json"),
+  "web3-development-javascript-nodejs": () => require("./data/web3-development-javascript-nodejs.activities.json"),
 };

@@ -32,4 +32,5 @@ export const NEW_LESSONS: Record<string, () => unknown> = {
   "statistics-for-analysts": () => require("./data/lessons/statistics-for-analysts.json"),
   "time-management-productivity": () => require("./data/lessons/time-management-productivity.json"),
   "token-development-erc-standards": () => require("./data/lessons/token-development-erc-standards.json"),
+  "web3-development-javascript-nodejs": () => require("./data/lessons/web3-development-javascript-nodejs.json"),
 };

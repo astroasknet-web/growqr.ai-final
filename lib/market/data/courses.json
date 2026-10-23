@@ -3315,24 +3315,24 @@
         "Fresher",
         "Mid"
       ],
-      "hours": "~20 hrs",
-      "modules": 8,
-      "weeks": "~8 weeks",
-      "pace": "4 hrs/wk",
-      "badge": "Web3 Development",
+      "hours": "~14 hrs",
+      "modules": 6,
+      "weeks": "~5 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Web3 JavaScript",
       "prereq": "JavaScript/Node.js basics; Solidity helpful.",
       "bestFor": "Web developers connecting apps to the blockchain.",
-      "brief": "Wallet interaction, RPCs, APIs, and contract calls with JavaScript/Node.js.",
+      "brief": "BigInt and units, ethers, transactions, wallets and signed logins, Node.js indexers and Hardhat testing.",
       "learn": [
-        "Connecting to blockchains via RPC providers (Infura/Alchemy)",
-        "ethers.js/web3.js — reading state and sending transactions",
-        "Wallet connection and signing in the browser",
-        "Listening to events and indexing on-chain data",
-        "Building backend services and APIs around contracts",
-        "Transaction management, nonces, and error handling"
+        "Safe amounts with BigInt and units",
+        "Reading balances, calls and events with ethers",
+        "Sending transactions with simulation, gas and error handling",
+        "Wallet connection and signed-message login",
+        "A repeat-safe Node.js indexer and API design",
+        "Hardhat tests, forks and release discipline"
       ],
-      "handsOn": "Build a Node.js service + frontend that reads and writes to a smart contract.",
-      "outcome": "Integrate blockchain into modern JS/Node apps.",
+      "handsOn": "Design a Web3 notes application end to end: contract, login, writing, indexing, testing and operations.",
+      "outcome": "Build and test the JavaScript side of a Web3 application safely.",
       "icon": "code"
     },
     {
