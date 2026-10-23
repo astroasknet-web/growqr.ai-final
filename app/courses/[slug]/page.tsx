@@ -6,6 +6,8 @@ import * as passport from "@/lib/portal/passport/profile";
 import * as courses from "@/lib/market/courses";
 import * as jobs from "@/lib/market/jobs";
 import * as learning from "@/lib/market/learning";
+import { buyHref, canStudy, courseFee } from "@/lib/pay/course-access";
+import { formatMoney } from "@/lib/pay/money";
 import * as lessons from "@/lib/market/lessons";
 import { JobCard } from "@/components/market/job-card";
 import { CourseCard, CourseFlash, CourseTracker, Cover } from "@/components/market/course-parts";
@@ -53,6 +55,8 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
   const self = `/courses/${course.slug}`;
   const native = lessons.isNative(course.slug);
   const start = `${self}/learn`; // only used when the course is taught here
+  const fee = native ? await courseFee(course.slug) : null;
+  const owned = await canStudy(me?.id ?? null, course.id, course.slug); // false only for a priced course the visitor has not paid for
 
   // Internships whose required skills this course teaches.
   const hay = (course.title + " " + course.learn.join(" ") + " " + course.brief).toLowerCase();
@@ -117,7 +121,14 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
               <h2 className="text-[18px] font-bold text-ink">Ready to start?</h2>
               <p className="text-[14px] text-ink-3">Lessons, quizzes and the capstone run right here on GrowQR. Pass each module quiz to tick off your progress.</p>
               <CourseFlash c={sp.c} e={sp.e} />
-              {enrol ? (
+              {fee && !owned ? (
+                <>
+                  <p className="text-[28px] font-bold text-ink">{formatMoney(fee.amountMinor, "INR")}</p>
+                  <p className="text-[13px] text-ink-3">One payment for this course. Lifetime access, certificate and badge.</p>
+                  <Link className={`${btn} bg-orange-deep hover:bg-ink text-white`} href={buyHref(course.slug)}>Buy this course</Link>
+                  <Link className={`${btn} border border-black/[0.15] hover:bg-cream-2`} href={start}>See what is inside</Link>
+                </>
+              ) : enrol ? (
                 <>
                   <Link className={`${btn} bg-orange-deep hover:bg-ink text-white`} href={start}>{enrol.status === "completed" ? "Revisit the lessons" : "Continue learning"}</Link>
                   <CourseTracker course={course} e={enrol} back={self} />
