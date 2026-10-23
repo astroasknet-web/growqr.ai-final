@@ -27,32 +27,32 @@ export async function GET(req: Request) {
     if (!code) return none(400);
     const seed = createHash("sha256").update(`look:${token}`).digest();
     const chars = code.split("");
-    const lines = [0, 1, 2, 3, 4].map((i) => ({ y: 8 + rnd(seed, i) * (H - 16), a: -18 + rnd(seed, i + 5) * 36, c: COLORS[Math.floor(rnd(seed, i + 10) * COLORS.length)], w: 1.5 + rnd(seed, i + 15) * 1.5 }));
+    const lines = [0, 1, 2, 3, 4].map((i) => ({ y: 8 + rnd(seed, i) * (H - 16), a: -18 + rnd(seed, i + 5) * 36, c: COLORS[Math.floor(rnd(seed, i + 10) * COLORS.length)], w: 1 + rnd(seed, i + 15) * 1 }));
     const dots = Array.from({ length: 26 }, (_, i) => ({ x: rnd(seed, i * 2 + 3) * W, y: rnd(seed, i * 2 + 4) * H, s: 2 + rnd(seed, i + 7) * 3, c: COLORS[i % COLORS.length] }));
     return new ImageResponse(
       (
         <div style={{ width: W, height: H, display: "flex", position: "relative", background: "linear-gradient(120deg,#eef2ff,#fdf2f8 55%,#fff7ed)", overflow: "hidden" }}>
           {dots.map((d, i) => (
-            <div key={`d${i}`} style={{ position: "absolute", left: d.x, top: d.y, width: d.s, height: d.s, borderRadius: 9999, background: d.c, opacity: 0.35 }} />
+            <div key={`d${i}`} style={{ position: "absolute", left: d.x, top: d.y, width: d.s, height: d.s, borderRadius: 9999, background: d.c, opacity: 0.22 }} />
+          ))}
+          {lines.map((l, i) => (
+            <div key={`l${i}`} style={{ position: "absolute", left: -10, top: l.y, width: W + 20, height: l.w, background: l.c, opacity: 0.28, transform: `rotate(${l.a}deg)` }} />
           ))}
           {chars.map((ch, i) => (
             <div
               key={`c${i}`}
               style={{
                 position: "absolute",
-                left: 14 + i * 36 + (rnd(seed, 20 + i) - 0.5) * 8,
+                left: 12 + i * 37 + (rnd(seed, 20 + i) - 0.5) * 6,
                 top: 12 + (rnd(seed, 30 + i) - 0.5) * 14,
-                fontSize: 40 + Math.floor(rnd(seed, 40 + i) * 10),
+                fontSize: 42 + Math.floor(rnd(seed, 40 + i) * 8),
                 fontWeight: 800,
                 color: COLORS[Math.floor(rnd(seed, 50 + i) * COLORS.length)],
-                transform: `rotate(${Math.round(-26 + rnd(seed, 60 + i) * 52)}deg)`,
+                transform: `rotate(${Math.round(-16 + rnd(seed, 60 + i) * 32)}deg)`,
               }}
             >
               {ch}
             </div>
-          ))}
-          {lines.map((l, i) => (
-            <div key={`l${i}`} style={{ position: "absolute", left: -10, top: l.y, width: W + 20, height: l.w, background: l.c, opacity: 0.55, transform: `rotate(${l.a}deg)` }} />
           ))}
         </div>
       ),
