@@ -1,4 +1,5 @@
 /** Navigation content merged from growqr.ai (Solutions, Agents) and qrscore.mathstudy.in (Internships, Courses, Study Abroad, Skill Passport, employers). */
+import { CLASSROOM_URL } from "@/lib/links";
 import { COUNTRIES, INTERNSHIPS, RESUME_SCORE_URL, SCORE_URL, AGENT } from "./data";
 
 export type IconKey =
@@ -27,6 +28,7 @@ export const CAREERS_LEARN: NavLink[] = [
   { label: "Courses", desc: "121 courses across 19 fields", href: "/courses", icon: "book", },
   { label: "Practice tests", desc: "IELTS and GRE, marked instantly", href: "/practice-tests", icon: "tracker", },
   { label: "Exam prep", desc: "JEE, NEET, UPSC, SSC, CAT, SAT, GRE, IELTS", href: "/exam-prep", icon: "path" },
+  { label: "Online Classes", desc: "Live classes with verified teachers", href: CLASSROOM_URL, icon: "path", external: true },
   { label: "E-books", desc: "Study guides on MathStudy.in", href: "https://mathstudy.in/", icon: "ebook", external: true },
 ];
 export const ABROAD = COUNTRIES.map((c) => ({ label: c.name, count: c.count, href: `/study-abroad/${c.name.toLowerCase()}` }));
