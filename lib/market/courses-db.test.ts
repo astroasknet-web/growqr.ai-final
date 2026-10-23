@@ -51,6 +51,18 @@ describe.skipIf(!DB)("courses and learning on a real database", () => {
     await db.closePool();
   });
 
+  it("carries the course fee from the payment catalogue, for any course, on and off sale", async () => {
+    const { seedCatalogue } = await import("../pay/catalogue");
+    await seedCatalogue();
+    const a = await C.bySlug("digital-literacy-master"); // lessons exist here: on sale
+    const b = await C.bySlug("advanced-excel"); // no lessons yet: off sale, fee still shown
+    expect(a?.fee_minor).toBeGreaterThan(0);
+    expect(b?.fee_minor).toBeGreaterThan(0);
+    const page = await C.search({});
+    expect(page.items.every((c) => c.fee_minor === null || c.fee_minor > 0)).toBe(true);
+    expect(page.items.some((c) => c.fee_minor !== null)).toBe(true);
+  });
+
   it("loads the catalogue and answers searches", async () => {
     expect(await C.total()).toBe(JSON.parse(readFileSync(path.resolve(__dirname, "data/courses.json"), "utf8")).courses.length);
     expect(course.learn.length).toBeGreaterThan(0);

@@ -28,9 +28,11 @@ export interface Course {
   id: number; slug: string; title: string; category: string; level: string; level_label: string; tags: string; hours: string; hours_num: number; modules: number;
   weeks: string; pace: string; badge: string; icon: string; prereq: string; best_for: string; brief: string; hands_on: string; outcome: string; sort: number;
   cat_name: string; c1: string; c2: string; learn: string[]; tag_list: string[];
+  /** The course fee in paise (rupees x 100), from the payment catalogue; null when no fee is set. Shown on cards and pages whether or not the course can be bought yet. */
+  fee_minor: number | null;
 }
 
-const SELECT = "SELECT c.*, cc.name AS cat_name, cc.c1, cc.c2 FROM courses c JOIN course_categories cc ON cc.key_name = c.category";
+const SELECT = "SELECT c.*, cc.name AS cat_name, cc.c1, cc.c2, (SELECT pr.amount_minor FROM pay_products pp JOIN pay_prices pr ON pr.product_id = pp.id AND pr.currency = 'INR' AND pr.active = 1 WHERE pp.sku = CONCAT('course-', c.slug) LIMIT 1) AS fee_minor FROM courses c JOIN course_categories cc ON cc.key_name = c.category";
 
 function map(r: Record<string, unknown>): Course {
   let learn: string[] = [];
@@ -42,7 +44,7 @@ function map(r: Record<string, unknown>): Course {
   }
   const tags = String(r.tags ?? "");
   const { learn_json: _l, ...rest } = r;
-  return { ...(rest as object), learn, tag_list: tags === "" ? [] : tags.split(","), hours_num: Number(r.hours_num), modules: Number(r.modules) } as Course;
+  return { ...(rest as object), learn, tag_list: tags === "" ? [] : tags.split(","), hours_num: Number(r.hours_num), modules: Number(r.modules), fee_minor: r.fee_minor === null || r.fee_minor === undefined ? null : Number(r.fee_minor) } as Course;
 }
 
 const esc = (s: string) => s.replace(/[\\%_]/g, (c) => "\\" + c);

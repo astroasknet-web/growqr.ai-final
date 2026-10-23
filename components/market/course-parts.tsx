@@ -1,3 +1,4 @@
+import { formatMoney } from "@/lib/pay/money";
 import Link from "next/link";
 import type { Course } from "@/lib/market/courses";
 import { checkpoints, type Enrolment } from "@/lib/market/learning";
@@ -29,7 +30,7 @@ export function CourseCard({ course }: { course: Course }) {
       <h3 className="text-[16px] font-semibold text-ink leading-snug mt-3"><Link href={`/courses/${course.slug}`} className="hover:underline underline-offset-2">{course.title}</Link></h3>
       <p className="text-[13px] text-ink-3 mt-1 line-clamp-3">{course.brief}</p>
       <p className="text-[12px] text-ink-4 mt-auto pt-3">{course.level_label} &middot; {course.modules} modules &middot; {course.badge || "Certificate"}</p>
-      <p className={`mt-2 text-[12px] font-semibold ${isNative(course.slug) ? "text-emerald-800" : "text-ink-3"}`}>{isNative(course.slug) ? "Lessons available now" : "Lessons coming soon"}</p>
+      <p className={`mt-2 text-[12px] font-semibold ${isNative(course.slug) ? "text-emerald-800" : "text-ink-3"}`}>{isNative(course.slug) ? "Lessons available now" : "Lessons coming soon"}{course.fee_minor ? <span className="ml-2 text-ink">{formatMoney(course.fee_minor, "INR").replace(/.00$/, "")}</span> : null}</p>
     </li>
   );
 }
