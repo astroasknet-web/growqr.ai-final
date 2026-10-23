@@ -576,24 +576,24 @@
       "tags": [
         "All"
       ],
-      "hours": "~20 hrs",
+      "hours": "~9 hrs",
       "modules": 6,
-      "weeks": "~4 weeks",
-      "pace": "5 hrs/wk",
+      "weeks": "~3 weeks",
+      "pace": "3 hrs/wk",
       "badge": "Prompt Engineer",
       "prereq": "AI Literacy (or comfort using AI tools).",
       "bestFor": "Professionals in any field wanting reliable, professional AI output.",
-      "brief": "Prompt patterns and context design for reliable LLM outputs.",
+      "brief": "How assistants work, prompt structure, techniques, testing, safe use and a personal prompt library.",
       "learn": [
-        "Anatomy of a good prompt — role, context, task, format, constraints",
-        "Techniques — few-shot, chain-of-thought, and step-by-step decomposition",
-        "System prompts and controlling tone, length, and structure",
-        "Prompting for coding, data, writing, and analysis",
-        "Reducing hallucination — grounding, citations, and verification",
-        "Prompt templates, iteration, and evaluating outputs"
+        "How language models work, and where they fail",
+        "A prompt template: role, task, context, constraints, format",
+        "Few-shot examples, step-by-step reasoning and output formats",
+        "Testing prompts with rubrics and estimating cost",
+        "Privacy, honesty, bias and responsible use",
+        "Using AI for writing, study and work"
       ],
-      "handsOn": "Build a reusable prompt library for a chosen role (e.g. marketer, coder).",
-      "outcome": "Get expert-level results from AI; feeds Generative AI development.",
+      "handsOn": "Build a library of three reusable prompts with placeholders and a note on how to check each output.",
+      "outcome": "Write clear prompts, test and improve them and use AI assistants responsibly.",
       "icon": "message"
     },
     {
@@ -1991,24 +1991,24 @@
         "Fresher",
         "Mid"
       ],
-      "hours": "~35 hrs",
+      "hours": "~9.5 hrs",
       "modules": 6,
-      "weeks": "~7 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Product Manager",
+      "weeks": "~4 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Product Foundations",
       "prereq": "None.",
       "bestFor": "Aspiring PMs — a high-paying role in startups and MNCs.",
-      "brief": "Roadmaps, user research, agile, and metrics.",
+      "brief": "The PM role, discovery, metrics and experiments, strategy and roadmaps, briefs and launches, and ethical practice.",
       "learn": [
-        "The PM role and product lifecycle",
-        "User research, personas, and problem discovery",
-        "Prioritisation frameworks (RICE, MoSCoW) and roadmaps",
-        "Writing PRDs and user stories",
-        "Working with design and engineering in agile",
-        "Product metrics, experimentation, and launch"
+        "The product manager's role and outcome thinking",
+        "User interviews, jobs to be done and synthesis",
+        "North Star metrics, funnels, retention and experiments",
+        "Vision, strategy, RICE prioritisation and roadmaps",
+        "Writing briefs and launching responsibly",
+        "Stakeholders, privacy and ethical product decisions"
       ],
-      "handsOn": "Take a product from problem to PRD, roadmap, and metrics plan.",
-      "outcome": "Target Associate PM roles; next step Advanced PM.",
+      "handsOn": "Write a one-page product strategy with users, vision, North Star metric, priorities and a Now-Next-Later roadmap.",
+      "outcome": "Frame problems, prioritise ideas, define metrics and write a clear product brief.",
       "icon": "layers"
     },
     {
@@ -2140,24 +2140,24 @@
         "Mid",
         "Senior"
       ],
-      "hours": "~35 hrs",
+      "hours": "~9.5 hrs",
       "modules": 6,
-      "weeks": "~7 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Operations & SCM",
+      "weeks": "~4 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Operations Foundations",
       "prereq": "None.",
       "bestFor": "Operations, logistics, and manufacturing professionals.",
-      "brief": "Logistics, demand planning, and resilient operations.",
+      "brief": "Processes and bottlenecks, inventory and forecasting, quality, sourcing and logistics, improvement proposals and KPIs.",
       "learn": [
-        "Operations strategy and process design",
-        "Supply chain flows and network design",
-        "Demand forecasting and inventory management",
-        "Procurement, logistics, and warehousing",
-        "Lean, Six Sigma, and continuous improvement",
-        "Analytics and resilience/risk management"
+        "Process mapping, waste and bottlenecks",
+        "ABC analysis, EOQ, forecasts and reorder points",
+        "Defect rates, Pareto charts, control limits and PDCA",
+        "Total-cost supplier comparison and logistics",
+        "Improvement proposals, safety and sustainability",
+        "KPIs and spreadsheet habits for operations"
       ],
-      "handsOn": "Optimise a sample supply chain and build a demand-planning model.",
-      "outcome": "Target operations/supply-chain roles.",
+      "handsOn": "Write an operations review of a bakery with findings, recommendations, expected results and measures.",
+      "outcome": "Analyse a process, manage stock and suppliers and propose improvements backed by numbers.",
       "icon": "truck"
     },
     {
@@ -2228,24 +2228,24 @@
       "tags": [
         "Fresher"
       ],
-      "hours": "~20 hrs",
+      "hours": "~9.5 hrs",
       "modules": 6,
       "weeks": "~4 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Customer Success",
+      "pace": "3 hrs/wk",
+      "badge": "Customer Success Foundations",
       "prereq": "None.",
       "bestFor": "Freshers entering CS/support in SaaS and services.",
-      "brief": "Onboarding, retention, and service that turns customers into advocates.",
+      "brief": "The customer journey, support communication, tickets and SLAs, churn and health, feedback and ethics.",
       "learn": [
-        "Customer success vs support vs account management",
-        "Onboarding and time-to-value",
-        "Handling tickets, tone, and difficult customers",
-        "Retention, churn, and renewals",
-        "Upsell/cross-sell and advocacy (NPS)",
-        "Support tools and SLAs"
+        "Retention, lifetime value and the customer journey",
+        "Empathy, clear writing and de-escalation",
+        "Tickets, priorities and SLA percentages",
+        "Churn, retention, health scores and onboarding",
+        "NPS, CSAT, feedback themes and closing the loop",
+        "Privacy, escalation and teamwork"
       ],
-      "handsOn": "Design an onboarding flow and handle simulated support scenarios.",
-      "outcome": "Target customer success/support roles.",
+      "handsOn": "Write a one-page customer success plan with goals, onboarding, support standards, health monitoring, feedback and measures.",
+      "outcome": "Handle support well, measure service and plan how to keep customers.",
       "icon": "heart"
     },
     {
@@ -2433,24 +2433,24 @@
         "College",
         "Founder"
       ],
-      "hours": "~30 hrs",
+      "hours": "~9.5 hrs",
       "modules": 6,
-      "weeks": "~6 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Founder",
+      "weeks": "~4 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Founder Foundations",
       "prereq": "None — just an idea or the ambition to build one.",
       "bestFor": "Student entrepreneurs and first-time founders.",
-      "brief": "Business models, MVPs, unit economics, and fundraising.",
+      "brief": "Problems, customer validation, business models, unit economics and cash, marketing and sales, funding and pitching.",
       "learn": [
-        "Idea validation and problem-solution fit",
-        "Business models and the Lean Canvas",
-        "Building an MVP and customer discovery",
-        "Unit economics, pricing, and go-to-market",
-        "Fundraising, pitch decks, and cap tables basics",
-        "Legal, registration, and early team building (India context)"
+        "Finding and describing real problems",
+        "Customer interviews, assumptions and cheap tests",
+        "Lean canvas, revenue models and pricing",
+        "Break-even, contribution and cash flow",
+        "CAC, LTV and winning the first customers",
+        "Funding options, legal checks and the pitch"
       ],
-      "handsOn": "Validate an idea and build a pitch deck with a Lean Canvas.",
-      "outcome": "Launch and pitch your startup.",
+      "handsOn": "Write a one-page business plan with a break-even calculation and a 90-day action plan.",
+      "outcome": "Validate an idea, model its numbers and pitch it clearly.",
       "icon": "rocket"
     },
     {
