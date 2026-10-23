@@ -1,6 +1,6 @@
 /**
  * A tiny, safe expression evaluator for the course "explorer" widgets (sliders that drive formulas).
- * Grammar: numbers, names (looked up in a scope), + - * / ^, unary minus, brackets, and the functions min, max, abs, round, sqrt, pow.
+ * Grammar: numbers, names (looked up in a scope), + - * / ^, unary minus, brackets, and the functions min, max, abs, round, sqrt, pow, log2, ln, log10, ceil, floor.
  * It never uses eval, Function or any dynamic code: the text is parsed into a tree and walked. Length and depth are capped.
  */
 export type Scope = Record<string, number>;
@@ -15,7 +15,7 @@ type Node =
 const MAX_LEN = 240;
 const MAX_DEPTH = 40;
 const FUNCS: Record<string, (...a: number[]) => number> = {
-  min: Math.min, max: Math.max, abs: Math.abs, sqrt: Math.sqrt, pow: Math.pow,
+  min: Math.min, max: Math.max, abs: Math.abs, sqrt: Math.sqrt, pow: Math.pow, log2: Math.log2, ln: Math.log, log10: Math.log10, ceil: Math.ceil, floor: Math.floor,
   round: (x, d = 0) => { const k = 10 ** Math.max(0, Math.min(6, Math.trunc(d))); return Math.round(x * k) / k; },
 };
 
