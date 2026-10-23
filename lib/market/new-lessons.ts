@@ -25,6 +25,7 @@ export const NEW_LESSONS: Record<string, () => unknown> = {
   "operations-supply-chain": () => require("./data/lessons/operations-supply-chain.json"),
   "powerpoint-presentation-design": () => require("./data/lessons/powerpoint-presentation-design.json"),
   "product-management-fundamentals": () => require("./data/lessons/product-management-fundamentals.json"),
+  "production-ready-web3-apps": () => require("./data/lessons/production-ready-web3-apps.json"),
   "project-management-pmp": () => require("./data/lessons/project-management-pmp.json"),
   "prompt-engineering": () => require("./data/lessons/prompt-engineering.json"),
   "seo": () => require("./data/lessons/seo.json"),

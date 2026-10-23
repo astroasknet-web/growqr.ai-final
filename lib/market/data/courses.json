@@ -3373,24 +3373,24 @@
       "tags": [
         "Mid"
       ],
-      "hours": "~25 hrs",
-      "modules": 9,
-      "weeks": "~8 weeks",
-      "pace": "5 hrs/wk",
+      "hours": "~16 hrs",
+      "modules": 6,
+      "weeks": "~6 weeks",
+      "pace": "3 hrs/wk",
       "badge": "Professional Web3 Developer",
       "prereq": "Solidity and Web3 JavaScript experience.",
       "bestFor": "Developers shipping complete, secure Web3 products.",
-      "brief": "Design, build, test, secure, and deploy full blockchain applications.",
+      "brief": "Architecture, bounded control with time-locks, CI/CD, wallet UX, monitoring and staged launch and operations.",
       "learn": [
-        "Full-stack Web3 architecture (contracts, backend, frontend, infra)",
-        "Environments, testnets, and deployment pipelines",
-        "Testing, CI, and security reviews before launch",
-        "Wallet UX, error states, and gas handling",
-        "Indexing, monitoring, and scaling",
-        "Mainnet deployment and post-launch operations"
+        "Full-stack architecture and environments",
+        "Bounded admin powers, time-locks and safe brakes",
+        "CI/CD with test-network deployment and human-held mainnet",
+        "Transaction state machines and calm wallet messages",
+        "Health checks, alert triage, error budgets and scaling reads",
+        "Staged launches, incident response and ongoing operations"
       ],
-      "handsOn": "Take a Web3 app from design through a tested, secured, mainnet-ready deployment.",
-      "outcome": "Ship production-grade Web3 products end to end.",
+      "handsOn": "Write a production readiness review for a vault product and decide whether to launch, delay or stop.",
+      "outcome": "Plan, review and operate Web3 products with professional discipline.",
       "icon": "rocket"
     },
     {

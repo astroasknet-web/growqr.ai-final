@@ -25,6 +25,7 @@ export const NEW_ACTIVITIES: Record<string, () => unknown> = {
   "operations-supply-chain": () => require("./data/operations-supply-chain.activities.json"),
   "powerpoint-presentation-design": () => require("./data/powerpoint-presentation-design.activities.json"),
   "product-management-fundamentals": () => require("./data/product-management-fundamentals.activities.json"),
+  "production-ready-web3-apps": () => require("./data/production-ready-web3-apps.activities.json"),
   "project-management-pmp": () => require("./data/project-management-pmp.activities.json"),
   "prompt-engineering": () => require("./data/prompt-engineering.activities.json"),
   "seo": () => require("./data/seo.activities.json"),
