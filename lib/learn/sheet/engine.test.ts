@@ -157,3 +157,59 @@ describe("sorting, filtering, charts and CSV", () => {
     expect(importCsv("")).toHaveProperty("error");
   });
 });
+
+describe("more spreadsheet functions", () => {
+  const d = { B2: "10", B3: "20", B4: "30", B5: "40", C2: "a", C3: "b", C4: "a", C5: "a" };
+  it("rounds, roots and remainders", () => {
+    expect(f("=SQRT(81)")).toBe(9);
+    expect(f("=SQRT(-1)")).toMatchObject({ err: "#VALUE!" });
+    expect(f("=INT(-2.5)")).toBe(-3);
+    expect(f("=MOD(10,3)")).toBe(1);
+    expect(f("=MOD(-1,3)")).toBe(2);
+    expect(f("=MOD(5,0)")).toMatchObject({ err: "#DIV/0!" });
+    expect(f("=POWER(2,10)")).toBe(1024);
+    expect(f("=ROUNDUP(2.341,2)")).toBe(2.35);
+    expect(f("=ROUNDDOWN(2.349,2)")).toBe(2.34);
+    expect(f("=ROUNDUP(-2.341,2)")).toBe(-2.35);
+    expect(f("=ROUNDUP(2.3,1)")).toBe(2.3);
+  });
+  it("describes data: median, standard deviation, variance", () => {
+    expect(f("=MEDIAN(B2:B5)", d)).toBe(25);
+    expect(f("=MEDIAN(B2:B4)", d)).toBe(20);
+    expect(f("=VAR(B2:B5)", d)).toBeCloseTo(166.6667, 3);
+    expect(f("=STDEV(B2:B5)", d)).toBeCloseTo(12.9099, 3);
+    expect(f("=STDEV(B2)", d)).toMatchObject({ err: "#DIV/0!" });
+  });
+  it("conditional averages and error trapping", () => {
+    expect(f("=AVERAGEIF(C2:C5,\"a\",B2:B5)", d)).toBe((10 + 30 + 40) / 3);
+    expect(f("=AVERAGEIF(C2:C5,\"z\",B2:B5)", d)).toMatchObject({ err: "#DIV/0!" });
+    expect(f("=IFERROR(1/0,\"none\")")).toBe("none");
+    expect(f("=IFERROR(4/2,\"none\")")).toBe(2);
+  });
+  it("loan payment and future value follow the spreadsheet sign convention", () => {
+    expect(f("=ROUND(PMT(0.01,12,10000),2)")).toBe(-888.49);
+    expect(f("=PMT(0,10,1000)")).toBe(-100);
+    expect(f("=ROUND(FV(0.01,12,-100),2)")).toBe(1268.25);
+    expect(f("=FV(0,10,-100)")).toBe(1000);
+    expect(f("=PMT(0.01,0,1000)")).toMatchObject({ err: "#VALUE!" });
+  });
+});
+
+describe("relationships between two columns", () => {
+  // x in B, a rising y (y = 2x + 1) in C and a falling y in D; the formula goes in A1.
+  const d = { B1: "1", B2: "2", B3: "3", B4: "4", C1: "3", C2: "5", C3: "7", C4: "9", D1: "9", D2: "7", D3: "5", D4: "3" };
+  it("correlation is 1 for a rising line and -1 for a falling one", () => {
+    expect(f("=CORREL(B1:B4,C1:C4)", d)).toBeCloseTo(1, 10);
+    expect(f("=CORREL(B1:B4,D1:D4)", d)).toBeCloseTo(-1, 10);
+  });
+  it("slope and intercept describe the line y = 2x + 1 (first range is y, second is x)", () => {
+    expect(f("=SLOPE(C1:C4,B1:B4)", d)).toBeCloseTo(2, 10);
+    expect(f("=INTERCEPT(C1:C4,B1:B4)", d)).toBeCloseTo(1, 10);
+    expect(f("=SLOPE(D1:D4,B1:B4)", d)).toBeCloseTo(-2, 10);
+  });
+  it("reports unusable input", () => {
+    expect(f("=CORREL(B1:B4,C1:C3)", d)).toMatchObject({ err: "#N/A" });
+    expect(f("=CORREL(B1,C1)", d)).toMatchObject({ err: "#VALUE!" });
+    expect(f("=SLOPE(C1:C4,E1:E4)", d)).toMatchObject({ err: "#DIV/0!" });
+  });
+});

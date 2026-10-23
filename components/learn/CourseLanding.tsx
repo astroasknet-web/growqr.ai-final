@@ -30,7 +30,7 @@ export default function CourseLanding({ slug, nc, lc, summary, done, next, signe
             <h1 id="hero-h" className="mt-2 text-[32px] font-bold leading-[1.1] tracking-tight text-ink sm:text-[46px]">{L.hero.title}</h1>
             <p className="mt-4 max-w-xl text-[17px] leading-relaxed text-ink-2">{L.hero.subtitle}</p>
             <ul className="mt-5 flex flex-wrap gap-2 text-[13px] font-medium text-ink-2" aria-label="Course facts">
-              {[L.hero.level, `About ${nc.hours} hours`, `${nc.modules.length} modules`, `${totalActs} hands-on activities`, "Free"].map((t) => <li key={t} className="rounded-full bg-white px-3 py-1.5 ring-1 ring-black/[0.1]">{t}</li>)}
+              {[L.hero.level, `About ${nc.hours} hours`, `${nc.modules.length} modules`, `${totalActs} hands-on activities`, "Lifetime access"].map((t) => <li key={t} className="rounded-full bg-white px-3 py-1.5 ring-1 ring-black/[0.1]">{t}</li>)}
             </ul>
             <div className="mt-7 flex flex-wrap items-center gap-3">
               <Link href={next.href} className={btnPrimary}>{enrolled && progress > 0 ? next.label : "Start learning"}</Link>

@@ -22,10 +22,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const nc = lessons.nativeCourse(slug);
   if (!nc) return { title: "Course not found | GrowQR", robots: { index: false, follow: true } };
   const lc = learnCourse(slug);
-  const title = lc?.landing ? `${lc.landing.hero.title} (Free Course) | GrowQR` : `${nc.title}: Lessons | GrowQR`;
+  const title = lc?.landing ? `${lc.landing.hero.title} (Online Course) | GrowQR` : `${nc.title}: Lessons | GrowQR`;
   const desc = lc?.landing ? lc.landing.hero.subtitle : `${nc.tagline} ${nc.modules.length} modules with quizzes and a capstone project.`;
   return {
-    title: title.length > 66 ? `${nc.title}: Free Course | GrowQR` : title,
+    title: title.length > 66 ? `${nc.title}: Online Course | GrowQR` : title,
     description: Array.from(desc).slice(0, 155).join(""),
     alternates: { canonical: `${SITE_URL}/courses/${slug}/learn` },
     robots: { index: true, follow: true },
@@ -50,7 +50,7 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
     const ld = {
       "@context": "https://schema.org",
       "@graph": [
-        { "@type": "Course", name: lc.landing.hero.title, description: lc.landing.hero.subtitle, url: `${SITE_URL}/courses/${slug}/learn`, educationalLevel: lc.landing.hero.level, timeRequired: `PT${nc.hours}H`, inLanguage: "en", isAccessibleForFree: true, provider: { "@type": "Organization", name: "GrowQR", sameAs: SITE_URL }, hasCourseInstance: { "@type": "CourseInstance", courseMode: "online", courseWorkload: `PT${nc.hours}H` } },
+        { "@type": "Course", name: lc.landing.hero.title, description: lc.landing.hero.subtitle, url: `${SITE_URL}/courses/${slug}/learn`, educationalLevel: lc.landing.hero.level, timeRequired: `PT${nc.hours}H`, inLanguage: "en", provider: { "@type": "Organization", name: "GrowQR", sameAs: SITE_URL }, hasCourseInstance: { "@type": "CourseInstance", courseMode: "online", courseWorkload: `PT${nc.hours}H` } },
         { "@type": "FAQPage", mainEntity: lc.landing.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
         { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Courses", item: `${SITE_URL}/courses` }, { "@type": "ListItem", position: 2, name: nc.title, item: `${SITE_URL}/courses/${slug}` }, { "@type": "ListItem", position: 3, name: "Learn" }] },
       ],

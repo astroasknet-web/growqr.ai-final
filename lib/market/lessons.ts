@@ -3,6 +3,7 @@ import ds from "./data/lessons/data-science-python.json";
 import da from "./data/lessons/data-analytics-python.json";
 import hc from "./data/lessons/html-css.json";
 import bbaFa from "./data/lessons/bba-financial-accounting.json";
+import { NEW_LESSONS } from "./new-lessons";
 
 /**
  * Native lessons: the courses GrowQR teaches itself (ported from Vidaara by scripts/build-lessons.mjs). A catalogue course with an entry
@@ -40,9 +41,18 @@ const NATIVE: Record<string, NativeCourse> = {
   "bba-financial-accounting": bbaFa as unknown as NativeCourse,
 };
 
-export const isNative = (slug: string): boolean => Object.prototype.hasOwnProperty.call(NATIVE, slug);
-export const nativeCourse = (slug: string): NativeCourse | null => (isNative(slug) ? NATIVE[slug] : null);
-export const nativeSlugs = (): string[] => Object.keys(NATIVE);
+const has = (o: object, k: string): boolean => Object.prototype.hasOwnProperty.call(o, k);
+const loaded = new Map<string, NativeCourse>();
+
+export const isNative = (slug: string): boolean => has(NATIVE, slug) || has(NEW_LESSONS, slug);
+export const nativeCourse = (slug: string): NativeCourse | null => {
+  if (has(NATIVE, slug)) return NATIVE[slug];
+  if (!has(NEW_LESSONS, slug)) return null;
+  let c = loaded.get(slug); // the newer courses are read from disk on first use
+  if (!c) { c = NEW_LESSONS[slug]() as NativeCourse; loaded.set(slug, c); }
+  return c;
+};
+export const nativeSlugs = (): string[] => [...Object.keys(NATIVE), ...Object.keys(NEW_LESSONS)];
 
 /** A step in the player: checkpoint index i is module i, and the capstone is checkpoint modules.length. */
 export function stepFor(c: NativeCourse, key: string): { index: number; module: LessonModule | null; capstone: boolean } | null {

@@ -44,10 +44,9 @@ export function landingJsonLd(nc: NativeCourse, slug: string, course: { title: s
     "@graph": [
       {
         "@type": "Course", "@id": `${url}#course`, name: nc.title, description: L.seo.description, url, inLanguage: "en-IN", educationalLevel: course.level_label,
-        isAccessibleForFree: true, timeRequired: iso(nc.hours), keywords: L.seo.keywords.join(", "), dateModified: L.updated, version: L.version, author,
+        timeRequired: iso(nc.hours), keywords: L.seo.keywords.join(", "), dateModified: L.updated, version: L.version, author,
         teaches: L.outcomes.map((o) => o.text), coursePrerequisites: L.prerequisites,
         provider: { "@type": "Organization", name: BRAND, sameAs: SITE_URL },
-        offers: { "@type": "Offer", category: "Free", price: 0, priceCurrency: "INR", availability: "https://schema.org/InStock", url },
         hasCourseInstance: { "@type": "CourseInstance", courseMode: "online", courseWorkload: iso(nc.hours), inLanguage: "en-IN", instructor: author },
         hasPart: nc.modules.map((m, i) => ({ "@type": "LearningResource", position: i + 1, name: m.title, description: m.summary, url: `${url}/learn/${m.slug}`, timeRequired: iso(m.hours), learningResourceType: "Unit" })),
       },

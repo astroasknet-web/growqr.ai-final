@@ -31,7 +31,7 @@ const MSG: Record<string, string> = {
   "#N/A": "The value could not be found.",
 };
 
-const FUNCS = new Set(["SUM", "AVERAGE", "MIN", "MAX", "COUNT", "COUNTA", "IF", "ROUND", "ABS", "AND", "OR", "NOT", "COUNTIF", "SUMIF"]);
+const FUNCS = new Set(["SUM", "AVERAGE", "MIN", "MAX", "COUNT", "COUNTA", "IF", "ROUND", "ABS", "AND", "OR", "NOT", "COUNTIF", "SUMIF", "AVERAGEIF", "IFERROR", "SQRT", "INT", "MOD", "POWER", "ROUNDUP", "ROUNDDOWN", "MEDIAN", "STDEV", "VAR", "PMT", "FV", "CORREL", "SLOPE", "INTERCEPT"]);
 export const SUPPORTED_FUNCTIONS = [...FUNCS];
 
 export class Calculator {
@@ -162,7 +162,7 @@ export class Calculator {
   }
 
   private fn(name: string, args: Node[]): Value {
-    if (!FUNCS.has(name)) return err("#NAME?", `"${name}" is not a function GrowQR knows yet. Try SUM, AVERAGE, MIN, MAX, COUNT, COUNTA or IF.`);
+    if (!FUNCS.has(name)) return err("#NAME?", `"${name}" is not a function GrowQR knows yet. Try SUM, AVERAGE, MIN, MAX, COUNT, COUNTA, IF, ROUND, COUNTIF, SUMIF, AVERAGEIF or IFERROR.`);
     const need = (min: number, max: number): Value | null => (args.length < min || args.length > max ? err("#VALUE!", `${name} needs ${min === max ? min : `${min} to ${max}`} value${max === 1 ? "" : "s"} inside the brackets, but it has ${args.length}.`) : null);
     switch (name) {
       case "SUM": { const n = this.numbers(args); return Array.isArray(n) ? n.reduce((a, b) => a + b, 0) : n; }
@@ -219,6 +219,97 @@ export class Calculator {
           else { const s = (sums as Value[])[i]; if (typeof s === "number") total += s; }
         });
         return total;
+      }
+      case "IFERROR": {
+        const bad = need(2, 2); if (bad) return bad;
+        const v = this.scalar(this.ev(args[0]));
+        return isErr(v) ? this.scalar(this.ev(args[1])) : v;
+      }
+      case "SQRT": { const bad = need(1, 1); if (bad) return bad; const x = this.num(this.ev(args[0])); if (typeof x !== "number") return x; return x < 0 ? err("#VALUE!", "SQRT needs a number that is zero or more.") : Math.sqrt(x); }
+      case "INT": { const bad = need(1, 1); if (bad) return bad; const x = this.num(this.ev(args[0])); return typeof x === "number" ? Math.floor(x) : x; }
+      case "MOD": {
+        const bad = need(2, 2); if (bad) return bad;
+        const x = this.num(this.ev(args[0])); if (typeof x !== "number") return x;
+        const y = this.num(this.ev(args[1])); if (typeof y !== "number") return y;
+        return y === 0 ? err("#DIV/0!", MSG["#DIV/0!"]) : ((x % y) + y) % y;
+      }
+      case "POWER": {
+        const bad = need(2, 2); if (bad) return bad;
+        const x = this.num(this.ev(args[0])); if (typeof x !== "number") return x;
+        const y = this.num(this.ev(args[1])); if (typeof y !== "number") return y;
+        const r = Math.pow(x, y);
+        return Number.isFinite(r) ? r : err("#VALUE!", MSG["#VALUE!"]);
+      }
+      case "ROUNDUP": case "ROUNDDOWN": {
+        const bad = need(1, 2); if (bad) return bad;
+        const x = this.num(this.ev(args[0])); if (typeof x !== "number") return x;
+        const d = args[1] ? this.num(this.ev(args[1])) : 0; if (typeof d !== "number") return d;
+        const f = Math.pow(10, Math.max(-6, Math.min(10, Math.trunc(d))));
+        const scaled = Math.abs(x) * f;
+        const r = name === "ROUNDUP" ? Math.ceil(scaled - 1e-9) : Math.floor(scaled + 1e-9);
+        return (Math.sign(x) * r) / f;
+      }
+      case "MEDIAN": {
+        const n = this.numbers(args); if (!Array.isArray(n)) return n;
+        if (!n.length) return err("#VALUE!", "MEDIAN found no numbers.");
+        const a = [...n].sort((p, q) => p - q);
+        const mid = Math.floor(a.length / 2);
+        return a.length % 2 ? a[mid] : (a[mid - 1] + a[mid]) / 2;
+      }
+      case "STDEV": case "VAR": {
+        const n = this.numbers(args); if (!Array.isArray(n)) return n;
+        if (n.length < 2) return err("#DIV/0!", name + " needs at least two numbers.");
+        const m = n.reduce((a, b) => a + b, 0) / n.length;
+        const v = n.reduce((a, b) => a + (b - m) * (b - m), 0) / (n.length - 1);
+        return name === "VAR" ? v : Math.sqrt(v);
+      }
+      case "AVERAGEIF": {
+        const bad = need(2, 3); if (bad) return bad;
+        const range = this.ev(args[0]);
+        if (!Array.isArray(range)) return err("#VALUE!", "AVERAGEIF needs a range as its first value, like B2:B9.");
+        const crit = this.scalar(this.ev(args[1]));
+        if (isErr(crit)) return crit;
+        const avg = args[2] ? this.ev(args[2]) : range;
+        if (!Array.isArray(avg)) return err("#VALUE!", "AVERAGEIF needs a range to average.");
+        let total = 0, count = 0;
+        range.forEach((x, i) => {
+          if (isErr(x) || !matches(x, crit)) return;
+          const s = avg[i];
+          if (typeof s === "number") { total += s; count++; }
+        });
+        return count ? total / count : err("#DIV/0!", "No cells matched, so there is nothing to average.");
+      }
+      case "CORREL": case "SLOPE": case "INTERCEPT": {
+        // Two ranges of the same size: pairs are used only where both cells hold numbers.
+        const bad = need(2, 2); if (bad) return bad;
+        const a = this.ev(args[0]), b = this.ev(args[1]);
+        if (!Array.isArray(a) || !Array.isArray(b)) return err("#VALUE!", name + " needs two ranges of numbers.");
+        if (a.length !== b.length) return err("#N/A", name + " needs two ranges of the same size.");
+        const xs: number[] = [], ys: number[] = [];
+        for (let i = 0; i < a.length; i++) {
+          const p = a[i], q = b[i];
+          if (isErr(p)) return p;
+          if (isErr(q)) return q;
+          if (typeof p === "number" && typeof q === "number") { xs.push(p); ys.push(q); }
+        }
+        if (xs.length < 2) return err("#DIV/0!", name + " needs at least two pairs of numbers.");
+        const mp = xs.reduce((u, v) => u + v, 0) / xs.length, mq = ys.reduce((u, v) => u + v, 0) / ys.length;
+        let spq = 0, spp = 0, sqq = 0;
+        for (let i = 0; i < xs.length; i++) { spq += (xs[i] - mp) * (ys[i] - mq); spp += (xs[i] - mp) ** 2; sqq += (ys[i] - mq) ** 2; }
+        if (name === "CORREL") return spp === 0 || sqq === 0 ? err("#DIV/0!", "CORREL needs numbers that vary.") : spq / Math.sqrt(spp * sqq);
+        // Excel's order is SLOPE(known_ys, known_xs): the first range is y, the second is x.
+        if (sqq === 0) return err("#DIV/0!", name + " needs x values that vary.");
+        const slope = spq / sqq;
+        return name === "SLOPE" ? slope : mp - slope * mq;
+      }
+      case "PMT": case "FV": {
+        const bad = need(3, 3); if (bad) return bad;
+        const r = this.num(this.ev(args[0])); if (typeof r !== "number") return r;
+        const n = this.num(this.ev(args[1])); if (typeof n !== "number") return n;
+        const a = this.num(this.ev(args[2])); if (typeof a !== "number") return a;
+        if (n <= 0) return err("#VALUE!", name + " needs a number of periods above zero.");
+        if (name === "PMT") return r === 0 ? -a / n : (-a * r) / (1 - Math.pow(1 + r, -n));
+        return r === 0 ? -a * n : -(a * (Math.pow(1 + r, n) - 1)) / r;
       }
       default: return err("#NAME?", MSG["#NAME?"]);
     }
