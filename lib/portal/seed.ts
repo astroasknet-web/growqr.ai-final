@@ -22,8 +22,10 @@ async function loadIfChanged(key: string, file: string, load: (json: never) => P
 }
 
 export async function seedCatalogues(): Promise<string[]> {
+  const { seedCatalogue: seedPay } = await import("../pay/catalogue");
   return [
     `study abroad: ${await loadIfChanged("abroad_sig_node", "lib/abroad/data/study-abroad.json", abroad.sync)}`,
     `courses: ${await loadIfChanged("courses_sig_node", "lib/market/data/courses.json", courses.sync)}`,
+    `payment products added: ${await seedPay()}`,
   ];
 }

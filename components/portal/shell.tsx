@@ -5,12 +5,13 @@ import PortalSidebar, { type NavGroup, type NavItem } from "@/components/portal/
 
 /** Page frame for signed-in portal pages: the person's own menu as a left sidebar (a drawer on phones) beside the content column. */
 const ACCOUNT: NavItem = { key: "account", href: "/account", label: "My account", icon: "account" };
+const BILLING: NavItem = { key: "billing", href: "/billing", label: "Billing", icon: "billing" };
 
 export function groupsFor(role: string): NavGroup[] {
   switch (role) {
     case "student":
       return [
-        { title: "Overview", items: [ACCOUNT] },
+        { title: "Overview", items: [ACCOUNT, BILLING] },
         { title: "Career", items: [
           { key: "passport", href: "/passport", label: "Skill Passport", icon: "passport" },
           { key: "studio", href: "/studio", label: "Resume Studio", icon: "studio" },
@@ -27,26 +28,26 @@ export function groupsFor(role: string): NavGroup[] {
         ] },
       ];
     case "teacher":
-      return [{ title: "Overview", items: [ACCOUNT] }, { title: "Teaching", items: [{ key: "teacher", href: "/teacher", label: "My classes", icon: "teacher" }] }];
+      return [{ title: "Overview", items: [ACCOUNT, BILLING] }, { title: "Teaching", items: [{ key: "teacher", href: "/teacher", label: "My classes", icon: "teacher" }] }];
     case "parent":
-      return [{ title: "Overview", items: [ACCOUNT] }, { title: "Family", items: [{ key: "parent", href: "/parent", label: "My children", icon: "children" }] }];
+      return [{ title: "Overview", items: [ACCOUNT, BILLING] }, { title: "Family", items: [{ key: "parent", href: "/parent", label: "My children", icon: "children" }] }];
     case "employer":
-      return [{ title: "Overview", items: [ACCOUNT] }, { title: "Hiring", items: [
+      return [{ title: "Overview", items: [ACCOUNT, BILLING] }, { title: "Hiring", items: [
         { key: "employer", href: "/employer", label: "Hiring", icon: "hiring" },
         { key: "post", href: "/employer/post", label: "Post a role", icon: "post" },
       ] }];
     case "admin":
-      return [{ title: "Overview", items: [ACCOUNT] }, { title: "Staff", items: [
+      return [{ title: "Overview", items: [ACCOUNT, BILLING] }, { title: "Staff", items: [
         { key: "crm", href: "/crm", label: "Overseas CRM", icon: "crm" },
         { key: "console", href: "/console", label: "Admin console", icon: "console" },
       ] }];
     case "counselor":
-      return [{ title: "Overview", items: [ACCOUNT] }, { title: "Staff", items: [
+      return [{ title: "Overview", items: [ACCOUNT, BILLING] }, { title: "Staff", items: [
         { key: "crm", href: "/crm", label: "Overseas CRM", icon: "crm" },
         { key: "caseload", href: "/counselor", label: "My caseload", icon: "caseload" },
       ] }];
     default:
-      return [{ title: "Overview", items: [ACCOUNT] }];
+      return [{ title: "Overview", items: [ACCOUNT, BILLING] }];
   }
 }
 

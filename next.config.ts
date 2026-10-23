@@ -36,12 +36,12 @@ const CONTENT_SECURITY_POLICY = [
   "form-action 'self'",
   // Inline needed for Next.js hydration bootstrap + the GA snippets (dynamic
   // content rules out static hashes; nonces would de-optimize the whole site).
-  "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.googletagmanager.com https://salesiq.zohopublic.in https://*.zoho.in https://*.zohostatic.com https://*.zohocdn.com" + blog,
+  "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.googletagmanager.com https://salesiq.zohopublic.in https://*.zoho.in https://*.zohostatic.com https://*.zohocdn.com https://checkout.razorpay.com" + blog,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "img-src 'self' data: blob: https://randomuser.me https://images.unsplash.com https://www.google-analytics.com https://*.zohopublic.in https://*.zoho.in https://*.zohostatic.com" + blog,
+  "img-src 'self' data: blob: https://randomuser.me https://images.unsplash.com https://www.google-analytics.com https://*.zohopublic.in https://*.zoho.in https://*.zohostatic.com https://*.razorpay.com" + blog,
   "font-src 'self' data: https://fonts.gstatic.com",
-  "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://challenges.cloudflare.com https://salesiq.zohopublic.in wss://salesiq.zohopublic.in https://*.zoho.in https://api.iconify.design" + blog,
-  "frame-src 'self' https://challenges.cloudflare.com https://salesiq.zohopublic.in https://*.zoho.in",
+  "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://challenges.cloudflare.com https://salesiq.zohopublic.in wss://salesiq.zohopublic.in https://*.zoho.in https://api.razorpay.com https://lumberjack.razorpay.com https://api.iconify.design" + blog,
+  "frame-src 'self' https://challenges.cloudflare.com https://salesiq.zohopublic.in https://*.zoho.in https://api.razorpay.com https://checkout.razorpay.com",
   "worker-src 'self' blob:",
   "manifest-src 'self'",
   "media-src 'self' data:",
