@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useState } from "react";
 
-const inputCls = "w-full px-4 py-3 rounded-lg border text-[16px] sm:text-[15px] text-ink bg-white outline-none focus:ring-2 focus:ring-orange/25 focus:border-orange/60 transition-all placeholder:text-ink-4 min-h-[44px]";
+const inputCls = "w-full rounded-xl border bg-white px-4 py-3 text-[16px] text-ink outline-none transition placeholder:text-ink-4 min-h-[48px] focus:border-[#7857ff] focus:ring-4 focus:ring-[#7857ff]/15 sm:text-[15px]";
 const key = (s: string) => s.toLowerCase().replace(/[^\p{L}\p{N}]+/gu, " ").trim();
 
 /**
@@ -25,8 +25,8 @@ export function CollegeField({ defaultValue, error, states }: { defaultValue?: s
   const listed = opts.some((o) => key(o.name) === key(text));
   const unlisted = text.trim().length >= 4 && !listed && opts.length === 0;
   return (
-    <div className="mb-5">
-      <label htmlFor={`${id}-c`} className="block text-[13px] sm:text-[14px] font-medium text-ink-2 mb-2">College or university</label>
+    <div className="mb-4">
+      <label htmlFor={`${id}-c`} className="mb-1.5 block text-[13.5px] font-semibold text-ink-2">College or university</label>
       <input id={`${id}-c`} name="college" list={`${id}-l`} value={text} onChange={(e) => setText(e.target.value)} required maxLength={160} autoComplete="off" spellCheck={false}
         aria-invalid={error ? true : undefined} aria-describedby={error ? `${id}-e` : `${id}-h`} className={`${inputCls} ${error ? "border-red-400" : "border-black/[0.12]"}`} />
       <datalist id={`${id}-l`}>{opts.map((o) => <option key={`${o.name}${o.place}`} value={o.name} label={o.place} />)}</datalist>

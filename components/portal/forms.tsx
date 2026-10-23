@@ -1,27 +1,33 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
+import { Briefcase, Building2, KeyRound, Lock, Mail, User } from "lucide-react";
 import {
   loginAction, mfaLoginAction, signupAction, forgotAction, resetAction, logoutAction, resendVerificationAction, mfaEnableAction, mfaDisableAction, type FormState,
 } from "@/app/(portal)/actions";
 import { CollegeField } from "./college-field";
 import { COLLEGE_STATES } from "./college-states";
-import { Alert, BotCheck, Field, Honeypot, LinkText, PasswordField, SubmitButton } from "./ui";
+import { Alert, Field, LinkText, PasswordField, SubmitButton } from "./ui";
+import { GradientButton, HumanCheck, Notice, PasswordInput, TextField, Trap, type CaptchaInfo } from "./auth-controls";
 
 const none: FormState = {};
 
-export function LoginForm({ next }: { next: string }) {
+/** The five account forms below use the redesigned controls. `captcha` says which human check the server expects. */
+const off: CaptchaInfo = { mode: "off", siteKey: "" };
+
+export function LoginForm({ next, captcha = off }: { next: string; captcha?: CaptchaInfo }) {
   const [s, action] = useActionState(loginAction, none);
+  const [human, setHuman] = useState(false);
   return (
     <form action={action} noValidate>
-      {s.error ? <Alert>{s.error}</Alert> : null}
+      {s.error ? <Notice>{s.error}</Notice> : null}
       <input type="hidden" name="next" value={next} />
-      <Honeypot />
-      <Field label="Email address" name="email" type="email" inputMode="email" autoComplete="username" defaultValue={s.values?.email} error={s.fields?.email} autoFocus />
-      <PasswordField error={s.fields?.password} />
-      <p className="-mt-2 mb-5 text-[13px]"><LinkText href="/forgot-password">Forgot your password?</LinkText></p>
-      <BotCheck />
-      <SubmitButton pendingText="Logging in...">Log in</SubmitButton>
+      <Trap />
+      <TextField label="Email address" name="email" type="email" inputMode="email" autoComplete="username" icon={<Mail className="h-[18px] w-[18px]" />} defaultValue={s.values?.email} error={s.fields?.email} autoFocus />
+      <PasswordInput icon={<Lock className="h-[18px] w-[18px]" />} error={s.fields?.password} />
+      <p className="-mt-1 mb-5 text-right text-[13.5px]"><LinkText href="/forgot-password">Forgot your password?</LinkText></p>
+      <HumanCheck captcha={captcha} onReady={setHuman} resetKey={s} />
+      <GradientButton pendingText="Logging in..." disabled={!human}>Log in</GradientButton>
     </form>
   );
 }
@@ -30,63 +36,67 @@ export function MfaLoginForm() {
   const [s, action] = useActionState(mfaLoginAction, none);
   return (
     <form action={action} noValidate>
-      {s.error ? <Alert>{s.error}</Alert> : null}
-      <Field label="Verification code" name="code" inputMode="numeric" autoComplete="one-time-code" maxLength={14} autoFocus hint="The 6-digit code from your authenticator app, or a recovery code." />
-      <SubmitButton pendingText="Checking...">Verify and log in</SubmitButton>
+      {s.error ? <Notice>{s.error}</Notice> : null}
+      <TextField label="Verification code" name="code" inputMode="numeric" autoComplete="one-time-code" maxLength={14} autoFocus icon={<KeyRound className="h-[18px] w-[18px]" />} hint="The 6-digit code from your authenticator app, or a recovery code." />
+      <GradientButton pendingText="Checking...">Verify and log in</GradientButton>
     </form>
   );
 }
 
-export function SignupForm({ role }: { role: "student" | "employer" | "teacher" | "parent" }) {
+export function SignupForm({ role, captcha = off }: { role: "student" | "employer" | "teacher" | "parent"; captcha?: CaptchaInfo }) {
   const [s, action] = useActionState(signupAction, none);
+  const [human, setHuman] = useState(false);
+  const [email, setEmail] = useState(s.values?.email ?? "");
+  const [name, setName] = useState(s.values?.name ?? "");
   const isE = role === "employer";
   const f = s.fields ?? {};
   const v = s.values ?? {};
   return (
     <form action={action} noValidate>
-      {s.error ? <Alert>{s.error}</Alert> : null}
+      {s.error ? <Notice>{s.error}</Notice> : null}
       <input type="hidden" name="role" value={role} />
-      <Honeypot />
-      <Field label="Full name" name="name" autoComplete="name" defaultValue={v.name} error={f.name} />
-      <Field label={isE ? "Work email" : "Email address"} name="email" type="email" inputMode="email" autoComplete="email" defaultValue={v.email} error={f.email} />
+      <Trap />
+      <TextField label="Full name" name="name" autoComplete="name" icon={<User className="h-[18px] w-[18px]" />} defaultValue={v.name} error={f.name} onChange={setName} />
+      <TextField label={isE ? "Work email" : "Email address"} name="email" type="email" inputMode="email" autoComplete="email" icon={<Mail className="h-[18px] w-[18px]" />} defaultValue={v.email} error={f.email} onChange={setEmail} />
       {isE ? (
         <>
-          <Field label="Company" name="company" autoComplete="organization" defaultValue={v.company} error={f.company} />
-          <Field label="Your role at the company" name="designation" autoComplete="organization-title" defaultValue={v.designation} error={f.designation} />
+          <TextField label="Company" name="company" autoComplete="organization" icon={<Building2 className="h-[18px] w-[18px]" />} defaultValue={v.company} error={f.company} />
+          <TextField label="Your role at the company" name="designation" autoComplete="organization-title" icon={<Briefcase className="h-[18px] w-[18px]" />} defaultValue={v.designation} error={f.designation} />
         </>
       ) : role === "student" ? (
         <CollegeField defaultValue={v.college} error={f.college} states={COLLEGE_STATES} />
       ) : null}
-      <PasswordField label="Create a password" autoComplete="new-password" error={f.password} hint="At least 8 characters. A short phrase of unrelated words works well." />
+      <PasswordInput label="Create a password" autoComplete="new-password" icon={<Lock className="h-[18px] w-[18px]" />} error={f.password} meter email={email} fullName={name} hint="At least 8 characters. A short phrase of unrelated words works well." />
       <div className="mb-5">
-        <label className="flex gap-3 items-start text-[14px] text-ink-3 min-h-[44px]">
-          <input type="checkbox" name="terms" className="mt-1 w-5 h-5 shrink-0 accent-orange" required />
+        <label className="flex min-h-[44px] items-start gap-3 text-[13.5px] text-ink-3">
+          <input type="checkbox" name="terms" className="mt-1 h-5 w-5 shrink-0 accent-[#7857ff]" required />
           <span>I agree to the <LinkText href="/privacy-policy">Privacy Policy</LinkText> and terms of use.</span>
         </label>
-        {f.terms ? <p className="text-[13px] text-red-700 mt-1">{f.terms}</p> : null}
+        {f.terms ? <p className="mt-1 text-[13px] text-red-700">{f.terms}</p> : null}
       </div>
-      <BotCheck />
-      <SubmitButton pendingText="Creating your account...">Create account</SubmitButton>
+      <HumanCheck captcha={captcha} onReady={setHuman} resetKey={s} />
+      <GradientButton pendingText="Creating your account..." disabled={!human}>Create account</GradientButton>
     </form>
   );
 }
 
-export function ForgotForm() {
+export function ForgotForm({ captcha = off }: { captcha?: CaptchaInfo }) {
   const [s, action] = useActionState(forgotAction, none);
+  const [human, setHuman] = useState(false);
   if (s.ok) {
     return (
-      <Alert kind="success">
+      <Notice kind="success">
         If an account exists for <b>{s.values?.email}</b>, we have sent a link to reset the password. It works once and lasts 60 minutes. Check your spam folder if it does not arrive.
-      </Alert>
+      </Notice>
     );
   }
   return (
     <form action={action} noValidate>
-      {s.error ? <Alert>{s.error}</Alert> : null}
-      <Honeypot />
-      <Field label="Email address" name="email" type="email" inputMode="email" autoComplete="email" defaultValue={s.values?.email} error={s.fields?.email} autoFocus />
-      <BotCheck />
-      <SubmitButton pendingText="Sending...">Send reset link</SubmitButton>
+      {s.error ? <Notice>{s.error}</Notice> : null}
+      <Trap />
+      <TextField label="Email address" name="email" type="email" inputMode="email" autoComplete="email" icon={<Mail className="h-[18px] w-[18px]" />} defaultValue={s.values?.email} error={s.fields?.email} autoFocus />
+      <HumanCheck captcha={captcha} onReady={setHuman} resetKey={s} />
+      <GradientButton pendingText="Sending..." disabled={!human}>Send reset link</GradientButton>
     </form>
   );
 }
@@ -95,10 +105,10 @@ export function ResetForm({ token }: { token: string }) {
   const [s, action] = useActionState(resetAction, none);
   return (
     <form action={action} noValidate>
-      {s.error ? <Alert>{s.error}</Alert> : null}
+      {s.error ? <Notice>{s.error}</Notice> : null}
       <input type="hidden" name="token" value={token} />
-      <PasswordField label="New password" autoComplete="new-password" hint="At least 8 characters. A short phrase of unrelated words works well." />
-      <SubmitButton pendingText="Saving...">Save new password</SubmitButton>
+      <PasswordInput label="New password" autoComplete="new-password" icon={<Lock className="h-[18px] w-[18px]" />} meter hint="At least 8 characters. A short phrase of unrelated words works well." />
+      <GradientButton pendingText="Saving...">Save new password</GradientButton>
     </form>
   );
 }

@@ -3,7 +3,8 @@
 import { redirect } from "next/navigation";
 import * as auth from "@/lib/portal/auth";
 import { enableMfa, disableMfa } from "@/lib/portal/auth";
-import { verifyTurnstile } from "@/lib/turnstile";
+import { humanCheck } from "@/lib/portal/captcha";
+import { PWNED_MESSAGE, pwnedCount } from "@/lib/portal/pwned";
 import { clientIp, audit, safeNext } from "@/lib/portal/security";
 import { weakPassword } from "@/lib/portal/password";
 import { getSession, startSession, endSession, endAllSessions, dropSessionData } from "@/lib/portal/session";
@@ -30,14 +31,9 @@ const FREE_MAIL = ["gmail.com", "yahoo.com", "yahoo.in", "outlook.com", "hotmail
 const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 const str = (fd: FormData, k: string, max = 190): string => String(fd.get(k) ?? "").trim().slice(0, max);
 
-function captchaRequired(): boolean {
-  return process.env.PORTAL_CAPTCHA !== "off" && Boolean(process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY);
-}
-
 async function passesBotChecks(fd: FormData, label: string): Promise<boolean> {
   if (str(fd, "website") !== "") return false; // honeypot: real people never see this field
-  if (!captchaRequired()) return true;
-  return verifyTurnstile(String(fd.get("cf-turnstile-response") ?? ""), `portal-${label}`);
+  return humanCheck(fd, label); // Cloudflare Turnstile when configured, otherwise the built-in proof-of-work check
 }
 
 const BOT_MSG = "We could not confirm you are human. Please try again.";
@@ -96,6 +92,7 @@ export async function signupAction(_prev: FormState, fd: FormData): Promise<Form
   else if (isE && FREE_MAIL.includes(v.email.slice(v.email.lastIndexOf("@") + 1).toLowerCase())) f.email = "Employers need a work email on a company domain. This helps us verify you.";
   const why = weakPassword(password, v.email, v.name);
   if (why) f.password = why;
+  else if ((await pwnedCount(password)) > 0) f.password = PWNED_MESSAGE;
   if (isStudent && Array.from(v.college).length < 2) f.college = "Enter your college or university.";
   if (isE) {
     if (Array.from(v.company).length < 2) f.company = "Enter your company name.";
@@ -125,6 +122,7 @@ export async function forgotAction(_prev: FormState, fd: FormData): Promise<Form
 export async function resetAction(_prev: FormState, fd: FormData): Promise<FormState> {
   const token = str(fd, "token", 80);
   const password = String(fd.get("password") ?? "");
+  if ((await pwnedCount(password)) > 0) return { error: PWNED_MESSAGE };
   const r = await auth.completeReset(token, password);
   if (!r.ok) return { error: r.error };
   await endAllSessions(r.userId); // a reset signs the account out everywhere
