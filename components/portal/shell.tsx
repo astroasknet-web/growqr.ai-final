@@ -1,49 +1,67 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import type { PortalUser } from "@/lib/portal/session";
-import { LogoutButton } from "@/components/portal/forms";
+import PortalSidebar, { type NavGroup, type NavItem } from "@/components/portal/sidebar";
 
-/** Page frame for signed-in portal pages: logo, a small menu, and a content column. */
-const NAV = [
-  { key: "account", href: "/account", label: "My account" },
-  { key: "passport", href: "/passport", label: "Skill Passport" },
-  { key: "studio", href: "/studio", label: "Resume Studio" },
-  { key: "internships", href: "/internships", label: "Internships" },
-  { key: "applications", href: "/applications", label: "My applications" },
-  { key: "courses", href: "/my-courses", label: "My courses" },
-  { key: "classes", href: "/my-classes", label: "My classes" },
-  { key: "abroad", href: "/abroad", label: "Study abroad" },
-  { key: "share", href: "/passport/share", label: "Share" },
-] as const;
+/** Page frame for signed-in portal pages: the person's own menu as a left sidebar (a drawer on phones) beside the content column. */
+const ACCOUNT: NavItem = { key: "account", href: "/account", label: "My account", icon: "account" };
+
+export function groupsFor(role: string): NavGroup[] {
+  switch (role) {
+    case "student":
+      return [
+        { title: "Overview", items: [ACCOUNT] },
+        { title: "Career", items: [
+          { key: "passport", href: "/passport", label: "Skill Passport", icon: "passport" },
+          { key: "studio", href: "/studio", label: "Resume Studio", icon: "studio" },
+          { key: "internships", href: "/internships", label: "Internships", icon: "internships" },
+          { key: "applications", href: "/applications", label: "My applications", icon: "applications" },
+        ] },
+        { title: "Learning", items: [
+          { key: "courses", href: "/my-courses", label: "My courses", icon: "courses" },
+          { key: "classes", href: "/my-classes", label: "My classes", icon: "classes" },
+        ] },
+        { title: "Global", items: [
+          { key: "abroad", href: "/abroad", label: "Study abroad", icon: "abroad" },
+          { key: "share", href: "/passport/share", label: "Share my passport", icon: "share" },
+        ] },
+      ];
+    case "teacher":
+      return [{ title: "Overview", items: [ACCOUNT] }, { title: "Teaching", items: [{ key: "teacher", href: "/teacher", label: "My classes", icon: "teacher" }] }];
+    case "parent":
+      return [{ title: "Overview", items: [ACCOUNT] }, { title: "Family", items: [{ key: "parent", href: "/parent", label: "My children", icon: "children" }] }];
+    case "employer":
+      return [{ title: "Overview", items: [ACCOUNT] }, { title: "Hiring", items: [
+        { key: "employer", href: "/employer", label: "Hiring", icon: "hiring" },
+        { key: "post", href: "/employer/post", label: "Post a role", icon: "post" },
+      ] }];
+    case "admin":
+      return [{ title: "Overview", items: [ACCOUNT] }, { title: "Staff", items: [
+        { key: "crm", href: "/crm", label: "Overseas CRM", icon: "crm" },
+        { key: "console", href: "/console", label: "Admin console", icon: "console" },
+      ] }];
+    case "counselor":
+      return [{ title: "Overview", items: [ACCOUNT] }, { title: "Staff", items: [
+        { key: "crm", href: "/crm", label: "Overseas CRM", icon: "crm" },
+        { key: "caseload", href: "/counselor", label: "My caseload", icon: "caseload" },
+      ] }];
+    default:
+      return [{ title: "Overview", items: [ACCOUNT] }];
+  }
+}
 
 export function PortalPage({ user, active, title, subtitle, children, wide = false }: { user: PortalUser; active: string; title: string; subtitle?: ReactNode; children: ReactNode; wide?: boolean | "full" }) {
-  const EMPLOYER_NAV = [NAV[0], { key: "employer", href: "/employer", label: "Hiring" }, { key: "post", href: "/employer/post", label: "Post a role" }] as const;
-  const STAFF_NAV = [NAV[0], { key: "crm", href: "/crm", label: "Overseas CRM" }] as const;
-  const COUNSELOR_NAV = [...STAFF_NAV, { key: "caseload", href: "/counselor", label: "My caseload" }] as const;
-  const ADMIN_NAV = [...STAFF_NAV, { key: "console", href: "/console", label: "Admin console" }] as const;
-  const TEACHER_NAV = [NAV[0], { key: "teacher", href: "/teacher", label: "My classes" }] as const;
-  const PARENT_NAV = [NAV[0], { key: "parent", href: "/parent", label: "My children" }] as const;
-  const links = user.role === "student" ? NAV : user.role === "teacher" ? TEACHER_NAV : user.role === "parent" ? PARENT_NAV : user.role === "employer" ? EMPLOYER_NAV : user.role === "admin" ? ADMIN_NAV : user.role === "counselor" ? COUNSELOR_NAV : NAV.filter((n) => n.key === "account");
+  const width = wide === "full" ? "max-w-none" : wide ? "max-w-5xl" : "max-w-3xl";
   return (
     <div className="min-h-[60vh] bg-cream-2">
-      {/* The main site navigation comes from the layout; this strip is the signed-in person's own menu. */}
-      <header className="bg-white border-b border-black/[0.08]">
-        <div className="mx-auto max-w-7xl px-4 sm:px-6 min-h-12 flex items-center gap-4">
-          <nav aria-label="Account" className="flex items-center gap-1 sm:gap-2 overflow-x-auto">
-            {links.map((n) => (
-              <Link key={n.key} href={n.href} aria-current={active === n.key ? "page" : undefined} className={`min-h-[44px] inline-flex items-center px-3 rounded-lg text-[14px] font-medium whitespace-nowrap ${active === n.key ? "bg-orange-light text-orange-deep" : "text-ink-3 hover:bg-cream-2"}`}>
-                {n.label}
-              </Link>
-            ))}
-          </nav>
-          <div className="ml-auto shrink-0"><LogoutButton className="min-h-[44px] px-3 rounded-lg text-[14px] font-medium text-ink-3 hover:bg-cream-2" /></div>
-        </div>
-      </header>
-      <main id="main" className={`mx-auto ${wide === "full" ? "max-w-7xl" : wide ? "max-w-5xl" : "max-w-3xl"} px-4 sm:px-6 py-8 sm:py-10`}>
-        <h1 className="text-[26px] sm:text-[30px] font-bold text-ink tracking-tight">{title}</h1>
-        {subtitle ? <p className="text-[15px] text-ink-3 mt-1.5 mb-7">{subtitle}</p> : <div className="mb-7" />}
-        {children}
-      </main>
+      <div className="mx-auto flex max-w-[1440px] flex-col gap-5 px-4 py-6 sm:px-6 lg:flex-row lg:items-start lg:gap-8 lg:py-8">
+        <PortalSidebar user={{ name: user.name, email: user.email, role: user.role }} groups={groupsFor(user.role)} active={active} />
+        <main id="main" className={`w-full min-w-0 flex-1 ${width}`}>
+          <h1 className="text-[26px] sm:text-[30px] font-bold text-ink tracking-tight">{title}</h1>
+          {subtitle ? <p className="text-[15px] text-ink-3 mt-1.5 mb-7">{subtitle}</p> : <div className="mb-7" />}
+          {children}
+        </main>
+      </div>
     </div>
   );
 }
