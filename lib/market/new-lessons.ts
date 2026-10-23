@@ -30,4 +30,5 @@ export const NEW_LESSONS: Record<string, () => unknown> = {
   "solidity-programming-beginners": () => require("./data/lessons/solidity-programming-beginners.json"),
   "statistics-for-analysts": () => require("./data/lessons/statistics-for-analysts.json"),
   "time-management-productivity": () => require("./data/lessons/time-management-productivity.json"),
+  "token-development-erc-standards": () => require("./data/lessons/token-development-erc-standards.json"),
 };

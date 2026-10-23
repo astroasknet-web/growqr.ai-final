@@ -3256,24 +3256,24 @@
         "Fresher",
         "Mid"
       ],
-      "hours": "~15 hrs",
-      "modules": 7,
-      "weeks": "~6 weeks",
-      "pace": "4 hrs/wk",
-      "badge": "Token Development",
+      "hours": "~14 hrs",
+      "modules": 6,
+      "weeks": "~5 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Token Standards",
       "prereq": "Solidity Programming.",
       "bestFor": "Developers building fungible and non-fungible tokens.",
-      "brief": "Build your own tokens using the ERC-20, ERC-721, and ERC-1155 standards.",
+      "brief": "ERC-20, ERC-721, ERC-1155 and ERC-4626 with tokenomics, vesting, airdrops and responsible launch practice.",
       "learn": [
-        "How token standards work and why they matter",
-        "ERC-20 fungible tokens — supply, transfers, allowances",
-        "ERC-721 NFTs — ownership, metadata, and minting",
-        "ERC-1155 multi-token contracts",
-        "Using OpenZeppelin to build safely",
-        "Deploying, verifying, and listing tokens"
+        "How a token contract works and how decimals behave",
+        "Building capped, burnable tokens with OpenZeppelin",
+        "Permit, voting power, vesting and owner-power risks",
+        "ERC-721, ERC-1155 and ERC-4626 basics",
+        "Allocation design, Merkle airdrops and warning signs",
+        "Disclosure, scam awareness and a launch checklist"
       ],
-      "handsOn": "Develop and deploy your own ERC-20 token and an ERC-721 NFT collection.",
-      "outcome": "Ship compliant tokens and NFTs to a testnet or mainnet.",
+      "handsOn": "Write a full token design document for a real community, with supply, vesting, controls, risks and disclosures.",
+      "outcome": "Design and build tokens responsibly and judge other people's tokens critically.",
       "icon": "link"
     },
     {

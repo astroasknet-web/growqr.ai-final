@@ -30,4 +30,5 @@ export const NEW_ACTIVITIES: Record<string, () => unknown> = {
   "solidity-programming-beginners": () => require("./data/solidity-programming-beginners.activities.json"),
   "statistics-for-analysts": () => require("./data/statistics-for-analysts.activities.json"),
   "time-management-productivity": () => require("./data/time-management-productivity.activities.json"),
+  "token-development-erc-standards": () => require("./data/token-development-erc-standards.activities.json"),
 };
