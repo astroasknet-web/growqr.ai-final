@@ -1,3 +1,4 @@
+import { NextRequest } from "next/server";
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from "vitest";
 import { boot, DB, emailOf, mkProduct, mkUser, tag, type Boot } from "./test-setup";
 
@@ -16,13 +17,13 @@ vi.mock("../portal/session", async (orig) => ({
 vi.mock("./rate-limit", () => ({ allow: async () => rateOk }));
 
 const ORIGIN = "https://growqr.test";
-type Ctx = { params: Promise<Record<string, string>> };
-const ctx = (p: Record<string, string> = {}): Ctx => ({ params: Promise.resolve(p) });
+const ctx = <T extends Record<string, string>>(p: T): { params: Promise<T> } => ({ params: Promise.resolve(p) });
 const req = (path: string, init: { method?: string; body?: unknown; headers?: Record<string, string>; origin?: string | null } = {}): Request => {
   const headers: Record<string, string> = { "content-type": "application/json", ...(init.headers ?? {}) };
   if (init.origin !== null) headers.origin = init.origin ?? ORIGIN;
   return new Request(`${ORIGIN}${path}`, { method: init.method ?? "GET", headers, body: init.body === undefined ? undefined : typeof init.body === "string" ? init.body : JSON.stringify(init.body) });
 };
+const nreq = (path: string, init: Parameters<typeof req>[1] = {}): NextRequest => new NextRequest(req(path, init));
 const json = async (r: Response) => (await r.json()) as Record<string, any>; // eslint-disable-line @typescript-eslint/no-explicit-any
 
 describe.skipIf(!DB)("payment HTTP API on a real database", () => {
@@ -272,23 +273,23 @@ describe.skipIf(!DB)("payment HTTP API on a real database", () => {
 
     it("requires sign-in, then a payment role", async () => {
       current = null;
-      expect((await A_LIST.GET(req("/api/v1/admin/payments", { origin: null }))).status).toBe(401);
+      expect((await A_LIST.GET(req("/api/v1/admin/payments", { origin: null }), ctx({}))).status).toBe(401);
       asAlice();
-      expect((await A_LIST.GET(req("/api/v1/admin/payments", { origin: null }))).status).toBe(403);
+      expect((await A_LIST.GET(req("/api/v1/admin/payments", { origin: null }), ctx({}))).status).toBe(403);
       as(support, "student", "support");
-      expect((await A_LIST.GET(req("/api/v1/admin/payments", { origin: null }))).status).toBe(200);
+      expect((await A_LIST.GET(req("/api/v1/admin/payments", { origin: null }), ctx({}))).status).toBe(200);
     });
 
     it("lets support view but not refund, export or change prices", async () => {
       as(support, "student", "support");
       expect((await A_ONE.GET(req(`/api/v1/admin/payments/${paidOrder}`, { origin: null }), ctx({ id: paidOrder }))).status).toBe(200);
-      const refund = await A_REFUND.POST(req("/api/v1/admin/refunds", { method: "POST", body: { orderId: paidOrder, reason: "test", confirm: true }, headers: { "idempotency-key": `rf-${tag}-sup` } }));
+      const refund = await A_REFUND.POST(req("/api/v1/admin/refunds", { method: "POST", body: { orderId: paidOrder, reason: "test", confirm: true }, headers: { "idempotency-key": `rf-${tag}-sup` } }), ctx({}));
       expect(refund.status).toBe(403);
-      expect((await A_EXPORT.GET(req("/api/v1/admin/export", { origin: null }))).status).toBe(403);
+      expect((await A_EXPORT.GET(req("/api/v1/admin/export", { origin: null }), ctx({}))).status).toBe(403);
       as(finance, "student", "finance");
-      const price = await A_CAT.POST(req("/api/v1/admin/catalogue", { method: "POST", body: { action: "set_price", sku, currency: "INR", amountMinor: 1 } }));
+      const price = await A_CAT.POST(req("/api/v1/admin/catalogue", { method: "POST", body: { action: "set_price", sku, currency: "INR", amountMinor: 1 } }), ctx({}));
       expect(price.status).toBe(403);
-      expect((await A_STAFF.GET(req("/api/v1/admin/staff", { origin: null }))).status).toBe(403);
+      expect((await A_STAFF.GET(req("/api/v1/admin/staff", { origin: null }), ctx({}))).status).toBe(403);
     });
 
     it("blocks staff without two-step login", async () => {
@@ -296,7 +297,7 @@ describe.skipIf(!DB)("payment HTTP API on a real database", () => {
       const prev = process.env.PORTAL_MFA_REQUIRE_STAFF;
       delete process.env.PORTAL_MFA_REQUIRE_STAFF;
       try {
-        const r = await A_LIST.GET(req("/api/v1/admin/payments", { origin: null }));
+        const r = await A_LIST.GET(req("/api/v1/admin/payments", { origin: null }), ctx({}));
         expect(r.status).toBe(403);
         expect((await json(r)).error.code).toBe("mfa_required");
       } finally { if (prev !== undefined) process.env.PORTAL_MFA_REQUIRE_STAFF = prev; }
@@ -304,11 +305,11 @@ describe.skipIf(!DB)("payment HTTP API on a real database", () => {
 
     it("requires explicit confirmation and an Idempotency-Key for refunds, and a same-origin request", async () => {
       as(finance, "student", "finance");
-      const noKey = await A_REFUND.POST(req("/api/v1/admin/refunds", { method: "POST", body: { orderId: paidOrder, reason: "test refund", confirm: true } }));
+      const noKey = await A_REFUND.POST(req("/api/v1/admin/refunds", { method: "POST", body: { orderId: paidOrder, reason: "test refund", confirm: true } }), ctx({}));
       expect(noKey.status).toBe(400);
-      const noConfirm = await A_REFUND.POST(req("/api/v1/admin/refunds", { method: "POST", body: { orderId: paidOrder, reason: "test refund" }, headers: { "idempotency-key": `rf-${tag}-nc` } }));
+      const noConfirm = await A_REFUND.POST(req("/api/v1/admin/refunds", { method: "POST", body: { orderId: paidOrder, reason: "test refund" }, headers: { "idempotency-key": `rf-${tag}-nc` } }), ctx({}));
       expect(noConfirm.status).toBe(422);
-      const cross = await A_REFUND.POST(req("/api/v1/admin/refunds", { method: "POST", body: { orderId: paidOrder, reason: "test refund", confirm: true }, origin: "https://evil.example", headers: { "idempotency-key": `rf-${tag}-x` } }));
+      const cross = await A_REFUND.POST(req("/api/v1/admin/refunds", { method: "POST", body: { orderId: paidOrder, reason: "test refund", confirm: true }, origin: "https://evil.example", headers: { "idempotency-key": `rf-${tag}-x` } }), ctx({}));
       expect(cross.status).toBe(403);
     });
 
@@ -316,20 +317,20 @@ describe.skipIf(!DB)("payment HTTP API on a real database", () => {
       as(finance, "student", "finance");
       const key = `rf-${tag}-full-1`;
       const body = { orderId: paidOrder, reason: "customer asked", confirm: true, amountMinor: 10000 };
-      const a = await A_REFUND.POST(req("/api/v1/admin/refunds", { method: "POST", body, headers: { "idempotency-key": key } }));
-      const b = await A_REFUND.POST(req("/api/v1/admin/refunds", { method: "POST", body, headers: { "idempotency-key": key } }));
+      const a = await A_REFUND.POST(req("/api/v1/admin/refunds", { method: "POST", body, headers: { "idempotency-key": key } }), ctx({}));
+      const b = await A_REFUND.POST(req("/api/v1/admin/refunds", { method: "POST", body, headers: { "idempotency-key": key } }), ctx({}));
       expect([200, 202]).toContain(a.status);
       expect((await json(a)).data.id).toBe((await json(b)).data.id);
       expect(Number((await B.db.one<{ n: number }>("SELECT COUNT(*) AS n FROM pay_refunds r JOIN pay_orders o ON o.id = r.order_id WHERE o.public_id = $1", [paidOrder]))?.n)).toBe(1);
-      const tooMuch = await A_REFUND.POST(req("/api/v1/admin/refunds", { method: "POST", body: { ...body, amountMinor: 39900 }, headers: { "idempotency-key": `rf-${tag}-over` } }));
+      const tooMuch = await A_REFUND.POST(req("/api/v1/admin/refunds", { method: "POST", body: { ...body, amountMinor: 39900 }, headers: { "idempotency-key": `rf-${tag}-over` } }), ctx({}));
       expect(tooMuch.status).toBeGreaterThanOrEqual(400);
-      const audit = await json(await A_AUDIT.GET(req("/api/v1/admin/audit?entity=refund", { origin: null })));
+      const audit = await json(await A_AUDIT.GET(req("/api/v1/admin/audit?entity=refund", { origin: null }), ctx({})));
       expect(JSON.stringify(audit)).toMatch(/refund.(requested|succeeded|pending)/);
     });
 
     it("neutralises spreadsheet formulas in the CSV export and logs the export", async () => {
       as(finance, "student", "finance");
-      const r = await A_EXPORT.GET(req("/api/v1/admin/export?q=" + encodeURIComponent(paidOrder), { origin: null }));
+      const r = await A_EXPORT.GET(req("/api/v1/admin/export?q=" + encodeURIComponent(paidOrder), { origin: null }), ctx({}));
       expect(r.status).toBe(200);
       expect(r.headers.get("content-type")).toContain("text/csv");
       const csv = await r.text();
@@ -340,18 +341,18 @@ describe.skipIf(!DB)("payment HTTP API on a real database", () => {
 
     it("does not let anyone change their own payment role, and only admins change roles", async () => {
       as(admin, "admin", "admin");
-      const self = await A_STAFF.POST(req("/api/v1/admin/staff", { method: "POST", body: { userId: admin, role: "support" } }));
+      const self = await A_STAFF.POST(req("/api/v1/admin/staff", { method: "POST", body: { userId: admin, role: "support" } }), ctx({}));
       expect(self.status).toBe(403);
-      const ok1 = await A_STAFF.POST(req("/api/v1/admin/staff", { method: "POST", body: { userId: bob, role: "support" } }));
+      const ok1 = await A_STAFF.POST(req("/api/v1/admin/staff", { method: "POST", body: { userId: bob, role: "support" } }), ctx({}));
       expect(ok1.status).toBe(200);
-      const list = await json(await A_STAFF.GET(req("/api/v1/admin/staff", { origin: null })));
+      const list = await json(await A_STAFF.GET(req("/api/v1/admin/staff", { origin: null }), ctx({})));
       expect(JSON.stringify(list)).toContain(emailOf("bob"));
-      await A_STAFF.POST(req("/api/v1/admin/staff", { method: "POST", body: { userId: bob, role: null } }));
+      await A_STAFF.POST(req("/api/v1/admin/staff", { method: "POST", body: { userId: bob, role: null } }), ctx({}));
     });
 
     it("keeps the audit chain valid after all of the above", async () => {
       as(admin, "admin", "admin");
-      const j = await json(await A_AUDIT.GET(req("/api/v1/admin/audit?verify=1", { origin: null })));
+      const j = await json(await A_AUDIT.GET(req("/api/v1/admin/audit?verify=1", { origin: null }), ctx({})));
       expect(JSON.stringify(j)).toContain("\"brokenAt\":null");
     });
   });
@@ -359,11 +360,11 @@ describe.skipIf(!DB)("payment HTTP API on a real database", () => {
   describe("cron endpoint", () => {
     it("refuses callers without the secret and runs for the right one", async () => {
       process.env.CRON_SECRET = "cron-secret-for-tests";
-      const none = await CRON.GET(req("/api/cron/payments", { origin: null }));
+      const none = await CRON.GET(nreq("/api/cron/payments", { origin: null }));
       expect(none.status).toBe(401);
-      const wrong = await CRON.GET(req("/api/cron/payments", { origin: null, headers: { authorization: "Bearer nope" } }));
+      const wrong = await CRON.GET(nreq("/api/cron/payments", { origin: null, headers: { authorization: "Bearer nope" } }));
       expect(wrong.status).toBe(401);
-      const good = await CRON.GET(req("/api/cron/payments", { origin: null, headers: { authorization: "Bearer cron-secret-for-tests" } }));
+      const good = await CRON.GET(nreq("/api/cron/payments", { origin: null, headers: { authorization: "Bearer cron-secret-for-tests" } }));
       expect(good.status).toBe(200);
     });
   });

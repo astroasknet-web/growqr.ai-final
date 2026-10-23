@@ -86,7 +86,8 @@ export type Staff = { user: { id: number; email: string; role: string }; role: P
  * `perm` may be a function of the request method (for example "view" for GET and "refund" for POST).
  */
 export function staffApi<P extends Record<string, string> = Record<string, never>>(perm: Permission | ((method: string) => Permission), handler: (req: Request, staff: Staff, params: P) => Promise<NextResponse>) {
-  return async (req: Request, ctx?: { params?: Promise<P> }): Promise<NextResponse> => {
+  // The context argument is required in the type because Next.js checks route handler signatures; a call without one still works at run time.
+  return async (req: Request, ctx: { params: Promise<P> }): Promise<NextResponse> => {
     try {
       if (req.method !== "GET" && req.method !== "HEAD") assertSameOrigin(req);
       const staff = await requireStaff(typeof perm === "function" ? perm(req.method) : perm);
