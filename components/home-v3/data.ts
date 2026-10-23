@@ -4,6 +4,7 @@
  */
 import type { LucideIcon } from "lucide-react";
 import { BookOpen, Briefcase, FileText, GraduationCap, Globe2, Video } from "lucide-react";
+import { CLASSROOM_URL } from "@/lib/links";
 
 export type VerticalKey = "internships" | "resume" | "courses" | "abroad" | "classes" | "ebooks";
 
@@ -19,6 +20,7 @@ export type Vertical = {
 };
 
 export const EBOOKS_URL = "https://mathstudy.in/";
+
 export const APP_SIGNUP_URL = "https://app.growqr.ai/signup";
 
 /**
@@ -33,7 +35,7 @@ export const VERTICALS: Vertical[] = [
   { key: "resume", name: "Resume Studio", headline: "Create a resume that opens doors.", blurb: "Pick a template, edit it with live scoring, and export a clean, ATS-aware resume.", cta: "Build My Resume", href: portal("/studio"), icon: FileText },
   { key: "courses", name: "Courses", headline: "Learn skills that move your career forward.", blurb: "Skill-based courses and career paths, with lessons, checks and progress tracking.", cta: "Explore Courses", href: portal("/courses"), icon: GraduationCap },
   { key: "abroad", name: "Overseas Education", headline: "Turn your international study ambitions into a plan.", blurb: "Compare destinations and universities, understand requirements and prepare your application.", cta: "Explore Study Abroad", href: portal("/study-abroad"), icon: Globe2 },
-  { key: "classes", name: "Online Classes", headline: "Learn live, interact, and grow with expert guidance.", blurb: "Workshops and live sessions with experts, plus classes you have enrolled in.", cta: "Find Your Classes", href: portal("/events"), icon: Video },
+  { key: "classes", name: "Online Classes", headline: "Learn live, interact, and grow with expert guidance.", blurb: "Live classes with verified teachers, plus homework, quizzes and progress tracking.", cta: "Find Your Classes", href: CLASSROOM_URL, external: true, icon: Video },
   { key: "ebooks", name: "E-Books", headline: "Your next breakthrough could be one chapter away.", blurb: "Study guides and learning resources from our MathStudy library.", cta: "Explore E-Books", href: EBOOKS_URL, external: true, icon: BookOpen },
 ];
 
@@ -45,7 +47,7 @@ export const GOALS: Goal[] = [
   { id: "resume", label: "I want to build my resume", vertical: "resume", title: "Open Resume Studio", why: "Choose a template, edit with live scoring, and export when it reads well.", steps: ["Choose a template", "Fill in your experience", "Check the score and export"], cta: "Create Your Resume", href: portal("/studio") },
   { id: "intern", label: "I want an internship", vertical: "internships", title: "Browse verified internships", why: "Roles come from verified employers with no application fees.", steps: ["Browse and filter roles", "Strengthen your resume if needed", "Apply and track each stage"], cta: "Find Your Next Opportunity", href: portal("/internships") },
   { id: "skill", label: "I want to learn a new skill", vertical: "courses", title: "Find a course or career path", why: "Courses give you structured lessons and checks you can complete at your pace.", steps: ["Choose a field", "Start a course", "Add the skill to your resume"], cta: "Explore Learning", href: portal("/courses") },
-  { id: "classes", label: "I need online classes", vertical: "classes", title: "See live sessions", why: "Join workshops and live sessions with experts.", steps: ["Browse upcoming sessions", "Register", "Join live"], cta: "Find Your Classes", href: portal("/events") },
+  { id: "classes", label: "I need online classes", vertical: "classes", title: "Open the live classroom", why: "Join live classes with verified teachers, with homework and progress tracking.", steps: ["Browse courses and teachers", "Enrol", "Join live"], cta: "Find Your Classes", href: CLASSROOM_URL, external: true },
   { id: "ebooks", label: "I want study materials and e-books", vertical: "ebooks", title: "Open the MathStudy library", why: "Study guides and learning resources, available on MathStudy.", steps: ["Browse the library", "Pick your subject", "Study at your pace"], cta: "Explore the Library", href: EBOOKS_URL, external: true },
 ];
 
