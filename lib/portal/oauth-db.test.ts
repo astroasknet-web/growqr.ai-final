@@ -106,6 +106,7 @@ describe.skipIf(!DB)("provider sign-in and the human check on a real database", 
   it("accepts a proof-of-work solution once, and rejects tampered, expired or unsolved ones", async () => {
     delete process.env.TURNSTILE_SECRET_KEY;
     delete process.env.PORTAL_CAPTCHA;
+    process.env.PORTAL_CAPTCHA = "pow"; // the picture code is the default; this checks the proof-of-work option
     expect(captcha.captchaMode()).toBe("pow");
     const { challenge, bits } = await captcha.powChallenge();
     const solve = (c: string, b: number) => { for (let n = 0; n < 5_000_000; n++) { const nonce = n.toString(36); if (captcha.leadingZeroBits(createHash("sha256").update(`${c}:${nonce}`).digest()) >= b) return nonce; } throw new Error("no nonce"); };
@@ -118,5 +119,24 @@ describe.skipIf(!DB)("provider sign-in and the human check on a real database", 
     expect(await captcha.verifyPow(`${tampered}~${solve(tampered, bits)}`)).toBe(false); // signature does not match
     const old = `${Date.now() - 11 * 60 * 1000}.abcdef0123456789abcdef01.${bits}`;
     expect(await captcha.verifyPow(`${old}.x~1`)).toBe(false);
+  });
+
+  it("checks the picture code: letters and numbers, case-insensitive, spent by its first attempt, and not forgeable", async () => {
+    delete process.env.TURNSTILE_SECRET_KEY;
+    delete process.env.PORTAL_CAPTCHA;
+    expect(captcha.captchaMode()).toBe("image"); // the default
+    const token = await captcha.imageChallenge();
+    const code = (await captcha.imageCode(token)) as string;
+    expect(code).toMatch(/^[A-HJ-NP-Z2-9]{6}$/);
+    expect((code.match(/[A-Z]/g) ?? []).length).toBe(4); // four letters
+    expect((code.match(/[2-9]/g) ?? []).length).toBe(2); // two numbers
+    expect(await captcha.verifyImage(token, code.toLowerCase().split("").join(" "))).toBe(true);
+    expect(await captcha.verifyImage(token, code)).toBe(false); // already spent
+    const second = await captcha.imageChallenge();
+    expect(await captcha.verifyImage(second, "AAAAAA")).toBe(false); // wrong
+    expect(await captcha.verifyImage(second, (await captcha.imageCode(second)) as string)).toBe(false); // and the wrong attempt spent it
+    expect(await captcha.imageCode(`${token.slice(0, -2)}xx`)).toBeNull(); // tampered signature
+    const body = `${Date.now() - 6 * 60 * 1000}.abcdef0123456789abcdef01`;
+    expect(await captcha.imageCode(`${body}.AAAA`)).toBeNull(); // not signed by us, and too old
   });
 });

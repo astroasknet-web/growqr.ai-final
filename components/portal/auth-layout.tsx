@@ -1,54 +1,91 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { BadgeCheck, Globe2, KeyRound, Lock, QrCode, ShieldCheck } from "lucide-react";
+import { BadgeCheck, BookOpen, Briefcase, FileText, Globe2, GraduationCap, Lock, QrCode, Sparkles } from "lucide-react";
 import { PROVIDERS, providerEnabled, providerLabel, type Provider } from "@/lib/portal/oauth";
 import "./auth.css";
 
 /** Split-screen frame for login, sign-up and the other account pages: an animated brand panel beside the form. */
-const POINTS: [typeof ShieldCheck, string, string][] = [
-  [ShieldCheck, "Protected sign-in", "A human check and rate limits guard every email sign-in."],
-  [Lock, "Safe passwords", "Passwords are stored hashed and checked against known data breaches."],
-  [KeyRound, "Two-step verification", "Turn on an authenticator app for an extra lock on your account."],
-  [Globe2, "One account", "Courses, internships, your resume and study abroad, all in one place."],
-];
+type Point = [typeof Lock, string, string];
+export type PanelKey = "login" | "signup" | "account";
+/** What the brand panel says. It leads with what the student gets, then ends with a one-line promise about safety. */
+const PANELS: Record<PanelKey, { headline: string; points: Point[] }> = {
+  login: {
+    headline: "Pick up right where you left off.",
+    points: [
+      [FileText, "Your resume, saved", "Open Resume Studio and carry on editing, on any device."],
+      [BookOpen, "Your learning, tracked", "121 courses and exam prep, with your progress remembered."],
+      [Briefcase, "Your applications in one place", "Internships and study abroad plans, stage by stage."],
+    ],
+  },
+  signup: {
+    headline: "Free to start. Yours to keep.",
+    points: [
+      [GraduationCap, "Learn with structure", "Courses, mock tests and exam prep for school, college and careers."],
+      [FileText, "Build a resume that works", "Templates, live scoring and ATS checks in Resume Studio."],
+      [Globe2, "Go further", "Internships, a verified Skill Passport and study abroad tools."],
+    ],
+  },
+  account: {
+    headline: "Your future doesn’t have to wait.",
+    points: [
+      [GraduationCap, "Courses and exam prep", "Learn at your own pace, with progress saved."],
+      [FileText, "Resume Studio", "Build and improve your resume with live scoring."],
+      [Globe2, "Internships and study abroad", "Opportunities and plans, all in one account."],
+    ],
+  },
+};
 
-export function AuthSplit({ title, subtitle, children, eyebrow = "Welcome" }: { title: string; subtitle?: ReactNode; children: ReactNode; eyebrow?: string }) {
+const STATS: [string, string][] = [["121", "courses"], ["45", "resume templates"], ["58", "universities"]];
+
+export function AuthSplit({ title, subtitle, children, eyebrow = "Welcome", panel = "account" }: { title: string; subtitle?: ReactNode; children: ReactNode; eyebrow?: string; panel?: PanelKey }) {
+  const P = PANELS[panel];
   return (
-    <div className="grid min-h-screen bg-white lg:grid-cols-[1.02fr_1fr]">
+    <div className="grid min-h-screen lg:grid-cols-[1.02fr_1fr]">
       <aside className="auth-panel relative hidden flex-col justify-between overflow-hidden p-12 text-white lg:flex" aria-label="About GrowQR">
         <span className="auth-orb -left-16 top-24 h-72 w-72 bg-[#7857ff]" aria-hidden />
-        <span className="auth-orb bottom-10 right-0 h-64 w-64 bg-[#35d9ff]" style={{ animationDelay: "-6s" }} aria-hidden />
+        <span className="auth-orb bottom-10 right-0 h-64 w-64 bg-[#ff6a2f]" style={{ animationDelay: "-6s" }} aria-hidden />
+        <span className="auth-orb left-1/3 top-1/2 h-48 w-48 bg-[#ec4899]" style={{ animationDelay: "-11s" }} aria-hidden />
         <div className="relative z-10">
           <Link href="/" className="inline-flex items-center gap-2.5 text-[22px] font-bold tracking-tight" aria-label="GrowQR home">
-            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-[#7857ff] to-[#35d9ff] text-[#0b1020]"><QrCode className="h-5 w-5" aria-hidden /></span>
+            <span className="grid h-9 w-9 place-items-center rounded-xl bg-gradient-to-br from-[#ff6a2f] to-[#ec4899] text-white shadow-lg"><QrCode className="h-5 w-5" aria-hidden /></span>
             GrowQR
           </Link>
         </div>
         <div className="relative z-10 max-w-[30rem]">
-          <p className="text-[12px] font-semibold uppercase tracking-[0.18em] text-[#35d9ff]">Learn. Build. Go global.</p>
-          <p className="mt-3 text-[clamp(1.9rem,3vw,2.8rem)] font-semibold leading-[1.08] tracking-tight text-white">Your future doesn&rsquo;t have to wait.</p>
+          <p className="inline-flex items-center gap-2 rounded-full bg-white/12 px-3 py-1 text-[11.5px] font-semibold uppercase tracking-[0.18em] text-[#ffd7bd]"><Sparkles className="h-3.5 w-3.5" aria-hidden /> Learn. Build. Go global.</p>
+          <p className="auth-headline mt-4 [font-size:clamp(2.1rem,3.4vw,3.2rem)] font-bold leading-[1.05] tracking-tight">{P.headline}</p>
           <ul className="mt-9 space-y-4">
-            {POINTS.map(([Icon, t, d]) => (
+            {P.points.map(([Icon, t, d]) => (
               <li key={t} className="auth-card flex gap-3.5 rounded-2xl p-4">
-                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/10"><Icon className="h-5 w-5 text-[#35d9ff]" aria-hidden /></span>
+                <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/10"><Icon className="h-5 w-5 text-[#ffb98f]" aria-hidden /></span>
                 <span><b className="block text-[15px]">{t}</b><span className="text-[13.5px] leading-snug text-white/70">{d}</span></span>
               </li>
             ))}
           </ul>
+          <div className="mt-7 grid grid-cols-3 gap-3 text-center">
+            {STATS.map(([n, l]) => (
+              <div key={l} className="auth-float rounded-2xl bg-white/10 px-2 py-3 ring-1 ring-white/15">
+                <b className="block text-[1.5rem] font-bold leading-none text-white">{n}</b>
+                <span className="mt-1 block text-[11.5px] text-white/70">{l}</span>
+              </div>
+            ))}
+          </div>
         </div>
-        <p className="relative z-10 flex items-center gap-2 text-[13px] text-white/60"><BadgeCheck className="h-4 w-4" aria-hidden /> Free for students. We never charge placement fees.</p>
+        <p className="relative z-10 flex items-start gap-2 text-[13px] leading-snug text-white/60"><Lock className="mt-0.5 h-4 w-4 shrink-0" aria-hidden /> Protected by a human check, hashed passwords and optional two-step login. Free for students, with no placement fees.</p>
       </aside>
 
-      <main className="flex flex-col justify-center px-5 py-8 sm:px-10">
-        <div className="mx-auto w-full max-w-[440px]">
-          <Link href="/" className="mb-8 inline-flex items-center gap-2 text-[19px] font-bold tracking-tight text-ink lg:hidden" aria-label="GrowQR home">
-            <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-[#7857ff] to-[#35d9ff] text-[#0b1020]"><QrCode className="h-4 w-4" aria-hidden /></span>
+      <main className="auth-side flex flex-col justify-center px-4 py-8 sm:px-10">
+        <div className="auth-form relative mx-auto w-full max-w-[480px] overflow-hidden rounded-[28px] p-6 sm:p-9">
+          <span className="auth-stripe absolute inset-x-0 top-0 h-1.5" aria-hidden />
+          <Link href="/" className="mb-6 flex w-fit items-center gap-2 text-[19px] font-bold tracking-tight text-ink lg:hidden" aria-label="GrowQR home">
+            <span className="grid h-8 w-8 place-items-center rounded-lg bg-gradient-to-br from-[#ff6a2f] to-[#ec4899] text-white"><QrCode className="h-4 w-4" aria-hidden /></span>
             GrowQR
           </Link>
-          <p className="text-[12px] font-semibold uppercase tracking-[0.16em] text-[#7857ff]">{eyebrow}</p>
-          <h1 className="mt-1 text-[28px] font-bold leading-tight tracking-tight text-ink">{title}</h1>
+          <p className="inline-block rounded-full bg-[#7857ff]/10 px-3 py-1 text-[11.5px] font-bold uppercase tracking-[0.16em] text-[#5b3fe0]">{eyebrow}</p>
+          <h1 className="mt-3 text-[30px] font-extrabold leading-tight tracking-tight text-ink">{title}</h1>
           {subtitle ? <p className="mt-2 text-[14.5px] leading-relaxed text-ink-3">{subtitle}</p> : null}
           <div className="mt-7">{children}</div>
+          <p className="mt-8 flex items-start gap-2 text-[12.5px] leading-snug text-ink-4"><BadgeCheck className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600" aria-hidden /> We only use your email to save your progress and send important account emails. No spam, ever.</p>
         </div>
       </main>
     </div>
