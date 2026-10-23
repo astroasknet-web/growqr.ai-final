@@ -3139,24 +3139,24 @@
         "College",
         "Fresher"
       ],
-      "hours": "~15 hrs",
-      "modules": 8,
-      "weeks": "~6 weeks",
+      "hours": "~14 hrs",
+      "modules": 6,
+      "weeks": "~5 weeks",
       "pace": "3 hrs/wk",
-      "badge": "Solidity Programming",
+      "badge": "Solidity Beginner",
       "prereq": "Ethereum & Smart Contracts; basic programming logic.",
       "bestFor": "Developers learning to write smart contracts.",
-      "brief": "Solidity from scratch — variables, functions, mappings, structs, inheritance.",
+      "brief": "Types and structure, functions and modifiers, mappings and structs, handling ETH, inheritance and OpenZeppelin, and a complete crowdfunding project.",
       "learn": [
-        "Solidity syntax, types, and contract structure",
-        "Functions, visibility, and state vs memory",
-        "Arrays, mappings, and structs",
-        "Events, modifiers, and error handling (require/revert)",
-        "Inheritance, interfaces, and libraries",
-        "Compiling, deploying, and testing with Remix/Hardhat"
+        "Contract structure, types and global variables",
+        "Control flow, functions, modifiers and errors",
+        "Mappings, arrays, structs, enums and data locations",
+        "Receiving and sending ETH safely, events and custom errors",
+        "Inheritance, interfaces and audited libraries",
+        "A complete Crowdfund contract with tests and a code review"
       ],
-      "handsOn": "Write, test, and deploy your own smart contract (e.g. a simple bank or voting contract).",
-      "outcome": "Build working smart contracts; ready for DApp development.",
+      "handsOn": "Design an Escrow contract on paper: state, functions, events, security review and a test plan.",
+      "outcome": "Read and write small Solidity contracts with safe patterns and review code for common bugs.",
       "icon": "braces"
     },
     {

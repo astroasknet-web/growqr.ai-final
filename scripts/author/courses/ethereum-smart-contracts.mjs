@@ -494,7 +494,7 @@ const M4 = module_({
   quiz: [
     ["A call:", ["Changes state", "Reads without a transaction", "Needs gas from the caller", "Needs a signature"], 1, "A node simply runs it."],
     ["The ABI is:", ["A coin", "A description of the contract's interface", "A fee", "A wallet"], 1, "Used to encode and decode."],
-    ["msg.value is:", ["The caller", "The ETH sent with the call", "The gas", "The nonce"], 1, "In wei."],
+    ["msg.value is:", ["The caller", "The ETH sent with the call", "The gas", "The nonce"], 1, "It is the amount of ETH sent, counted in wei."],
     ["payable allows:", ["Receiving ETH", "Private data", "Faster execution", "Reading only"], 0, "Otherwise it reverts."],
     ["custom errors are:", ["Cheaper than long text messages", "Not allowed", "Only for owners", "Events"], 0, "revert NotOwner();"],
     ["When sending ETH out you must:", ["Ignore the result", "Check that the call succeeded", "Use storage", "Sign twice"], 1, "Failures must be handled."],
@@ -628,7 +628,7 @@ export default course({
       ["Under EIP-1559 the base fee is:", ["Burned", "Paid to the producer", "Refunded", "Paid to the sender"], 0, "Only the tip is paid."],
       ["A view function:", ["May change state", "Reads but does not change state", "Is payable", "Is private"], 1, "A read-only promise."],
       ["A call differs from a transaction because it:", ["Needs gas from the caller", "Needs no signature and changes no state", "Changes balances", "Is slower"], 1, "A node just runs it."],
-      ["msg.value is:", ["The ETH sent with the call", "The gas limit", "The sender", "The nonce"], 0, "In wei."],
+      ["msg.value is:", ["The ETH sent with the call", "The gas limit", "The sender", "The nonce"], 0, "It is the amount of ETH sent, counted in wei."],
       ["Authorisation checks should use:", ["msg.sender", "tx.origin", "block.timestamp", "address(0)"], 0, "tx.origin can be abused."],
       ["Reentrancy is prevented by:", ["Checks-effects-interactions", "Raising fees", "Using more storage", "Removing events"], 0, "Update state before external calls."],
       ["The private keyword means:", ["Nobody can read the data", "Other contracts cannot read it directly, but nodes can", "It is encrypted", "It costs nothing"], 1, "All storage is readable."],

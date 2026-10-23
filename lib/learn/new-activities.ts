@@ -24,6 +24,7 @@ export const NEW_ACTIVITIES: Record<string, () => unknown> = {
   "project-management-pmp": () => require("./data/project-management-pmp.activities.json"),
   "prompt-engineering": () => require("./data/prompt-engineering.activities.json"),
   "seo": () => require("./data/seo.activities.json"),
+  "solidity-programming-beginners": () => require("./data/solidity-programming-beginners.activities.json"),
   "statistics-for-analysts": () => require("./data/statistics-for-analysts.activities.json"),
   "time-management-productivity": () => require("./data/time-management-productivity.activities.json"),
 };
