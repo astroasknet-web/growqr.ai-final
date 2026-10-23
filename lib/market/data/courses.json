@@ -3197,24 +3197,24 @@
       "tags": [
         "Mid"
       ],
-      "hours": "~20 hrs",
-      "modules": 8,
-      "weeks": "~8 weeks",
-      "pace": "4 hrs/wk",
-      "badge": "Advanced Solidity Developer",
+      "hours": "~16 hrs",
+      "modules": 6,
+      "weeks": "~6 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Advanced Solidity",
       "prereq": "Solidity Programming; some dApp experience.",
       "bestFor": "Developers building complex, production-grade contracts.",
-      "brief": "Advanced contract architecture, patterns, optimisation, and security-aware design.",
+      "brief": "Storage and gas, design patterns, delegatecall and proxies, signatures and EIP-712, advanced testing and production practice.",
       "learn": [
-        "Advanced contract architecture and patterns (proxy/upgradeable)",
-        "Reusable contracts and OpenZeppelin libraries",
-        "Gas optimisation and storage layout",
-        "Advanced events, errors, and low-level calls",
-        "Security-aware coding and common pitfalls",
-        "Testing strategies and coverage with Hardhat/Foundry"
+        "Storage layout, packing and measured gas optimisation",
+        "State machines, pull payments, clones and role-based access",
+        "delegatecall, storage collisions and UUPS upgrade safety",
+        "ECDSA, EIP-712 typed data and replay protection",
+        "Unit, fuzz, invariant and fork testing",
+        "NatSpec, threat modelling, audit preparation and release discipline"
       ],
-      "handsOn": "Build an upgradeable, gas-optimised contract system with a full test suite.",
-      "outcome": "Write robust, efficient, production-ready contracts.",
+      "handsOn": "Write a full design document for an upgradeable, role-controlled vault with signed withdrawals, tests and a threat model.",
+      "outcome": "Design, review and plan the release of non-trivial smart contract systems.",
       "icon": "braces"
     },
     {
