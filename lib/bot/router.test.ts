@@ -8,7 +8,7 @@ import type { RawSalesIqPayload, BotResponse } from "@/lib/bot/context";
  * Unit tests for routeMessage() itself — the one thing golden.test.ts
  * deliberately does NOT exercise (see that file's module doc: it only
  * measures the deterministic floor below the router). Every I/O dependency
- * is mocked, so this suite is free and deterministic: no OpenAI, no Supabase,
+ * is mocked, so this suite is free and deterministic: no OpenAI, no database,
  * no real next/server after() scope. Covers what the router adds on top of
  * the deterministic layers — pricing (live/not-live/B2B), escalation/handoff
  * (strong vs weak), fallback order (first miss vs second miss, with/without
@@ -44,7 +44,7 @@ async function drainAfterCallbacks(): Promise<void> {
   for (const cb of pending) await cb();
 }
 
-vi.mock("@/lib/supabase-server", () => ({
+vi.mock("@/lib/data/server", () => ({
   createAdminClient: createAdminClientMock,
 }));
 

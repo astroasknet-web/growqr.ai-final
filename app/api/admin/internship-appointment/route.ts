@@ -5,7 +5,7 @@ import path from "path";
 import { createElement } from "react";
 import { NextRequest, NextResponse } from "next/server";
 import { renderToBuffer } from "@react-pdf/renderer";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { createAdminLog } from "@/lib/admin-logs";
 import { getAdminUser as getAuthUser } from "@/lib/auth/admin";
 import { renderAppointmentLetter, type AppointmentLetterParams } from "@/lib/internship/appointment-letter";

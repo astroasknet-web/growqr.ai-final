@@ -8,7 +8,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
  * Resume Studio on a real database: starter resume, versions, preferences, the free / Pro rules and the Razorpay flow
  * (with Razorpay itself mocked). When PHP is available it also checks that the PHP app sees the same Pro access.
  *
- *   PORTAL_TEST_DATABASE_URL=postgres://postgres@127.0.0.1:54329/postgres npx vitest run lib/studio/studio-db.test.ts
+ *   PORTAL_TEST_DATABASE_URL=mysql://root@127.0.0.1:3307/growqr_test npx vitest run lib/studio/studio-db.test.ts
  */
 vi.mock("next/headers", () => ({
   cookies: async () => ({ get: () => undefined, set: () => undefined, delete: () => undefined }),

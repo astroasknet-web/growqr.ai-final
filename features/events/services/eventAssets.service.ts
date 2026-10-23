@@ -1,5 +1,5 @@
 import "server-only";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 
 const BUCKET = "event-assets";
 const ALLOWED_MIME = ["image/jpeg", "image/png", "image/webp", "image/gif"];
@@ -68,7 +68,7 @@ export async function uploadEventAsset(opts: {
 export async function deleteEventAssetByUrl(url: string): Promise<boolean> {
   if (!url) return false;
   // Extract path after `/storage/v1/object/public/event-assets/`
-  const marker = `/storage/v1/object/public/${BUCKET}/`;
+  const marker = `/api/files/${BUCKET}/`;
   const idx = url.indexOf(marker);
   if (idx === -1) return false;
   const path = url.slice(idx + marker.length).split("?")[0];

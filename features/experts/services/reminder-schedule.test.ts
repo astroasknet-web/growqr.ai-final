@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 // ── Mocks ────────────────────────────────────────────────────────────────
 // The scheduler is the only piece with real timing rules; its collaborators
-// (Supabase, Resend, the static expert list) are stubbed so the tests assert
+// (the database, Resend, the static expert list) are stubbed so the tests assert
 // decisions rather than I/O.
 
 const claimReminderStage = vi.fn(async () => true);

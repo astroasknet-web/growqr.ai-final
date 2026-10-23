@@ -67,7 +67,7 @@ export async function duplicate(ph: string, email: string): Promise<{ id: number
   if (ph !== "") {
     const digits = ph.replace(/\D/g, "").slice(-10);
     if (digits.length >= 7) {
-      const r = await one<{ id: number; name: string }>("SELECT id, name FROM crm_leads WHERE RIGHT(REGEXP_REPLACE(phone, '[^0-9]', '', 'g'), 10) = $1 LIMIT 1", [digits]);
+      const r = await one<{ id: number; name: string }>("SELECT id, name FROM crm_leads WHERE RIGHT(REGEXP_REPLACE(phone, '[^0-9]', ''), 10) = $1 LIMIT 1", [digits]);
       if (r) return r;
     }
   }

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase-server";
+import { createAdminClient, isDatabaseConfigured } from "@/lib/data/server";
 import { Resend } from "resend";
 import { rateLimit, rateLimited } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
@@ -23,8 +23,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "Enter a valid email address." }, { status: 400 });
     }
 
-    // Demo mode (no Supabase configured): accept without verifying/persisting.
-    if (!isSupabaseConfigured()) return NextResponse.json({ success: true });
+    // Demo mode (no the database configured): accept without verifying/persisting.
+    if (!isDatabaseConfigured()) return NextResponse.json({ success: true });
 
     // ── Turnstile ─────────────────────────────────────────────────────────────
     if (!(await verifyTurnstile(token, "Ambassador waitlist"))) {
@@ -34,7 +34,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // ── Persist to Supabase ───────────────────────────────────────────────────
+    // ── Persist to the database ───────────────────────────────────────────────────
     // Service role, not the anon key: the anon INSERT policy this used to rely
     // on let anyone post straight to PostgREST and bypass the Turnstile check
     // above. Revoked in migration 0021, so this route is the only way in.
@@ -42,9 +42,9 @@ export async function POST(req: NextRequest) {
     // missing either variable skipped the insert, still sent the "you're on the
     // waitlist" email, and returned success — leaving someone confidently
     // waiting on a list they were never added to.
-    if (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    if (!isDatabaseConfigured()) {
       console.error(
-        "Ambassador waitlist: Supabase env missing — refusing the signup rather than dropping it",
+        "Ambassador waitlist: the database env missing — refusing the signup rather than dropping it",
       );
       return NextResponse.json(
         { error: "Could not save your email. Please try again." },
@@ -52,9 +52,9 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const supabase = createAdminClient();
+    const db = createAdminClient();
 
-    const { error } = await supabase
+    const { error } = await db
       .from("ambassador_waitlist")
       .insert({ email: trimmed });
 

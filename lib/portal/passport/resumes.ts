@@ -72,7 +72,7 @@ export async function remove(uid: number, id: number): Promise<boolean> {
   const r = await one<{ user_id: number; is_current: number }>("SELECT user_id, is_current FROM resumes WHERE id = $1", [id]);
   if (!r || r.user_id !== uid) return false;
   await run("DELETE FROM resumes WHERE id = $1", [id]);
-  if (r.is_current === 1) await run("UPDATE resumes SET is_current = 1 WHERE id = (SELECT id FROM resumes WHERE user_id = $1 ORDER BY id DESC LIMIT 1)", [uid]); // promote the previous upload
+  if (r.is_current === 1) await run("UPDATE resumes SET is_current = 1 WHERE id = (SELECT id FROM (SELECT id FROM resumes WHERE user_id = $1 ORDER BY id DESC LIMIT 1) AS latest)", [uid]); // promote the previous upload
   return true;
 }
 

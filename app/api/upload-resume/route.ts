@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase-server";
+import { createAdminClient, isDatabaseConfigured } from "@/lib/data/server";
 import { rateLimit, rateLimited } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { hasMagicBytes } from "@/lib/file-signature";
@@ -12,9 +12,9 @@ export async function POST(req: NextRequest) {
   const limit = await rateLimit(req, { key: "upload-resume", limit: 5, windowMs: 10 * 60_000 });
   if (!limit.ok) return rateLimited(limit.retryAfterSec);
 
-  // Demo mode (no Supabase configured): no bucket to write to. Return a
+  // Demo mode (no the database configured): no bucket to write to. Return a
   // placeholder so the apply form can proceed; nothing is stored.
-  if (!isSupabaseConfigured()) return NextResponse.json({ path: "demo-preview", url: null });
+  if (!isDatabaseConfigured()) return NextResponse.json({ path: "demo-preview", url: null });
 
   try {
     const formData = await req.formData();
@@ -32,7 +32,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const supabase = createAdminClient();
+    const db = createAdminClient();
     const file = formData.get("file") as File | null;
 
     if (!file) return NextResponse.json({ error: "No file provided." }, { status: 400 });
@@ -51,17 +51,17 @@ export async function POST(req: NextRequest) {
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
     const path = `${timestamp}-${safeName}`;
 
-    const { error } = await supabase.storage
+    const { error } = await db.storage
       .from("resumes")
       .upload(path, bytes, { contentType: "application/pdf", upsert: false });
 
     if (error) {
-      console.error("Supabase upload error:", error);
+      console.error("the database upload error:", error);
       return NextResponse.json({ error: "Upload failed. Please try again." }, { status: 500 });
     }
 
     // Signed URL valid for 1 year — used in the confirmation email.
-    const { data: signed } = await supabase.storage
+    const { data: signed } = await db.storage
       .from("resumes")
       .createSignedUrl(path, 60 * 60 * 24 * 365);
 

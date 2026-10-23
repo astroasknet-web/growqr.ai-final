@@ -3,7 +3,7 @@ import type { EventRow } from "../types/event";
 
 // Maps a seed (marketing placeholder) event to the same EventRow shape the DB
 // returns, so pages can render seed events identically to real ones. Used as
-// the fallback when the events table is empty or Supabase isn't configured
+// the fallback when the events table is empty or the database isn't configured
 // (e.g. a preview/demo deployment) — see app/events/page.tsx and
 // app/events/[slug]/page.tsx.
 function toRow(e: (typeof eventsData)[number]): EventRow {

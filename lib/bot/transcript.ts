@@ -1,4 +1,4 @@
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { createLogger } from "@/lib/log";
 import { createLeadNote } from "@/lib/crm/zoho-client";
 import { logEvent } from "@/lib/bot/events";

@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { getEmailShell } from "@/lib/email/shell";
 import { emailLogo } from "@/lib/email/logo";
 import { escapeHtml } from "@/lib/escape-html";

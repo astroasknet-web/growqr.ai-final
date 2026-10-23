@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { getResend } from "@/lib/resend";
 import { escapeHtml } from "@/lib/escape-html";
 import { firstName } from "@/lib/first-name";

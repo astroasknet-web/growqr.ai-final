@@ -35,7 +35,7 @@ type Outcome =
  * answered by AI in production; this harness only measures the deterministic
  * floor.
  *
- * Deliberately NOT a call to routeMessage: that writes to Supabase on the
+ * Deliberately NOT a call to routeMessage: that writes to the database on the
  * fallback path (logUnanswered) and schedules after() hooks, neither of which
  * belongs in a unit test. Kept in step with the router by the precedence test
  * at the bottom of this file.

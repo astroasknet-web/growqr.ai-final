@@ -1,6 +1,6 @@
 import { execFileSync } from "node:child_process";
 import { createCipheriv, createHmac, randomBytes } from "node:crypto";
-import { existsSync, readFileSync } from "node:fs";
+import { existsSync } from "node:fs";
 import path from "node:path";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
@@ -11,7 +11,7 @@ import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
  *
  * The database part runs only when PORTAL_TEST_DATABASE_URL is set (a throwaway database that already holds the portal schema,
  * for example the local PGlite one). Example:
- *   PORTAL_TEST_DATABASE_URL=postgres://postgres@127.0.0.1:54329/postgres npx vitest run lib/portal
+ *   PORTAL_TEST_DATABASE_URL=mysql://root@127.0.0.1:3307/growqr_test npx vitest run lib/portal
  */
 
 // A tiny in-memory stand-in for the request cookie jar and headers.
@@ -169,7 +169,8 @@ describe.skipIf(!DB)("accounts on a real database", () => {
     sec = await import("./security");
     sess = await import("./session");
     auth = await import("./auth");
-    await db.run(readFileSync(path.resolve(__dirname, "../../supabase/migrations/20261008000001_portal_sessions.sql"), "utf8"));
+    const { runPortalMigrations } = await import("./migrate");
+    await runPortalMigrations(DB as string);
     crypto.resetSecretCache();
   });
 

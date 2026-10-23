@@ -1,4 +1,4 @@
-import { createAdminClient } from "./supabase-server";
+import { createAdminClient } from "./data/server";
 
 export type LogAction = 
   | "status_change" 

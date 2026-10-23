@@ -1,6 +1,6 @@
 /**
  * Pre-session reminder smoke test — proves the 24h + 1h pipeline end to end
- * against live Supabase and live Resend, without emailing anyone real.
+ * against the live database and live Resend, without emailing anyone real.
  *
  *   npx tsx scripts/reminders-smoke.ts          # dry run: plan only, no I/O
  *   npx tsx scripts/reminders-smoke.ts --live   # full round trip
@@ -33,7 +33,7 @@ async function main() {
   const { planReminderStage, REMINDER_STAGES, scheduleRemindersForBooking } = await import(
     "../features/experts/services/reminder-schedule"
   );
-  const { createAdminClient } = await import("../lib/supabase-server");
+  const { createAdminClient } = await import("../lib/data/server");
   const { getResend } = await import("../lib/resend");
 
   const now = new Date();
@@ -62,7 +62,7 @@ async function main() {
   }
 
   if (!live) {
-    console.log("Dry run only. Re-run with --live to exercise Resend + Supabase.\n");
+    console.log("Dry run only. Re-run with --live to exercise Resend + the database.\n");
     return;
   }
 

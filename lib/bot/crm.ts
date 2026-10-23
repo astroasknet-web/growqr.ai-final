@@ -1,4 +1,4 @@
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { createLogger } from "@/lib/log";
 import {
   createLeadTask,
@@ -14,7 +14,7 @@ import { BOT_INTENT_LABELS, type BotIntent } from "@/lib/bot/intents";
 const log = createLogger("bot-crm");
 
 /**
- * The webhook's only inline write is queueBotLead (a single Supabase RPC,
+ * The webhook's only inline write is queueBotLead (a single database function,
  * ~50-100ms — well inside the 5-second response budget); visit tracking
  * (touchVisitor) runs from after(), off the response path. Everything past
  * that — Zoho Lead/Task/Note creation, the audit trail, the notification
@@ -205,7 +205,7 @@ export async function changeLeadEmail(params: {
         payload: { zoho_lead_id: row.zoho_lead_id, action: "email_changed" },
       });
     } catch (zohoError) {
-      // Supabase already holds the new address, so the row is the source of
+      // the database already holds the new address, so the row is the source of
       // truth and a reconciliation can still fix Zoho. Don't fail the visitor's
       // request over it.
       log.error(`changeLeadEmail: Zoho update failed for lead ${row.zoho_lead_id}:`, zohoError);
@@ -289,7 +289,7 @@ export async function botLeadAfterSync(
   // Notes are the ONE artifact that is per-visit rather than per-lead. Tasks
   // and notifications stay one-per-person (their boolean flags never reset),
   // but if Notes worked the same way, everything a returning visitor told us
-  // would land in Supabase and in the Lead's fields and never reach sales as
+  // would land in the database and in the Lead's fields and never reach sales as
   // readable context. So the gate is a counter: one Note per visit, never per
   // turn and never per retry, because zoho_notes_count only ever advances to
   // the visit_count it already observed.
@@ -306,7 +306,7 @@ export async function botLeadAfterSync(
         visits > 1 ? `Visits so far: ${visits}` : null,
         // ADDED 0022: without this the CRM was a dead end — the Note named an
         // intent and a page and gave no way at all to find the chat it came
-        // from, even though Supabase had the whole exchange. The transcript
+        // from, even though the database had the whole exchange. The transcript
         // itself arrives as its own Note once the conversation goes quiet
         // (lib/bot/transcript.ts); this line is what ties the two together,
         // and it is written immediately rather than waiting for that flush.

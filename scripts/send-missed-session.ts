@@ -31,7 +31,7 @@ const IST = (d: string | Date) =>
   new Date(d).toLocaleString("en-IN", { timeZone: "Asia/Kolkata", hour12: true }) + " IST";
 
 async function listPastBookings() {
-  const { createAdminClient } = await import("../lib/supabase-server");
+  const { createAdminClient } = await import("../lib/data/server");
   const since = new Date(Date.now() - 90 * 24 * 60 * 60_000).toISOString();
 
   const { data, error } = await createAdminClient()
@@ -61,7 +61,7 @@ async function resolveInput() {
 
   const bookingId = arg("booking");
   if (bookingId) {
-    const { createAdminClient } = await import("../lib/supabase-server");
+    const { createAdminClient } = await import("../lib/data/server");
     const { data, error } = await createAdminClient()
       .from("bookings")
       .select("expert_slug, user_name, user_email, session_topic, start_time")

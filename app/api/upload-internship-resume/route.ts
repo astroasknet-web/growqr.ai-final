@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase-server";
+import { createAdminClient, isDatabaseConfigured } from "@/lib/data/server";
 import { rateLimit, rateLimited } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
 import { hasMagicBytes } from "@/lib/file-signature";
@@ -13,9 +13,9 @@ export async function POST(req: NextRequest) {
   const limit = await rateLimit(req, { key: "upload-internship-resume", limit: 5, windowMs: 10 * 60_000 });
   if (!limit.ok) return rateLimited(limit.retryAfterSec);
 
-  // Demo mode (no Supabase configured): no bucket to write to. Return a
+  // Demo mode (no the database configured): no bucket to write to. Return a
   // placeholder so the apply form can proceed; nothing is stored.
-  if (!isSupabaseConfigured()) return NextResponse.json({ path: "demo-preview", url: null });
+  if (!isDatabaseConfigured()) return NextResponse.json({ path: "demo-preview", url: null });
 
   try {
     const formData = await req.formData();
@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const supabase = createAdminClient();
+    const db = createAdminClient();
     const file = formData.get("file") as File | null;
 
     if (!file) return NextResponse.json({ error: "No file provided." }, { status: 400 });
@@ -47,19 +47,19 @@ export async function POST(req: NextRequest) {
     const safeName = file.name.replace(/[^a-zA-Z0-9._-]/g, "_");
     const path = `${timestamp}-${safeName}`;
 
-    const { error } = await supabase.storage
+    const { error } = await db.storage
       .from(BUCKET)
       .upload(path, bytes, { contentType: "application/pdf", upsert: false });
 
     if (error) {
-      console.error("Supabase upload error:", error);
+      console.error("the database upload error:", error);
       return NextResponse.json({ error: "Upload failed. Please try again." }, { status: 500 });
     }
 
     // Short-lived signed URL just for the applicant's own "uploaded" preview.
     // the DB stores `path`, not this URL, so admin views always resolve a
     // fresh signed URL instead of one that can eventually expire.
-    const { data: signed } = await supabase.storage
+    const { data: signed } = await db.storage
       .from(BUCKET)
       .createSignedUrl(path, 60 * 60);
 

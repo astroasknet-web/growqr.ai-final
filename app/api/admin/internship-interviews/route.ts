@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse, after } from "next/server";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { createAdminLog } from "@/lib/admin-logs";
 import { getAdminUser as getAuthUser } from "@/lib/auth/admin";
 import {

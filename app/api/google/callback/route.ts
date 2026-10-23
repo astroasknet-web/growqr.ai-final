@@ -3,7 +3,7 @@ export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import { google } from "googleapis";
 import { getOAuthClient, isGoogleConnectEnabled } from "@/lib/google/calendar";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { getExpertBySlug } from "@/features/experts/data/experts-data";
 import { getAdminUser } from "@/lib/auth/admin";
 

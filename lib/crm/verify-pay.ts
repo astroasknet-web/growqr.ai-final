@@ -39,8 +39,11 @@ async function settle(orderId: string, paymentId: string): Promise<boolean> {
       const row = (await c.query("SELECT lead_id, verification_id, amount_inr FROM crm_payments WHERE order_id = $1", [orderId])).rows[0];
       const log = (body: string) => c.query("INSERT INTO crm_activities (lead_id, actor_id, kind, body) VALUES ($1, NULL, 'system', $2)", [row.lead_id, body.slice(0, 1000)]);
       if (row.verification_id) {
-        const mv = await c.query("UPDATE crm_verifications SET status = 'in_progress', paid_at = NOW() WHERE id = $1 AND status = 'awaiting_payment' RETURNING provider", [row.verification_id]);
-        if (mv.rowCount === 1) await log(`Verification #${row.verification_id} paid by the student (online). Sent to ${mv.rows[0].provider || "the partner"}.`);
+        const mv = await c.query("UPDATE crm_verifications SET status = 'in_progress', paid_at = NOW() WHERE id = $1 AND status = 'awaiting_payment'", [row.verification_id]);
+        if (mv.rowCount === 1) {
+          const prov = (await c.query("SELECT provider FROM crm_verifications WHERE id = $1", [row.verification_id])).rows[0]?.provider;
+          await log(`Verification #${row.verification_id} paid by the student (online). Sent to ${prov || "the partner"}.`);
+        }
       }
       await log(`Verification fee INR ${Number(row.amount_inr).toLocaleString("en-US")} paid online by the student (${paymentId}).`);
       return true;

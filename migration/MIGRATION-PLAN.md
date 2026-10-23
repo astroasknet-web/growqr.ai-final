@@ -1,3 +1,5 @@
+> **Note (October 2026):** the database is now MySQL on Hostinger and Supabase has been removed. Where this page mentions Supabase or Postgres, read [DATABASE-SETUP.md](DATABASE-SETUP.md) instead. The rest is kept as the history of the move.
+
 # qrscore (PHP) into test.vidaara.org (Next.js): migration plan
 
 Goal: move every qrscore application (scoring engine, Skill Passport, Resume Studio, internships, courses, study abroad, Overseas CRM, analytics, admin) into the Node/Next.js codebase in `test.vidaara.org`, so GrowQR is one app.

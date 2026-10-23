@@ -26,12 +26,12 @@ export async function funnel(days: number): Promise<{ total: number; lost: numbe
 
 export async function today(): Promise<Record<string, number>> {
   const r = await one<Record<string, unknown>>(`SELECT
-    (SELECT COUNT(*) FROM crm_leads WHERE created_at::date = CURRENT_DATE) AS new_today,
+    (SELECT COUNT(*) FROM crm_leads WHERE DATE(created_at) = CURRENT_DATE) AS new_today,
     (SELECT COUNT(*) FROM crm_leads WHERE stage NOT IN ('lost','enrolled') AND next_followup_at < NOW()) AS overdue,
     (SELECT COUNT(*) FROM crm_leads WHERE stage NOT IN ('lost','enrolled','on_hold') AND COALESCE(last_contact_at, created_at) < NOW() - INTERVAL '7 day') AS stale,
     (SELECT COUNT(*) FROM crm_leads WHERE counsellor_id IS NULL AND stage NOT IN ('lost','enrolled')) AS unassigned,
-    (SELECT COUNT(*) FROM crm_activities WHERE created_at::date = CURRENT_DATE AND kind IN ('call','whatsapp','email','meeting')) AS touches_today,
-    (SELECT COALESCE(SUM(amount_inr),0) FROM crm_payments WHERE status = 'received' AND received_on >= date_trunc('month', CURRENT_DATE)) AS revenue_month,
+    (SELECT COUNT(*) FROM crm_activities WHERE DATE(created_at) = CURRENT_DATE AND kind IN ('call','whatsapp','email','meeting')) AS touches_today,
+    (SELECT COALESCE(SUM(amount_inr),0) FROM crm_payments WHERE status = 'received' AND received_on >= DATE_FORMAT(CURRENT_DATE, '%Y-%m-01')) AS revenue_month,
     (SELECT COALESCE(SUM(amount_inr),0) FROM crm_payments WHERE status = 'due') AS outstanding,
     (SELECT COUNT(*) FROM crm_verifications WHERE status IN ('awaiting_payment','in_progress')) AS open_verifications`);
   return Object.fromEntries(Object.entries(r ?? {}).map(([k, v]) => [k, Number(v)]));
@@ -84,8 +84,8 @@ export async function lostReasons(days: number): Promise<Array<{ reason: string;
 }
 
 export async function revenueByMonth(months = 6): Promise<Array<{ month: string; amount: number; n: number }>> {
-  return (await all<Record<string, unknown>>(`SELECT to_char(date_trunc('month', received_on), 'YYYY-MM') AS month, SUM(amount_inr) AS amount, COUNT(*) AS n
-    FROM crm_payments WHERE status = 'received' AND kind <> 'verification' AND received_on >= date_trunc('month', CURRENT_DATE) - INTERVAL '${Math.trunc(months - 1)} month'
+  return (await all<Record<string, unknown>>(`SELECT DATE_FORMAT(received_on, '%Y-%m') AS month, SUM(amount_inr) AS amount, COUNT(*) AS n
+    FROM crm_payments WHERE status = 'received' AND kind <> 'verification' AND received_on >= DATE_FORMAT(CURRENT_DATE, '%Y-%m-01') - INTERVAL ${Math.trunc(months - 1)} MONTH
     GROUP BY 1 ORDER BY 1`)).map((r) => ({ month: String(r.month), amount: Number(r.amount), n: Number(r.n) }));
 }
 

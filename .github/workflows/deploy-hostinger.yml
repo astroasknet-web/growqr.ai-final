@@ -47,7 +47,7 @@ jobs:
           mkdir -p dist/.next && cp -r .next/static dist/.next/static
           cp -r public dist/public
           node scripts/prune-public.mjs dist/public
-          cp -r supabase dist/supabase
+          cp -r db dist/db
           # Never ship an env file: the server reads its settings from the host (or from a .env.production the owner creates there).
           rm -f dist/.env dist/.env.* 
           echo "${GITHUB_SHA}" > dist/BUILD_SHA

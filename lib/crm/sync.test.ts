@@ -12,7 +12,7 @@ vi.mock("@/lib/crm/zoho-client", async (importOriginal) => ({
   upsertLead: upsertLeadMock,
 }));
 
-vi.mock("@/lib/supabase-server", () => ({
+vi.mock("@/lib/data/server", () => ({
   createAdminClient: createAdminClientMock,
 }));
 

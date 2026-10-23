@@ -10,7 +10,7 @@
  * This script is the last tier: does the real model, against the real prompt,
  * actually behave the way those mocks assume it does.
  *
- * Calls tryAiAnswer() directly (not the full webhook route) — no Supabase
+ * Calls tryAiAnswer() directly (not the full webhook route) — no database
  * writes, no CRM side effects, just the model call + retrieval + guards, which
  * is exactly the surface this tier needs to verify.
  *

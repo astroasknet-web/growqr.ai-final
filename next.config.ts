@@ -4,7 +4,7 @@ import { legacyRedirects } from "./legacy-redirects";
 // Content-Security-Policy, shipped in REPORT-ONLY mode first (see the header
 // below). Report-only never blocks a request — the browser only reports what a
 // strict policy WOULD have blocked — so it cannot break Turnstile, Google
-// Analytics, the Zoho SalesIQ chat, Supabase, or any page. Deploy, watch the
+// Analytics, the Zoho SalesIQ chat, or any page. Deploy, watch the
 // browser console / any report endpoint in production (where the real widgets
 // load), confirm the allow-lists are complete, then switch the header key to
 // "Content-Security-Policy" to enforce.
@@ -38,9 +38,9 @@ const CONTENT_SECURITY_POLICY = [
   // content rules out static hashes; nonces would de-optimize the whole site).
   "script-src 'self' 'unsafe-inline' https://challenges.cloudflare.com https://www.googletagmanager.com https://salesiq.zohopublic.in https://*.zoho.in https://*.zohostatic.com https://*.zohocdn.com" + blog,
   "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
-  "img-src 'self' data: blob: https://randomuser.me https://images.unsplash.com https://nykbhgnrdcjekzshhvzi.supabase.co https://www.google-analytics.com https://*.zohopublic.in https://*.zoho.in https://*.zohostatic.com" + blog,
+  "img-src 'self' data: blob: https://randomuser.me https://images.unsplash.com https://www.google-analytics.com https://*.zohopublic.in https://*.zoho.in https://*.zohostatic.com" + blog,
   "font-src 'self' data: https://fonts.gstatic.com",
-  "connect-src 'self' https://nykbhgnrdcjekzshhvzi.supabase.co wss://nykbhgnrdcjekzshhvzi.supabase.co https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://challenges.cloudflare.com https://salesiq.zohopublic.in wss://salesiq.zohopublic.in https://*.zoho.in https://api.iconify.design" + blog,
+  "connect-src 'self' https://www.google-analytics.com https://region1.google-analytics.com https://www.googletagmanager.com https://challenges.cloudflare.com https://salesiq.zohopublic.in wss://salesiq.zohopublic.in https://*.zoho.in https://api.iconify.design" + blog,
   "frame-src 'self' https://challenges.cloudflare.com https://salesiq.zohopublic.in https://*.zoho.in",
   "worker-src 'self' blob:",
   "manifest-src 'self'",
@@ -50,12 +50,12 @@ const CONTENT_SECURITY_POLICY = [
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   // Loaded by Node at run time instead of being bundled: unpdf (pdf.js) and pg use import.meta / native sockets that webpack should not rewrite.
-  serverExternalPackages: ["unpdf", "pg"],
+  serverExternalPackages: ["unpdf", "mysql2"],
   outputFileTracingRoot: __dirname,
   // BUILD_STANDALONE=1 (the GitHub Actions build for Hostinger) produces a self-contained server: node server.js. Vercel builds leave it unset.
   ...(process.env.BUILD_STANDALONE === "1" ? { output: "standalone" as const } : {}),
   // Files read at run time that the bundler cannot see: the portal migrations (PORTAL_AUTO_MIGRATE) and the data files the portal loads from disk.
-  outputFileTracingIncludes: { "/**": ["./supabase/migrations/2026*.sql", "./lib/abroad/data/study-abroad.json", "./lib/market/data/courses.json", "./lib/tests/data/**/*.json", "./content/lms/**/*.json"] },
+  outputFileTracingIncludes: { "/**": ["./db/migrations/2026*.sql", "./lib/abroad/data/study-abroad.json", "./lib/market/data/courses.json", "./lib/tests/data/**/*.json", "./content/lms/**/*.json"] },
   devIndicators: false,
   // Tree-shake heavy barrel-export libraries so only the components actually
   // used land in the client bundle (shrinks the big shared chunk that was
@@ -182,11 +182,6 @@ const nextConfig: NextConfig = {
         protocol: "https",
         hostname: "randomuser.me",
         pathname: "/api/portraits/**",
-      },
-      {
-        protocol: "https",
-        hostname: "nykbhgnrdcjekzshhvzi.supabase.co",
-        pathname: "/storage/v1/object/public/**",
       },
       {
         protocol: "https",

@@ -1,7 +1,7 @@
 import { after, NextRequest, NextResponse } from "next/server";
 import { rateLimit, rateLimited } from "@/lib/rate-limit";
 import { verifyTurnstile } from "@/lib/turnstile";
-import { isSupabaseConfigured } from "@/lib/supabase-server";
+import { isDatabaseConfigured } from "@/lib/data/server";
 import { createLogger } from "@/lib/log";
 import { sanitizeAttribution, type AttributionPayload, type ParseResult } from "@/lib/forms/schemas";
 import { syncLeadToZoho } from "@/lib/crm/sync";
@@ -98,13 +98,13 @@ export function createFormRoute<T extends { token?: string }>(config: FormRouteC
         return NextResponse.json({ error: parsed.error }, { status: parsed.status });
       }
 
-      // Demo mode: with no Supabase configured (e.g. a preview deployment)
+      // Demo mode: with no database configured (e.g. a preview deployment)
       // there is nowhere to persist and no Turnstile secret to verify against,
       // so accept the validated submission and return the normal success
       // response without storing or emailing. Reactivates fully once the keys
       // are set — no code change.
-      if (!isSupabaseConfigured()) {
-        log.info("demo mode (no Supabase): submission accepted without persistence");
+      if (!isDatabaseConfigured()) {
+        log.info("demo mode (no database): submission accepted without persistence");
         return NextResponse.json(config.successBody);
       }
 

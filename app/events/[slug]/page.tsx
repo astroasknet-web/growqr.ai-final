@@ -4,7 +4,7 @@ import {
   getActiveEventBySlug,
   listActiveEventSlugs,
 } from "@/features/events/services/events.service";
-import { isSupabaseConfigured } from "@/lib/supabase-server";
+import { isDatabaseConfigured } from "@/lib/data/server";
 import { seedEventBySlug, seedEventSlugs } from "@/features/events/data/seed-rows";
 import EventDetailPage from "@/features/events/components/sections/EventDetailPage";
 import JsonLd from "@/components/seo/JsonLd";
@@ -16,18 +16,18 @@ interface Props {
 
 export const revalidate = 60;
 
-// Resolve a live event, or fall back to a seed event when Supabase isn't
+// Resolve a live event, or fall back to a seed event when the database isn't
 // configured (a preview/demo deployment) so demo event links don't 404.
 // In production (configured) this is a plain DB lookup — unchanged behaviour.
 async function resolveEvent(slug: string) {
   const live = await getActiveEventBySlug(slug);
   if (live) return live;
-  return isSupabaseConfigured() ? null : seedEventBySlug(slug);
+  return isDatabaseConfigured() ? null : seedEventBySlug(slug);
 }
 
 export async function generateStaticParams() {
   const slugs = await listActiveEventSlugs();
-  const resolved = slugs.length > 0 || isSupabaseConfigured() ? slugs : seedEventSlugs();
+  const resolved = slugs.length > 0 || isDatabaseConfigured() ? slugs : seedEventSlugs();
   return resolved.map((slug) => ({ slug }));
 }
 

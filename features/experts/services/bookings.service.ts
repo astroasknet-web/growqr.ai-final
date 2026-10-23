@@ -1,4 +1,4 @@
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import type { Database } from "@/types/database";
 
 export type BookingRow = {
@@ -169,7 +169,7 @@ function stageFlagColumn(stage: ReminderStageKey) {
 }
 
 // Written out per stage rather than with a computed key: a computed key widens
-// to a string index signature, which the generated Supabase types reject.
+// to a string index signature, which the generated types reject.
 function stageFlagPatch(stage: ReminderStageKey, value: boolean): BookingUpdate {
   return stage === "24h" ? { reminder_24h_sent: value } : { reminder_1h_sent: value };
 }

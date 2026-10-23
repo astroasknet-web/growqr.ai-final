@@ -152,8 +152,8 @@ export class Analytics {
       rows("SELECT status, COUNT(*) AS n FROM internships WHERE is_sample = 0 GROUP BY 1 ORDER BY n DESC"), rows("SELECT status, COUNT(*) AS n FROM internships GROUP BY 1 ORDER BY n DESC"),
       rows("SELECT category AS label, COUNT(*) AS n FROM internships WHERE status = 'live' GROUP BY 1 ORDER BY n DESC LIMIT 8"), rows("SELECT mode, COUNT(*) AS n FROM internships WHERE status = 'live' GROUP BY 1 ORDER BY n DESC"),
       this.daily("applications", "created_at"),
-      one_("SELECT ROUND(AVG(stipend)) AS avg, percentile_cont(0.5) WITHIN GROUP (ORDER BY stipend) AS med, MIN(stipend) AS lo, MAX(stipend) AS hi FROM internships WHERE status = 'live' AND is_sample = 0"),
-      safe(async () => await val<number | null>(`SELECT AVG(EXTRACT(EPOCH FROM (e.created_at - a.created_at)) / 3600) FROM applications a
+      one_("SELECT ROUND(AVG(stipend)) AS avg, (SELECT AVG(x.s) FROM (SELECT stipend AS s, ROW_NUMBER() OVER (ORDER BY stipend) AS rn, COUNT(*) OVER () AS c FROM internships WHERE status = 'live' AND is_sample = 0) x WHERE x.rn IN (FLOOR((x.c + 1) / 2), CEIL((x.c + 1) / 2))) AS med, MIN(stipend) AS lo, MAX(stipend) AS hi FROM internships WHERE status = 'live' AND is_sample = 0"),
+      safe(async () => await val<number | null>(`SELECT AVG(TIMESTAMPDIFF(SECOND, a.created_at, e.created_at) / 3600) FROM applications a
         JOIN application_events e ON e.application_id = a.id AND e.id = (SELECT MIN(e2.id) FROM application_events e2 WHERE e2.application_id = a.id AND e2.actor_user_id <> a.student_id)`), null),
       safe(async () => await val<number | null>("SELECT ROUND(AVG(match_score)) FROM applications WHERE match_score IS NOT NULL"), null),
       n("SELECT COUNT(*) FROM saved_internships"), n("SELECT COUNT(*) FROM companies WHERE is_sample = 0"), n("SELECT COUNT(*) FROM companies WHERE is_sample = 0 AND verified = 1"),
@@ -255,7 +255,7 @@ export class Analytics {
       rows("SELECT id, name, state, submit_count, created_at FROM institutions WHERE status = 'pending' ORDER BY submit_count DESC, created_at LIMIT 10"), n("SELECT COUNT(*) FROM institutions WHERE status = 'pending'"),
       n("SELECT COUNT(*) FROM student_profiles"), n("SELECT COUNT(*) FROM student_profiles WHERE college <> ''"),
       rows("SELECT college AS label, COUNT(*) AS n FROM student_profiles WHERE college <> '' GROUP BY 1 ORDER BY n DESC, 1 LIMIT 10"),
-      n("SELECT COUNT(*) FROM student_profiles p WHERE p.college <> '' AND NOT EXISTS (SELECT 1 FROM institutions i WHERE i.name_norm = trim(regexp_replace(lower(p.college), '[^a-z0-9]+', ' ', 'g')))"),
+      n("SELECT COUNT(*) FROM student_profiles p WHERE p.college <> '' AND NOT EXISTS (SELECT 1 FROM institutions i WHERE i.name_norm = trim(regexp_replace(lower(p.college), '[^a-z0-9]+', ' ')))"),
     ]);
     return { total, by_source: map(by_source, "source"), by_kind: map(by_kind, "kind"), states, pending, pending_n, students, students_set, chosen, unmatched };
   }
@@ -264,12 +264,12 @@ export class Analytics {
 
   async system() {
     const [db_size, tables, migrations, outbox, failed_mail, throttle_24h, throttle_by, events_total] = await Promise.all([
-      safe(async () => await val<string>("SELECT pg_size_pretty(pg_database_size(current_database()))"), null as string | null),
-      rows("SELECT relname AS label, n_live_tup AS n FROM pg_stat_user_tables WHERE n_live_tup > 0 ORDER BY n_live_tup DESC LIMIT 12"),
+      safe(async () => await val<string>("SELECT CONCAT(ROUND(SUM(data_length + index_length) / 1048576, 1), ' MB') FROM information_schema.tables WHERE table_schema = DATABASE()"), null as string | null),
+      rows("SELECT table_name AS label, table_rows AS n FROM information_schema.tables WHERE table_schema = DATABASE() AND table_rows > 0 ORDER BY table_rows DESC LIMIT 12"),
       n("SELECT COUNT(*) FROM schema_meta WHERE k LIKE 'migration:%'"), rows("SELECT status, COUNT(*) AS n FROM mail_outbox GROUP BY 1"),
       rows("SELECT kind, error, created_at FROM mail_outbox WHERE status = 'failed' ORDER BY id DESC LIMIT 5"),
       n("SELECT COUNT(*) FROM auth_throttle WHERE created_at >= LOCALTIMESTAMP(0) - INTERVAL '1 day'"),
-      rows("SELECT split_part(bucket, ':', 1) AS label, COUNT(*) AS n FROM auth_throttle WHERE created_at >= LOCALTIMESTAMP(0) - INTERVAL '1 day' GROUP BY 1 ORDER BY n DESC LIMIT 6"), n("SELECT COUNT(*) FROM analytics_events"),
+      rows("SELECT SUBSTRING_INDEX(bucket, ':', 1) AS label, COUNT(*) AS n FROM auth_throttle WHERE created_at >= LOCALTIMESTAMP(0) - INTERVAL '1 day' GROUP BY 1 ORDER BY n DESC LIMIT 6"), n("SELECT COUNT(*) FROM analytics_events"),
     ]);
     return { db_size, tables, migrations, outbox: map(outbox, "status"), failed_mail, throttle_24h, throttle_by, events_total };
   }

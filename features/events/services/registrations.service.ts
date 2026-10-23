@@ -1,5 +1,5 @@
 import "server-only";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import type { EventRow } from "../types/event";
 
 export interface InsertRegistrationArgs {
@@ -20,18 +20,18 @@ export interface InsertRegistrationResult {
 }
 
 /**
- * Insert a registration row. Treats Postgres unique-violation (23505)
+ * Insert a registration row. Treats a unique-key violation (23505)
  * as "already registered" rather than an error.
  */
 export async function insertRegistration(
   args: InsertRegistrationArgs,
   event: EventRow,
 ): Promise<InsertRegistrationResult> {
-  const supabase = createAdminClient();
+  const db = createAdminClient();
 
   // Capacity check (soft — race-tolerant; final source of truth is the DB)
   if (event.registration_limit != null) {
-    const { count, error: countErr } = await supabase
+    const { count, error: countErr } = await db
       .from("event_registrations")
       .select("id", { count: "exact", head: true })
       .eq("event_id", event.id);
@@ -47,7 +47,7 @@ export async function insertRegistration(
     }
   }
 
-  const { data, error } = await supabase
+  const { data, error } = await db
     .from("event_registrations")
     .insert(args)
     .select("id")
@@ -81,8 +81,8 @@ export async function insertRegistration(
 }
 
 export async function markConfirmationSent(registrationId: string) {
-  const supabase = createAdminClient();
-  const { error } = await supabase
+  const db = createAdminClient();
+  const { error } = await db
     .from("event_registrations")
     .update({ confirmation_sent: true })
     .eq("id", registrationId);

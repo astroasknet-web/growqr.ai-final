@@ -1,7 +1,7 @@
 /**
- * Load lib/market/data/courses.json (the editable course catalogue) into Postgres. Safe to run repeatedly.
+ * Load lib/market/data/courses.json (the editable course catalogue) into the database. Safe to run repeatedly.
  *
- *   DATABASE_URL=postgres://... npx tsx scripts/courses-sync.ts
+ *   DATABASE_URL=mysql://user:password@host:3306/database npx tsx scripts/courses-sync.ts
  */
 import { readFileSync } from "node:fs";
 import path from "node:path";

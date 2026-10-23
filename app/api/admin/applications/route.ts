@@ -1,7 +1,7 @@
 export const dynamic = "force-dynamic";
 
 import { NextRequest, NextResponse } from "next/server";
-import { createAdminClient } from "@/lib/supabase-server";
+import { createAdminClient } from "@/lib/data/server";
 import { createAdminLog } from "@/lib/admin-logs";
 import { getAdminUser as getAuthUser } from "@/lib/auth/admin";
 import { CURRENT_COHORT } from "@/lib/cohorts";
@@ -148,7 +148,7 @@ export async function POST(req: NextRequest) {
   const experience = text(body.experience);
 
   // Validated here against the same rules the table's CHECK constraints
-  // enforce. Quick Add previously sent a partial row and let Postgres reject
+  // enforce. Quick Add previously sent a partial row and let the database reject
   // it, which surfaced as a raw constraint name — and because "resume" was
   // omitted entirely, every single Quick Add failed. Checking up front means
   // the admin gets told which field is wrong instead.

@@ -117,7 +117,7 @@ export function regionForCountryCode(code: string | null): Region {
  * names (e.g. Intl.DisplayNames output) risk per-country rejections. This
  * curated map covers the 13 live countries plus major markets, with strings
  * verbatim from the live picklist; unmapped codes omit Country entirely —
- * Region still records "Other" and the raw ISO code stays in Supabase.
+ * Region still records "Other" and the raw ISO code stays in the database.
  */
 const COUNTRY_DISPLAY_NAMES: Record<string, string> = {
   // Live countries (lib/currency.ts LIVE_COUNTRIES)

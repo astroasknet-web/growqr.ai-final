@@ -1,42 +1,18 @@
 import "server-only";
-import { cookies } from "next/headers";
-import { createServerClient } from "@supabase/ssr";
-import type { User } from "@supabase/supabase-js";
-import { isAdminUser } from "./admin-allowlist";
+import { databaseConfigured } from "@/lib/portal/db";
+import { getSession } from "@/lib/portal/session";
 
 /**
- * Resolve the current request's authenticated user IF they are an authorized
- * admin. Returns null otherwise (not signed in, or signed in but not on the
- * admin allowlist). Use from route handlers and server actions.
+ * The signed-in admin, or null. Admin status is the portal account's role ("admin"): the same staff login as the rest of the
+ * portal, with its throttling, human check and two-step sign-in (required for staff). Use from route handlers, server actions and
+ * server components.
  */
-export async function getAdminUser(): Promise<User | null> {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-  if (!url || !anon) return null;
+export interface AdminUser { id: string; email: string }
 
-  const cookieStore = await cookies();
-  const supabase = createServerClient(url, anon, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet) {
-        try {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options),
-          );
-        } catch {
-          // Called from a context where cookies are read-only (e.g. some
-          // server-action paths). Token refresh writes can be safely ignored.
-        }
-      },
-    },
-  });
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user || !isAdminUser(user)) return null;
-  return user;
+export async function getAdminUser(): Promise<AdminUser | null> {
+  if (!databaseConfigured()) return null;
+  const s = await getSession();
+  const u = s?.user;
+  if (!u || u.role !== "admin") return null;
+  return { id: String(u.id), email: u.email };
 }

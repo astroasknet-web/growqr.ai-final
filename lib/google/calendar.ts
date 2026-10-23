@@ -1,6 +1,6 @@
 import { google } from "googleapis";
 import type { OAuth2Client } from "google-auth-library";
-import { createAdminClient } from "../supabase-server";
+import { createAdminClient } from "../data/server";
 
 /* ────────────────────────────────────────────────────────────────
    Google Calendar helper (Expert Booking)

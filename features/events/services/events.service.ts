@@ -1,5 +1,5 @@
 import "server-only";
-import { createAdminClient, isSupabaseConfigured } from "@/lib/supabase-server";
+import { createAdminClient, isDatabaseConfigured } from "@/lib/data/server";
 import type { EventRow } from "../types/event";
 
 const EVENT_COLUMNS =
@@ -22,9 +22,9 @@ function normaliseRow(row: unknown): EventRow {
 }
 
 export async function listActiveEvents(): Promise<EventRow[]> {
-  if (!isSupabaseConfigured()) return [];
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
+  if (!isDatabaseConfigured()) return [];
+  const db = createAdminClient();
+  const { data, error } = await db
     .from("events")
     .select(EVENT_COLUMNS)
     .eq("is_active", true)
@@ -40,9 +40,9 @@ export async function listActiveEvents(): Promise<EventRow[]> {
 export async function getActiveEventBySlug(
   slug: string,
 ): Promise<EventRow | null> {
-  if (!isSupabaseConfigured()) return null;
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
+  if (!isDatabaseConfigured()) return null;
+  const db = createAdminClient();
+  const { data, error } = await db
     .from("events")
     .select(EVENT_COLUMNS)
     .eq("slug", slug)
@@ -57,9 +57,9 @@ export async function getActiveEventBySlug(
 }
 
 export async function listActiveEventSlugs(): Promise<string[]> {
-  if (!isSupabaseConfigured()) return [];
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
+  if (!isDatabaseConfigured()) return [];
+  const db = createAdminClient();
+  const { data, error } = await db
     .from("events")
     .select("slug")
     .eq("is_active", true);
@@ -78,9 +78,9 @@ export async function listActiveEventSlugs(): Promise<string[]> {
 export async function listEventsForSitemap(): Promise<
   { slug: string; updatedAt: Date }[]
 > {
-  if (!isSupabaseConfigured()) return [];
-  const supabase = createAdminClient();
-  const { data, error } = await supabase
+  if (!isDatabaseConfigured()) return [];
+  const db = createAdminClient();
+  const { data, error } = await db
     .from("events")
     .select("slug, updated_at")
     .eq("is_active", true);
@@ -100,9 +100,9 @@ export async function listEventsForSitemap(): Promise<
 }
 
 export async function countRegistrations(eventId: string): Promise<number> {
-  if (!isSupabaseConfigured()) return 0;
-  const supabase = createAdminClient();
-  const { count, error } = await supabase
+  if (!isDatabaseConfigured()) return 0;
+  const db = createAdminClient();
+  const { count, error } = await db
     .from("event_registrations")
     .select("id", { count: "exact", head: true })
     .eq("event_id", eventId);
