@@ -3289,20 +3289,20 @@
       "modules": 6,
       "weeks": "~4 weeks",
       "pace": "3 hrs/wk",
-      "badge": "NFT & DApp Development",
+      "badge": "NFTs and dApps",
       "prereq": "Solidity basics; token standards helpful.",
       "bestFor": "Developers building NFT-based products and marketplaces.",
-      "brief": "NFT metadata, ownership, marketplaces, and building an NFT app.",
+      "brief": "ERC-721 collections, metadata and storage, marketplaces, front ends, mint economics and responsible practice.",
       "learn": [
-        "How NFTs work — tokens, metadata, and standards",
-        "Storing metadata and media (IPFS/Arweave)",
-        "Minting flows and royalties",
-        "Marketplaces and how listings/sales work",
-        "Building an NFT gallery/minting dApp",
-        "Practical NFT use cases beyond art"
+        "What an NFT really contains and what ownership means",
+        "Collection contracts with supply, price, limits and royalties",
+        "IPFS, pinning and fully on-chain art",
+        "A marketplace contract and a minting front end",
+        "Mint budgets and honest business design",
+        "Scams, licences, privacy and ethics"
       ],
-      "handsOn": "Build an NFT minting + gallery dApp with on-chain ownership.",
-      "outcome": "Build practical NFT applications.",
+      "handsOn": "Plan an NFT project and its dApp, with contract features, storage, user journey, economics and safety.",
+      "outcome": "Plan and build small NFT projects and judge other projects critically.",
       "icon": "image"
     },
     {

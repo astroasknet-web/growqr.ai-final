@@ -20,6 +20,7 @@ export const NEW_ACTIVITIES: Record<string, () => unknown> = {
   "financial-literacy-investing": () => require("./data/financial-literacy-investing.activities.json"),
   "intro-blockchain-web3": () => require("./data/intro-blockchain-web3.activities.json"),
   "microsoft-word": () => require("./data/microsoft-word.activities.json"),
+  "nfts-decentralized-applications": () => require("./data/nfts-decentralized-applications.activities.json"),
   "operations-supply-chain": () => require("./data/operations-supply-chain.activities.json"),
   "powerpoint-presentation-design": () => require("./data/powerpoint-presentation-design.activities.json"),
   "product-management-fundamentals": () => require("./data/product-management-fundamentals.activities.json"),

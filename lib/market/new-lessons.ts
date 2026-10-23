@@ -20,6 +20,7 @@ export const NEW_LESSONS: Record<string, () => unknown> = {
   "financial-literacy-investing": () => require("./data/lessons/financial-literacy-investing.json"),
   "intro-blockchain-web3": () => require("./data/lessons/intro-blockchain-web3.json"),
   "microsoft-word": () => require("./data/lessons/microsoft-word.json"),
+  "nfts-decentralized-applications": () => require("./data/lessons/nfts-decentralized-applications.json"),
   "operations-supply-chain": () => require("./data/lessons/operations-supply-chain.json"),
   "powerpoint-presentation-design": () => require("./data/lessons/powerpoint-presentation-design.json"),
   "product-management-fundamentals": () => require("./data/lessons/product-management-fundamentals.json"),
