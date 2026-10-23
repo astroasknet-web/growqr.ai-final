@@ -26,6 +26,7 @@ export const NEW_LESSONS: Record<string, () => unknown> = {
   "project-management-pmp": () => require("./data/lessons/project-management-pmp.json"),
   "prompt-engineering": () => require("./data/lessons/prompt-engineering.json"),
   "seo": () => require("./data/lessons/seo.json"),
+  "smart-contract-security-auditing": () => require("./data/lessons/smart-contract-security-auditing.json"),
   "solidity-programming-beginners": () => require("./data/lessons/solidity-programming-beginners.json"),
   "statistics-for-analysts": () => require("./data/lessons/statistics-for-analysts.json"),
   "time-management-productivity": () => require("./data/lessons/time-management-productivity.json"),

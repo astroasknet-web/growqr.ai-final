@@ -3227,23 +3227,23 @@
         "Mid"
       ],
       "hours": "~15 hrs",
-      "modules": 7,
+      "modules": 6,
       "weeks": "~6 weeks",
       "pace": "4 hrs/wk",
       "badge": "Smart Contract Security",
       "prereq": "Solidity and contract-development experience.",
       "bestFor": "Developers and auditors securing on-chain code.",
-      "brief": "Vulnerabilities, secure coding, testing, and the fundamentals of auditing.",
+      "brief": "Bug classes, reentrancy, rounding, oracles and flash loans, tools and methodology, audit reports and incident response.",
       "learn": [
-        "Common vulnerabilities — reentrancy, overflow, access control",
-        "The auditor's mindset and threat modelling",
-        "Secure coding patterns and checks-effects-interactions",
-        "Testing, fuzzing, and static analysis (Slither, Echidna)",
-        "Real attack case studies and post-mortems",
-        "Writing an audit report with findings and remediations"
+        "Access control, reentrancy and checks-effects-interactions",
+        "Rounding, tx.origin, weak randomness and denial of service",
+        "Oracle manipulation, flash loans, signatures and upgrade risks",
+        "Static analysis, fuzzing, invariants and manual review",
+        "Writing findings and ranking severity",
+        "Bug bounties and incident response"
       ],
-      "handsOn": "Audit a deliberately vulnerable contract and produce a findings report.",
-      "outcome": "Identify and fix contract vulnerabilities; target auditing roles.",
+      "handsOn": "Review a vault design and write a professional report with ranked findings and fixes.",
+      "outcome": "Review small contracts for common vulnerabilities and report findings clearly.",
       "icon": "shield"
     },
     {
