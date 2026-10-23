@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { putSessionData } from "@/lib/portal/session";
-import { createCoupon, grantStaff, setCouponActive, setCurrencyEnabled, setPrice, setProductActive, setTaxRule } from "@/lib/pay/admin";
+import { createCoupon, createProduct, grantStaff, setCouponActive, setCurrencyEnabled, setPrice, setProductActive, setTaxRule } from "@/lib/pay/admin";
 import { first, pool } from "@/lib/pay/db";
 import { minorUnits } from "@/lib/pay/money";
 import { PayError } from "@/lib/pay/orders";
@@ -79,6 +79,15 @@ export async function setPriceAction(fd: FormData): Promise<void> {
     const cur = s(fd, "currency").toUpperCase();
     await setPrice(me.id, s(fd, "sku"), cur, toMinor(s(fd, "amount"), minorUnits(cur)), fd.get("inclusive") === "on", true);
     return `Price saved for ${s(fd, "sku")} in ${cur}. It applies to new orders only.`;
+  });
+}
+
+export async function createProductAction(fd: FormData): Promise<void> {
+  const { me } = await payGate("manage_catalogue", BACK);
+  await run(BACK, async () => {
+    const days = s(fd, "days");
+    await createProduct(me.id, { sku: s(fd, "sku"), kind: s(fd, "kind"), title: s(fd, "title"), description: s(fd, "description"), accessDays: days ? n(fd, "days") : null, allowGuest: fd.get("guest") === "on" });
+    return `Product ${s(fd, "sku").toLowerCase()} added. It cannot be bought until you save a price for it below.`;
   });
 }
 

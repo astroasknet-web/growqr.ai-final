@@ -280,6 +280,18 @@ describe.skipIf(!DB)("payment HTTP API on a real database", () => {
       expect((await A_LIST.GET(req("/api/v1/admin/payments", { origin: null }), ctx({}))).status).toBe(200);
     });
 
+    it("shows the webhook events that belong to an order (provider ids contain underscores)", async () => {
+      as(support, "student", "support");
+      const row = await B.db.one<{ provider_session_ref: string }>("SELECT p.provider_session_ref FROM pay_payments p JOIN pay_orders o ON o.id = p.order_id WHERE o.public_id = $1", [paidOrder]);
+      const sessionRef = row?.provider_session_ref ?? "";
+      expect(sessionRef).toContain("_");
+      const ev = rzp.webhook("payment.captured", { payment: { entity: { id: "pay_x", order_id: sessionRef, status: "captured" } } }, `evt_${tag}_lookup`);
+      await B.db.run("INSERT INTO pay_webhook_events (provider, event_id, type, status, payload, received_at) VALUES ('razorpay', $1, 'payment.captured', 'processed', $2, UTC_TIMESTAMP())", [`evt_${tag}_lookup`, JSON.stringify({ sessionRef })]);
+      void ev;
+      const d = await json(await A_ONE.GET(req(`/api/v1/admin/payments/${paidOrder}`, { origin: null }), ctx({ id: paidOrder })));
+      expect(JSON.stringify(d.data.webhooks)).toContain(`evt_${tag}_lookup`);
+    });
+
     it("lets support view but not refund, export or change prices", async () => {
       as(support, "student", "support");
       expect((await A_ONE.GET(req(`/api/v1/admin/payments/${paidOrder}`, { origin: null }), ctx({ id: paidOrder }))).status).toBe(200);

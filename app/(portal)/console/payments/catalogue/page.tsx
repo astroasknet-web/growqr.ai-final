@@ -3,7 +3,7 @@ import { box, field, btnDark, btnLine } from "@/components/admin/console-page";
 import { listProducts } from "@/lib/pay/catalogue";
 import { pool, rows } from "@/lib/pay/db";
 import { minorUnits } from "@/lib/pay/money";
-import { couponActiveAction, couponAction, currencyAction, productActiveAction, setPriceAction, staffAction, taxRuleAction } from "../actions";
+import { createProductAction, couponActiveAction, couponAction, currencyAction, productActiveAction, setPriceAction, staffAction, taxRuleAction } from "../actions";
 import { payGate } from "../gate";
 import { money, PayConsole } from "../nav";
 
@@ -23,6 +23,19 @@ export default async function PaymentCatalogue() {
 
   return (
     <PayConsole me={me} role={role} section="catalogue" title="Prices, coupons and staff" subtitle="Changes apply to new orders only. Every change is written to the audit log.">
+      <section className={box} aria-labelledby="np">
+        <h2 id="np" className="mb-1 text-[17px] font-semibold">Add a product</h2>
+        <p className="mb-3 text-[13px] text-ink-3">Step 1 of 2: create it. Step 2: save a price for it in the list below. Until it has a price in an enabled currency it cannot be bought.</p>
+        <form action={createProductAction} className="flex flex-wrap items-end gap-2">
+          <label className="text-[12px] text-ink-3">Code (no spaces)<input name="sku" required maxLength={80} placeholder="demo-workshop" className={`${field} mt-1 block w-48`} /></label>
+          <label className="text-[12px] text-ink-3">Name shown to buyers<input name="title" required maxLength={190} placeholder="Interview Masterclass" className={`${field} mt-1 block w-64`} /></label>
+          <label className="text-[12px] text-ink-3">Type<select name="kind" className={`${field} mt-1 block`}><option value="other">Other</option><option value="class">Class</option><option value="ebook">E-book</option><option value="consulting">Consulting</option><option value="course">Course (use the course code)</option><option value="plan">Plan</option></select></label>
+          <label className="text-[12px] text-ink-3">Access days (empty = lifetime)<input name="days" type="number" min={1} className={`${field} mt-1 block w-28`} /></label>
+          <label className="text-[12px] text-ink-3">Short description<input name="description" maxLength={500} className={`${field} mt-1 block w-64`} /></label>
+          <button className={btnDark}>Add product</button>
+        </form>
+      </section>
+
       <section className={box} aria-labelledby="pr">
         <h2 id="pr" className="mb-1 text-[17px] font-semibold">Products and prices</h2>
         <p className="mb-4 text-[13px] text-ink-3">Prices are set per currency. Nothing is converted automatically: a currency with no price here cannot be used to buy that product.</p>

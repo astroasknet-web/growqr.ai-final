@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createCoupon, setCouponActive, setCurrencyEnabled, setPrice, setProductActive, setTaxRule } from "@/lib/pay/admin";
+import { createCoupon, createProduct, setCouponActive, setCurrencyEnabled, setPrice, setProductActive, setTaxRule } from "@/lib/pay/admin";
 import { listProducts } from "@/lib/pay/catalogue";
 import { pool, rows } from "@/lib/pay/db";
 import { ok, staffApi } from "@/lib/pay/http";
@@ -17,6 +17,7 @@ export const GET = staffApi((m) => (m === "GET" ? "view" : "manage_catalogue"), 
 });
 
 const action = z.discriminatedUnion("action", [
+  z.object({ action: z.literal("create_product"), sku: z.string().max(80), kind: z.string().max(20), title: z.string().max(190), description: z.string().max(500).optional(), fulfilRef: z.string().max(120).optional(), accessDays: z.number().int().positive().nullable().optional(), allowGuest: z.boolean().optional() }),
   z.object({ action: z.literal("set_price"), sku: z.string().max(80), currency: z.string().length(3), amountMinor: z.number().int().min(0), taxInclusive: z.boolean().default(true), active: z.boolean().default(true) }),
   z.object({ action: z.literal("set_product_active"), sku: z.string().max(80), active: z.boolean() }),
   z.object({ action: z.literal("set_currency"), code: z.string().length(3), enabled: z.boolean() }),
@@ -29,6 +30,7 @@ const action = z.discriminatedUnion("action", [
 export const POST = staffApi("manage_catalogue", async (req, staff) => {
   const a = action.parse(await req.json().catch(() => ({})));
   switch (a.action) {
+    case "create_product": await createProduct(staff.user.id, a); break;
     case "set_price": await setPrice(staff.user.id, a.sku, a.currency, a.amountMinor, a.taxInclusive, a.active); break;
     case "set_product_active": await setProductActive(staff.user.id, a.sku, a.active); break;
     case "set_currency": await setCurrencyEnabled(staff.user.id, a.code, a.enabled); break;

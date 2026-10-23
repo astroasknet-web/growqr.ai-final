@@ -59,7 +59,7 @@ export async function orderDetail(publicId: string) {
   const docs = await getDocuments(Number(o.id));
   const ents = await rows(pool, "SELECT id, kind, ref, status, starts_at, expires_at, revoke_reason FROM pay_entitlements WHERE order_id = $1", [o.id]);
   const refs = [...payments.map((p) => p.provider_session_ref), ...payments.map((p) => p.provider_payment_ref)].filter(Boolean) as string[];
-  const hooks = refs.length ? await rows(pool, `SELECT id, provider, event_id, type, status, attempts, last_error, received_at, processed_at FROM pay_webhook_events WHERE ${refs.map((_, i) => `payload LIKE $${i + 1}`).join(" OR ")} ORDER BY id DESC LIMIT 50`, refs.map((r) => `%"${r.replace(/[\\%_"]/g, "")}"%`)) : [];
+  const hooks = refs.length ? await rows(pool, `SELECT id, provider, event_id, type, status, attempts, last_error, received_at, processed_at FROM pay_webhook_events WHERE ${refs.map((_, i) => `payload LIKE $${i + 1}`).join(" OR ")} ORDER BY id DESC LIMIT 50`, refs.map((r) => `%"${r.replace(/"/g, "").replace(/[\\%_]/g, (c) => "\\" + c)}"%`)) : [];
   const timeline = await rows(pool, "SELECT at, actor_type, actor_id, action, entity, entity_id, detail FROM pay_audit_events WHERE (entity = 'order' AND entity_id = $1) OR (entity = 'payment' AND entity_id IN ($2)) OR (entity = 'refund' AND entity_id IN ($3)) ORDER BY id ASC LIMIT 200", [publicId, payments.map((p) => String(p.id)).concat(["-"]), refunds.map((r) => r.public_id).concat(["-"])]);
   return {
     order: { id: o.public_id, status: o.status, email: o.email, name: o.billing_name, country: o.country, currency: o.currency, subtotalMinor: Number(o.subtotal_minor), discountMinor: Number(o.discount_minor), taxMinor: Number(o.tax_minor), totalMinor: Number(o.total_minor), refundedMinor: Number(o.refunded_minor), taxName: o.tax_name, taxInclusive: !!o.tax_inclusive, coupon: o.coupon_code, createdAt: iso(o.created_at), paidAt: iso(o.paid_at), fulfilledAt: iso(o.fulfilled_at), userId: o.user_id },
@@ -144,6 +144,20 @@ export async function setPrice(staffId: number, sku: string, currency: string, a
   const before = await first(pool, "SELECT amount_minor, tax_inclusive, active FROM pay_prices WHERE product_id = $1 AND currency = $2", [p.id, cur]);
   await exec(pool, "INSERT INTO pay_prices (product_id, currency, amount_minor, tax_inclusive, active) VALUES ($1,$2,$3,$4,$5) ON DUPLICATE KEY UPDATE amount_minor = VALUES(amount_minor), tax_inclusive = VALUES(tax_inclusive), active = VALUES(active)", [p.id, cur, amountMinor, taxInclusive ? 1 : 0, active ? 1 : 0]);
   await audit({ actorType: "staff", actorId: staffId, action: "price.set", entity: "price", entityId: `${sku}:${cur}`, detail: { before: before ? { amountMinor: Number(before.amount_minor), taxInclusive: !!before.tax_inclusive, active: !!before.active } : null, after: { amountMinor, taxInclusive, active } } });
+}
+
+export interface NewProduct { sku: string; kind: string; title: string; description?: string; fulfilRef?: string; accessDays?: number | null; allowGuest?: boolean }
+
+/** Add a product. It starts on sale with no price, so it cannot be bought until a price is added. Existing SKUs are never overwritten. */
+export async function createProduct(staffId: number, p: NewProduct): Promise<void> {
+  const sku = p.sku.trim().toLowerCase();
+  if (!/^[a-z0-9][a-z0-9_.-]{1,79}$/.test(sku)) throw new PayError("bad_sku", "The code may use letters, numbers, dots, dashes and underscores (2 to 80 characters).", 400);
+  if (!["plan", "course", "ebook", "resume", "class", "consulting", "other"].includes(p.kind)) throw new PayError("bad_kind", "Pick a product type from the list.", 400);
+  if (p.title.trim().length < 2) throw new PayError("bad_title", "Give the product a name.", 400);
+  if (p.accessDays != null && (!Number.isInteger(p.accessDays) || p.accessDays < 1 || p.accessDays > 3650)) throw new PayError("bad_days", "Access days must be a whole number from 1 to 3650, or empty for lifetime.", 400);
+  if (await first(pool, "SELECT id FROM pay_products WHERE sku = $1", [sku])) throw new PayError("sku_exists", "A product with this code already exists.", 409);
+  await exec(pool, "INSERT INTO pay_products (sku, kind, title, description, fulfil_ref, access_days, active, allow_guest, max_qty) VALUES ($1,$2,$3,$4,$5,$6,1,$7,1)", [sku, p.kind, p.title.trim().slice(0, 190), (p.description ?? "").slice(0, 500), (p.fulfilRef ?? sku).trim().slice(0, 120), p.accessDays ?? null, p.allowGuest ? 1 : 0]);
+  await audit({ actorType: "staff", actorId: staffId, action: "product.created", entity: "price", entityId: sku, detail: { kind: p.kind, title: p.title.trim(), accessDays: p.accessDays ?? null } });
 }
 
 export async function setProductActive(staffId: number, sku: string, active: boolean): Promise<void> {
