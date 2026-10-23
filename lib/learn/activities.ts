@@ -1,5 +1,6 @@
 import digitalLiteracy from "./data/digital-literacy.activities.json";
 import bbaFinancialAccounting from "./data/bba-financial-accounting.activities.json";
+import { NEW_ACTIVITIES } from "./new-activities";
 import { cloneSheet, emptySheet } from "./sheet/engine";
 import { emptyDeck, sanitizeDeck } from "./slides";
 import { sanitizeDoc } from "./doc";
@@ -14,8 +15,15 @@ const COURSES: Record<string, LearnCourse> = {
   "bba-financial-accounting": bbaFinancialAccounting as unknown as LearnCourse,
 };
 
-export const learnCourse = (slug: string): LearnCourse | null => (Object.prototype.hasOwnProperty.call(COURSES, slug) ? COURSES[slug] : null);
-export const learnSlugs = (): string[] => Object.keys(COURSES);
+const loaded = new Map<string, LearnCourse>();
+export const learnCourse = (slug: string): LearnCourse | null => {
+  if (Object.prototype.hasOwnProperty.call(COURSES, slug)) return COURSES[slug];
+  if (!Object.prototype.hasOwnProperty.call(NEW_ACTIVITIES, slug)) return null;
+  let c = loaded.get(slug); // the newer courses are read from disk on first use
+  if (!c) { c = NEW_ACTIVITIES[slug]() as LearnCourse; loaded.set(slug, c); }
+  return c;
+};
+export const learnSlugs = (): string[] => [...Object.keys(COURSES), ...Object.keys(NEW_ACTIVITIES)];
 export const findActivity = (slug: string, id: string): Activity | null => learnCourse(slug)?.activities.find((a) => a.id === id) ?? null;
 export const activitiesFor = (slug: string, module: string): Activity[] => learnCourse(slug)?.activities.filter((a) => a.module === module) ?? [];
 export const requiredFor = (slug: string, module: string): Activity[] => activitiesFor(slug, module).filter((a) => a.required);

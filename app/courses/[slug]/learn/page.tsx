@@ -7,6 +7,7 @@ import * as learning from "@/lib/market/learning";
 import * as lessons from "@/lib/market/lessons";
 import { learnCourse } from "@/lib/learn/activities";
 import { nextStep } from "@/lib/learn/next";
+import { canStudy } from "@/lib/pay/course-access";
 import * as results from "@/lib/learn/results";
 import CourseLanding from "@/components/learn/CourseLanding";
 import { currentViewer, MarketShell } from "@/components/market/shell";
@@ -22,10 +23,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const nc = lessons.nativeCourse(slug);
   if (!nc) return { title: "Course not found | GrowQR", robots: { index: false, follow: true } };
   const lc = learnCourse(slug);
-  const title = lc?.landing ? `${lc.landing.hero.title} (Free Course) | GrowQR` : `${nc.title}: Lessons | GrowQR`;
+  const title = lc?.landing ? `${lc.landing.hero.title} (Online Course) | GrowQR` : `${nc.title}: Lessons | GrowQR`;
   const desc = lc?.landing ? lc.landing.hero.subtitle : `${nc.tagline} ${nc.modules.length} modules with quizzes and a capstone project.`;
   return {
-    title: title.length > 66 ? `${nc.title}: Free Course | GrowQR` : title,
+    title: title.length > 66 ? `${nc.title}: Online Course | GrowQR` : title,
     description: Array.from(desc).slice(0, 155).join(""),
     alternates: { canonical: `${SITE_URL}/courses/${slug}/learn` },
     robots: { index: true, follow: true },
@@ -50,12 +51,13 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
     const ld = {
       "@context": "https://schema.org",
       "@graph": [
-        { "@type": "Course", name: lc.landing.hero.title, description: lc.landing.hero.subtitle, url: `${SITE_URL}/courses/${slug}/learn`, educationalLevel: lc.landing.hero.level, timeRequired: `PT${nc.hours}H`, inLanguage: "en", isAccessibleForFree: true, provider: { "@type": "Organization", name: "GrowQR", sameAs: SITE_URL }, hasCourseInstance: { "@type": "CourseInstance", courseMode: "online", courseWorkload: `PT${nc.hours}H` } },
+        { "@type": "Course", name: lc.landing.hero.title, description: lc.landing.hero.subtitle, url: `${SITE_URL}/courses/${slug}/learn`, educationalLevel: lc.landing.hero.level, timeRequired: `PT${nc.hours}H`, inLanguage: "en", provider: { "@type": "Organization", name: "GrowQR", sameAs: SITE_URL }, hasCourseInstance: { "@type": "CourseInstance", courseMode: "online", courseWorkload: `PT${nc.hours}H` } },
         { "@type": "FAQPage", mainEntity: lc.landing.faq.map((f) => ({ "@type": "Question", name: f.q, acceptedAnswer: { "@type": "Answer", text: f.a } })) },
         { "@type": "BreadcrumbList", itemListElement: [{ "@type": "ListItem", position: 1, name: "Courses", item: `${SITE_URL}/courses` }, { "@type": "ListItem", position: 2, name: nc.title, item: `${SITE_URL}/courses/${slug}` }, { "@type": "ListItem", position: 3, name: "Learn" }] },
       ],
     };
     const sample = lc.activities.find((a) => a.id === "c1-parts") ?? lc.activities.find((a) => a.kind === "classify");
+    const owned = await canStudy(me?.id ?? null, course.id, slug);
     return (
       <MarketShell user={me} active="courses">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: serializeJsonLd(ld) }} />
@@ -64,7 +66,7 @@ export default async function LearnPage({ params }: { params: Promise<{ slug: st
           <form action={courseAction} className="mb-4"><input type="hidden" name="act" value="enrol" /><input type="hidden" name="slug" value={slug} /><input type="hidden" name="back" value={`/courses/${slug}/learn`} />
             <button type="submit" className="min-h-[44px] rounded-lg border border-black/[0.18] bg-white px-4 text-[14px] font-medium text-ink hover:bg-cream-2">Enrol to track your progress</button></form>
         ) : null}
-        <CourseLanding slug={slug} nc={nc} lc={lc} summary={summary} done={done} next={next} signedIn={Boolean(me)} isStudent={isStudent} enrolled={Boolean(enrol)} progress={enrol?.progress ?? 0} sampleHref={sample ? `/courses/${slug}/learn/${sample.module}/a/${sample.id}` : null} />
+        <CourseLanding slug={slug} nc={nc} lc={lc} summary={summary} done={done} next={next} signedIn={Boolean(me)} isStudent={isStudent} enrolled={Boolean(enrol)} progress={enrol?.progress ?? 0} sampleHref={sample ? `/courses/${slug}/learn/${sample.module}/a/${sample.id}` : null} owned={owned} />
       </MarketShell>
     );
   }

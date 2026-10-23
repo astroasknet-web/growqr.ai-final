@@ -109,8 +109,8 @@ describe("university programme courses (landing block)", () => {
       const types = ld["@graph"].map((g) => g["@type"]);
       expect(types).toEqual(["Course", "FAQPage", "DefinedTermSet", "BreadcrumbList"]);
       const course = ld["@graph"][0] as Record<string, unknown>;
-      expect(course.isAccessibleForFree).toBe(true);
-      expect((course.offers as { price: number }).price).toBe(0);
+      expect(course.isAccessibleForFree).toBeUndefined(); // the courses are paid, so the page does not claim to be free
+      expect(course.offers).toBeUndefined();
       expect((course.hasPart as unknown[]).length).toBe(nc.modules.length);
       expect(() => JSON.stringify(ld)).not.toThrow();
     }
