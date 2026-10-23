@@ -2990,24 +2990,24 @@
       "tags": [
         "All"
       ],
-      "hours": "~6 hrs",
-      "modules": 5,
-      "weeks": "~2 weeks",
+      "hours": "~8 hrs",
+      "modules": 6,
+      "weeks": "~3 weeks",
       "pace": "3 hrs/wk",
-      "badge": "Blockchain Fundamentals",
+      "badge": "Blockchain Foundations",
       "prereq": "None — designed for complete beginners.",
       "bestFor": "Anyone new to blockchain — students, professionals, and curious beginners.",
-      "brief": "What blockchain is, why it exists, and how Web3 differs from traditional systems.",
+      "brief": "Why blockchains exist, hashing and consensus, Bitcoin and Ethereum, Web3 in practice, use cases and limits, and staying safe.",
       "learn": [
-        "What blockchain is and the problems it was created to solve",
-        "Centralised vs decentralised systems and trustless networks",
-        "Blockchain vs cryptocurrency vs Web3 vs traditional databases",
-        "Key building blocks — blocks, ledgers, nodes, and wallets",
-        "Real-world use cases across finance, supply chain, and identity",
-        "The Web3 landscape and where the industry is heading"
+        "The trust problem, ledgers and double spending",
+        "Hashing, keys, signatures and consensus",
+        "Bitcoin, Ethereum, smart contracts and layers",
+        "Wallets, tokens, NFTs and transaction fees",
+        "Judging use cases, limits and red flags",
+        "Wallet safety, rules and next steps"
       ],
-      "handsOn": "Map a real-world use case to a blockchain solution and justify why it does (or does not) fit.",
-      "outcome": "Confidently explain blockchain and Web3; ready for Blockchain Fundamentals.",
+      "handsOn": "Write a one-page blockchain use-case brief that tests whether a blockchain is justified and names the risks.",
+      "outcome": "Explain how blockchains work, judge whether a project needs one and protect yourself from common scams.",
       "icon": "blocks"
     },
     {

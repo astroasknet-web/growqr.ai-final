@@ -15,6 +15,9 @@ const fallbacks = {
   equation: (s) => `<h3>${esc(s.title)}</h3><ol>${s.moves.map((m) => `<li>${esc(m.text)} ${esc(m.why)}</li>`).join("")}</ol>`,
   explorer: (s) => `<h3>${esc(s.title)}</h3>${s.intro ? `<p>${esc(s.intro)}</p>` : ""}<p>Adjust ${s.inputs.map((i) => esc(i.label)).join(", ")} and see ${s.outputs.map((o) => esc(o.label)).join(", ")} change.</p>`,
   flashcards: (s) => `<h3>${esc(s.title)}</h3><dl>${s.cards.map((c) => `<dt>${esc(c.front)}</dt><dd>${esc(c.back)}</dd>`).join("")}</dl>`,
+  hashlab: (s) => `<h3>${esc(s.title)}</h3>${s.intro ? `<p>${esc(s.intro)}</p>` : ""}<p>Type any text and see its SHA-256 fingerprint change completely when one letter changes.</p>`,
+  chainlab: (s) => `<h3>${esc(s.title)}</h3>${s.intro ? `<p>${esc(s.intro)}</p>` : ""}<p>A chain of ${s.blocks.length} linked blocks. Change the data in one block and see every later block break until it is mined again.</p>`,
+  merkle: (s) => `<h3>${esc(s.title)}</h3>${s.intro ? `<p>${esc(s.intro)}</p>` : ""}<p>${s.txs.length} transactions are hashed in pairs up to one Merkle root. Change one transaction and the root changes.</p>`,
   complete: () => "",
 };
 
