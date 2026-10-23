@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { BadgeCheck, Globe2, KeyRound, Lock, QrCode, ShieldCheck } from "lucide-react";
-import { PROVIDERS, providerEnabled, providerLabel, type Provider } from "@/lib/portal/oauth";
+import { PROVIDERS, providerLabel, type Provider } from "@/lib/portal/oauth";
 import "./auth.css";
 
 /** Split-screen frame for login, sign-up and the other account pages: an animated brand panel beside the form. */
@@ -77,9 +77,9 @@ function LinkedInMark() {
 
 const MARK: Record<Provider, () => ReactNode> = { google: () => <GoogleMark />, linkedin: () => <LinkedInMark /> };
 
-/** "Continue with Google / LinkedIn". Providers without keys are hidden on the live site and shown (as a preview) in development. */
+/** "Continue with Google / LinkedIn". Both are always shown; until a provider's keys are set, clicking it returns to the form with a short "not available yet, use email" message. */
 export function SocialButtons({ role = "student", next = "", verb = "Continue" }: { role?: string; next?: string; verb?: string }) {
-  const show = PROVIDERS.filter((p) => providerEnabled(p) || process.env.NODE_ENV !== "production");
+  const show = PROVIDERS;
   if (!show.length) return null;
   const qs = (p: Provider) => `/auth/${p}?role=${encodeURIComponent(role)}${next ? `&next=${encodeURIComponent(next)}` : ""}`;
   return (

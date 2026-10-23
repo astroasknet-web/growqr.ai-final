@@ -1,6 +1,6 @@
 # Sign-in setup: Google, LinkedIn and the human check
 
-Login and sign-up work with **email and password out of the box**. Google and LinkedIn sign-in and Cloudflare Turnstile each need keys. Until a provider has its keys, its button is hidden on the live site.
+Login and sign-up work with **email and password out of the box**. Google and LinkedIn sign-in and Cloudflare Turnstile each need keys. Both buttons always show on the login and sign-up pages. Until a provider has its keys, clicking its button returns to the form with "That sign-in option is not available yet. Please use your email instead."
 
 ## What protects the login
 
