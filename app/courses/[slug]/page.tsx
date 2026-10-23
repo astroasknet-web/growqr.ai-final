@@ -7,6 +7,7 @@ import * as courses from "@/lib/market/courses";
 import * as jobs from "@/lib/market/jobs";
 import * as learning from "@/lib/market/learning";
 import AddToCart from "@/components/pay/AddToCart";
+import { planCourses } from "@/lib/pay/plans";
 import { buyHref, canStudy, courseFee, courseSku } from "@/lib/pay/course-access";
 import { formatMoney } from "@/lib/pay/money";
 import * as lessons from "@/lib/market/lessons";
@@ -57,6 +58,7 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
   const native = lessons.isNative(course.slug);
   const start = `${self}/learn`; // only used when the course is taught here
   const fee = native ? await courseFee(course.slug) : null;
+  const plan = me && isStudent ? await planCourses(me.id) : null;
   const owned = await canStudy(me?.id ?? null, course.id, course.slug); // false only for a priced course the visitor has not paid for
 
   // Internships whose required skills this course teaches.
@@ -122,12 +124,30 @@ export default async function CoursePage({ params, searchParams }: { params: Pro
               <h2 className="text-[18px] font-bold text-ink">Ready to start?</h2>
               <p className="text-[14px] text-ink-3">Lessons, quizzes and the capstone run right here on GrowQR. Pass each module quiz to tick off your progress.</p>
               <CourseFlash c={sp.c} e={sp.e} />
-              {fee && !owned ? (
+              {!owned ? (
                 <>
-                  <p className="text-[28px] font-bold text-ink">{formatMoney(fee.amountMinor, "INR")}</p>
-                  <p className="text-[13px] text-ink-3">One payment for this course. Lifetime access, certificate and badge.</p>
-                  <Link className={`${btn} bg-orange-deep hover:bg-ink text-white`} href={buyHref(course.slug)}>Buy this course</Link>
-                  <AddToCart sku={courseSku(course.slug)} className="w-full" />
+                  {plan?.plan ? (
+                    <div className="rounded-xl border border-emerald-600/30 bg-emerald-50 p-3.5">
+                      {plan.left > 0 ? (
+                        <>
+                          <p className="text-[14px] font-semibold text-emerald-900">Included in your {plan.plan.name} plan</p>
+                          <p className="mt-0.5 text-[13px] text-emerald-900/80">You have {plan.left} of {plan.plan.courseQuota} course {plan.plan.courseQuota === 1 ? "pick" : "picks"} left. Use one here and start right away, at no extra cost.</p>
+                          <form action={courseAction} className="mt-3"><input type="hidden" name="act" value="pick" /><input type="hidden" name="slug" value={course.slug} /><input type="hidden" name="back" value={self} /><button type="submit" className={`${btn} w-full bg-emerald-700 text-white hover:bg-emerald-800`}>Use my plan for this course</button></form>
+                        </>
+                      ) : (
+                        <p className="text-[13px] text-emerald-900">You have used all {plan.plan.courseQuota} course {plan.plan.courseQuota === 1 ? "pick" : "picks"} in your {plan.plan.name} plan. {plan.plan.key !== "gold" ? "A higher plan includes more courses. " : ""}You can still buy this course below.</p>
+                      )}
+                    </div>
+                  ) : null}
+                  {fee ? (
+                    <>
+                      <p className="text-[28px] font-bold text-ink">{formatMoney(fee.amountMinor, "INR")}</p>
+                      <p className="text-[13px] text-ink-3">One payment for this course. Lifetime access, certificate and badge.</p>
+                      <Link className={`${btn} bg-orange-deep hover:bg-ink text-white`} href={buyHref(course.slug)}>Buy this course</Link>
+                      <AddToCart sku={courseSku(course.slug)} className="w-full" />
+                    </>
+                  ) : <p className="text-[14px] text-ink-3">This course is not on sale right now.</p>}
+                  {!plan?.plan ? <p className="text-[13px] text-ink-3">Or get a <Link href="/pricing" className="font-semibold underline">plan</Link> that includes courses.</p> : null}
                   <Link className={`${btn} border border-black/[0.15] hover:bg-cream-2`} href={start}>See what is inside</Link>
                 </>
               ) : enrol ? (

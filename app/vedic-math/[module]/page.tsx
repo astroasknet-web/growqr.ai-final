@@ -1,26 +1,32 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { currentUser } from "@/lib/portal/guard";
+import { planInfo } from "@/lib/pay/plans";
 import { MarketShell } from "@/components/market/shell";
 import { adjacent, curriculum, moduleHtml, vmodule } from "@/lib/lms/vedic";
 
 type P = { params: Promise<{ module: string }>; searchParams: Promise<{ lang?: string }> };
 const clean = (s: string) => s.toLowerCase().replace(/[^a-z0-9-]/g, "");
 
-export function generateStaticParams() { return curriculum().modules.filter((m) => m.available).map((m) => ({ module: m.slug })); }
+// Module 1 is free; the rest open with a Pro, Silver or Gold plan, so the page is rendered per visitor.
+export const dynamic = "force-dynamic";
 
 export async function generateMetadata({ params }: P): Promise<Metadata> {
   const m = vmodule(clean((await params).module));
   if (!m) return { title: "Module not found | GrowQR", robots: { index: false, follow: true } };
-  return { title: `${m.title}: Vedic Mathematics Module ${m.num} | GrowQR`, description: `Free Vedic Mathematics Module ${m.num}: ${m.title}. ${m.topics.join(", ")}.`.slice(0, 160), alternates: { canonical: `/vedic-math/${m.slug}` } };
+  return { title: `${m.title}: Vedic Mathematics Module ${m.num} | GrowQR`, description: `Vedic Mathematics Module ${m.num}: ${m.title}. ${m.topics.join(", ")}.`.slice(0, 160), alternates: { canonical: `/vedic-math/${m.slug}` } };
 }
 
 export default async function VedicModule({ params, searchParams }: P) {
   const m = vmodule(clean((await params).module));
   if (!m) notFound();
+  const me = await currentUser();
+  const plan = me ? await planInfo(me.id) : null;
+  const open = m.num === 1 || plan !== null;
   const wantHindi = (await searchParams).lang === "hi" && m.hasHindi;
   const lang = wantHindi ? "hi" : "en";
-  const body = moduleHtml(m.slug, lang) ?? moduleHtml(m.slug, "en");
+  const body = open ? (moduleHtml(m.slug, lang) ?? moduleHtml(m.slug, "en")) : { html: "", toc: [] as Array<{ id: string; text: string; level: number }> };
   if (!body) notFound();
   const { prev, next } = adjacent(m.num);
   const toc = body.toc;
@@ -37,7 +43,22 @@ export default async function VedicModule({ params, searchParams }: P) {
         </div>
       ) : null}
 
-      <div className="mt-6 grid items-start gap-6 lg:grid-cols-[16rem_1fr]">
+      {!open ? (
+        <section aria-label="This module is part of a plan" className="mt-6 rounded-2xl border border-black/[0.1] bg-white p-6 shadow-card sm:p-8">
+          <h2 className="text-[20px] font-bold text-ink">What is in this module</h2>
+          <p className="mt-2 text-ink-3">{m.topics.join(" · ")}</p>
+          <p className="mt-1 text-[14px] text-ink-3">Sutra: {m.sutra}</p>
+          <div className="mt-6 rounded-xl bg-cream-2 p-5">
+            <p className="font-semibold text-ink">Module 1 is free. The full Vedic Mathematics course (all 30 modules) comes with Pro, Silver and Gold.</p>
+            <div className="mt-4 flex flex-wrap gap-3">
+              <Link href="/pricing" className="inline-flex min-h-[48px] items-center rounded-lg bg-orange-deep px-6 font-semibold text-white hover:bg-ink">See plans</Link>
+              <Link href="/vedic-math/module-1" className="inline-flex min-h-[48px] items-center rounded-lg border border-black/[0.15] px-6 font-semibold text-ink hover:bg-cream-2">Start the free module 1</Link>
+              {!me ? <Link href={`/login?next=${encodeURIComponent(`/vedic-math/${m.slug}`)}`} className="inline-flex min-h-[48px] items-center rounded-lg border border-black/[0.15] px-6 font-semibold text-ink hover:bg-cream-2">Log in</Link> : null}
+            </div>
+          </div>
+        </section>
+      ) : null}
+      <div className={`mt-6 grid items-start gap-6 lg:grid-cols-[16rem_1fr] ${open ? "" : "hidden"}`}>
         <aside aria-label="Contents" className="max-h-[75vh] overflow-y-auto rounded-2xl border border-black/[0.08] bg-white p-4 text-[13.5px] lg:sticky lg:top-24">
           <h2 className="text-[14px] font-bold text-ink">Contents</h2>
           <ul className="mt-2 space-y-1.5">{toc.map((h) => <li key={h.id} className={h.level === 1 ? "font-semibold" : "pl-3"}><a href={`#${h.id}`} className="text-ink-3 hover:text-orange-deep hover:underline">{h.text}</a></li>)}</ul>

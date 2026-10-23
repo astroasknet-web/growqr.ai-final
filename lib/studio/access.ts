@@ -34,8 +34,11 @@ export async function subscription(uid: number): Promise<Subscription | null> {
   return one<Subscription>("SELECT * FROM studio_subscriptions WHERE user_id = $1 AND starts_at <= LOCALTIMESTAMP(0) AND ends_at > LOCALTIMESTAMP(0) ORDER BY ends_at DESC LIMIT 1", [uid]);
 }
 
+/** Studio Pro comes from its own purchase, or from holding any paid plan (Pro, Silver or Gold) right now. */
 export async function isPro(uid: number): Promise<boolean> {
-  return (await subscription(uid)) !== null;
+  if ((await subscription(uid)) !== null) return true;
+  const plan = await val("SELECT COUNT(*) FROM pay_entitlements WHERE user_id = $1 AND kind = 'plan' AND status = 'active' AND (expires_at IS NULL OR expires_at > UTC_TIMESTAMP(3))", [uid]);
+  return Number(plan) > 0;
 }
 
 export async function canUseTemplate(uid: number, templateId: string, pro?: boolean): Promise<boolean> {

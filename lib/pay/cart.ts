@@ -2,7 +2,7 @@ import { z } from "zod";
 import { pricesFor, productsBySku, type Product } from "./catalogue";
 import { cfg } from "./config";
 import { first, pool } from "./db";
-import { hasEntitlement } from "./entitlements";
+import { accessFor } from "./course-access";
 import { isCurrencyCode } from "./money";
 import { PayError } from "./orders";
 import { payableCurrencies } from "./providers";
@@ -29,8 +29,8 @@ export interface CartView { currency: string; currencies: string[]; lines: CartL
 
 async function owns(userId: number, p: Product): Promise<boolean> {
   if (p.kind !== "course") return false;
-  if (await hasEntitlement(userId, "course", p.fulfilRef)) return true;
-  return (await first(pool, "SELECT 1 AS x FROM course_enrolments e JOIN courses c ON c.id = e.course_id WHERE e.user_id = $1 AND c.slug = $2", [userId, p.fulfilRef])) !== null;
+  const a = await accessFor(userId, p.fulfilRef);
+  return a === "purchase" || a === "plan";
 }
 
 export async function viewCart(input: CartInput, viewer: { userId: number | null }): Promise<CartView> {

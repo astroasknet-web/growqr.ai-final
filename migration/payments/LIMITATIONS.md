@@ -30,3 +30,22 @@ Read this before telling anyone the system is "complete".
 * Guest purchases are limited to products flagged "allow guest"; none of the seeded plans are.
 * Staff are granted payment roles by user id.
 * Coupons are per-order percent or fixed amounts; no stacking, no per-customer targeting beyond a per-user limit.
+
+## Plan features: what is live and what is not
+
+A plan (Pro, Silver, Gold) is bought through checkout and held as an entitlement. This table says what each advertised feature does today. "Live" means the server enforces it.
+
+| Advertised feature | State |
+|---|---|
+| Every course is paid; the course page (what is in it) stays public, the lessons open only after purchase or a plan pick | **Live** |
+| Courses included: Pro 1, Silver 2, Gold 4 (chosen by the student from courses that have lessons; shown on the dashboard and My courses with progress) | **Live.** Chosen by the student from all courses with lessons, not limited to the resume-scan recommendations (that link is not built) |
+| Vedic Mathematics: module 1 free, all 30 modules with Pro, Silver or Gold | **Live** |
+| Resume Studio Pro features (all templates, no waiting between saves) with any paid plan | **Live.** The 3/10/25/45 template and 1/3/10/unlimited resume steps are not separated: every paid plan gets everything |
+| Verified Skill Passport (QR), IELTS practice tests, study abroad portal, mock visa interview | Exist, but are open to everyone today; they are **not** restricted to Silver or Gold |
+| Writing Clinic essay checks (2 / 15 / 25 / unlimited a month) | **Not built** (the page is a description only) |
+| AI resume score checks per month, ATS feedback | **Not enforced** (no monthly quota) |
+| AI interview practice sessions, monthly counselling and doubt-solving session, expert resume review, 1:1 overseas counselling | **Not built as plan benefits** (done by staff outside this system) |
+| QR Score Booster plan, maths calculation speed studio, live English speaking classes | **Not built** |
+| Priority email support | A staff practice, not a system feature |
+
+If a plan lapses, its picked courses lock again (progress is kept); renewing opens them. A lower plan keeps only the earliest picks open. A course that was bought stays open for good.
