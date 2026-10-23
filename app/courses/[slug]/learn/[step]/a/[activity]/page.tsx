@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { canStudy } from "@/lib/pay/course-access";
+import * as courses from "@/lib/market/courses";
 import { databaseConfigured } from "@/lib/portal/db";
 import * as lessons from "@/lib/market/lessons";
 import { aiAvailable } from "@/lib/learn/assist";
-import { cleanState, findActivity, initialState } from "@/lib/learn/activities";
+import { cleanState, findActivity, initialState, learnCourse } from "@/lib/learn/activities";
 import { nextActivity } from "@/lib/learn/next";
 import * as results from "@/lib/learn/results";
 import ActivityRunner from "@/components/learn/ActivityRunner";
@@ -26,6 +28,14 @@ export default async function ActivityPage({ params }: { params: Promise<{ slug:
   const nc = lessons.nativeCourse(slug);
   const a = findActivity(slug, p.activity);
   if (!nc || !a || a.module !== step || !databaseConfigured()) notFound();
+  const lc = learnCourse(slug);
+  const sample = lc ? (lc.activities.find((x) => x.id === "c1-parts") ?? lc.activities.find((x) => x.kind === "classify")) : null;
+  const viewer = await currentViewer();
+  if (a.id !== sample?.id) {
+    const course = await courses.bySlug(slug);
+    if (!course) notFound();
+    if (!(await canStudy(viewer?.id ?? null, course.id, slug))) redirect(`/courses/${slug}`); // only the free sample is open before payment
+  }
   const mod = nc.modules.find((m) => m.slug === step);
   const me = await currentViewer();
   const isStudent = me?.role === "student";

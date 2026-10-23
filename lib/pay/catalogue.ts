@@ -1,4 +1,7 @@
 import { PLANS } from "@/lib/market/plans";
+import { isNative } from "@/lib/market/lessons";
+import catalogue from "@/lib/market/data/courses.json";
+import { COURSE_FEE_RUPEES, EXAM_PRODUCTS } from "./course-fees";
 import { first, pool, rows, exec, insertId, type Db, type Row } from "./db";
 
 /**
@@ -39,7 +42,7 @@ export async function listProducts(db: Db = pool): Promise<Array<Product & { pri
   return list.map((p) => ({ ...toProduct(p), prices: prices.filter((x) => Number(x.product_id) === Number(p.id)).map((x) => ({ currency: x.currency, amountMinor: Number(x.amount_minor), taxInclusive: !!x.tax_inclusive })) }));
 }
 
-interface SeedProduct { sku: string; kind: string; title: string; description: string; fulfilRef: string; accessDays: number | null; inrMinor: number }
+interface SeedProduct { sku: string; kind: string; title: string; description: string; fulfilRef: string; accessDays: number | null; inrMinor: number; active?: boolean }
 
 function seedList(): SeedProduct[] {
   const out: SeedProduct[] = [];
@@ -49,6 +52,15 @@ function seedList(): SeedProduct[] {
     out.push({ sku: `plan-${p.key}-yearly`, kind: "plan", title: `${p.name} plan, 1 year`, description: p.tagline, fulfilRef: p.key, accessDays: 365, inrMinor: p.yearly * 100 });
   }
   out.push({ sku: "resume-studio-pro", kind: "resume", title: "Resume Studio Pro", description: "All templates and no waiting between saves.", fulfilRef: "studio_pro", accessDays: null, inrMinor: 19900 });
+  // One product per catalogue course, priced by its category. A course is on sale only when its lessons exist on GrowQR (the others stay
+  // off sale, with their price saved, until the lessons are added and someone turns them on in the console).
+  const cats = (catalogue as unknown as { categories: Record<string, { name: string }> }).categories;
+  for (const c of (catalogue as unknown as { courses: Array<{ slug: string; title: string; cat: string; brief: string }> }).courses) {
+    const rupees = COURSE_FEE_RUPEES[cats[c.cat]?.name ?? ""];
+    if (!rupees) continue;
+    out.push({ sku: `course-${c.slug}`, kind: "course", title: c.title, description: c.brief ?? "", fulfilRef: c.slug, accessDays: null, inrMinor: rupees * 100, active: isNative(c.slug) });
+  }
+  for (const e of EXAM_PRODUCTS) out.push({ sku: e.sku, kind: "other", title: e.title, description: e.description, fulfilRef: e.sku, accessDays: null, inrMinor: e.rupees * 100, active: false });
   return out;
 }
 
@@ -58,7 +70,7 @@ export async function seedCatalogue(db: Db = pool): Promise<number> {
   for (const s of seedList()) {
     const exists = await first(db, "SELECT id FROM pay_products WHERE sku = $1", [s.sku]);
     if (exists) continue;
-    const id = await insertId(db, "INSERT INTO pay_products (sku, kind, title, description, fulfil_ref, access_days, active, allow_guest) VALUES ($1,$2,$3,$4,$5,$6,1,0)", [s.sku, s.kind, s.title, s.description, s.fulfilRef, s.accessDays]);
+    const id = await insertId(db, "INSERT INTO pay_products (sku, kind, title, description, fulfil_ref, access_days, active, allow_guest) VALUES ($1,$2,$3,$4,$5,$6,$7,0)", [s.sku, s.kind, s.title, s.description.slice(0, 500), s.fulfilRef, s.accessDays, s.active === false ? 0 : 1]);
     await exec(db, "INSERT IGNORE INTO pay_prices (product_id, currency, amount_minor, tax_inclusive, active) VALUES ($1,'INR',$2,1,1)", [id, s.inrMinor]);
     added++;
   }

@@ -3,6 +3,7 @@
 import { redirect } from "next/navigation";
 import { currentUser } from "@/lib/portal/guard";
 import { safeNext } from "@/lib/portal/security";
+import { buyHref, canStudy } from "@/lib/pay/course-access";
 import * as courses from "@/lib/market/courses";
 import * as learning from "@/lib/market/learning";
 import * as lessons from "@/lib/market/lessons";
@@ -23,6 +24,7 @@ export async function courseAction(fd: FormData): Promise<void> {
   switch (act) {
     case "enrol":
       if (!lessons.isNative(course.slug)) redirect(back); // lessons for the other courses are not on GrowQR yet
+      if (!(await canStudy(me.id, course.id, course.slug))) redirect(buyHref(course.slug)); // a course with a fee is enrolled by paying for it
       await learning.enrol(me.id, course.id);
       msg = "enrolled";
       break;
@@ -35,6 +37,7 @@ export async function courseAction(fd: FormData): Promise<void> {
         msg = "locked"; // progress in these courses comes only from passing the module quizzes
         break;
       }
+      if (!(await canStudy(me.id, course.id, course.slug))) redirect(buyHref(course.slug));
       await learning.enrol(me.id, course.id); // saving progress implies enrolment
       const r = await learning.setDone(me.id, course, fd.getAll("done"));
       msg = r === null ? "locked" : r.status === "completed" ? "completed" : "saved";

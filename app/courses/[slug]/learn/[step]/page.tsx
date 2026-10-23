@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
+import { canStudy } from "@/lib/pay/course-access";
 import { databaseConfigured } from "@/lib/portal/db";
 import * as courses from "@/lib/market/courses";
 import * as learning from "@/lib/market/learning";
@@ -57,6 +58,7 @@ export default async function StepPage({ params, searchParams }: { params: Promi
   if (!course) notFound();
   const me = await currentViewer();
   const isStudent = me?.role === "student";
+  if (!(await canStudy(me?.id ?? null, course.id, slug))) redirect(`/courses/${slug}`); // lessons of a course with a fee open after payment
   const enrol = isStudent ? await learning.find(me!.id, course.id) : null;
   const res = isStudent ? await results.resultsFor(me!.id, slug) : new Map<string, results.Result>();
   const m = at.module;
