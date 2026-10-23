@@ -1,5 +1,5 @@
 import { afterAll, beforeAll, beforeEach, describe, expect, it } from "vitest";
-import { boot, DB, mkProduct, mkUser, tag, type Boot } from "./test-setup";
+import { boot, buy, DB, mkProduct, mkUser, tag, type Boot } from "./test-setup";
 
 /** The cart: what the cart page shows for a list of product codes. */
 describe.skipIf(!DB)("cart on a real database", () => {
@@ -55,8 +55,9 @@ describe.skipIf(!DB)("cart on a real database", () => {
   it("marks a course the person already has, and does not charge for it", async () => {
     const before = await CART.viewCart({ skus: [course, a], country: "IN" }, { userId: alice });
     expect(before.lines[0].status).toBe("ok");
-    const cid = Number(await B.db.val<number>("SELECT id FROM courses WHERE slug = $1", [courseSlug]));
-    await B.db.run("INSERT IGNORE INTO course_enrolments (user_id, course_id, status, done_json, progress, started_at, updated_at) VALUES ($1,$2,'enrolled','[]',0,NOW(),NOW())", [alice, cid]);
+    const rzp = new B.T.FakeRazorpay();
+    await buy(rzp, alice, `pay-alice-${tag}@pay-test.invalid`, course);
+    rzp.uninstall();
     const after = await CART.viewCart({ skus: [course, a], country: "IN" }, { userId: alice });
     expect(after.lines[0].status).toBe("owned");
     expect(after.quote?.totalMinor).toBe(10000);

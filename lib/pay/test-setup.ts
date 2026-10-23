@@ -38,3 +38,15 @@ export async function mkProduct(db: typeof import("../portal/db"), sku: string, 
   if (usd !== null) await db.run("INSERT INTO pay_prices (product_id, currency, amount_minor, tax_inclusive, active) VALUES ($1,'USD',$2,1,1)", [id, usd]);
   return id;
 }
+
+/** Buy a product the real way (order, checkout, provider payment, verification) with the fake Razorpay; returns the public order id. */
+export async function buy(rzp: InstanceType<typeof import("./test-support").FakeRazorpay>, userId: number, email: string, sku: string): Promise<string> {
+  rzp.install();
+  const P = await import("./orders");
+  const C = await import("./checkout");
+  const { order, accessToken } = await P.createOrder(P.createOrderSchema.parse({ items: [{ sku, qty: 1 }], country: "IN", billing: { name: "Buyer Test", email } }), { userId });
+  const started = await C.startCheckout(order.id, { userId, token: accessToken }, { origin: "https://growqr.test", provider: null });
+  rzp.pay((started.checkout as { orderId: string }).orderId);
+  await C.confirmPayment(order.id, { userId }, {});
+  return order.id;
+}

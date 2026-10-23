@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { isVerified, mfaRequiredFor } from "@/lib/portal/auth";
 import { requireUser } from "@/lib/portal/guard";
+import PlanCard from "@/components/pay/PlanCard";
 import { Alert } from "@/components/portal/ui";
 import { Card, PortalPage } from "@/components/portal/shell";
 import { ResendVerification } from "@/components/portal/forms";
@@ -33,6 +34,8 @@ export default async function AccountPage({ searchParams }: { searchParams: Prom
           </div>
         </Card>
       ) : null}
+
+      {me.role === "student" ? <PlanCard userId={me.id} /> : null}
 
       <Card title="Account">
         <dl className="divide-y divide-black/[0.07] text-[15px]">

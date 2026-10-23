@@ -84,9 +84,13 @@ describe.skipIf(!DB)("course fees on a real database", () => {
     expect(await ACC.canStudy(alice, courseId, slug)).toBe(false);
   });
 
-  it("keeps access for people who were already enrolled before the course had a fee", async () => {
+  it("an enrolment on its own does not open a paid course, and taking a course off sale does not give it away", async () => {
     await B.db.run("INSERT IGNORE INTO course_enrolments (user_id, course_id, status, done_json, progress, started_at, updated_at) VALUES ($1,$2,'enrolled','[]',0,NOW(),NOW())", [bob, courseId]);
-    expect(await ACC.canStudy(bob, courseId, slug)).toBe(true);
+    expect(await ACC.canStudy(bob, courseId, slug)).toBe(false);
+    await B.db.run("UPDATE pay_products SET active = 0 WHERE sku = $1", [`course-${slug}`]);
+    expect(await ACC.canStudy(null, courseId, slug)).toBe(false);
+    expect(await ACC.courseFee(slug)).toBeNull(); // no longer purchasable
+    await B.db.run("UPDATE pay_products SET active = 1 WHERE sku = $1", [`course-${slug}`]);
   });
 
   it("leaves a course with no fee free", async () => {

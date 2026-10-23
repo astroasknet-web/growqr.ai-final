@@ -109,6 +109,7 @@ export function CourseTracker({ course, e, back }: { course: Pick<Course, "slug"
 
 const MSG: Record<string, string> = {
   enrolled: "You are enrolled. Pass each module quiz to complete it.",
+  picked: "Done. This course is now part of your plan. Start the lessons and track your progress in My courses.",
   left: "You left this course.",
   saved: "Progress saved.",
   completed: "Course complete! It now counts toward your Skill Passport.",
@@ -118,6 +119,6 @@ const MSG: Record<string, string> = {
 
 /** One-line status message after a course action (read from ?c= and ?e=). */
 export function CourseFlash({ c, e }: { c?: string; e?: string }) {
-  if (c === "cert_err" && e) return <p role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 text-[14px] text-red-800">{e}</p>;
+  if ((c === "cert_err" || c === "pick_err") && e) return <p role="alert" className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3.5 py-3 text-[14px] text-red-800">{e}</p>;
   return c && MSG[c] ? <p role="status" className="mb-4 rounded-lg border border-emerald-200 bg-emerald-50 px-3.5 py-3 text-[14px] text-emerald-900">{MSG[c]}</p> : null;
 }
