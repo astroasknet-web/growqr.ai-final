@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { evaluate, parseDecimal, rat, eq } from "./expr";
+import { evaluate, parseDecimal, rat, eq, toNumber } from "./expr";
 import { ORACLES } from "./engine-oracles";
 import { mark, parseResponse } from "./mark";
 import { DEFAULT_CTX, ctxFor } from "./personalise";
@@ -15,6 +15,20 @@ import type { Question } from "./types";
 const SEEDS = 80;
 const answerRat = (a: string) => parseResponse(a);
 
+const SUP = "⁰¹²³⁴⁵⁶⁷⁸⁹";
+/** The numbers in a prompt or expression, sorted; superscript powers count as their own number. */
+function numbersOf(text: string): string[] {
+  const flat = text.replace(/[⁰¹²³⁴⁵⁶⁷⁸⁹]+/g, (m) => " " + [...m].map((c) => SUP.indexOf(c)).join("") + " ").replace(/(\d),(\d{3})/g, "$1$2");
+  return (flat.match(/\d+(?:\.\d+)?/g) ?? []).map((x) => String(Number(x))).sort();
+}
+
+/** A third, unrelated route to an expression's value: the JavaScript engine's own floating-point arithmetic. */
+function floatEval(expr: string): number | null {
+  const e = expr.replace(/(\([^()]*\)|\d+(?:\.\d+)?)\^(-?\d+)/g, "Math.pow($1,$2)");
+  if (e.includes("^")) return null;
+  try { return Function('"use strict"; return (' + e + ");")() as number; } catch { return null; }
+}
+
 function verify(q: Question): void {
   const where = `${q.skill} d=${q.d} seed=${q.seed}: ${q.prompt}`;
   expect(q.prompt.length, where).toBeGreaterThan(3);
@@ -27,21 +41,33 @@ function verify(q: Question): void {
     expect(q.options, where).toBeTruthy();
     expect(new Set(q.options).size, `${where} duplicate options ${q.options}`).toBe(q.options!.length);
     expect(q.options!.filter((o) => o === q.answer).length, where).toBe(1);
+  } else if (q.kind === "text") {
+    expect(q.answer.length, where).toBeGreaterThan(0);
   } else {
     const a = answerRat(q.answer);
     expect(a, `${where} answer not numeric: ${q.answer}`).not.toBeNull();
   }
   const via = typeof q.params.via === "string" ? q.params.via : q.skill;
+  const oracle = ORACLES[via];
   if (q.expr) {
     const want = evaluate(q.expr);
     const got = q.kind === "choice" ? answerRat(q.answer.replace(/,/g, "")) : answerRat(q.answer);
-    expect(got && eq(got, want), `${where} | expr ${q.expr} = ${want.n}/${want.d} but answer ${q.answer}`).toBe(true);
-  } else {
-    const oracle = ORACLES[via];
-    expect(oracle, `${where}: no expr and no oracle for ${via}`).toBeTruthy();
+    expect(got && eq(got, want), where + " | expr " + q.expr + " = " + want.n + "/" + want.d + " but answer " + q.answer).toBe(true);
+    const f = floatEval(q.expr);
+    if (f !== null && Math.abs(Number(want.n) / Number(want.d)) < 2 ** 50) expect(Math.abs(f - Number(want.n) / Number(want.d)), where + " | float route " + f).toBeLessThanOrEqual(1e-8 * Math.max(1, Math.abs(f)));
+  }
+  if (oracle) {
     const res = oracle(q.params, q);
-    if (typeof res === "boolean") expect(res, `${where} | oracle rejected answer ${q.answer} params ${JSON.stringify(q.params)}`).toBe(true);
-    else expect(q.answer.replace(/,/g, ""), `${where} | oracle says ${res} params ${JSON.stringify(q.params)}`).toBe(res);
+    if (typeof res === "boolean") expect(res, where + " | oracle rejected answer " + q.answer + " params " + JSON.stringify(q.params)).toBe(true);
+    else if (typeof res === "number") {
+      const a = answerRat(q.answer);
+      expect(a, where).not.toBeNull();
+      expect(Math.abs(toNumber(a!) - res), where + " | oracle says " + res + " but answer " + q.answer + " params " + JSON.stringify(q.params)).toBeLessThanOrEqual(1e-9 * Math.max(1, Math.abs(res)));
+    } else expect(q.answer.replace(/,/g, ""), where + " | oracle says " + res + " params " + JSON.stringify(q.params)).toBe(res);
+  } else {
+    expect(q.expr, where + ": no expr and no oracle for " + via).toBeTruthy();
+    // With no oracle, an answer that was derived from the expression is trustworthy only when the expression is the one printed in the prompt.
+    if (q.derived) expect(numbersOf(q.prompt), where + ": derived answer needs an oracle (the expression is not the one shown)").toEqual(numbersOf(q.expr!));
   }
   if (q.lowest) {
     const m = /^(-?\d+)(?:\/(\d+))?$/.exec(q.answer);

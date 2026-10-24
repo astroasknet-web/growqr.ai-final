@@ -6,9 +6,12 @@ import { LEVEL_C } from "./gen/c";
 import { LEVEL_D } from "./gen/d";
 import { LEVEL_E } from "./gen/e";
 import { LEVEL_F } from "./gen/f";
+import { LEVEL_G } from "./gen/g";
+import { LEVEL_H } from "./gen/h";
+import { LEVEL_I } from "./gen/i";
 
 /** Every skill the engine can ask about, with the generator that writes its questions. */
-export const SKILLS: Skill[] = [...LEVEL_A, ...LEVEL_B, ...LEVEL_C, ...LEVEL_D, ...LEVEL_E, ...LEVEL_F];
+export const SKILLS: Skill[] = [...LEVEL_A, ...LEVEL_B, ...LEVEL_C, ...LEVEL_D, ...LEVEL_E, ...LEVEL_F, ...LEVEL_G, ...LEVEL_H, ...LEVEL_I];
 
 const byId = new Map(SKILLS.map((s) => [s.id, s]));
 export const skill = (id: string): Skill | null => byId.get(id) ?? null;

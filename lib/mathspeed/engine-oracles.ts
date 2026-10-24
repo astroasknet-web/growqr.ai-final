@@ -4,7 +4,7 @@
  * Generators whose questions carry an `expr` are checked against the exact calculator in expr.ts instead.
  */
 export type P = Record<string, number | string>;
-export type Oracle = (p: P, q: { answer: string; options?: string[] }) => string | boolean;
+export type Oracle = (p: P, q: { answer: string; options?: string[] }) => string | boolean | number;
 
 const num = (v: number | string): number => Number(v);
 const digitsOfNumber = (x: number): number[] => String(x).split("").map(Number);
@@ -75,3 +75,48 @@ ORACLES["round-decimal"] = (p) => {
   return dp === 0 ? s : `${s.slice(0, s.length - dp)}.${s.slice(s.length - dp)}`;
 };
 ORACLES["recurring-digit"] = (p) => String((BigInt(p.p) * 10n ** BigInt(p.pos) / BigInt(p.q)) % 10n);
+
+ORACLES["like-terms"] = (p) => {
+  const list = (s: number | string) => String(s).split(",").map(Number);
+  return String((Number(p.askX) === 1 ? list(p.xs) : list(p.cs)).reduce((a, b) => a + b, 0));
+};
+
+ORACLES["ratio-simplify"] = (p) => {
+  const t = String(p.terms).split(",").map(Number);
+  let g = t[0];
+  const gcd2 = (a: number, b: number): number => (b ? gcd2(b, a % b) : a);
+  for (const x of t) g = gcd2(g, x);
+  return t.map((x) => x / g).join(":");
+};
+
+// ---- Level H: the questions whose prompt is not the expression itself ----------------------------------------------
+ORACLES["substitute"] = (p) => {
+  // Horner's rule: a different route from substituting term by term
+  const coefs = String(p.coefs).split(",").map(Number);
+  return coefs.reduce((acc, c) => acc * Number(p.x) + c, 0);
+};
+
+// ---- Level I: word problems, recomputed from the plain numbers -------------------------------------------------------
+const ints = (s: number | string): number[] => String(s).split(",").map(Number);
+ORACLES["ratio-missing"] = (p) => (Number(p.pos) === 2 ? Number(p.b) * Number(p.k) : Number(p.a) * Number(p.k));
+ORACLES["direct-prop"] = (p) => (Number(p.total) / Number(p.a)) * Number(p.b);
+ORACLES["inverse-prop"] = (p) => (Number(p.x) * Number(p.days)) / Number(p.y);
+ORACLES["share-ratio"] = (p) => {
+  const parts = ints(p.parts);
+  return (Number(p.total) * parts[Number(p.ask)]) / parts.reduce((a, b) => a + b, 0);
+};
+ORACLES["average"] = (p) => { const xs = ints(p.xs); return xs.reduce((a, b) => a + b, 0) / xs.length; };
+ORACLES["weighted-average"] = (p) => {
+  const [n1, n2, m1, m2, t] = [Number(p.n1), Number(p.n2), Number(p.m1), Number(p.m2), Number(p.t)];
+  return Number(p.pct) === 1 ? ((n1 * (100 / t)) * m1 + (n2 * (100 / t)) * m2) / 100 : (n1 * m1 + n2 * m2) / t;
+};
+ORACLES["average-missing"] = (p) => {
+  const avg = Number(p.avg), count = Number(p.count);
+  if (Number(p.form) === 1) return (avg * count + Number(p.x)) / (count + 1);
+  return avg * count - ints(p.known).reduce((a, b) => a + b, 0);
+};
+ORACLES["mixture"] = (p) => (Number(p.q1) * Number(p.form === 1 ? p.c1 : p.p1) + Number(p.q2) * Number(p.form === 1 ? p.c2 : p.p2)) / (Number(p.q1) + Number(p.q2));
+ORACLES["partnership"] = (p) => {
+  const ra = (Number(p.ca) / 1000) * Number(p.ma), rb = (Number(p.cb) / 1000) * Number(p.mb);
+  return (Number(p.P) * ra) / (ra + rb);
+};

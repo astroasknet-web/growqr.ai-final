@@ -1,3 +1,4 @@
+import { evaluate, formatRat } from "../expr";
 import type { Built, Ctx, Generator, Skill } from "../types";
 import type { Rng } from "../rng";
 
@@ -59,3 +60,8 @@ export const things = (ctx: Ctx): readonly string[] =>
 const SUP = "⁰¹²³⁴⁵⁶⁷⁸⁹";
 /** A whole number written as a superscript (for powers). */
 export const sup = (x: number): string => String(x).split("").map((c) => SUP[Number(c)] ?? c).join("");
+
+/** A question whose answer is the exact value of `expr` (evaluated with the rational calculator in ../expr). */
+export function calcE(prompt: string, expr: string, working: string[], params: Record<string, number | string>, size: number, extra: Partial<Built> = {}): Built {
+  return { prompt, answer: formatRat(evaluate(expr)), expr, working, params, size, derived: true, ...extra };
+}

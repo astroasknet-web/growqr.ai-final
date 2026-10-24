@@ -38,6 +38,8 @@ export interface Built {
   /** Rough size of the calculation (digits involved); the tests check it grows with difficulty. */
   size: number;
   visual?: Visual;
+  /** True when the answer was computed from `expr` itself, so the tests need an oracle (or the expression must be the one shown in the prompt). */
+  derived?: boolean;
   /** Extra time (ms) this particular question needs on top of the skill's allowance. */
   extraMs?: number;
 }

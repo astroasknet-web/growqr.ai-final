@@ -1,4 +1,4 @@
-import { add, div, eq, parseDecimal, rat, sub, toNumber, type Rat } from "./expr";
+import { add, eq, parseDecimal, rat, sub, toNumber, type Rat } from "./expr";
 import type { Question } from "./types";
 
 /**
@@ -35,6 +35,7 @@ export interface Marked { correct: boolean; parsed: boolean }
 
 export function mark(q: Pick<Question, "kind" | "answer" | "tol" | "lowest" | "unit">, response: string): Marked {
   if (q.kind === "choice") return { correct: response.trim().toLowerCase() === q.answer.trim().toLowerCase(), parsed: true };
+  if (q.kind === "text") return { correct: response.replace(/\s+/g, "").toLowerCase() === q.answer.replace(/\s+/g, "").toLowerCase(), parsed: true };
   const got = parseResponse(response, q.unit);
   if (!got) return { correct: false, parsed: false };
   const want = parseResponse(q.answer);
@@ -52,4 +53,3 @@ export function mark(q: Pick<Question, "kind" | "answer" | "tol" | "lowest" | "u
   return { correct: true, parsed: true };
 }
 
-export { div };

@@ -82,3 +82,21 @@ export function evaluate(src: string): Rat {
   if (peek() !== "") throw new Error(`unexpected "${peek()}" in ${src}`);
   return out;
 }
+
+/**
+ * A rational as a canonical answer string: "42", "-3.25" when the decimal ends, otherwise "7/3".
+ * Used by generators whose answer is the value of an expression; the tests check those answers again with other calculators.
+ */
+export function formatRat(a: Rat): string {
+  if (a.d === 1n) return a.n.toString();
+  let d = a.d, twos = 0, fives = 0;
+  while (d % 2n === 0n) { d /= 2n; twos++; }
+  while (d % 5n === 0n) { d /= 5n; fives++; }
+  if (d !== 1n) return `${a.n}/${a.d}`;
+  const places = Math.max(twos, fives);
+  const scaled = (a.n * 10n ** BigInt(places)) / a.d;
+  const neg = scaled < 0n;
+  const s = (neg ? -scaled : scaled).toString().padStart(places + 1, "0");
+  const frac = s.slice(s.length - places).replace(/0+$/, "");
+  return `${neg ? "-" : ""}${s.slice(0, s.length - places)}${frac ? "." + frac : ""}`;
+}
