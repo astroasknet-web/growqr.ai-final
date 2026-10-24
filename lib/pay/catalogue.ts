@@ -1,7 +1,7 @@
 import { PLANS } from "@/lib/market/plans";
 import { isNative } from "@/lib/market/lessons";
 import catalogue from "@/lib/market/data/courses.json";
-import { COURSE_FEE_RUPEES, EXAM_PRODUCTS } from "./course-fees";
+import { COURSE_FEE_RUPEES, EXAM_PRODUCTS, STUDIO_COURSES } from "./course-fees";
 import { first, pool, rows, exec, insertId, type Db, type Row } from "./db";
 
 /**
@@ -60,6 +60,7 @@ function seedList(): SeedProduct[] {
     if (!rupees) continue;
     out.push({ sku: `course-${c.slug}`, kind: "course", title: c.title, description: c.brief ?? "", fulfilRef: c.slug, accessDays: null, inrMinor: rupees * 100, active: isNative(c.slug) });
   }
+  for (const c of STUDIO_COURSES) out.push({ sku: `course-${c.slug}`, kind: "course", title: c.title, description: c.description, fulfilRef: c.slug, accessDays: null, inrMinor: c.rupees * 100, active: c.onSale });
   for (const e of EXAM_PRODUCTS) out.push({ sku: e.sku, kind: "other", title: e.title, description: e.description, fulfilRef: e.sku, accessDays: null, inrMinor: e.rupees * 100, active: false });
   return out;
 }

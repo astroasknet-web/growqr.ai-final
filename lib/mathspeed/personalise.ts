@@ -45,3 +45,9 @@ export function ctxFor(country: string, ageBand: string): Ctx {
   const band = AGE_BANDS.find((b) => b.id === ageBand);
   return { currency: CURRENCY[c] ?? "$", names: NAMES[c] ?? NAMES.US, theme: band?.theme ?? "teen" };
 }
+
+/** Minutes ahead of UTC, to decide which calendar day a practice session belongs to (approximate: no daylight saving). */
+const TZ_MINUTES: Record<string, number> = { IN: 330, NP: 345, AE: 240, NG: 60, GB: 0, US: -300, AU: 600 };
+export const tzOffsetMinutes = (country: string): number => TZ_MINUTES[country.toUpperCase()] ?? 0;
+/** YYYY-MM-DD for the student's local day. */
+export const localDay = (country: string, now: Date = new Date()): string => new Date(now.getTime() + tzOffsetMinutes(country) * 60_000).toISOString().slice(0, 10);

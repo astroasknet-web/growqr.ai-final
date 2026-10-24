@@ -35,3 +35,18 @@ export const EXAM_PRODUCTS: Array<{ sku: string; title: string; description: str
   { sku: "ielts-prep", title: "IELTS preparation", description: "IELTS preparation.", rupees: 799 },
   { sku: "writing-studio", title: "Writing Clinic (Writing studio)", description: "Essay checks and writing practice.", rupees: 499 },
 ];
+
+/**
+ * Studios sold as one course each. They are not in the course catalogue, but they are bought, entitled and refunded exactly like a catalogue course
+ * (sku `course-<slug>`, kind `course`, see lib/pay/course-access.ts). The fee is the owner's to change in the console; seeding never overwrites it.
+ * `onSale: false` saves the product and its price but keeps it off sale, as with EXAM_PRODUCTS.
+ */
+export const STUDIO_COURSES: Array<{ slug: string; title: string; description: string; rupees: number; onSale: boolean }> = [
+  {
+    slug: "mathematics-speed-enhancement",
+    title: "Mathematics Speed Enhancement Studio",
+    description: "One continuous course in 15 levels (A to O) that builds speed and accuracy in mental calculation, with a placement check, timed practice and spaced review. Level A, Module 1 is free.",
+    rupees: 599,
+    onSale: true,
+  },
+];
