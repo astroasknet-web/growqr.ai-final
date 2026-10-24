@@ -171,7 +171,7 @@ describe("question generators", () => {
       const avg = (d: number) => { let t = 0; for (let seed = 1; seed <= 80; seed++) t += buildQuestion(s.id, d, seed, DEFAULT_CTX).size; return t / 80; };
       expect(avg(10), `${s.id} size at d=10 must not be below d=1`).toBeGreaterThanOrEqual(avg(1));
       const prompts = new Set<string>();
-      for (let seed = 1; seed <= 60; seed++) { const q = buildQuestion(s.id, 5, seed, DEFAULT_CTX); prompts.add(q.prompt + (q.options ? q.options.join("|") : "")); }
+      for (let seed = 1; seed <= 60; seed++) { const q = buildQuestion(s.id, 5, seed, DEFAULT_CTX); prompts.add(q.prompt + (q.options ? q.options.join("|") : "") + (q.visual ? JSON.stringify(q.visual) : "")); }
       expect(prompts.size, `${s.id} repeats too much at d=5`).toBeGreaterThanOrEqual(8);
     });
   }

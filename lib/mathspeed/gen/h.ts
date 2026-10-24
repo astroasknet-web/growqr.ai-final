@@ -14,7 +14,7 @@ export function show(expr: string): string {
     else if (c === "/") out += " ÷ ";
     else if (c === "+") out += " + ";
     else if (c === "-" && i > 0 && prev !== "" && prev !== "(" && !/[*/+\-×÷^]/.test(prev)) out += " - ";
-    else if (c === "^") { const m = /^\^(\d+)/.exec(expr.slice(i)); if (m) { out += sup(Number(m[1])); i += m[0].length - 1; } else out += c; }
+    else if (c === "^") { const m = /^\^(-?\d+)/.exec(expr.slice(i)); if (m) { out += sup(Number(m[1])); i += m[0].length - 1; } else out += c; }
     else out += c;
   }
   return out.replace(/\s+/g, " ").replace(/\( /g, "(").replace(/ \)/g, ")");
