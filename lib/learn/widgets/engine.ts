@@ -162,6 +162,16 @@ export function validateSpec(spec: WidgetSpec): string[] {
     }
     case "complete":
       break;
+    case "hashlab":
+      need(spec.start.length > 0 && spec.start.length <= 200, "hashlab start text must be 1-200 characters");
+      break;
+    case "chainlab":
+      need(spec.blocks.length >= 3 && spec.blocks.length <= 5, "chainlab needs 3-5 blocks");
+      need(Number.isInteger(spec.difficulty) && spec.difficulty >= 0 && spec.difficulty <= 3, "chainlab difficulty must be 0-3");
+      break;
+    case "merkle":
+      need([4, 8].includes(spec.txs.length), "merkle needs 4 or 8 transactions");
+      break;
     case "flashcards":
       need(spec.cards.length >= 3, "need at least 3 cards");
       spec.cards.forEach((c, i) => need(c.front.length > 0 && c.back.length > 0, `card ${i} is empty`));

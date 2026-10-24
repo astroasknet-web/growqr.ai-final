@@ -61,6 +61,12 @@ export const explorer = (spec) => widgetHtml({ type: "explorer", ...spec });
 /** Accounting widgets: pick the debit and credit accounts for each transaction; watch A = L + C stay balanced. */
 export const journal = (spec) => widgetHtml({ type: "journal", ...spec });
 export const equation = (spec) => widgetHtml({ type: "equation", ...spec });
+/** Blockchain widgets (see lib/learn/widgets/chain.ts): live hashing, a chain you can tamper with and re-mine, and a Merkle tree. */
+export const hashLab = (spec) => widgetHtml({ type: "hashlab", ...spec });
+export const chainLab = (spec) => widgetHtml({ type: "chainlab", ...spec });
+export const merkle = (spec) => widgetHtml({ type: "merkle", ...spec });
+/** A code listing students can copy into a free tool such as Remix or Node. lang is shown as a label; source is escaped. */
+export const code = (lang, source, caption) => `<figure class="cw-code"><figcaption><span class="cw-label">${esc(lang)}</span>${caption ? ` ${esc(caption)}` : ""}</figcaption><pre><code>${esc(String(source).trim())}</code></pre></figure>`;
 export const flashcards = (id, title, cards) => widgetHtml({ type: "flashcards", id, title, cards: cards.map(([front, back]) => ({ front, back })) });
 /** Move the correct option to a chosen position (swap), so answers are spread over A to D instead of piling up on one letter. */
 function place(options, correct, target) {
@@ -70,6 +76,9 @@ function place(options, correct, target) {
 }
 let spin = 0;
 const quizWidget = (id, qs) => widgetHtml({ type: "quiz", id, title: "Check what you just learned", questions: qs.map(([q, options, answer, explain]) => { const [o, a] = place(options, answer, (spin++ + 1) % 4); return { q, options: o, answer: a, explain }; }) });
+
+/** A short in-lesson test placed between sections: miniQuiz(id, [[question, [4 options], answerIndex, explanation], ...]). */
+export const miniQuiz = (id, qs) => quizWidget(id, qs);
 
 /** One lesson (topic). blocks are html strings from the helpers above; check is [[question, [4 options], answerIndex, explanation], ...]. */
 export function topic({ title, slug, blocks, points, check }) {
@@ -102,7 +111,7 @@ export function capstone({ title, summary, intro, steps, projectTitle, quiz }) {
 
 /* ---------------------------------------------------------------------------------------------------------------- activities */
 /** A check: ck(id, label, hint, explain, spec). */
-export const ck = (id, label, hint, explain, spec) => ({ id, label, hint, explain, spec });
+export const ck = (id, label, hint, explain, spec) => ({ id, label, hint: String(hint).length > 5 ? hint : `Try the formula ${hint} here.`, explain, spec });
 
 export const S = {
   value: (ref, equals) => ({ k: "sheet.value", ref, equals }),

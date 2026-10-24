@@ -31,5 +31,10 @@ export interface FlashcardSpec { type: "flashcards"; id: string; title: string; 
 /** A "mark this lesson complete" button. id is the lesson slug; it feeds the unit progress bar. */
 export interface CompleteSpec { type: "complete"; id: string; label?: string }
 
-export type WidgetSpec = QuizSpec | JournalSpec | EquationSpec | ExplorerSpec | FlashcardSpec | CompleteSpec;
-export const WIDGET_TYPES = ["quiz", "journal", "equation", "explorer", "flashcards", "complete"] as const;
+/** Blockchain widgets: type text and watch its SHA-256 hash; edit a toy chain and re-mine it; edit a transaction and watch the Merkle root change. */
+export interface HashLabSpec { type: "hashlab"; id: string; title: string; intro?: string; start: string }
+export interface ChainLabSpec { type: "chainlab"; id: string; title: string; intro?: string; blocks: string[]; difficulty: number }
+export interface MerkleSpec { type: "merkle"; id: string; title: string; intro?: string; txs: string[] }
+
+export type WidgetSpec = QuizSpec | JournalSpec | EquationSpec | ExplorerSpec | FlashcardSpec | CompleteSpec | HashLabSpec | ChainLabSpec | MerkleSpec;
+export const WIDGET_TYPES = ["quiz", "journal", "equation", "explorer", "flashcards", "complete", "hashlab", "chainlab", "merkle"] as const;

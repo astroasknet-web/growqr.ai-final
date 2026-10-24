@@ -4,11 +4,14 @@ import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { decodeSpec, validateSpec } from "@/lib/learn/widgets/engine";
 import type { WidgetSpec } from "@/lib/learn/widgets/types";
+import { ChainLabWidget } from "./ChainLabWidget";
 import { CompleteWidget } from "./CompleteWidget";
 import { EquationWidget } from "./EquationWidget";
 import { ExplorerWidget } from "./ExplorerWidget";
 import { FlashcardsWidget } from "./FlashcardsWidget";
+import { HashLabWidget } from "./HashLabWidget";
 import { JournalWidget } from "./JournalWidget";
+import { MerkleWidget } from "./MerkleWidget";
 import { ProgressDock } from "./ProgressDock";
 import { QuizWidget } from "./QuizWidget";
 
@@ -22,6 +25,9 @@ function render(spec: WidgetSpec, slug: string) {
     case "explorer": return <ExplorerWidget spec={spec} slug={slug} />;
     case "flashcards": return <FlashcardsWidget spec={spec} slug={slug} />;
     case "complete": return <CompleteWidget spec={spec} slug={slug} />;
+    case "hashlab": return <HashLabWidget spec={spec} slug={slug} />;
+    case "chainlab": return <ChainLabWidget spec={spec} slug={slug} />;
+    case "merkle": return <MerkleWidget spec={spec} slug={slug} />;
   }
 }
 
