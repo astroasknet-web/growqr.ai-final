@@ -326,6 +326,7 @@ export default function Footer() {
               { href: "/enterprise", label: "For enterprises" },
               { href: "/solutions/institutes", label: "For institutes" },
               { href: "/solutions/recruiters", label: "For recruiters" },
+              { href: "/support", label: "Support" },
               { href: "/contact", label: "Contact us" },
               ...(pricingHref ? [{ href: pricingHref, label: "Pricing on this page" }] : []),
             ]} />
