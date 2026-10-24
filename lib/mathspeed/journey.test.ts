@@ -5,6 +5,8 @@ import { INTERVAL_DAYS, afterReview, applyOutcome, dueSkills, effectiveMastery, 
 import { itemSeed, markPlan, planBenchmark, planDiagnosticStage, planDrill, planFoundationCheck, planLevelAssessment, planMasteryAssessment, planPractice, planProgressAssessment, planReview, planRevision, questionsOf, type Plan } from "./plan";
 import { frontier, levelAssessmentGate, levelStatus, masteryAssessmentGate, moduleOpen, nextProbe, placementSummary, progressAssessmentGate, recordProbe, startDiagnostic, verdict, type Progress } from "./rules";
 import { SKILLS, skill } from "./skills";
+import { buildJourney } from "./dashboard";
+import { coach } from "./feedback";
 
 const NOW = new Date("2026-11-10T09:00:00Z");
 const progress = (over: Partial<Progress> = {}): Progress => ({ startLevel: 1, completed: new Set(), doneModules: new Set(), revisionPending: new Set(), ...over });
@@ -29,7 +31,8 @@ describe("curriculum", () => {
   });
   it("uses only the student-facing words and no exam wording anywhere in titles, summaries or lessons", () => {
     const text = JSON.stringify(LEVELS.map((l) => [l.title, l.summary, l.topics, l.modules.map((m) => [m.title, m.lesson])]));
-    for (const banned of ["SSC", "SAT ", "Banking", "Competition", "competitive", "CAT ", "GRE", "GMAT", "JEE", "NEET", "Olympiad", "IELTS", "exam"]) expect(text, banned).not.toContain(banned);
+    for (const banned of ["SSC", "SAT ", "Banking", "Competition", "competitive", "CAT ", "GRE", "GMAT", "JEE", "NEET", "Olympiad", "IELTS"]) expect(text, banned).not.toContain(banned);
+    expect(text).not.toMatch(/exams?/i);
   });
   it("finds modules by key and walks to the next", () => {
     expect(moduleByKey("a-01")?.title).toBe("Place value");
@@ -406,5 +409,59 @@ describe("achievements", () => {
   });
   it("uses exactly the four named achievements", () => {
     expect(Object.values(ACHIEVEMENT_INFO).map((a) => a.title)).toEqual(["Level Completed", "Accuracy Master", "Speed Improver", "Consistency Champion"]);
+  });
+});
+
+describe("My Learning Journey view", () => {
+  const input = (over: Partial<import("./dashboard").JourneyInput> = {}): import("./dashboard").JourneyInput => ({ enrolled: true, diagnosticDone: true, progress: progress(), bestPct: new Map(), startedAnything: true, ...over });
+  it("lists all 15 levels as Completed, In progress or Locked, with the course name and the current level", () => {
+    const j = buildJourney(input({ progress: progress({ completed: new Set([1, 2]) }) }));
+    expect(j.courseName).toBe("Mathematics Speed Enhancement Studio");
+    expect(j.levels).toHaveLength(15);
+    expect(j.levels.map((l) => l.status)).toEqual(["completed", "completed", "in_progress", ...Array(12).fill("locked")]);
+    expect(j.currentLevel?.letter).toBe("C");
+  });
+  it("shows module progress for the current level as a percentage", () => {
+    const keys = level(1)!.modules.slice(0, 4).map((m) => m.key);
+    const j = buildJourney(input({ progress: progress({ doneModules: new Set(keys) }) }));
+    expect(j.moduleProgress).toBe(40);
+    expect(j.levels[0].modulesDone).toBe(4);
+    expect(j.overallProgress).toBe(Math.round((4 / j.modulesTotal) * 100));
+  });
+  it("points Continue learning at the next unfinished module, then the Level Assessment", () => {
+    expect(buildJourney(input()).next).toMatchObject({ label: "Continue learning", href: "/math-speed/module/A-01" });
+    const some = new Set(level(1)!.modules.slice(0, 3).map((m) => m.key));
+    expect(buildJourney(input({ progress: progress({ doneModules: some }) })).next.href).toBe("/math-speed/module/A-04");
+    const all = new Set(level(1)!.modules.map((m) => m.key));
+    expect(buildJourney(input({ progress: progress({ doneModules: all }) })).next).toMatchObject({ label: "Take the Level Assessment", href: "/math-speed/level/A#assessment" });
+  });
+  it("sends a new student to enrol, then to the placement check, and a finished student to results", () => {
+    expect(buildJourney(input({ enrolled: false })).next.href).toBe("/math-speed/enrol");
+    expect(buildJourney(input({ diagnosticDone: false, startedAnything: false })).next.href).toBe("/math-speed/diagnostic");
+    const j = buildJourney(input({ progress: progress({ completed: new Set(Array.from({ length: 15 }, (_, i) => i + 1)) }) }));
+    expect(j.currentLevel).toBeNull();
+    expect(j.moduleProgress).toBe(100);
+    expect(j.next.href).toBe("/math-speed/progress");
+  });
+  it("marks placed levels and carries the best assessment score", () => {
+    const j = buildJourney(input({ progress: progress({ startLevel: 3 }), bestPct: new Map([[1, 92.5]]) }));
+    expect(j.levels[0]).toMatchObject({ status: "completed", placed: true, bestPct: 92.5 });
+    expect(j.levels[2]).toMatchObject({ status: "in_progress", placed: false });
+  });
+});
+
+describe("speed and accuracy feedback", () => {
+  const r = (accuracy: number, inTime: number) => ({ total: 20, accuracy, inTime, medianMs: 3200, typicalAllowedMs: 5000 });
+  it("praises accurate and quick, and asks accurate-but-slow students for speed", () => {
+    expect(coach(r(95, 90)).headline).toBe("Accurate and quick");
+    expect(coach(r(95, 40)).headline).toBe("Accurate, now build speed");
+    expect(coach(r(80, 90)).headline).toBe("Quick, with a few slips");
+    expect(coach(r(80, 40)).headline).toBe("Good progress");
+    expect(coach(r(50, 90)).headline).toBe("Fast, but accuracy comes first");
+    expect(coach(r(50, 30)).headline).toBe("Keep practising");
+  });
+  it("includes the student's own typical time when known and copes with an empty round", () => {
+    expect(coach(r(95, 40)).detail).toMatch(/3\.2 s against about 5\.0 s/);
+    expect(coach({ total: 0, accuracy: 0, inTime: 0, medianMs: null, typicalAllowedMs: null }).headline).toBe("No answers yet");
   });
 });

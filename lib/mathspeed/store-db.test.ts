@@ -303,6 +303,28 @@ describe.skipIf(!DB)("math speed studio on a real database", () => {
     });
   });
 
+  it("a student can complete all 15 levels in order, with the Mastery Assessments and the benchmark, and finishes with nothing in progress", async () => {
+    const zoe = await mkUser(B.db, "student", "mszoe");
+    await buyCourse(zoe, "mszoe");
+    await S.enrol(zoe, { country: "GB", ageBand: "19-plus" });
+    const { frontier, levelStatus } = await import("./rules");
+    for (const lv of CUR.LEVELS) {
+      expect(lv.authored, "Level " + lv.letter).toBe(true);
+      for (const m of lv.modules) { await S.markRead(zoe, m.key); await play(zoe, "practice", m.key, "right"); }
+      const done = await play(zoe, "level", String(lv.n), "right");
+      expect(done.passed, "Level " + lv.letter).toBe(true);
+      if ([5, 10, 15].includes(lv.n)) expect((await play(zoe, "mastery", String(lv.n), "right")).passed).toBe(true);
+    }
+    const snap = (await S.snapshot(zoe))!;
+    expect(frontier(snap.progress)).toBe(16);
+    for (let n = 1; n <= 15; n++) expect(levelStatus(n, snap.progress)).toBe("completed");
+    expect(snap.progress.doneModules.size).toBe(CUR.totalModules());
+    expect((await S.achievementsOf(zoe)).filter((a) => a.code === "level-completed")).toHaveLength(15);
+    const bench = await play(zoe, "benchmark", "O", "right");
+    expect(bench.total).toBe(20);
+    expect((await S.benchmarks(zoe)).length).toBe(1);
+  }, 240_000);
+
   it("deleting a student removes every studio row", async () => {
     const zed = await mkUser(B.db, "student", "mszed");
     await S.enrol(zed, {});
