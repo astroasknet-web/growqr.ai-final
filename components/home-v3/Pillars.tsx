@@ -3,18 +3,18 @@ import { ArrowUpRight, Check } from "lucide-react";
 import { VERTICALS as ALL, type Vertical } from "./data";
 import { COUNTRIES, INTERNSHIPS } from "@/components/home-options/data";
 
-const ORDER = ["resume", "internships", "courses", "abroad", "classes", "math", "writing", "ebooks"];
+const ORDER = ["resume", "internships", "courses", "math", "writing", "abroad", "classes", "ebooks"];
 const VERTICALS = ORDER.map((k) => ALL.find((v) => v.key === k)!);
 
-/** Asymmetric bento: Resume Studio and Overseas Education are featured, the rest are compact. */
+/** Bento rows that each add up to six columns, so no tile is stretched taller than its content (that left a large empty block under Resume Studio). */
 const SPAN: Record<string, string> = {
-  resume: "md:col-span-3 md:row-span-2",
+  resume: "md:col-span-3",
   internships: "md:col-span-3",
-  courses: "md:col-span-3",
+  courses: "md:col-span-2",
   abroad: "md:col-span-4",
   classes: "md:col-span-2",
-  math: "md:col-span-3",
-  writing: "md:col-span-3",
+  math: "md:col-span-2",
+  writing: "md:col-span-2",
   ebooks: "md:col-span-6",
 };
 
@@ -24,8 +24,8 @@ const TAG: Record<string, string> = {
   courses: "Self-paced",
   abroad: "7 destinations",
   classes: "Live with teachers",
-  math: "Level A free",
-  writing: "Instant feedback",
+  math: "₹699 · Level A free",
+  writing: "₹499 · 2 free checks",
   ebooks: "MathStudy library",
 };
 
