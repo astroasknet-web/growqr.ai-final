@@ -12,6 +12,9 @@ import { trackGenerateLead, trackFormError } from "@/lib/analytics";
 import { CLASSROOM_URL } from "@/lib/links";
 import { RESUME_SCORE_URL } from "@/components/home-options/data";
 import { SITE_URL } from "@/lib/seo";
+import { VERTICALS } from "@/components/home-v3/data";
+
+const FOOTER_APP_NAME: Record<string, string> = { math: "Maths Speed Studio", writing: "English Writing Studio", abroad: "Study Abroad", classes: "Live Classes" };
 
 // Pricing is a B2C (self-serve, individual) concept — GrowQR's B2B surfaces
 // (Enterprises/Institutes/Recruiters/Startups solution pages, /enterprise and
@@ -215,14 +218,19 @@ export default function Footer() {
                 <Link href={RESUME_SCORE_URL} className="inline-flex min-h-[50px] items-center rounded-full px-4 text-[15px] font-semibold text-white underline underline-offset-4 hover:text-white/90">Score my resume</Link>
               </div>
             </div>
-            <ul className="grid grid-cols-3 gap-3 text-center" aria-label="GrowQR at a glance">
-              {[["121", "courses"], ["30", "Vedic Maths modules"], ["11", "exam prep hubs"]].map(([n, l]) => (
-                <li key={l} className="rounded-2xl bg-white/15 px-2 py-5 backdrop-blur-sm ring-1 ring-white/25">
-                  <span className="block text-[clamp(1.6rem,3.4vw,2.4rem)] font-extrabold leading-none text-white">{n}</span>
-                  <span className="mt-2 block text-[12px] leading-snug text-white/85">{l}</span>
-                </li>
-              ))}
-            </ul>
+            <div aria-label="GrowQR apps">
+              <p className="mb-3 text-[12px] font-bold uppercase tracking-[0.2em] text-white/80">{VERTICALS.length} apps. One account.</p>
+              <ul className="grid grid-cols-2 gap-2.5">
+                {VERTICALS.map((v) => (
+                  <li key={v.key}>
+                    <Link href={v.href} {...(v.external ? { target: "_blank", rel: "noopener noreferrer" } : {})} className="group flex min-h-[56px] items-center gap-2.5 rounded-2xl bg-white/15 px-3 py-2.5 ring-1 ring-white/25 backdrop-blur-sm transition hover:bg-white/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-white">
+                      <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl bg-white text-orange"><v.icon className="h-[18px] w-[18px]" aria-hidden /></span>
+                      <span className="text-[13px] font-semibold leading-tight text-white">{FOOTER_APP_NAME[v.key] ?? v.name}</span>
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </section>
 
