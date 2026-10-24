@@ -3432,24 +3432,24 @@
       "tags": [
         "Senior"
       ],
-      "hours": "~20 hrs",
-      "modules": 8,
-      "weeks": "~8 weeks",
-      "pace": "4 hrs/wk",
-      "badge": "Advanced Blockchain Architect",
+      "hours": "~16 hrs",
+      "modules": 6,
+      "weeks": "~6 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Enterprise Blockchain Architect",
       "prereq": "Solid blockchain development and architecture experience.",
       "bestFor": "Architects and leads designing enterprise blockchain systems.",
-      "brief": "Scalability, permissioned networks, interoperability, governance, and privacy.",
+      "brief": "When blockchain fits, permissioned networks, scalability, interoperability, privacy and governance, and architecture decisions.",
       "learn": [
-        "Enterprise requirements and when blockchain fits",
-        "Permissioned and consortium networks (Hyperledger, etc.)",
-        "Scalability — layer 2, sharding, and rollups",
-        "Interoperability and cross-chain communication",
-        "Governance, privacy, and compliance",
-        "Architectural decision-making and trade-offs"
+        "A decision test and alternatives for enterprise use cases",
+        "Permissioned and consortium networks, endorsement and approvals",
+        "Rollups, channels, sidechains and anchoring with throughput arithmetic",
+        "Atomic swaps, bridges and integration patterns",
+        "Data minimisation, consent, key management and governance",
+        "ADRs, requirements, risk registers and staged delivery"
       ],
-      "handsOn": "Produce an enterprise blockchain architecture and decision document for a real use case.",
-      "outcome": "Design blockchain solutions at enterprise scale.",
+      "handsOn": "Write an enterprise architecture and decision document for a real use case, including an honest recommendation.",
+      "outcome": "Design and decide on blockchain solutions at enterprise scale with honesty.",
       "icon": "network"
     },
     {
