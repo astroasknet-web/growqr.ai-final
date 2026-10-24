@@ -1,17 +1,20 @@
 "use client";
 
-import { useRef, useState } from "react";
+import { useCallback, useState } from "react";
+import Link from "next/link";
 import { Building2, Clock3, Loader2, Mail, MapPin, MessageSquare, Send, CheckCircle2 } from "lucide-react";
-import { TurnstileWidget, type TurnstileWidgetHandle } from "@/components/ui/TurnstileWidget";
+import { HumanCheck, type CaptchaInfo } from "@/components/portal/auth-controls";
 import Reveal from "@/components/ui/Reveal";
 import { formatPersonName } from "@/lib/format-person-name";
 import { getAttributionPayload } from "@/lib/attribution";
 import { trackGenerateLead, trackFormError } from "@/lib/analytics";
 
-export default function ContactPage() {
-  const [formData, setFormData] = useState({ name: "", email: "", subject: "", message: "", type: "general" });
-  const [turnstileToken, setTurnstileToken] = useState<string | null>(null);
-  const turnstileRef = useRef<TurnstileWidgetHandle>(null);
+/** Only signed-in members can write to us: guests see a log-in prompt, members see the form with a human check. */
+export default function ContactPage({ user, captcha }: { user: { name: string; email: string } | null; captcha: CaptchaInfo }) {
+  const [formData, setFormData] = useState({ name: user?.name ?? "", email: user?.email ?? "", subject: "", message: "", type: "general" });
+  const [humanOk, setHumanOk] = useState(captcha.mode === "off");
+  const [checkKey, setCheckKey] = useState(0);
+  const onReady = useCallback((ok: boolean) => setHumanOk(ok), []);
   const [honeypot, setHoneypot] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
@@ -50,10 +53,12 @@ export default function ContactPage() {
       return;
     }
 
-    if (!turnstileToken) {
-      setError("Please verify you are human.");
+    if (!humanOk) {
+      setError("Please complete the security check.");
       return;
     }
+    const fd = new FormData(event.currentTarget as HTMLFormElement);
+    const check = Object.fromEntries(["captchaToken", "captcha", "cf-turnstile-response", "pow"].map((k) => [k, String(fd.get(k) ?? "")]));
 
     setIsSubmitting(true);
     setError(null);
@@ -68,21 +73,22 @@ export default function ContactPage() {
           subject: formData.subject || "General Inquiry",
           message: formData.message,
           type: formData.type,
-          token: turnstileToken,
+          ...check,
           attribution: getAttributionPayload(),
         }),
       });
 
       if (!res.ok) {
         const data = await res.json().catch(() => ({}));
-        throw new Error(data.error || "Failed to send message.");
+        setCheckKey((n) => n + 1);
+        setError(res.status === 401 ? "Please log in to send us a message." : res.status === 403 ? "The security check was not right. Please try again with the new code." : typeof data.error === "string" && data.error ? data.error : "Something went wrong. Please try again.");
+        return;
       }
 
       trackGenerateLead("contact");
       setIsSuccess(true);
-      setFormData({ name: "", email: "", subject: "", message: "", type: "general" });
-      setTurnstileToken(null);
-      turnstileRef.current?.reset();
+      setFormData((prev) => ({ ...prev, subject: "", message: "", type: "general" }));
+      setCheckKey((n) => n + 1);
     } catch (submitError) {
       console.error("Contact form error:", submitError);
       trackFormError("contact", "submit_failed");
@@ -132,6 +138,16 @@ export default function ContactPage() {
             <p className="mt-3 text-sm md:text-base text-ink-4">Use the form below for general questions, sales enquiries, or partnership requests.</p>
           </div>
 
+          {!user ? (
+            <div className="rounded-[24px] border border-black/8 bg-cream p-6 text-center md:p-10">
+              <p className="text-[17px] font-semibold text-ink">Log in to send us a message</p>
+              <p className="mx-auto mt-2 max-w-[34em] text-[15px] text-ink-3">To keep our inbox free of spam, messages can only be sent by registered members. It takes a minute to sign up, and it is free.</p>
+              <div className="mt-5 flex flex-wrap justify-center gap-3">
+                <Link href="/login?next=%2Fcontact" className="inline-flex min-h-[48px] items-center rounded-full bg-orange px-6 text-[15px] font-semibold text-white hover:bg-orange-dark">Log in</Link>
+                <Link href="/signup" className="inline-flex min-h-[48px] items-center rounded-full border border-black/15 px-6 text-[15px] font-semibold text-ink hover:bg-white">Create a free account</Link>
+              </div>
+            </div>
+          ) : (
           <form onSubmit={handleSubmit} className="space-y-5 rounded-[24px] bg-cream p-4 md:p-7 border border-black/8">
               <div className="flex flex-wrap gap-3">
               {inquiryTypes.map((typeOption) => {
@@ -159,13 +175,14 @@ export default function ContactPage() {
                     onBlur={() => updateField("name", formatPersonName(formData.name))}
                     className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 capitalize text-ink outline-none transition focus:border-orange/40 focus:bg-white"
                     placeholder="John Doe"
+                    readOnly
                     required
                   />
                 </label>
 
                 <label className="space-y-2">
                   <span className="text-sm font-medium text-ink-2">Email address <span className="text-ink-4">*</span></span>
-                  <input type="email" value={formData.email} onChange={(event) => updateField("email", event.target.value)} className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-ink outline-none transition focus:border-orange/40 focus:bg-white" placeholder="john@email.com" required />
+                  <input type="email" readOnly value={formData.email} onChange={(event) => updateField("email", event.target.value)} className="w-full rounded-2xl border border-black/10 bg-white px-4 py-3 text-ink outline-none transition focus:border-orange/40 focus:bg-white" placeholder="john@email.com" required />
                 </label>
               </div>
 
@@ -181,7 +198,7 @@ export default function ContactPage() {
 
               <input type="text" value={honeypot} onChange={(event) => setHoneypot(event.target.value)} tabIndex={-1} autoComplete="off" className="hidden" aria-hidden="true" />
 
-              <TurnstileWidget ref={turnstileRef} onVerify={setTurnstileToken} onError={() => setError("Security check failed. Please try again.")} />
+              <HumanCheck captcha={captcha} onReady={onReady} resetKey={checkKey} />
 
               {error ? <div className="rounded-2xl border border-orange/30 bg-orange/10 px-4 py-3 text-sm text-orange-deep">{error}</div> : null}
               {isSuccess ? <div className="rounded-2xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700 flex items-center gap-2"><CheckCircle2 className="h-4 w-4" />Message sent successfully.</div> : null}
@@ -192,6 +209,7 @@ export default function ContactPage() {
 
               
             </form>
+          )}
         </div>
       </section>
     </>

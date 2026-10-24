@@ -7,6 +7,8 @@ import { canRate, canUserReply, categoryLabel } from "@/lib/support/model";
 import { getForUser } from "@/lib/support/store";
 import { Flash, StatusBadge, Thread, btnPrimary, inputCls, when } from "@/components/support/ui";
 import { rateAction, replyAction } from "../../actions";
+import { captchaMode, turnstileSiteKey } from "@/lib/portal/captcha";
+import { CheckedSubmit } from "@/components/support/checked-submit";
 
 export const metadata: Metadata = { title: "Support ticket | GrowQR" };
 export const dynamic = "force-dynamic";
@@ -15,6 +17,8 @@ export default async function TicketPage({ params, searchParams }: { params: Pro
   const me = await supportUser("/support/tickets");
   const { no } = await params;
   const sp = await searchParams;
+  const mode = captchaMode();
+  const captcha = { mode, siteKey: mode === "turnstile" ? turnstileSiteKey() : "" };
   const data = await getForUser(me.id, no.toUpperCase()); // only the owner gets a ticket back; anyone else sees a 404
   if (!data) notFound();
   const { ticket: t, messages } = data;
@@ -53,7 +57,7 @@ export default async function TicketPage({ params, searchParams }: { params: Pro
             <input type="hidden" name="no" value={t.no} />
             <label htmlFor="body" className="sr-only">Your reply</label>
             <textarea id="body" name="body" required minLength={2} maxLength={8000} rows={5} placeholder="Type your reply" className={`${inputCls} min-h-[130px]`} />
-            <div><button type="submit" className={btnPrimary}>Send reply</button></div>
+            <CheckedSubmit captcha={captcha} label="Send reply" className={btnPrimary} />
           </form>
         </Card>
       ) : (

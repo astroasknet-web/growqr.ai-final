@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { currentUser } from "@/lib/portal/guard";
 import { newTicketSchema, ratingSchema, replySchema, isTicketNo } from "@/lib/support/model";
 import { createTicket, rate, replyAsUser } from "@/lib/support/store";
+import { humanCheck } from "@/lib/portal/captcha";
 
 /** The person's side of support. Every action starts from the signed-in account: a ticket can only be raised, read or answered by its owner. */
 async function me() {
@@ -16,6 +17,7 @@ const text = (fd: FormData, k: string): string => (typeof fd.get(k) === "string"
 
 export async function newTicketAction(fd: FormData): Promise<void> {
   const user = await me();
+  if (!(await humanCheck(fd, "support-new"))) return back("/support/new", "e", "The security check was not right. Please try again with the new code.");
   const parsed = newTicketSchema.safeParse({ category: text(fd, "category"), subject: text(fd, "subject"), related_ref: text(fd, "related_ref"), body: text(fd, "body") });
   if (!parsed.success) back("/support/new", "e", parsed.error.issues[0]?.message ?? "Please check the form.");
   else {
@@ -30,6 +32,7 @@ export async function replyAction(fd: FormData): Promise<void> {
   const no = text(fd, "no");
   if (!isTicketNo(no)) redirect("/support/tickets");
   const path = `/support/tickets/${no}`;
+  if (!(await humanCheck(fd, "support-reply"))) return back(path, "e", "The security check was not right. Please try again with the new code.");
   const parsed = replySchema.safeParse({ body: text(fd, "body") });
   if (!parsed.success) back(path, "e", parsed.error.issues[0]?.message ?? "Write your reply.");
   else {

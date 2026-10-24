@@ -8,6 +8,8 @@ import { createLogger } from "@/lib/log";
 import { createFormRoute } from "@/lib/forms/handler";
 import { parseContact, type ContactSubmission } from "@/lib/forms/schemas";
 import { SITE_URL } from "@/lib/seo";
+import { currentUser } from "@/lib/portal/guard";
+import { humanCheck } from "@/lib/portal/captcha";
 
 const FROM_EMAIL = "GrowQR | Support <hello@growqr.ai>";
 const TEAM_EMAIL = "support@growqr.ai";
@@ -169,6 +171,19 @@ function buildEmails(data: ContactSubmission): Array<Promise<unknown>> {
 // POST /api/send-contact — backs the /contact page form.
 export const POST = createFormRoute<ContactSubmission>({
   key: "send-contact",
+  // Only signed-in members can write to us, and the message always carries the member's own name and email.
+  gate: async (_req, body) => {
+    const me = await currentUser();
+    if (!me) return NextResponse.json({ error: "Please log in to send us a message." }, { status: 401 });
+    return { body: { ...((body && typeof body === "object" ? body : {}) as Record<string, unknown>), name: me.name, email: me.email } };
+  },
+  // Every message also needs the human check (picture code, or Turnstile / proof of work when the site is set up for them).
+  humanCheck: async (body) => {
+    const b = (body && typeof body === "object" ? body : {}) as Record<string, unknown>;
+    const fd = new FormData();
+    for (const k of ["captchaToken", "captcha", "cf-turnstile-response", "pow"]) fd.set(k, typeof b[k] === "string" ? (b[k] as string) : "");
+    return humanCheck(fd, "contact");
+  },
   turnstile: {
     label: "Contact",
     errorMessage: "Security check failed. Please try again.",

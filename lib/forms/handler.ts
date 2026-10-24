@@ -60,6 +60,13 @@ export interface FormRouteConfig<T extends { token?: string }> {
     /** Exact 403 message this route has always returned. */
     errorMessage: string;
   };
+  /**
+   * Optional sign-in gate, run before anything else is read. Return a NextResponse to stop (for example a 401), or the body to use
+   * (for example with the name and email replaced by the signed-in member's own).
+   */
+  gate?: (req: NextRequest, body: unknown) => Promise<NextResponse | { body: unknown }>;
+  /** Optional replacement for the Cloudflare Turnstile check (for example the portal's picture code). Return false to refuse with the 403 message. */
+  humanCheck?: (body: unknown) => Promise<boolean>;
   /** Validate and normalize the JSON body (see lib/forms/schemas.ts). */
   parse: (body: unknown) => ParseResult<T>;
   /**
@@ -91,7 +98,12 @@ export function createFormRoute<T extends { token?: string }>(config: FormRouteC
     if (!limit.ok) return rateLimited(limit.retryAfterSec);
 
     try {
-      const body: unknown = await req.json().catch(() => ({}));
+      let body: unknown = await req.json().catch(() => ({}));
+      if (config.gate) {
+        const g = await config.gate(req, body);
+        if (g instanceof NextResponse) return g;
+        body = g.body;
+      }
 
       const parsed = config.parse(body);
       if (!parsed.ok) {
@@ -108,7 +120,8 @@ export function createFormRoute<T extends { token?: string }>(config: FormRouteC
         return NextResponse.json(config.successBody);
       }
 
-      if (!(await verifyTurnstile(parsed.data.token, config.turnstile.label))) {
+      const human = config.humanCheck ? await config.humanCheck(body) : await verifyTurnstile(parsed.data.token, config.turnstile.label);
+      if (!human) {
         return NextResponse.json({ error: config.turnstile.errorMessage }, { status: 403 });
       }
 

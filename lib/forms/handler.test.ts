@@ -287,3 +287,35 @@ describe("createFormRoute submission meta", () => {
     expect(Object.values(meta.attribution).every((v) => v === null)).toBe(true);
   });
 });
+
+describe("sign-in gate and replacement human check", () => {
+  it("stops a guest with the gate's response before parsing or saving", async () => {
+    const parse = vi.fn(okParse);
+    const persist = vi.fn().mockResolvedValue(null);
+    const route = makeRoute({ parse, persist, gate: async () => NextResponse.json({ error: "Please log in." }, { status: 401 }) });
+    const res = await route(makeRequest({ value: "x" }));
+    expect(res.status).toBe(401);
+    expect(parse).not.toHaveBeenCalled();
+    expect(persist).not.toHaveBeenCalled();
+  });
+
+  it("lets the gate replace fields, so the saved message carries the member's own details", async () => {
+    const persist = vi.fn().mockResolvedValue(null);
+    const route = makeRoute({ persist, gate: async (_r, b) => ({ body: { ...(b as object), value: "member-owned" } }) });
+    expect((await route(makeRequest({ value: "spoofed" }))).status).toBe(200);
+    expect(persist.mock.calls[0][0].value).toBe("member-owned");
+  });
+
+  it("uses the replacement human check instead of Turnstile, and refuses when it fails", async () => {
+    const persist = vi.fn().mockResolvedValue(null);
+    const check = vi.fn().mockResolvedValue(false);
+    const route = makeRoute({ persist, humanCheck: check });
+    const res = await route(makeRequest({ value: "x" }));
+    expect(res.status).toBe(403);
+    expect(check).toHaveBeenCalled();
+    expect(verifyTurnstileMock).not.toHaveBeenCalled();
+    expect(persist).not.toHaveBeenCalled();
+    check.mockResolvedValue(true);
+    expect((await route(makeRequest({ value: "x" }))).status).toBe(200);
+  });
+});
