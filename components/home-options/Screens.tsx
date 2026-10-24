@@ -101,8 +101,7 @@ export function Scene4() {
           <span className="ml-auto rounded-full bg-emerald-600 px-1.5 py-0.5 text-[0.55rem] font-bold text-white">Match</span>
         </div>
         <p className="mt-2 font-serif text-[1.5rem] leading-none">₹22,000<span className="font-sans text-[0.58rem] text-ink-4">/mo</span></p>
-        <p className="mt-1.5 flex items-center gap-1 text-[0.58rem] font-semibold text-ink-3"><span className="text-orange">🛡</span> First month in escrow</p>
-      </div>
+              </div>
       <p className="text-[0.55rem] font-bold uppercase tracking-[0.14em] text-ink-4">Application tracker</p>
       <div className="grid gap-1.5">
         {STEPS.map((s, i) => (
@@ -121,7 +120,7 @@ export function Scene5() {
       <div className="rounded-2xl bg-gradient-to-br from-orange to-[#FF9A5C] p-3.5 text-white">
         <p className="text-[0.55rem] font-bold uppercase tracking-[0.16em] text-white/80">🎉 Example: offer stage</p>
         <p className="font-serif text-[1.35rem] leading-tight">Welcome aboard</p>
-        <p className="text-[0.6rem] text-white/85">Start date set · stipend in escrow</p>
+        <p className="text-[0.6rem] text-white/85">Start date set</p>
       </div>
       {head("Next, if you want it", "Study abroad, mapped")}
       <div className="grid grid-cols-2 gap-1.5">
@@ -138,6 +137,6 @@ export const SCENES = [
   { k: "Score", t: "Drop in a resume. Get a score in seconds.", d: "PDF, Word or pasted text. A number out of 100, a grade, and three plain-language focus areas. No sign-up, no fee.", C: Scene1 },
   { k: "Coach", t: "Specialised agents fix what the score found.", d: "RQ-Mira rewrites the resume, RQ-Sage closes the skill gap, RQ-Lyra picks the course. Human experts stay in the loop.", C: Scene2 },
   { k: "Verify", t: "A passport that proves it.", d: "A proctored assessment and checked evidence turn claims into percentiles. One QR, and any employer can verify it.", C: Scene3 },
-  { k: "Match", t: "Verified employers. Protected stipends.", d: "Apply with no fees, watch every stage of the application, and know the first month's stipend is held in escrow.", C: Scene4 },
+  { k: "Match", t: "Verified employers. Clear stages.", d: "Apply with no fees, watch every stage of the application.", C: Scene4 },
   { k: "Grow", t: "Keep climbing, wherever you're headed.", d: "Take the offer, add courses and micro-gigs, or map a route to one of 58 universities across seven countries.", C: Scene5 },
 ] as const;

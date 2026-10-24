@@ -78,7 +78,7 @@ export default async function InternshipsPage({ searchParams }: { searchParams: 
         </select>
       </div>
       <fieldset className="mb-4"><legend className="text-[13px] font-semibold text-ink mb-1">More</legend>
-        <label className={box}><input type="checkbox" name="verified" value="1" defaultChecked={f.verified} />Verified stipend</label>
+        
         <label className={box}><input type="checkbox" name="ppo" value="1" defaultChecked={f.ppo} />PPO possible</label>
         <label className={box}><input type="checkbox" name="new" value="1" defaultChecked={f.fresh} />New this week</label>
         <label className={box}><input type="checkbox" name="short" value="1" defaultChecked={f.short} />8 weeks or less</label>

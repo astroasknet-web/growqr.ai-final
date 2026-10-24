@@ -21,7 +21,6 @@ const FEED = [
   "Google Data Analytics certificate ✓",
   "Sample: matched to a Backend Developer Intern role ✓",
   "QR Score 85 · Strong",
-  "Escrow funded · ₹25,000 held",
   "New passport verified in 4 seconds",
   "RQ-Mira rewrote 6 bullets · +8",
   "Shortlisted by CodeForge Systems ✓",
@@ -69,7 +68,7 @@ export default function OptionD() {
           <div className="mx-auto mb-12 max-w-[780px] px-6 text-center">
             <span data-rv className={KICK}><span className="h-1.5 w-1.5 rounded-full bg-orange" />Verified internships</span>
             <h2 data-rv id="hod-roles" className="font-sans text-[clamp(2.1rem,4.8vw,3.7rem)] font-semibold leading-[1.06]">Where a verified score <span className="text-orange">takes you</span></h2>
-            <p data-rv className="mx-auto mt-4 max-w-[36em] text-[1.08rem] text-ink-3">No application fees. Employers screened before they post. The first month&apos;s stipend sits in escrow before you start.</p>
+            <p data-rv className="mx-auto mt-4 max-w-[36em] text-[1.08rem] text-ink-3">No application fees. Employers screened before they post.</p>
           </div>
           <div data-rv><InternshipMarquee /></div>
           <p className="mt-8 text-center"><a className="font-semibold text-orange-dark underline underline-offset-4" href={SCORE_URL}>Browse all internships</a></p>

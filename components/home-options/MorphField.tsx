@@ -100,7 +100,7 @@ const STAGES = [
   { k: "02", h: "Your score,", s: "out of 100.", p: "Upload a resume and get a free QR Score with three plain-language focus areas. No sign-up, no fee." },
   { k: "03", h: "Your resume,", s: "finally read.", p: "Agents rewrite the bullets, close the skill gap and pick the course. Every fix moves the number." },
   { k: "04", h: "58 universities.", s: "Seven countries.", p: "From USA to UAE, requirements and fit are mapped against your own passport." },
-  { k: "05", h: "Verified.", s: "Yours.", p: "A proctored Skill Passport that employers scan, then verified internships with the first month's stipend in escrow." },
+  { k: "05", h: "Verified.", s: "Yours.", p: "A proctored Skill Passport that employers scan, then verified internships from screened employers." },
 ] as const;
 
 export default function MorphField() {

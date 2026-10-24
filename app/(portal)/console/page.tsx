@@ -29,7 +29,7 @@ export default async function Queue() {
           <div className="flex flex-wrap items-center gap-3">
             <form action={roleDecisionAction} className="flex flex-wrap items-center gap-3">
               <input type="hidden" name="id" value={j.id} /><input type="hidden" name="act" value="approve" />
-              <label className="flex items-center gap-2 min-h-[44px] text-[14px]"><input type="checkbox" name="escrow" value="1" />Escrow funded (show Verified stipend badge)</label>
+              
               <button className={btnDark} type="submit">Approve</button>
             </form>
             <form action={roleDecisionAction}><input type="hidden" name="id" value={j.id} /><input type="hidden" name="act" value="reject" /><button className={btnLine} type="submit">Reject</button></form>

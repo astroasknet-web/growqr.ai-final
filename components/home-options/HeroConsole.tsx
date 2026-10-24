@@ -101,8 +101,7 @@ export default function HeroConsole() {
                 </span>
                 <span className="rounded-full bg-emerald-600 px-2.5 py-1 text-[0.72rem] font-bold text-white">92% match</span>
               </div>
-              <p className="mt-2 flex items-center gap-1.5 text-[0.74rem] font-semibold text-ink-3"><span className="text-orange">🛡</span> First month&apos;s stipend held in escrow</p>
-            </div>
+                          </div>
           </div>
         </div>
       </div>

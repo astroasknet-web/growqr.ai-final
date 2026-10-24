@@ -18,7 +18,7 @@ import { useSeekerWaitlist } from "@/components/seeker/SeekerWaitlistModal";
 import { AgentAvatar } from "./ui";
 import { INTERNSHIPS, RESUME_SCORE_URL, SCORE_URL, type AgentKey } from "./data";
 import {
-  ABROAD, AGENT_LIST, ANNOUNCE, CAREERS_LEARN, CAREERS_OPPS, EMPLOYER_LINKS, INDEX, PERSONA_COPY, PLANS, PLATFORM, RESOURCES,
+  ABROAD, AGENT_LIST, ANNOUNCE, SHOW_ANNOUNCE, CAREERS_LEARN, CAREERS_OPPS, EMPLOYER_LINKS, INDEX, PERSONA_COPY, PLANS, PLATFORM, RESOURCES,
   type IconKey, type NavLink,
 } from "./nav-data";
 
@@ -112,8 +112,7 @@ function CareersPanel({ close }: { close: () => void }) {
         <p className="text-[1.05rem] font-bold leading-tight">{it.title}</p>
         <p className="text-[0.8rem] text-white/60">{it.company} · {it.place} · {it.weeks} weeks</p>
         <p className="mt-3 font-serif text-[2rem] leading-none">₹{it.stipend.toLocaleString("en-IN")}<span className="font-sans text-[0.75rem] text-white/60">/mo</span></p>
-        <p className="mt-2 flex items-center gap-1.5 text-[0.76rem] text-white/80"><ShieldCheck className="h-3.5 w-3.5 text-emerald-400" aria-hidden /> First month in escrow</p>
-        <a href={SCORE_URL} onClick={close} className="mt-4 inline-flex min-h-[44px] items-center gap-2 rounded-full bg-white px-5 text-[0.86rem] font-bold text-ink transition hover:bg-orange hover:text-white">View &amp; apply <ArrowRight className="h-4 w-4" aria-hidden /></a>
+                <a href={SCORE_URL} onClick={close} className="mt-4 inline-flex min-h-[44px] items-center gap-2 rounded-full bg-white px-5 text-[0.86rem] font-bold text-ink transition hover:bg-orange hover:text-white">View &amp; apply <ArrowRight className="h-4 w-4" aria-hidden /></a>
       </Feature>
     </div>
   );
@@ -230,7 +229,7 @@ function Palette({ open, onClose }: { open: boolean; onClose: () => void }) {
 export default function HomeNav() {
   const [open, setOpen] = useState<MenuId | null>(null);
   const [scrolled, setScrolled] = useState(false);
-  const [bar, setBar] = useState(true);
+  const [bar, setBar] = useState(SHOW_ANNOUNCE);
   const [drawer, setDrawer] = useState(false);
   const [mAcc, setMAcc] = useState<MenuId | null>("platform");
   const [pal, setPal] = useState(false);

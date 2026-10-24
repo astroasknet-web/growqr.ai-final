@@ -60,7 +60,7 @@ export default function OptionC() {
                 </div>
               </Tilt>
               <span className="ho-bob absolute -right-1 top-[18%] hidden rounded-2xl border border-black/10 bg-white px-3.5 py-2.5 text-[0.78rem] font-semibold shadow-card sm:block" style={{ animationDelay: "-1s" }}>Strong match<span className="block font-normal text-ink-4">Backend Intern · ₹22,000/mo</span></span>
-              <span className="ho-bob absolute -left-2 bottom-[16%] hidden rounded-2xl border border-black/10 bg-white px-3.5 py-2.5 text-[0.78rem] font-semibold shadow-card sm:block" style={{ animationDelay: "-3s" }}>🛡 Escrow protected<span className="block font-normal text-ink-4">First month held safe</span></span>
+              
             </div>
           </div>
         </header>

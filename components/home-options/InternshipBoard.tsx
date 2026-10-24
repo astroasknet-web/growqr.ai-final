@@ -31,8 +31,7 @@ export function InternshipCard({ it, score, href = SCORE_URL }: { it: Internship
       </div>
       <div className="mt-auto flex items-center justify-between gap-2 border-t border-black/[0.06] pt-3">
         <span className="inline-flex items-center gap-1.5 text-[0.74rem] font-semibold text-ink-3">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#FF6A2F" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden><path d="M12 2l8 3v6c0 5-3.5 9-8 11-4.5-2-8-6-8-11V5l8-3z" /><path d="M9 12l2 2 4-4" /></svg>
-          First month in escrow
+          Verified employer
         </span>
         {state === "open" && <a href={href} className="inline-flex min-h-[40px] shrink-0 items-center whitespace-nowrap rounded-full bg-ink px-4 text-[0.82rem] font-bold text-white transition hover:bg-orange">View &amp; apply</a>}
         {state === "close" && <span className="rounded-full bg-amber-50 px-3 py-2 text-[0.76rem] font-bold text-amber-800">+{gap} pts to unlock</span>}

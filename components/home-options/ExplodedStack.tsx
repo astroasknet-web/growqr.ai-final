@@ -51,7 +51,7 @@ function RolesPlate() {
         <div key={it.id} className="flex items-center gap-3 rounded-2xl border border-black/[0.07] bg-white p-2.5">
           <span className="grid h-9 w-9 shrink-0 place-items-center rounded-xl font-bold text-white" style={{ background: it.tone }}>{it.company[0]}</span>
           <span className="min-w-0 flex-1 text-[0.72rem] font-bold leading-tight">{it.title}<span className="block truncate font-normal text-ink-4">{it.company}</span></span>
-          <span className="text-right text-[0.78rem] font-bold">₹{it.stipend.toLocaleString("en-IN")}<span className="block text-[0.55rem] font-semibold text-emerald-600">🛡 escrow</span></span>
+          <span className="text-right text-[0.78rem] font-bold">₹{it.stipend.toLocaleString("en-IN")}</span>
         </div>
       ))}
     </div>
@@ -63,7 +63,7 @@ const LAYERS: { k: string; h: string; d: string; face: ReactNode }[] = [
   { k: "Score", h: "A number you can act on.", d: "A score out of 100, a grade, and three plain-language focus areas across education, experience, skills, projects and impact.", face: <ScorePlate /> },
   { k: "Agents", h: "Agents close the gaps.", d: "RQ-Mira rewrites, RQ-Sage plans, RQ-Lyra picks the course. Human experts stay in the loop.", face: <AgentsPlate /> },
   { k: "Passport", h: "Proof, not claims.", d: "A proctored assessment and checked evidence become a Skill Passport that any employer can verify with one scan.", face: <PassportPlate /> },
-  { k: "Roles", h: "Verified roles. Protected stipends.", d: "Apply with no fees to screened employers. The first month's stipend is held in escrow before you start.", face: <RolesPlate /> },
+  { k: "Roles", h: "Verified roles. Real employers.", d: "Apply with no fees to screened employers. Every role is checked before it is listed.", face: <RolesPlate /> },
 ];
 
 const clamp = (v: number, a = 0, b = 1) => Math.max(a, Math.min(b, v));

@@ -9,6 +9,8 @@ export type IconKey =
 
 export type NavLink = { label: string; desc?: string; href: string; icon: IconKey; external?: boolean; badge?: string };
 
+/** Escrow and the announcement bar are switched off for now; set to true to bring the bar back. */
+export const SHOW_ANNOUNCE = false;
 export const ANNOUNCE = { text: "New: verified-stipend internships, with the first month held in escrow.", cta: "Browse internships", href: SCORE_URL };
 
 export const PLATFORM: NavLink[] = [

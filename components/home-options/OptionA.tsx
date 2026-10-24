@@ -23,7 +23,7 @@ const TRACK: { n: string; t: string; d: string; who: AgentKey }[] = [
   { n: "01", t: "Score", d: "Drop in a PDF, Word file or pasted text. A grade and three plain-language focus areas in seconds. No sign-up.", who: "mira" },
   { n: "02", t: "Coach", d: "Specialised agents fix what the score found: the resume, the skill gap, the missing certificate.", who: "sage" },
   { n: "03", t: "Verify", d: "A proctored assessment turns claims into percentiles on your Skill Passport.", who: "vera" },
-  { n: "04", t: "Match", d: "Apply to verified employers. The first month's stipend sits in escrow before day one.", who: "scout" },
+  { n: "04", t: "Match", d: "Apply to verified employers. Every stage is visible to you.", who: "scout" },
   { n: "05", t: "Grow", d: "Courses, micro-gigs and a study-abroad map keep the score, and your options, climbing.", who: "lyra" },
 ];
 
@@ -116,7 +116,7 @@ export default function OptionA() {
         {/* INTERNSHIPS */}
         <section className={`${SECTION} bg-white py-24 md:py-32`} aria-labelledby="hoa-board">
           <div className={WRAP}>
-            <Head kick="Verified internships" sub="Real roles from verified employers. Stipends are protected in escrow, there are no application fees, and every stage of your application is visible.">
+            <Head kick="Verified internships" sub="Real roles from verified employers. There are no application fees, and every stage of your application is visible.">
               <span id="hoa-board">Your score decides what <em>opens up</em></span>
             </Head>
             <div data-rv><InternshipBoard initial={72} /></div>

@@ -57,7 +57,7 @@ export function JobCard({ job, terms = [], saved = false, canSave = false, back,
         {job.skills.slice(0, 6).map((s) => <li key={s} className="px-2.5 py-1 rounded-full bg-cream-3 text-[12px] text-ink-2"><Hl text={s} terms={terms} /></li>)}
       </ul>
       <div className="flex flex-wrap items-center gap-2 mt-4">
-        {job.badge ? <span className={`px-2.5 py-1 rounded-full text-[12px] font-medium ${job.badge === "Verified stipend" ? "bg-emerald-50 text-emerald-800" : "bg-cream-3 text-ink-3"}`}>{job.badge}</span> : null}
+        {job.badge && job.badge !== "Verified stipend" ? <span className={`px-2.5 py-1 rounded-full text-[12px] font-medium ${job.badge === "Verified stipend" ? "bg-emerald-50 text-emerald-800" : "bg-cream-3 text-ink-3"}`}>{job.badge}</span> : null}
         {job.sample ? <span className="px-2.5 py-1 rounded-full text-[12px] bg-amber-50 text-amber-800">Sample listing</span> : null}
         <span className="ml-auto flex items-center gap-2">
           {applied ? <span className="text-[13px] font-medium text-emerald-700">Applied</span> : null}

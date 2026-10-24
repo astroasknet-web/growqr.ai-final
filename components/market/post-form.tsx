@@ -38,7 +38,7 @@ export function PostForm({ company }: { company: string }) {
     return (
       <div className="bg-white rounded-2xl border border-emerald-200 p-6" role="status">
         <h2 className="text-[20px] font-bold text-ink">Role submitted for review</h2>
-        <p className="text-[15px] text-ink-3 mt-1">&ldquo;{s.title}&rdquo; is now with our team for verification. Once approved it appears in search and you will see applicants on your dashboard.{s.escrow ? " You asked for the Verified stipend badge; we will contact you to fund the first month in escrow before it is shown." : ""}</p>
+        <p className="text-[15px] text-ink-3 mt-1">&ldquo;{s.title}&rdquo; is now with our team for verification. Once approved it appears in search and you will see applicants on your dashboard.</p>
         <p className="mt-4 flex flex-wrap gap-3">
           <Link href="/employer" className="inline-flex items-center min-h-[44px] px-5 rounded-lg bg-orange hover:bg-orange-dark text-white font-semibold text-[14px]">Back to overview</Link>
           <a href="/employer/post" className="inline-flex items-center min-h-[44px] px-5 rounded-lg border border-black/[0.15] text-[14px] font-medium hover:bg-cream-2">Post another</a>
@@ -72,7 +72,7 @@ export function PostForm({ company }: { company: string }) {
           <Row id="weeks" label="Duration (weeks)" error={e.weeks}><input id="weeks" name="weeks" type="number" min={2} max={26} inputMode="numeric" defaultValue={v.weeks} onChange={upd("weeks")} aria-describedby="weeks-err" className={`${input} ${ring(e.weeks)}`} /></Row>
           <Row id="openings" label="Openings" error={e.openings}><input id="openings" name="openings" type="number" min={1} max={20} inputMode="numeric" defaultValue={v.openings} aria-describedby="openings-err" className={`${input} ${ring(e.openings)}`} /></Row>
         </div>
-        <label className="flex items-start gap-2.5 text-[14px] text-ink-2 mb-6 min-h-[44px]"><input type="checkbox" name="escrow" value="1" defaultChecked={v.escrow !== ""} className="mt-1" /><span>I will fund the first month in escrow to earn the <b>Verified stipend</b> badge. We will contact you to arrange it; the badge shows only after funding.</span></label>
+        
 
         <h2 className="text-[18px] font-bold text-ink mb-4">What interns will do</h2>
         <Row id="about" label="Role description" error={e.about}><textarea id="about" name="about" rows={6} maxLength={2000} defaultValue={v.about} onChange={upd("about")} placeholder="Describe the team, the day-to-day work and what a great intern ships by the end." aria-describedby="about-err" className={`${input} ${ring(e.about)}`} /></Row>
