@@ -21,3 +21,15 @@ Labs are not multiple choice. A spreadsheet, document, slide or sorting task is 
 - Examples use India-friendly rupee figures that are illustrative. Prices of tools, tokens and markets change; the courses say so where it matters.
 - Content was written and checked by the build's own tests and a review in the browser, not reviewed by outside subject experts. Have a subject expert read each course before you advertise it as expert-reviewed.
 - Each course's first sorting activity is a free sample before purchase (the existing design for all courses); everything else needs a purchase or a plan pick.
+
+## The 18 Blockchain & Web3 courses
+
+The whole Blockchain & Web3 category (18 courses) is built with the same pipeline: Introduction to Blockchain & Web3; Blocks, Hashing & Consensus; Cryptocurrency & Digital Assets; Blockchain Architecture & Networks; Ethereum & Smart Contracts; Solidity for Beginners; Build Your First dApp; Advanced Solidity; Smart Contract Security & Auditing; Token Development & ERC Standards; NFTs & Decentralized Applications; Web3 with JavaScript & Node.js; Blockchain with PHP & Node.js; Production-Ready Web3 Applications; Blockchain Projects: 5 Real-World Applications; Blockchain Architecture & Enterprise Solutions; Blockchain & DeFi; Blockchain Capstone Project.
+
+- Products are switched on by `db/migrations/20261201000001_activate_blockchain_courses.sql`.
+- Extra interactive widgets: a live SHA-256 hash lab (`hashlab`), a toy blockchain you can edit, break and re-mine (`chainlab`) and a Merkle tree explorer (`merkle`). Their maths is in `lib/learn/widgets/sha256.ts` and `chain.ts`, with tests in `chain.test.ts`.
+- Code listings: every Solidity listing was compiled with solc 0.8.26 against OpenZeppelin Contracts 5.0.2 (and the upgradeable package where used), and every JavaScript listing was syntax-checked. **PHP, SQL, YAML, JSON and Markdown listings were written and reviewed by hand but not executed by the build**; the PHP course says so on its landing page. Nothing was deployed to any network.
+- Honest scope: the platform cannot run Solidity, PHP, Node.js or a wallet. Labs check designs, calculations, classifications and writing; students run code in their own tools (Remix, Hardhat, Node) on a local or test network.
+- Hours: each course's catalogue hours and module count were rewritten to what the content really contains (about 8 to 16 hours, six modules each), not the original marketing figures (some of which said 20 to 40 hours and 7 to 10 modules).
+- Risk wording: the token, NFT, DeFi and enterprise courses say plainly that they are education, not financial, investment, legal or tax advice, that tokens can lose all value, and that the example contracts are unaudited and must not hold real funds. The voting and registry projects explain what blockchains cannot guarantee (secret ballots, legal ownership). Keep this wording if you edit them.
+- Not externally reviewed or accredited. Have a smart-contract security practitioner read the security, DeFi and production courses, and a lawyer read the legal, regulatory and privacy passages, before you market them as expert-reviewed.
