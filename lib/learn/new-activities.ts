@@ -8,6 +8,7 @@ export const NEW_ACTIVITIES: Record<string, () => unknown> = {
   "blockchain-5-real-world-projects": () => require("./data/blockchain-5-real-world-projects.activities.json"),
   "blockchain-architecture-networks": () => require("./data/blockchain-architecture-networks.activities.json"),
   "blockchain-blocks-hashing-consensus": () => require("./data/blockchain-blocks-hashing-consensus.activities.json"),
+  "blockchain-defi": () => require("./data/blockchain-defi.activities.json"),
   "blockchain-enterprise-architecture": () => require("./data/blockchain-enterprise-architecture.activities.json"),
   "blockchain-php-nodejs": () => require("./data/blockchain-php-nodejs.activities.json"),
   "build-first-blockchain-dapp": () => require("./data/build-first-blockchain-dapp.activities.json"),

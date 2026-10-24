@@ -3461,24 +3461,24 @@
       "tags": [
         "Mid"
       ],
-      "hours": "~15 hrs",
-      "modules": 7,
-      "weeks": "~6 weeks",
-      "pace": "4 hrs/wk",
-      "badge": "DeFi Technology",
+      "hours": "~14 hrs",
+      "modules": 6,
+      "weeks": "~5 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "DeFi Fundamentals",
       "prereq": "Solidity and smart-contract experience.",
       "bestFor": "Developers and analysts building or evaluating DeFi.",
-      "brief": "DEXs, lending, liquidity pools, AMMs, and the architecture behind DeFi.",
+      "brief": "DeFi building blocks, automated market makers, liquidity and impermanent loss, lending, oracles, stablecoins, yield and risk.",
       "learn": [
-        "What DeFi is and its building blocks",
-        "Decentralised exchanges and automated market makers (AMMs)",
-        "Liquidity pools, LP tokens, and impermanent loss",
-        "Lending, borrowing, and collateralisation",
-        "Oracles, stablecoins, and yield strategies",
-        "DeFi risks, exploits, and security"
+        "DeFi building blocks, composability and stablecoin designs",
+        "The constant-product AMM, swaps and slippage with a full contract",
+        "Liquidity provision and impermanent loss with real numbers",
+        "Lending, health factors, interest curves and liquidations",
+        "Oracles, TWAPs, stablecoin failure modes and yield sources",
+        "Exploit patterns, due diligence and responsible communication"
       ],
-      "handsOn": "Build or integrate a simple DeFi component (e.g. a liquidity pool or swap) on a testnet.",
-      "outcome": "Understand and build DeFi protocols responsibly. Educational only, not financial advice.",
+      "handsOn": "Write a design and risk review of a simple DeFi component for a test network, with numbers, safeguards and honest limits.",
+      "outcome": "Understand and build DeFi components responsibly. Educational only, not financial advice.",
       "icon": "rupee"
     },
     {
