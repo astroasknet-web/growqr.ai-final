@@ -20,6 +20,7 @@ export function groupsFor(role: string): NavGroup[] {
         ] },
         { title: "Learning", items: [
           { key: "courses", href: "/my-courses", label: "My courses", icon: "courses" },
+          { key: "math-speed", href: "/math-speed/journey", label: "Maths Speed Studio", icon: "courses" },
           { key: "classes", href: "/my-classes", label: "My classes", icon: "classes" },
         ] },
         { title: "Global", items: [

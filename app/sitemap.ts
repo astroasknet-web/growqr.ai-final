@@ -46,6 +46,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...writingTests().map((t) => ({ url: `${baseUrl}/ielts/writing-practice-tests/${t.slug}` })),
     ...speakingTests().map((t) => ({ url: `${baseUrl}/ielts/speaking-practice-tests/${t.slug}` })),
     { url: `${baseUrl}/vedic-math` },
+    { url: `${baseUrl}/math-speed` },
     ...vedicCurriculum().modules.filter((m) => m.available).map((m) => ({ url: `${baseUrl}/vedic-math/${m.slug}` })),
     { url: `${baseUrl}/school` },
     { url: `${baseUrl}/olympiad/imo` },
