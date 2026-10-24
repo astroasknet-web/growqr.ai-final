@@ -3491,24 +3491,24 @@
         "Mid",
         "Senior"
       ],
-      "hours": "~40 hrs",
-      "modules": 10,
-      "weeks": "~12 weeks",
-      "pace": "5 hrs/wk",
-      "badge": "Professional Blockchain Developer",
+      "hours": "~16 hrs",
+      "modules": 6,
+      "weeks": "~6 weeks",
+      "pace": "3 hrs/wk",
+      "badge": "Blockchain Capstone",
       "prereq": "Completion of the core blockchain track (Solidity, dApps, Web3).",
       "bestFor": "Learners proving end-to-end mastery for a professional certification.",
-      "brief": "Design and build a complete blockchain/Web3 project from requirements to deployment.",
+      "brief": "Plan, design, build, secure, deploy, document and defend one complete blockchain project with a reference design to follow.",
       "learn": [
-        "Requirements gathering and scoping a real project",
-        "System architecture and smart-contract design",
-        "Full implementation — contracts, backend, and frontend",
-        "Security review and comprehensive testing",
-        "Deployment and infrastructure",
-        "Documentation and a final project defence"
+        "Scoping a real problem with testable user stories and an MVP",
+        "Architecture and a complete reference contract with roles and safe pausing",
+        "Test-first building, property tests and repeatable deployment",
+        "A threat model, self-review and honest severity ratings",
+        "Test-network deployment, verified source and documentation",
+        "A five-minute demo, a confident defence and career material"
       ],
-      "handsOn": "Deliver a complete, deployed, documented blockchain project as your capstone.",
-      "outcome": "Graduate as a job-ready professional blockchain developer.",
+      "handsOn": "Write the capstone report for a complete, tested, deployed and documented blockchain project.",
+      "outcome": "Finish one complete blockchain project and present it with integrity.",
       "icon": "rocket"
     },
     {

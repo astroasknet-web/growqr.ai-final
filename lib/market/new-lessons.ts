@@ -8,6 +8,7 @@ export const NEW_LESSONS: Record<string, () => unknown> = {
   "blockchain-5-real-world-projects": () => require("./data/lessons/blockchain-5-real-world-projects.json"),
   "blockchain-architecture-networks": () => require("./data/lessons/blockchain-architecture-networks.json"),
   "blockchain-blocks-hashing-consensus": () => require("./data/lessons/blockchain-blocks-hashing-consensus.json"),
+  "blockchain-capstone-project": () => require("./data/lessons/blockchain-capstone-project.json"),
   "blockchain-defi": () => require("./data/lessons/blockchain-defi.json"),
   "blockchain-enterprise-architecture": () => require("./data/lessons/blockchain-enterprise-architecture.json"),
   "blockchain-php-nodejs": () => require("./data/lessons/blockchain-php-nodejs.json"),
