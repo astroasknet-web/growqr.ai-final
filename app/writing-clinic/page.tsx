@@ -5,6 +5,9 @@ import PageShell from "@/components/layout/PageShell";
 import WritingClinic from "@/components/writing-clinic/WritingClinic";
 import { EXAMS, TAGLINES } from "@/lib/writing-clinic/exams";
 import { PLANS } from "@/lib/market/plans";
+import { currentUser } from "@/lib/portal/guard";
+import { accessFor, buyHref, courseFee } from "@/lib/pay/course-access";
+import { activePlan } from "@/lib/pay/entitlements";
 import { canonicalUrl, OG_IMAGE } from "@/lib/seo";
 
 const TITLE = "Writing Clinic: IELTS, GRE, GMAT, SAT and College Essay Practice | GrowQR";
@@ -29,11 +32,26 @@ const FAQ = [
   { q: "Which exams does it cover?", a: "IELTS Writing (Task 1 and Task 2), GRE Analytical Writing (Issue and Argument), GMAT-style argument critique, SAT-style analytical essays, and personal statements and statements of purpose for college applications." },
   { q: "Does the GMAT or SAT still have an essay?", a: "The current GMAT and the main SAT no longer include a written essay. These modes train the same skills, which are analysing arguments and explaining how an author persuades. They are also used in school tests, MBA preparation and college applications." },
   { q: "Is my writing stored?", a: "No. Your answer is checked in your browser and is not sent anywhere. Your recent scores are kept on your own device only." },
-  { q: "What does it cost?", a: "Free to try, with 2 essay checks a month. Paid packages raise it to 15, 25 and then unlimited." },
+  { q: "What does it cost?", a: "Free to try, with 2 essay checks a month. The English Writing Studio is a one-time ₹499 for unlimited checks, and the Pro, Silver and Gold packages raise the monthly limit to 15, 25 and then unlimited." },
 ];
 
-export default function WritingClinicRoute() {
+export const dynamic = "force-dynamic";
+
+const SLUG = "english-writing-studio";
+const PLAN_CHECKS: Record<string, number | null> = { pro: 15, silver: 25, gold: null };
+
+export default async function WritingClinicRoute() {
   const paid = PLANS.filter((p) => p.key !== "free");
+  const me = await currentUser().catch(() => null);
+  const [fee, access, plan] = await Promise.all([
+    courseFee(SLUG).catch(() => null),
+    me ? accessFor(me.id, SLUG).catch(() => null) : Promise.resolve(null),
+    me ? activePlan(me.id).catch(() => null) : Promise.resolve(null),
+  ]);
+  const price = fee ? Math.round(fee.amountMinor / 100) : null;
+  const owned = access === "purchase" || access === "free";
+  const monthly = owned ? null : plan && plan in PLAN_CHECKS ? PLAN_CHECKS[plan] : 2;
+  const buy = me ? buyHref(SLUG) : `/login?next=${encodeURIComponent(buyHref(SLUG))}`;
   return (
     <PageShell>
       <div className="bg-cream-2">
@@ -45,10 +63,11 @@ export default function WritingClinicRoute() {
             {EXAMS.map((e) => <span key={e.key} className="rounded-full border border-black/10 bg-white px-4 py-1.5 text-[0.88rem] font-medium text-ink-2">{e.short}</span>)}
           </div>
           <a href="#practice" className="mt-8 inline-flex min-h-[50px] items-center gap-2 rounded-xl bg-ink px-7 text-[1rem] font-semibold text-white hover:opacity-90">Try it free <ArrowRight className="h-4 w-4" aria-hidden /></a>
-          <p className="mt-3 text-[0.82rem] text-ink-4">No sign-up needed to try.</p>
+          {price ? <Link href={buy} className="ml-3 mt-8 inline-flex min-h-[50px] items-center gap-2 rounded-xl border border-ink px-7 text-[1rem] font-semibold text-ink hover:bg-white">Unlock unlimited · ₹{price}</Link> : null}
+          <p className="mt-3 text-[0.82rem] text-ink-4">No sign-up needed to try. 2 free essay checks a month{price ? `, then unlimited for a one-time ₹${price}` : ""}.</p>
         </section>
 
-        <section className="mx-auto max-w-[1180px] px-5 pb-16"><WritingClinic /></section>
+        <section className="mx-auto max-w-[1180px] px-5 pb-16"><WritingClinic allowance={{ monthly, buyHref: buy, price }} /></section>
 
         <section className="mx-auto max-w-[1180px] px-5 pb-16" aria-labelledby="how">
           <h2 id="how" className="text-center text-[1.8rem] font-semibold text-ink">How it works</h2>

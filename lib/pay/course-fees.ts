@@ -46,7 +46,14 @@ export const STUDIO_COURSES: Array<{ slug: string; title: string; description: s
     slug: "mathematics-speed-enhancement",
     title: "Mathematics Speed Enhancement Studio",
     description: "One continuous course in 15 levels (A to O) that builds speed and accuracy in mental calculation, with a placement check, timed practice and spaced review. Level A, Module 1 is free.",
-    rupees: 599,
+    rupees: 699,
+    onSale: true,
+  },
+  {
+    slug: "english-writing-studio",
+    title: "English Writing Studio",
+    description: "Exam writing practice for IELTS, SAT, GRE and GMAT: timed prompts, an instant score on every criterion and unlimited essay checks. A free taste of 2 checks a month stays open to everyone.",
+    rupees: 499,
     onSale: true,
   },
 ];

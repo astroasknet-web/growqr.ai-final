@@ -1,12 +1,24 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Check, Clock, Shuffle, Stethoscope } from "lucide-react";
+import Link from "next/link";
+import { Check, Clock, Lock, Shuffle, Stethoscope } from "lucide-react";
 import { EXAMS, examByKey, type ExamKey } from "@/lib/writing-clinic/exams";
 import { evaluateWriting, type Result } from "@/lib/writing-clinic/score";
 
 interface Entry { at: number; exam: string; task: string; score: number; max: number; words: number }
 const KEY = "wc-history-v1";
+const USE_KEY = "wc-month-v1";
+
+/** Essay checks used this calendar month on this device (kept on the device, like the history). */
+function usedThisMonth(): number {
+  const m = new Date().toISOString().slice(0, 7);
+  try { const u = JSON.parse(localStorage.getItem(USE_KEY) ?? "{}") as { m?: string; n?: number }; return u.m === m ? Number(u.n) || 0 : 0; } catch { return 0; }
+}
+function countUse(): void {
+  const m = new Date().toISOString().slice(0, 7);
+  try { localStorage.setItem(USE_KEY, JSON.stringify({ m, n: usedThisMonth() + 1 })); } catch { /* private mode: the allowance is a soft limit */ }
+}
 
 function loadHistory(): Entry[] {
   try { return JSON.parse(localStorage.getItem(KEY) ?? "[]") as Entry[]; } catch { return []; }
@@ -16,7 +28,16 @@ function saveHistory(list: Entry[]): void {
 }
 const mmss = (s: number): string => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
 
-export default function WritingClinic() {
+export interface Allowance {
+  /** Essay checks allowed each month, or null for unlimited. */
+  monthly: number | null;
+  /** Where "Get the studio" goes (the checkout, or the log-in page first for a visitor). */
+  buyHref: string;
+  /** The studio's price in rupees, when it is on sale. */
+  price: number | null;
+}
+
+export default function WritingClinic({ allowance }: { allowance: Allowance }) {
   const [examKey, setExamKey] = useState<ExamKey>("ielts");
   const exam = examByKey(examKey);
   const [taskKey, setTaskKey] = useState(exam.tasks[0].key);
@@ -26,10 +47,11 @@ export default function WritingClinic() {
   const [result, setResult] = useState<Result | null>(null);
   const [history, setHistory] = useState<Entry[]>([]);
   const [secs, setSecs] = useState(0);
+  const [used, setUsed] = useState(0);
   const [running, setRunning] = useState(false);
   const resultRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { setHistory(loadHistory()); }, []);
+  useEffect(() => { setHistory(loadHistory()); setUsed(usedThisMonth()); }, []);
   useEffect(() => {
     if (!running) return;
     const id = setInterval(() => setSecs((s) => s + 1), 1000);
@@ -50,10 +72,13 @@ export default function WritingClinic() {
     const others = task.prompts.filter((p) => p !== prompt);
     setPrompt(others[Math.floor(Math.random() * others.length)] ?? prompt);
   }
+  const locked = allowance.monthly !== null && used >= allowance.monthly;
   function check() {
+    if (locked) return;
     const r = evaluateWriting(exam, task, text);
     setResult(r); setRunning(false);
     if (r.overall > 0) {
+      countUse(); setUsed(usedThisMonth());
       const next = [{ at: Date.now(), exam: exam.short, task: task.name, score: r.overall, max: r.max, words: r.wordCount }, ...history];
       setHistory(next); saveHistory(next);
     }
@@ -103,9 +128,13 @@ export default function WritingClinic() {
               <button onClick={() => setRunning((r) => !r)} className={`inline-flex min-h-[40px] items-center gap-1.5 rounded-xl border px-3 text-[0.85rem] font-medium ${over ? "border-red-300 text-red-700" : "border-black/15 text-ink-2"}`}>
                 <Clock className="h-4 w-4" aria-hidden />{running ? mmss(secs) : secs ? `${mmss(secs)} paused` : `Start ${task.minutes}-min timer`}
               </button>
+              {locked ? (
+                <Link href={allowance.buyHref} className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-orange px-5 text-[0.95rem] font-semibold text-white transition hover:bg-orange-dark"><Lock className="h-4 w-4" aria-hidden />Unlock the studio{allowance.price ? ` · ₹${allowance.price}` : ""}</Link>
+              ) : (
               <button onClick={check} disabled={!text.trim()} className="inline-flex min-h-[44px] items-center gap-2 rounded-xl bg-ink px-5 text-[0.95rem] font-semibold text-white transition hover:opacity-90 disabled:opacity-40">
                 <Stethoscope className="h-4 w-4" aria-hidden />Check my writing
               </button>
+              )}
             </div>
           </div>
         </div>
@@ -138,6 +167,15 @@ export default function WritingClinic() {
             </div>
           ) : (
             <div className="rounded-2xl border border-dashed border-black/15 p-6 text-[0.92rem] text-ink-3">
+              {locked ? (
+                <>
+                  <p className="font-medium text-ink">You have used your {allowance.monthly} free essay checks this month.</p>
+                  <p className="mt-1">The English Writing Studio gives you unlimited checks for IELTS, SAT, GRE and GMAT writing{allowance.price ? ` for a one-time ₹${allowance.price}` : ""}. Your free checks come back next month.</p>
+                  <Link href={allowance.buyHref} className="mt-4 inline-flex min-h-[44px] items-center rounded-xl bg-orange px-5 font-semibold text-white hover:bg-orange-dark">Unlock the studio</Link>
+                </>
+              ) : allowance.monthly !== null ? (
+                <p className="mb-2 text-[0.82rem] text-ink-4">{Math.max(0, allowance.monthly - used)} of {allowance.monthly} essay checks left this month.</p>
+              ) : null}
               <p className="font-medium text-ink">Your result appears here.</p>
               <p className="mt-1">Write your answer, press <span className="font-medium">Check my writing</span>, and see your score on each of the four criteria with a short list of what to fix first.</p>
             </div>

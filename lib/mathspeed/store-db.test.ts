@@ -57,7 +57,7 @@ describe.skipIf(!DB)("math speed studio on a real database", () => {
     expect(p).not.toBeNull();
     expect(p!.kind).toBe("course");
     expect(p!.fulfil_ref).toBe(slug);
-    expect(p!.amount_minor).toBe(59900);
+    expect(p!.amount_minor).toBe(69900);
     const ACC = await import("../pay/course-access");
     expect(await ACC.courseGated(slug)).toBe(true);
   });
