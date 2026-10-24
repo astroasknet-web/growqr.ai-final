@@ -3,7 +3,7 @@ import { ArrowUpRight } from "lucide-react";
 import { VERTICALS as ALL, type Vertical } from "./data";
 import { COUNTRIES } from "@/components/home-options/data";
 
-const ORDER = ["resume", "internships", "courses", "abroad", "classes", "ebooks"];
+const ORDER = ["resume", "internships", "courses", "abroad", "classes", "math", "writing", "ebooks"];
 const VERTICALS = ORDER.map((k) => ALL.find((v) => v.key === k)!);
 
 /** Asymmetric bento: Resume Studio and Overseas Education are featured, the rest are compact. */

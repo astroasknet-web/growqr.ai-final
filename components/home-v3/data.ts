@@ -3,10 +3,10 @@
  * or at mathstudy.in for e-books. The verticals are the six from the brief.
  */
 import type { LucideIcon } from "lucide-react";
-import { BookOpen, Briefcase, FileText, GraduationCap, Globe2, Video } from "lucide-react";
+import { BookOpen, Briefcase, Calculator, FileText, GraduationCap, Globe2, PenLine, Video } from "lucide-react";
 import { CLASSROOM_URL } from "@/lib/links";
 
-export type VerticalKey = "internships" | "resume" | "courses" | "abroad" | "classes" | "ebooks";
+export type VerticalKey = "internships" | "resume" | "courses" | "abroad" | "classes" | "ebooks" | "math" | "writing";
 
 export type Vertical = {
   key: VerticalKey;
@@ -36,6 +36,8 @@ export const VERTICALS: Vertical[] = [
   { key: "courses", name: "Courses", headline: "Learn skills that move your career forward.", blurb: "Skill-based courses and career paths, with lessons, checks and progress tracking.", cta: "Explore Courses", href: portal("/courses"), icon: GraduationCap },
   { key: "abroad", name: "Overseas Education", headline: "Turn your international study ambitions into a plan.", blurb: "Compare destinations and universities, understand requirements and prepare your application.", cta: "Explore Study Abroad", href: portal("/study-abroad"), icon: Globe2 },
   { key: "classes", name: "Online Classes", headline: "Learn live, interact, and grow with expert guidance.", blurb: "Live classes with verified teachers, plus homework, quizzes and progress tracking.", cta: "Find Your Classes", href: CLASSROOM_URL, external: true, icon: Video },
+  { key: "math", name: "Math Speed Enhancement Studio", headline: "Get faster and more accurate at calculation.", blurb: "One course in 15 levels with a placement check, timed practice and daily review. Level A, Module 1 is free.", cta: "Try Math Speed Studio", href: "/math-speed", icon: Calculator },
+  { key: "writing", name: "English Writing Studio", headline: "Practise IELTS, SAT, GRE and GMAT writing.", blurb: "Write against the clock and get an instant score on every criterion, with exam-style prompts. Start free.", cta: "Open Writing Studio", href: "/writing-clinic", icon: PenLine },
   { key: "ebooks", name: "E-Books", headline: "Your next breakthrough could be one chapter away.", blurb: "Study guides and learning resources from our MathStudy library.", cta: "Explore E-Books", href: EBOOKS_URL, external: true, icon: BookOpen },
 ];
 

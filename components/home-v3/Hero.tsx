@@ -46,6 +46,20 @@ function Preview({ k }: { k: VerticalKey }) {
           <span className="hx-live-dot h-2 w-2 rounded-full bg-[var(--v)]" aria-hidden /> Live session
         </div>
       );
+    case "math":
+      return (
+        <div className="mt-3" aria-hidden>
+          <p className="text-[0.95rem] font-semibold text-white">47 × 63 = ?</p>
+          <p className="text-[0.68rem] text-white/60">15 levels · Level A free</p>
+        </div>
+      );
+    case "writing":
+      return (
+        <div className="mt-3 text-[0.72rem] text-white/70" aria-hidden>
+          <div className="mb-1.5 flex gap-1.5">{["IELTS", "SAT", "GRE", "GMAT"].map((x) => <span key={x} className="rounded-full bg-white/12 px-2 py-0.5 text-[0.62rem] text-white/80">{x}</span>)}</div>
+          Instant essay score
+        </div>
+      );
     case "ebooks":
       return (
         <div className="mt-3 flex gap-1.5" aria-hidden>
@@ -76,14 +90,16 @@ function Module({ k, className = "" }: { k: VerticalKey; className?: string }) {
 const POS: Record<VerticalKey, string> = {
   resume: "left-0 top-0",
   internships: "right-0 top-0",
-  courses: "left-0 top-[222px]",
-  abroad: "right-0 top-[222px]",
+  courses: "left-0 top-[160px]",
+  abroad: "right-0 top-[160px]",
+  math: "left-0 top-[320px]",
+  writing: "right-0 top-[320px]",
   classes: "left-0 bottom-0",
   ebooks: "right-0 bottom-0",
 };
 /** Line ends (module centres) in the 600 x 620 ecosystem box. */
 const LINE_END: Record<VerticalKey, [number, number]> = {
-  resume: [95, 62], internships: [505, 62], courses: [95, 284], abroad: [505, 284], classes: [95, 558], ebooks: [505, 558],
+  resume: [95, 52], internships: [505, 52], courses: [95, 205], abroad: [505, 205], math: [95, 372], writing: [505, 372], classes: [95, 558], ebooks: [505, 558],
 };
 
 function Workspace() {

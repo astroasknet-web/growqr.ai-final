@@ -288,11 +288,12 @@ export default function Footer() {
           <div className="lg:col-span-2">
             <Col title="Learn" links={[
               { href: "/courses", label: "All courses" },
+              { href: "/math-speed", label: "Math Speed Enhancement Studio" },
               { href: "/vedic-math", label: "Vedic Mathematics" },
               { href: "/olympiad/imo", label: "Maths Olympiad (IMO)" },
               { href: "/exam-prep", label: "Exam prep (JEE, NEET, UPSC)" },
               { href: "/ielts", label: "IELTS practice" },
-              { href: "/writing-clinic", label: "Writing Clinic" },
+              { href: "/writing-clinic", label: "English Writing Studio (IELTS, SAT, GRE, GMAT)" },
               { href: CLASSROOM_URL, label: "Online classes", external: true },
             ]} />
           </div>

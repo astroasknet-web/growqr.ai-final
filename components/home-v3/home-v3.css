@@ -29,6 +29,8 @@
 .hx-v-abroad { --v: #2fd39a; --v2: #8cf0c9; }
 .hx-v-classes { --v: #ff5f8f; --v2: #ffa3be; }
 .hx-v-ebooks { --v: #f2c14e; --v2: #ffe29a; }
+.hx-v-math { --v: #a78bfa; --v2: #ddd0ff; }
+.hx-v-writing { --v: #5eead4; --v2: #b6f5ea; }
 
 /* ---- buttons ---- */
 .hx-btn {
