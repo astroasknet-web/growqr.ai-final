@@ -14,9 +14,11 @@ import { LEVEL_K } from "./gen/k";
 import { LEVEL_L } from "./gen/l";
 import { LEVEL_M } from "./gen/m";
 import { LEVEL_N } from "./gen/n";
+import { LEVEL_O, buildMixedSkills } from "./gen/o";
 
 /** Every skill the engine can ask about, with the generator that writes its questions. */
-export const SKILLS: Skill[] = [...LEVEL_A, ...LEVEL_B, ...LEVEL_C, ...LEVEL_D, ...LEVEL_E, ...LEVEL_F, ...LEVEL_G, ...LEVEL_H, ...LEVEL_I, ...LEVEL_J, ...LEVEL_K, ...LEVEL_L, ...LEVEL_M, ...LEVEL_N];
+const SINGLE: Skill[] = [...LEVEL_A, ...LEVEL_B, ...LEVEL_C, ...LEVEL_D, ...LEVEL_E, ...LEVEL_F, ...LEVEL_G, ...LEVEL_H, ...LEVEL_I, ...LEVEL_J, ...LEVEL_K, ...LEVEL_L, ...LEVEL_M, ...LEVEL_N, ...LEVEL_O];
+export const SKILLS: Skill[] = [...SINGLE, ...buildMixedSkills(SINGLE)];
 
 const byId = new Map(SKILLS.map((s) => [s.id, s]));
 export const skill = (id: string): Skill | null => byId.get(id) ?? null;
@@ -34,8 +36,13 @@ export function allowedMs(s: Skill, d: number, extra = 0): number {
 export function buildQuestion(id: string, d: number, seed: number, ctx: Ctx): Question {
   const s = byId.get(id);
   if (!s) throw new Error(`unknown skill ${id}`);
-  const dd = Math.min(10, Math.max(1, Math.round(d)));
+  const dd = s.fixedD ?? Math.min(10, Math.max(1, Math.round(d)));
   const r = rng(mixSeed(seed, hashString(id), dd));
   const b = s.gen(r, dd, ctx);
-  return { ...b, kind: b.kind ?? "number", skill: id, d: dd, seed: seed >>> 0, allowedMs: allowedMs(s, dd, b.extraMs ?? 0) };
+  // A mixed question is timed like the single skill it came from.
+  const via = typeof b.params.via === "string" ? byId.get(b.params.via) : undefined;
+  const timing = via ?? s;
+  const timedD = via && typeof b.params.viaD === "number" ? b.params.viaD : dd;
+  const ms = Math.round((allowedMs(timing, timedD, b.extraMs ?? 0) * (s.timeScale ?? 1)) / 100) * 100;
+  return { ...b, kind: b.kind ?? "number", skill: id, d: dd, seed: seed >>> 0, allowedMs: ms };
 }

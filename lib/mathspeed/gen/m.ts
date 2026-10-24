@@ -113,7 +113,7 @@ const dataAverage: Generator = (r, d) => {
 };
 
 const frac = (p: number, q: number): string => { const g = gcd(p, q); return q / g === 1 ? String(p / g) : `${p / g}/${q / g}`; };
-const probabilityBasic: Generator = (r, d) => {
+const probabilityBasic: Generator = (r, d): Built => {
   const form = r.pick(d <= 3 ? [0, 1] : [0, 1, 2, 3]);
   if (form <= 1) {
     const red = r.int(1, scale(d, 6, 12)), blue = r.int(1, scale(d, 6, 12)), green = r.int(1, scale(d, 5, 10));

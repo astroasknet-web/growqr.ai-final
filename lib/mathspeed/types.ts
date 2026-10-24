@@ -64,6 +64,12 @@ export interface Skill {
   /** The difficulty this skill is expected to reach by the end of its level (used by mastery). */
   target: number;
   gen: Generator;
+  /** For a mixed skill: the single skills it draws from. */
+  mixes?: string[];
+  /** For a mixed skill: multiplies the time allowed by the underlying skill (under 1 asks for more speed). */
+  timeScale?: number;
+  /** For a benchmark skill: the difficulty is fixed, whatever the student's level. */
+  fixedD?: number;
 }
 
 export interface Outcome { correct: boolean; ms: number }

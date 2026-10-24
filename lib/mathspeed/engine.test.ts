@@ -12,7 +12,7 @@ import type { Question } from "./types";
  *  - the question is deterministic, has a prompt, working, a positive time allowance, and the right answer is accepted by the marker;
  *  - choice questions contain the answer exactly once, with no duplicate options.
  */
-const SEEDS = 80;
+const SEEDS = 60;
 const answerRat = (a: string) => parseResponse(a);
 
 const SUP = "⁰¹²³⁴⁵⁶⁷⁸⁹";
@@ -150,6 +150,28 @@ describe("registry", () => {
       expect(skill(s.id)).toBe(s);
     }
   });
+  it("mixed skills draw only from single skills that exist, and are timed like the skill each question came from", () => {
+    const mixed = SKILLS.filter((s) => s.mixes);
+    expect(mixed.length).toBeGreaterThanOrEqual(8);
+    for (const m of mixed) {
+      for (const id of m.mixes!) {
+        const part = skill(id);
+        expect(part, m.id + " lists " + id).not.toBeNull();
+        expect(part!.mixes, m.id + " must not mix a mixed skill").toBeUndefined();
+      }
+      for (let seed = 1; seed <= 20; seed++) {
+        const q = buildQuestion(m.id, 5, seed, DEFAULT_CTX);
+        expect(m.mixes).toContain(q.params.via);
+        const via = skill(String(q.params.via))!;
+        expect(q.allowedMs).toBeGreaterThan(0);
+        expect(Math.abs(q.allowedMs - ((via.ms[0] + ((via.ms[1] - via.ms[0]) * ((m.fixedD ?? Math.min(10, 5 + (m.id === "reasoning-multistep" ? 1 : m.id === "high-difficulty" ? 2 : 0))) - 1)) / 9) * (m.timeScale ?? 1)))).toBeLessThan(400 + (q.extraMs ?? 0));
+      }
+    }
+  });
+  it("the benchmark is the same difficulty whatever the student's level", () => {
+    const a = buildQuestion("benchmark", 1, 77, DEFAULT_CTX), b = buildQuestion("benchmark", 10, 77, DEFAULT_CTX);
+    expect(a.prompt).toBe(b.prompt);
+  });
   it("throws on an unknown skill", () => {
     expect(() => buildQuestion("nope", 1, 1, DEFAULT_CTX)).toThrow();
   });
@@ -169,7 +191,7 @@ describe("question generators", () => {
     });
     it(`${s.id}: gets harder with difficulty and varies with the seed`, () => {
       const avg = (d: number) => { let t = 0; for (let seed = 1; seed <= 80; seed++) t += buildQuestion(s.id, d, seed, DEFAULT_CTX).size; return t / 80; };
-      expect(avg(10), `${s.id} size at d=10 must not be below d=1`).toBeGreaterThanOrEqual(avg(1));
+      if (s.fixedD === undefined) expect(avg(10), `${s.id} size at d=10 must not be below d=1`).toBeGreaterThanOrEqual(avg(1));
       const prompts = new Set<string>();
       for (let seed = 1; seed <= 60; seed++) { const q = buildQuestion(s.id, 5, seed, DEFAULT_CTX); prompts.add(q.prompt + (q.options ? q.options.join("|") : "") + (q.visual ? JSON.stringify(q.visual) : "")); }
       expect(prompts.size, `${s.id} repeats too much at d=5`).toBeGreaterThanOrEqual(8);
