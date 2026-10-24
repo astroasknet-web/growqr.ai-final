@@ -304,6 +304,9 @@ export default function HomeNav() {
               <li onMouseEnter={hide}>
                 <a href={SCORE_URL} className="flex min-h-[44px] items-center gap-1.5 whitespace-nowrap rounded-full px-3 text-[0.9rem] font-semibold text-ink-2 transition hover:bg-black/[0.04]">Internships <span className="rounded-full bg-emerald-100 px-1.5 py-0.5 text-[0.56rem] font-bold uppercase tracking-wider text-emerald-700">Live</span></a>
               </li>
+              <li onMouseEnter={hide}>
+                <Link href="/support" className="flex min-h-[44px] items-center whitespace-nowrap rounded-full px-3 text-[0.9rem] font-semibold text-ink-2 transition hover:bg-black/[0.04]">Support</Link>
+              </li>
             </ul>
 
             <div className="ml-auto flex items-center gap-1.5 md:gap-2" onMouseEnter={hide}>
@@ -362,6 +365,7 @@ export default function HomeNav() {
                   </AnimatePresence>
                 </div>
               ))}
+              <Link href="/support" onClick={close} className="flex min-h-[56px] w-full items-center border-b border-black/[0.08] font-serif text-[1.6rem]">Support</Link>
             </div>
             <div className="fixed inset-x-0 bottom-0 z-10 flex gap-2.5 border-t border-black/[0.08] bg-white/95 px-5 py-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur">
               <a href={accountHref} className="flex min-h-[52px] flex-1 items-center justify-center rounded-2xl border border-black/10 text-[0.95rem] font-bold">{accountLabel}</a>

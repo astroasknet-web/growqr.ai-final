@@ -7,6 +7,7 @@ import { flushMail } from "@/lib/portal/mail";
 import { purgeExpiredSessions } from "@/lib/portal/session";
 import * as VI from "@/lib/abroad/visa";
 import { syncIfStale } from "@/lib/market/external";
+import { autoCloseIdle } from "@/lib/support/store";
 
 /**
  * GET /api/cron/portal
@@ -36,6 +37,7 @@ export async function GET(req: NextRequest) {
   };
   await step("visa_reminders", () => VI.sendDueReminders()); // queue first, so the flush below sends them in the same run
   await step("mail", () => flushMail());
+  await step("support_closed", () => autoCloseIdle());
   await step("sessions_purged", () => purgeExpiredSessions());
   await step("external_internships", () => syncIfStale()); // Adzuna India feed; runs about once a day, no-op until the keys are set
   return NextResponse.json({ status: "ok", ...out }, { headers: { "Cache-Control": "no-store" } });
